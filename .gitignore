@@ -1,0 +1,28 @@
+# Конфиденциальные документы
+Contracts/
+Contracts */
+_local_archive/
+
+# Типы файлов документов
+*.docx
+*.pdf
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# Node
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+
+# Vite
+*.local
+
+# IDE
+.vscode/
+.idea/
