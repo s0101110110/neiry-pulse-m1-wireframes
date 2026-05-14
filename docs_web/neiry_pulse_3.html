@@ -1447,7 +1447,7 @@
       Проверить, что end-to-end пайплайн жив. Браслет → мобайл → backend → дэшборд. Без Mode, без графиков. Параллельно три потока работ.
     </div>
     <ul class="stage-checklist">
-      <li>Mobile (Android + iOS): регистрация + BLE pairing + sync пульса</li>
+      <li>Mobile (Android): регистрация + BLE pairing + sync пульса</li>
       <li>Backend: FastAPI + PostgreSQL, базовые endpoints</li>
       <li>Dashboard: логин админа + список юзеров</li>
       <li>Yandex Cloud VM, NGINX, certbot, Sentry</li>
@@ -1639,7 +1639,7 @@
 
 <h3>Что должно работать</h3>
 <ul style="margin-left: 20px; color: var(--ink-2); font-size: 14px; line-height: 1.85; list-style: none;">
-  <li><strong>Mobile (Flutter):</strong> регистрация по email/пароль, BLE pairing с VITRO, синхронизация пульса в backend каждые N минут</li>
+  <li><strong>Mobile (Flutter, Android):</strong> регистрация по email/пароль, BLE pairing с VITRO, синхронизация пульса в backend каждые N минут</li>
   <li><strong>Backend (FastAPI):</strong> приём данных, сохранение в PostgreSQL, базовые endpoints (auth, sync, list)</li>
   <li><strong>Web Dashboard:</strong> логин админа + одна страница со списком юзеров (имя, последняя синхронизация)</li>
   <li><strong>Infrastructure:</strong> Yandex Cloud VM, NGINX + certbot, GitHub Actions, Sentry</li>
