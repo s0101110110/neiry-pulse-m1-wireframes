@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLE Pairing · Neiry Pulse</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Manrope', sans-serif; -webkit-font-smoothing: antialiased; }
+  .font-brand { font-family: 'Fraunces', serif; }
+  .font-data { font-family: 'JetBrains Mono', monospace; }
+  @keyframes ble-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.08); }
+  }
+  .ble-pulse { animation: ble-pulse 1.8s ease-in-out infinite; }
+</style>
+</head>
+<body class="min-h-screen bg-[#0f0e0b] flex items-center justify-center p-8">
+
+  <div class="relative rounded-[3rem] border-[6px] border-[#2a2620] shadow-2xl w-[390px] h-[844px] overflow-hidden">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-7 bg-[#2a2620] rounded-b-2xl z-10"></div>
+    <div class="w-full h-full bg-[#0f0e0b] flex flex-col px-7 pt-16 pb-10">
+
+      <h1 class="mt-10 text-[#f7f6f1] text-2xl font-semibold">Подключить браслет</h1>
+      <p class="text-[#7a766d] text-sm mt-2">Убедитесь, что браслет рядом и включён</p>
+
+      <div class="flex flex-col items-center mt-10 mb-8">
+        <div class="ble-pulse w-24 h-24 rounded-full border-2 border-[#831843] flex items-center justify-center">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <path d="M6.5 8.5L17.5 17.5M17.5 6.5L6.5 15.5M12 4V20M17.5 6.5L12 12L17.5 17.5" stroke="#831843" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="font-data text-[#7a766d] text-xs mt-4 tracking-widest">ПОИСК УСТРОЙСТВ…</p>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <div class="bg-[#1a1814] border border-[#831843] rounded-xl px-4 py-3 flex items-center justify-between">
+          <div>
+            <p class="font-data text-[#f7f6f1] text-sm">VITRO_A3F2</p>
+            <p class="text-[#7a766d] text-xs mt-0.5">−62 dBm</p>
+          </div>
+          <a href="mobile-home.html"
+             class="bg-[#831843] text-[#f7f6f1] text-xs font-semibold rounded-lg px-4 py-2 hover:opacity-90 transition-opacity">
+            Подключить
+          </a>
+        </div>
+        <div class="bg-[#1a1814] border border-[#2a2620] rounded-xl px-4 py-3 flex items-center justify-between">
+          <div>
+            <p class="font-data text-[#7a766d] text-sm">VITRO_B1C9</p>
+            <p class="text-[#7a766d] text-xs mt-0.5">−74 dBm</p>
+          </div>
+          <button class="border border-[#2a2620] text-[#7a766d] text-xs rounded-lg px-4 py-2">
+            Подключить
+          </button>
+        </div>
+        <div class="bg-[#1a1814] border border-[#2a2620] rounded-xl px-4 py-3 flex items-center justify-between">
+          <div>
+            <p class="font-data text-[#7a766d] text-sm">VITRO_D7E0</p>
+            <p class="text-[#7a766d] text-xs mt-0.5">−81 dBm</p>
+          </div>
+          <button class="border border-[#2a2620] text-[#7a766d] text-xs rounded-lg px-4 py-2">
+            Подключить
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
