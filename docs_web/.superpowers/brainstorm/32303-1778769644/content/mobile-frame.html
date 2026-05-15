@@ -1,0 +1,38 @@
+<h2>Как показывать мобильные экраны?</h2>
+<p class="subtitle">Дашборд — всегда полноэкранный. Вопрос только про мобайл.</p>
+
+<div class="options">
+
+  <div class="option" data-choice="phone" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>В рамке телефона ★</h3>
+      <p>Экран вставлен внутрь SVG-силуэта смартфона. Сразу понятно что это мобайл, хорошо смотрится при показе Никите.</p>
+      <div style="margin-top:12px;display:flex;justify-content:center;">
+        <div style="width:80px;height:150px;border:3px solid #4a463e;border-radius:16px;background:#1a1814;display:flex;flex-direction:column;align-items:center;padding:8px 6px;gap:4px;">
+          <div style="width:24px;height:4px;background:#3a3630;border-radius:2px;margin-bottom:4px;"></div>
+          <div style="flex:1;width:100%;background:#2a2620;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+            <div style="font-size:7px;color:#f7f6f1;font-weight:600;">72 BPM</div>
+            <div style="width:40px;height:2px;background:#831843;border-radius:1px;"></div>
+          </div>
+          <div style="width:20px;height:20px;border-radius:50%;border:2px solid #3a3630;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="flat" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Плоский экран, без рамки</h3>
+      <p>Просто содержимое экрана в прямоугольнике 390×844px (iPhone 14 размер). Чище, быстрее, разработчику удобнее копировать структуру.</p>
+      <div style="margin-top:12px;display:flex;justify-content:center;">
+        <div style="width:80px;height:140px;border:1px solid #3a3630;border-radius:4px;background:#1a1814;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+          <div style="font-size:7px;color:#f7f6f1;font-weight:600;">72 BPM</div>
+          <div style="width:40px;height:2px;background:#831843;border-radius:1px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

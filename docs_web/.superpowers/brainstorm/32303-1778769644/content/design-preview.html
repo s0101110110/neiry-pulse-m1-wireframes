@@ -1,0 +1,86 @@
+<h2>Дизайн wireframes M1 — финальная структура</h2>
+<p class="subtitle">Утверди схему перед тем как начнём строить</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px;">
+
+  <!-- FILES -->
+  <div style="background:#1a1814;border:1px solid #2a2620;border-radius:10px;padding:20px;">
+    <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#7a766d;margin-bottom:14px;">Файловая структура</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;color:#a8a49a;">
+      <div style="color:#4a463e;">wireframes/m1/</div>
+      <div style="padding-left:16px;color:#f7f6f1;font-weight:600;">index.html</div>
+      <div style="padding-left:16px;color:#7a766d;font-size:11px;margin-bottom:4px;">↳ оба флоу рядом</div>
+      <div style="padding-left:16px;color:#831843;">mobile-registration.html</div>
+      <div style="padding-left:16px;color:#831843;">mobile-login.html</div>
+      <div style="padding-left:16px;color:#831843;">mobile-ble-pairing.html</div>
+      <div style="padding-left:16px;color:#831843;">mobile-home.html</div>
+      <div style="padding-left:16px;color:#1e6fb5;">dashboard-login.html</div>
+      <div style="padding-left:16px;color:#1e6fb5;">dashboard-users.html</div>
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:#4a463e;">8 файлов · 2 секции · 1 index</div>
+  </div>
+
+  <!-- INDEX LAYOUT PREVIEW -->
+  <div style="background:#1a1814;border:1px solid #2a2620;border-radius:10px;padding:20px;">
+    <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#7a766d;margin-bottom:14px;">Как выглядит index.html</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;height:160px;">
+
+      <!-- mobile column -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:9px;color:#831843;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2px;">Мобайл · Android</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <!-- phone mockup mini -->
+          <div style="width:32px;height:52px;border:2px solid #3a3630;border-radius:6px;background:#0f0e0b;display:flex;align-items:center;justify-content:center;font-size:6px;color:#7a766d;">Рег.</div>
+          <div style="width:32px;height:52px;border:2px solid #3a3630;border-radius:6px;background:#0f0e0b;display:flex;align-items:center;justify-content:center;font-size:6px;color:#7a766d;">Вход</div>
+          <div style="width:32px;height:52px;border:2px solid #3a3630;border-radius:6px;background:#0f0e0b;display:flex;align-items:center;justify-content:center;font-size:6px;color:#7a766d;">BLE</div>
+          <div style="width:32px;height:52px;border:2px solid #831843;border-radius:6px;background:#0f0e0b;display:flex;align-items:center;justify-content:center;font-size:6px;color:#831843;font-weight:600;">BPM</div>
+        </div>
+        <div style="font-size:9px;color:#3a3630;margin-top:4px;">↑ рамка телефона · тёмная тема</div>
+      </div>
+
+      <!-- divider -->
+      <div style="border-left:1px solid #2a2620;"></div>
+
+      <!-- dashboard column overlapping divider -->
+      <div style="display:flex;flex-direction:column;gap:6px;margin-left:-12px;padding-left:12px;">
+        <div style="font-size:9px;color:#1e6fb5;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2px;">Dashboard · Web</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="width:100%;height:36px;border:1px solid #1e3a8a55;border-radius:4px;background:#0f0e0b;display:flex;align-items:center;padding:0 8px;font-size:8px;color:#7a766d;">Логин администратора</div>
+          <div style="width:100%;height:52px;border:1px solid #1e3a8a55;border-radius:4px;background:#0f0e0b;display:flex;align-items:center;padding:0 8px;font-size:8px;color:#7a766d;">Список пользователей + BPM</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- SCREENS LIST -->
+<div style="margin-top:24px;background:#1a1814;border:1px solid #2a2620;border-radius:10px;padding:20px;">
+  <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#7a766d;margin-bottom:16px;">Что на каждом экране</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+    <div>
+      <div style="font-size:11px;color:#831843;font-weight:600;margin-bottom:10px;">МОБАЙЛ · 4 экрана</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:#a8a49a;">
+        <div><span style="color:#f7f6f1;font-weight:600;">1. Регистрация</span> — email + пароль + «Создать аккаунт»</div>
+        <div><span style="color:#f7f6f1;font-weight:600;">2. Логин</span> — email + пароль + «Войти»</div>
+        <div><span style="color:#f7f6f1;font-weight:600;">3. BLE Pairing</span> — кнопка поиска → список устройств → «Подключить»</div>
+        <div><span style="color:#f7f6f1;font-weight:600;">4. Главная</span> — BPM крупно + статус соединения + «Синхронизировать»</div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:11px;color:#1e6fb5;font-weight:600;margin-bottom:10px;">DASHBOARD · 2 экрана</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:#a8a49a;">
+        <div><span style="color:#f7f6f1;font-weight:600;">1. Логин</span> — email + пароль + «Войти как администратор»</div>
+        <div><span style="color:#f7f6f1;font-weight:600;">2. Пользователи</span> — таблица: имя · последняя синхронизация · BPM · статус</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div style="margin-top:20px;padding:16px;background:#0f0e0b;border:1px solid #2a2620;border-radius:8px;font-size:12px;color:#7a766d;">
+  📁 Папка: <code style="color:#f7f6f1;">wireframes/m1/</code> внутри проекта docs_web · Тёмная тема · Телефонная рамка для мобайла
+</div>

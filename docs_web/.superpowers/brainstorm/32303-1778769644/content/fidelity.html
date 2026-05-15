@@ -1,0 +1,54 @@
+<h2>Какой уровень проработки wireframes?</h2>
+<p class="subtitle">От этого зависит насколько быстро сделаем и насколько полезно будет Кириллу</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="lofi" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f5f5f5;padding:16px;border-bottom:1px solid #e0e0e0;min-height:180px;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;">
+      <div style="width:120px;background:#fff;border:1px solid #ccc;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px;">
+        <div style="height:10px;background:#d0d0d0;border-radius:4px;width:60%;"></div>
+        <div style="height:28px;background:#e8e8e8;border-radius:4px;"></div>
+        <div style="height:28px;background:#e8e8e8;border-radius:4px;"></div>
+        <div style="height:30px;background:#bbb;border-radius:4px;"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A · Lo-fi серые блоки</h3>
+      <p>Чистые placeholder'ы, без цвета. Максимально быстро. Фокус на структуру и flow, не на внешний вид.</p>
+      <p style="font-size:12px;color:#888;">Лучше для: обсуждения флоу с командой</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="midfi" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f5f5f5;padding:16px;border-bottom:1px solid #e0e0e0;min-height:180px;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;">
+      <div style="width:120px;background:#fff;border:1px solid #ccc;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px;">
+        <div style="height:10px;background:#1a1814;border-radius:4px;width:60%;"></div>
+        <div style="height:28px;background:#f0ede6;border-radius:4px;border:1px solid #d0cdc4;display:flex;align-items:center;padding:0 8px;font-size:9px;color:#666;">email@...</div>
+        <div style="height:28px;background:#f0ede6;border-radius:4px;border:1px solid #d0cdc4;display:flex;align-items:center;padding:0 8px;font-size:9px;color:#666;">пароль</div>
+        <div style="height:30px;background:#1a1814;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;">Войти</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B · Mid-fi с Neiry-стилем ★</h3>
+      <p>Структура + реальные цвета и шрифты из <code>neiry_pulse_3.html</code>. Готово для показа Никите и Кириллу.</p>
+      <p style="font-size:12px;color:#888;">Лучше для: передачи дизайн-системы разработчику</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="hifi" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1a1814;padding:16px;border-bottom:1px solid #333;min-height:180px;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;">
+      <div style="width:120px;background:#2a2620;border:1px solid #3a3630;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;">
+        <div style="height:10px;background:#f7f6f1;border-radius:4px;width:60%;opacity:0.9;"></div>
+        <div style="height:28px;background:#1a1814;border-radius:6px;border:1px solid #3a3630;display:flex;align-items:center;padding:0 8px;font-size:9px;color:#a8a49a;">email@...</div>
+        <div style="height:28px;background:#1a1814;border-radius:6px;border:1px solid #3a3630;display:flex;align-items:center;padding:0 8px;font-size:9px;color:#a8a49a;">пароль</div>
+        <div style="height:30px;background:#831843;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:600;">Войти</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C · Hi-fi тёмная тема</h3>
+      <p>Тёмный тон в стиле premium-wellness. Ближе к готовому UI. Больше времени, но результат — почти дизайн.</p>
+      <p style="font-size:12px;color:#888;">Лучше для: питча инвесторам / Startup Village</p>
+    </div>
+  </div>
+
+</div>

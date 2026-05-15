@@ -1,0 +1,76 @@
+<h2>Архитектура PM-агента Neiry</h2>
+<p class="subtitle">Вариант C — Гибридный с Obsidian как центром знаний</p>
+
+<div class="section">
+<h3>🧠 Центр знаний — Obsidian Vault</h3>
+<div class="mockup">
+  <div class="mockup-header">📁 NEIRY/knowledge-base/ &nbsp;←&nbsp; Obsidian открывает эту папку как vault</div>
+  <div class="mockup-body" style="font-family:monospace;font-size:13px;line-height:2">
+    <div>📄 <strong>PROJECT_STATE.md</strong> — живой снимок: текущий спринт, открытые задачи, последние решения</div>
+    <div>📥 <strong>INBOX/</strong> — зона сброса: транскрипции, экспорты из Google Docs/Sheets</div>
+    <div>📋 <strong>tasks/</strong> — задачи по участникам: konstantin.md, kirill.md, nikita.md</div>
+    <div>🏁 <strong>milestones/</strong> — M1, M2, M3: скоуп, статус, дедлайн</div>
+    <div>⚡ <strong>decisions/</strong> — зафиксированные решения из встреч</div>
+    <div>❓ <strong>open-questions/</strong> — нерешённые вопросы с контекстом</div>
+    <div>👥 <strong>people/</strong> — участники, роли, зоны ответственности</div>
+  </div>
+</div>
+</div>
+
+<div class="section">
+<h3>⚙️ Как работает агент</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px">
+  <div style="background:#1e2a1e;border:1px solid #3a5a3a;border-radius:8px;padding:12px">
+    <div style="color:#7ec87e;font-weight:bold;margin-bottom:6px">1. Старт сессии</div>
+    <div style="font-size:13px;color:#ccc">Читает PROJECT_STATE.md<br>Проверяет INBOX/<br>Знает контекст сразу</div>
+  </div>
+  <div style="background:#1e221e;border:1px solid #4a6a4a;border-radius:8px;padding:12px">
+    <div style="color:#a0d0a0;font-weight:bold;margin-bottom:6px">2. Обработка</div>
+    <div style="font-size:13px;color:#ccc">Транскрипция → tasks/<br>Документ → decisions/<br>Таблица → milestones/</div>
+  </div>
+  <div style="background:#1a1e2a;border:1px solid #3a4a6a;border-radius:8px;padding:12px">
+    <div style="color:#8ab0e0;font-weight:bold;margin-bottom:6px">3. Конец сессии</div>
+    <div style="font-size:13px;color:#ccc">Обновляет PROJECT_STATE.md<br>Коммитит изменения<br>INBOX/ очищен</div>
+  </div>
+</div>
+</div>
+
+<div class="section">
+<h3>🔌 Источники данных</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">
+  <div style="background:#1a1a2e;border:1px solid #444;border-radius:8px;padding:12px">
+    <div style="font-weight:bold;margin-bottom:6px;color:#e0c080">Локальные (сейчас)</div>
+    <div style="font-size:13px;color:#ccc">
+      📁 docs_web/ — PRDs, ТЗ, wireframes<br>
+      📁 backend/, mobile/, dashboard/<br>
+      🎙️ Транскрипции встреч (.txt, .md)<br>
+      📊 Excel/XLSX (Vitro Metrics)
+    </div>
+  </div>
+  <div style="background:#1a2a1a;border:1px solid #444;border-radius:8px;padding:12px">
+    <div style="font-weight:bold;margin-bottom:6px;color:#80c080">Внешние через MCP (по запросу)</div>
+    <div style="font-size:13px;color:#ccc">
+      📗 Google Docs / Drive<br>
+      📊 Google Sheets<br>
+      📧 Gmail (договоры, переписка)<br>
+      🗓️ Google Calendar
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="section">
+<h3>📍 Где живёт</h3>
+<div class="mockup">
+  <div class="mockup-body" style="font-family:monospace;font-size:13px;line-height:1.8">
+    <div>📁 NEIRY/</div>
+    <div>&nbsp;&nbsp;📁 <strong>knowledge-base/</strong> &nbsp;← Obsidian Vault + центр агента</div>
+    <div>&nbsp;&nbsp;📁 docs_web/ &nbsp;← CLAUDE.md ссылается на knowledge-base/</div>
+    <div>&nbsp;&nbsp;📁 backend/</div>
+    <div>&nbsp;&nbsp;📁 mobile/</div>
+    <div>&nbsp;&nbsp;📁 dashboard/</div>
+  </div>
+</div>
+</div>
+
+<p class="subtitle" style="margin-top:16px">Выглядит правильно? Или хочешь что-то изменить в структуре?</p>

@@ -1,0 +1,60 @@
+<h2>Как работает навигация между экранами?</h2>
+<p class="subtitle">Влияет на то, как Никита и Кирилл будут смотреть wireframes</p>
+
+<div class="options">
+
+  <div class="option" data-choice="flow" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Симуляция флоу приложения ★</h3>
+      <p>Экраны соединены стрелками как в реальном приложении: <strong>Регистрация → BLE Pairing → Главная</strong>. На каждом экране — кнопки «Далее» и «Назад» которые переходят к следующему логическому шагу. Index показывает всю схему с превью.</p>
+      <div style="margin-top:10px;display:flex;align-items:center;gap:6px;font-size:12px;color:#888;">
+        <span style="background:#2a2620;border:1px solid #3a3630;padding:4px 8px;border-radius:4px;">Регистрация</span>
+        <span>→</span>
+        <span style="background:#2a2620;border:1px solid #3a3630;padding:4px 8px;border-radius:4px;">BLE Pairing</span>
+        <span>→</span>
+        <span style="background:#2a2620;border:1px solid #3a3630;padding:4px 8px;border-radius:4px;">Главная</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="gallery" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Галерея с превью</h3>
+      <p>Index — сетка карточек-превью всех экранов. Клик открывает полноразмерный экран. Назад — в галерею. Мобайл и Дашборд в разных секциях.</p>
+      <div style="margin-top:10px;display:flex;gap:6px;">
+        <div style="width:40px;height:56px;background:#2a2620;border:1px solid #3a3630;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#888;">Логин</div>
+        <div style="width:40px;height:56px;background:#2a2620;border:1px solid #3a3630;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#888;">BLE</div>
+        <div style="width:40px;height:56px;background:#2a2620;border:1px solid #3a3630;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#888;">Главная</div>
+        <div style="width:40px;height:56px;background:#1e3a8a22;border:1px solid #1e3a8a55;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#888;">Дашборд</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="split" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Два потока рядом</h3>
+      <p>Index разделён на две колонки: слева — мобайл флоу (4 экрана сверху вниз), справа — дашборд флоу (2 экрана). Всё видно сразу, без переходов.</p>
+      <div style="margin-top:10px;display:flex;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
+          <div style="font-size:9px;color:#831843;margin-bottom:2px;">МОБАЙЛ</div>
+          <div style="width:36px;height:18px;background:#2a2620;border:1px solid #3a3630;border-radius:3px;"></div>
+          <div style="font-size:8px;color:#444;">↓</div>
+          <div style="width:36px;height:18px;background:#2a2620;border:1px solid #3a3630;border-radius:3px;"></div>
+          <div style="font-size:8px;color:#444;">↓</div>
+          <div style="width:36px;height:18px;background:#2a2620;border:1px solid #3a3630;border-radius:3px;"></div>
+        </div>
+        <div style="width:1px;background:#3a3630;"></div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
+          <div style="font-size:9px;color:#1e3a8a;margin-bottom:2px;">ДАШБОРД</div>
+          <div style="width:48px;height:18px;background:#2a2620;border:1px solid #1e3a8a55;border-radius:3px;"></div>
+          <div style="font-size:8px;color:#444;">↓</div>
+          <div style="width:48px;height:18px;background:#2a2620;border:1px solid #1e3a8a55;border-radius:3px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
