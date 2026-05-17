@@ -1,0 +1,42 @@
+<h2>Как организовать экраны?</h2>
+<p class="subtitle">M1: 4 мобильных экрана + 2 экрана дашборда</p>
+
+<div class="options">
+
+  <div class="option" data-choice="single" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Один HTML-файл — все экраны вместе</h3>
+      <p>Все экраны лежат в одном файле горизонтально или вертикально. Открыл — видишь весь флоу целиком. Удобно для ревью и экспорта в PDF.</p>
+      <div class="pros-cons" style="margin-top:10px;">
+        <div class="pros"><h4>Плюсы</h4><ul><li>Один файл — легко шарить</li><li>Флоу виден целиком</li></ul></div>
+        <div class="cons"><h4>Минусы</h4><ul><li>Нельзя открыть «только логин»</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="separate" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Отдельный файл на каждый экран ★</h3>
+      <p>Каждый экран — отдельный HTML. Кирилл открывает нужный, копирует структуру. Просто называется: <code>m1-login.html</code>, <code>m1-ble-pairing.html</code> и т.д.</p>
+      <div class="pros-cons" style="margin-top:10px;">
+        <div class="pros"><h4>Плюсы</h4><ul><li>Удобно разработчику</li><li>Чисто и атомарно</li></ul></div>
+        <div class="cons"><h4>Минусы</h4><ul><li>Флоу нужно смотреть по файлам</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="index" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Index-файл с навигацией между экранами</h3>
+      <p>Отдельные HTML + один <code>index.html</code> с превью всех экранов и кликабельными ссылками. Можно переходить между экранами как в реальном приложении.</p>
+      <div class="pros-cons" style="margin-top:10px;">
+        <div class="pros"><h4>Плюсы</h4><ul><li>Интерактивный флоу</li><li>Идеально для показа Никите</li></ul></div>
+        <div class="cons"><h4>Минусы</h4><ul><li>Чуть больше работы</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>

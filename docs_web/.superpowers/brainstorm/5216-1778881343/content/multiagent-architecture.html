@@ -1,0 +1,73 @@
+<h2>Мульти-агентная система Neiry</h2>
+<p class="subtitle">PM-оркестратор + 3 специализированных агента + общий центр знаний</p>
+
+<div class="section">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+
+    <div style="background:#2a1e1e;border:2px solid #c07050;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:22px;margin-bottom:6px">🎼</div>
+      <div style="font-weight:bold;color:#e09070;font-size:14px">PM / Оркестратор</div>
+      <div style="font-size:11px;color:#999;margin-top:6px">docs_web/<br>+ знает весь контекст<br>+ делегирует задачи<br>+ обновляет KB</div>
+    </div>
+
+    <div style="background:#1e2a1e;border:2px solid #50c080;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:22px;margin-bottom:6px">🎨</div>
+      <div style="font-weight:bold;color:#70e0a0;font-size:14px">UX/UI Дизайнер</div>
+      <div style="font-size:11px;color:#999;margin-top:6px">UI_assets/<br>+ UI-киты, ассеты<br>+ создаёт wireframes<br>+ HTML/CSS макеты</div>
+    </div>
+
+    <div style="background:#1e1e2a;border:2px solid #5080c0;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:22px;margin-bottom:6px">💻</div>
+      <div style="font-weight:bold;color:#70a0e0;font-size:14px">Frontend Dev</div>
+      <div style="font-size:11px;color:#999;margin-top:6px">dashboard/<br>+ стэк фронтенда<br>+ реализует код<br>+ по ТЗ от PM</div>
+    </div>
+
+    <div style="background:#2a2a1e;border:2px solid #c0b050;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:22px;margin-bottom:6px">🔬</div>
+      <div style="font-weight:bold;color:#e0d070;font-size:14px">R&D Researcher</div>
+      <div style="font-size:11px;color:#999;margin-top:6px">research/<br>+ железо, SDK<br>+ простым языком<br>+ веб-поиск</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>🧠 Общий центр знаний — knowledge-base/ (Obsidian)</h3>
+  <div style="background:#111;border:1px solid #444;border-radius:8px;padding:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px">
+    <div style="color:#aaa">📄 PROJECT_STATE.md<br><span style="color:#666">живой снимок проекта</span></div>
+    <div style="color:#aaa">📋 tasks/<br><span style="color:#666">задачи по участникам</span></div>
+    <div style="color:#aaa">🏁 milestones/<br><span style="color:#666">M1, M2, M3 статус</span></div>
+    <div style="color:#aaa">⚡ decisions/<br><span style="color:#666">зафиксированные решения</span></div>
+    <div style="color:#aaa">❓ open-questions/<br><span style="color:#666">нерешённые вопросы</span></div>
+    <div style="color:#aaa">📥 INBOX/<br><span style="color:#666">зона сброса материалов</span></div>
+  </div>
+  <div style="margin-top:8px;font-size:12px;color:#666;text-align:center">↑ Все агенты читают отсюда. Только PM и R&D пишут.</div>
+</div>
+
+<div class="section">
+  <h3>🔄 Типичный workflow</h3>
+  <div style="font-size:13px;line-height:2;color:#ccc">
+    <div>1. 📥 Кладёшь транскрипцию встречи в <code style="color:#80c080">INBOX/</code></div>
+    <div>2. 🎼 PM обрабатывает → обновляет tasks/, decisions/, PROJECT_STATE.md</div>
+    <div>3. 🎼 PM пишет бриф в <code style="color:#70a0e0">dashboard/BRIEF.md</code> для Frontend Dev</div>
+    <div>4. 💻 Frontend Dev читает бриф → реализует код</div>
+    <div>5. 🎨 Если нужен UI — PM делегирует субагента в <code style="color:#70e0a0">UI_assets/</code></div>
+    <div>6. 🔬 Если вопрос по железу — PM запускает R&D Researcher с веб-поиском</div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>📁 Структура папок</h3>
+  <div style="background:#111;border-radius:8px;padding:12px;font-family:monospace;font-size:12px;line-height:1.9">
+    <div>NEIRY/</div>
+    <div>&nbsp;&nbsp;📚 <span style="color:#e0d070">knowledge-base/</span> &nbsp;← Obsidian Vault (общий для всех)</div>
+    <div>&nbsp;&nbsp;🎼 <span style="color:#e09070">docs_web/</span> &nbsp;← PM-агент живёт здесь</div>
+    <div>&nbsp;&nbsp;🎨 <span style="color:#70e0a0">UI_assets/</span> &nbsp;← UX/UI дизайнер</div>
+    <div>&nbsp;&nbsp;💻 <span style="color:#70a0e0">dashboard/</span> &nbsp;← Frontend разработчик</div>
+    <div>&nbsp;&nbsp;🔬 <span style="color:#e0d070">research/</span> &nbsp;← R&D researcher (новая папка)</div>
+    <div>&nbsp;&nbsp;📱 mobile/ &nbsp;← Кирилл (не трогаем)</div>
+    <div>&nbsp;&nbsp;⚙️ backend/ &nbsp;← Кирилл (не трогаем)</div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px">Структура и роли выглядят правильно?</p>
