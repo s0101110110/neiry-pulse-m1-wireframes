@@ -26,14 +26,153 @@
   .animate-heart { animation: heart-pulse 1s ease-in-out infinite; }
 </style>
 </head>
-<body class="state-active min-h-screen bg-[#0f0e0b] text-[#f7f6f1]">
+<body class="state-active h-screen overflow-hidden flex flex-col bg-[#0f0e0b] text-[#f7f6f1]">
 
   <!-- DEV: State toggle (для согласования с командой, в продакшене удалить) -->
-  <div class="fixed top-2 left-1/2 -translate-x-1/2 z-50 flex gap-1 bg-[#1a1814] border border-[#2a2620] rounded-lg p-1">
+  <div class="shrink-0 w-full bg-[#0a0907] border-b border-[#2a2620] py-2 flex items-center justify-center gap-2">
+    <span class="text-[#4a463e] text-[10px] font-data uppercase tracking-widest mr-2">dev · state</span>
     <button data-state="state-idle" class="state-btn px-3 py-1 text-xs font-semibold rounded text-[#7a766d] hover:text-[#f7f6f1] transition-colors">IDLE</button>
     <button data-state="state-active" class="state-btn px-3 py-1 text-xs font-semibold rounded text-[#7a766d] hover:text-[#f7f6f1] transition-colors">ACTIVE</button>
     <button data-state="state-pending" class="state-btn px-3 py-1 text-xs font-semibold rounded text-[#7a766d] hover:text-[#f7f6f1] transition-colors">PENDING_CLAIM</button>
   </div>
+
+  <header class="shrink-0 h-20 px-8 border-b border-[#2a2620] flex items-center justify-between">
+    <!-- Левая зона: лого -->
+    <div class="font-brand text-[#f7f6f1] text-2xl">Neiry Pulse</div>
+
+    <!-- Центральная зона: статус подключения -->
+    <div class="flex items-center gap-2">
+      <span class="w-2.5 h-2.5 rounded-full bg-[#166534] block"></span>
+      <span class="text-[#f7f6f1] text-sm">Подключено · Neiry.Pulse #1</span>
+    </div>
+
+    <!-- Правая зона: dropdown + таймер -->
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-1 px-3 py-1.5 bg-[#1a1814] border border-[#2a2620] rounded-lg text-sm text-[#f7f6f1]">
+        <span>#1</span>
+        <span class="text-[#7a766d]">▼</span>
+      </div>
+      <div class="font-data text-[#f7f6f1] text-lg">02:15</div>
+    </div>
+  </header>
+
+  <main class="flex-1 min-h-0 grid grid-cols-[1fr_1fr] gap-6 p-6 overflow-hidden">
+
+    <!-- ЛЕВАЯ КОЛОНКА — LIVE -->
+    <section class="bg-[#1a1814] border border-[#2a2620] rounded-2xl p-6 flex flex-col overflow-hidden">
+
+      <!-- IDLE state -->
+      <div class="only-idle flex-1 flex flex-col items-center justify-center text-center">
+        <p class="text-[#7a766d] text-2xl mb-8">Подключите Neiry.Pulse и нажмите СТАРТ</p>
+        <button class="px-12 py-4 bg-[#831843] text-[#f7f6f1] font-semibold text-lg rounded-xl hover:opacity-90 transition-opacity">
+          СТАРТ
+        </button>
+      </div>
+
+      <!-- ACTIVE state -->
+      <div class="only-active flex-1 min-h-0 flex flex-col gap-4 items-center w-full justify-between">
+
+        <!-- BPM -->
+        <div class="flex items-center gap-4">
+          <span class="text-5xl animate-heart" style="color: #831843;">♥</span>
+          <div class="text-center">
+            <p class="text-[#7a766d] text-[11px] uppercase tracking-widest mb-1">Сердечный ритм</p>
+            <div class="flex items-baseline gap-3 justify-center">
+              <span id="bpm-value" class="font-data text-[#831843] text-[110px] leading-none">84</span>
+              <span class="text-[#7a766d] text-lg">уд/мин</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BPM running graph -->
+        <div class="bg-[#0f0e0b] border border-[#2a2620] rounded-xl p-3 h-24 w-full">
+          <svg id="bpm-graph" viewBox="0 0 600 100" preserveAspectRatio="none" class="w-full h-full">
+            <polyline id="bpm-line" fill="none" stroke="#831843" stroke-width="2"
+                      points="0,50 50,48 100,52 150,45 200,55 250,50 300,42 350,58 400,50 450,46 500,52 550,48 600,50" />
+          </svg>
+        </div>
+
+        <!-- Stress / Calmness Score -->
+        <div class="w-full text-center">
+          <p class="text-[#7a766d] text-[11px] uppercase tracking-widest mb-2">Stress / Calmness Score</p>
+          <div class="relative h-6 rounded-full" style="background: linear-gradient(to right, #991b1b, #a16207, #166534);">
+            <div class="absolute top-0 bottom-0 w-1 bg-[#f7f6f1] rounded" style="left: 68%; box-shadow: 0 0 8px rgba(247,246,241,0.6);"></div>
+          </div>
+          <div class="flex justify-between mt-1.5">
+            <span class="text-[#7a766d] text-[11px]">СТРЕСС</span>
+            <span class="text-[#7a766d] text-[11px]">СПОКОЙСТВИЕ</span>
+          </div>
+          <p class="font-data text-[#f7f6f1] text-base mt-2">68 · Спокойствие</p>
+          <p class="text-[#7a766d] text-[11px] mt-0.5">Реал-тайм оценка вегетативного статуса</p>
+        </div>
+
+        <!-- IMU -->
+        <div class="flex items-center gap-2">
+          <span class="text-[#7a766d] text-[11px] uppercase tracking-widest">IMU:</span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#166534]"></span>
+          <span class="font-data text-[#f7f6f1] text-sm">Покой</span>
+        </div>
+
+        <!-- ECG button (disabled) + STOP button -->
+        <div class="flex gap-4 items-end w-full">
+          <button disabled class="flex-1 px-6 py-3 bg-[#1a1814] border border-[#2a2620] text-[#4a463e] text-sm font-semibold rounded-xl cursor-not-allowed flex items-center justify-center gap-2">
+            <span>🔒</span>
+            <span>ЭКГ-сканирование</span>
+          </button>
+          <button class="flex-1 px-6 py-3 bg-[#831843] text-[#f7f6f1] text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity">
+            СТОП
+          </button>
+        </div>
+
+      </div>
+
+      <!-- PENDING_CLAIM state -->
+      <div class="only-pending flex-1 min-h-0 flex flex-col w-full">
+        <h2 class="text-[#f7f6f1] text-2xl font-bold text-center mb-5 tracking-wide">СЕССИЯ ЗАВЕРШЕНА</h2>
+
+        <!-- Mini graph -->
+        <div class="bg-[#0f0e0b] border border-[#2a2620] rounded-xl p-3 h-28 mb-5">
+          <svg viewBox="0 0 600 120" preserveAspectRatio="none" class="w-full h-full">
+            <polyline fill="none" stroke="#831843" stroke-width="2"
+                      points="0,80 30,75 60,70 90,68 120,65 150,55 180,40 210,30 240,25 270,20 300,18 330,22 360,30 390,40 420,55 450,65 480,72 510,75 540,78 570,80 600,82" />
+          </svg>
+        </div>
+
+        <!-- Summary table -->
+        <div class="bg-[#0f0e0b] border border-[#2a2620] rounded-xl p-5 mb-4 max-w-md mx-auto w-full">
+          <div class="flex justify-between py-2 border-b border-[#2a2620]">
+            <span class="text-[#7a766d] text-sm">Длительность</span>
+            <span class="font-data text-[#f7f6f1]">04:32</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-[#2a2620]">
+            <span class="text-[#7a766d] text-sm">Peak BPM</span>
+            <span class="font-data text-[#831843]">92</span>
+          </div>
+          <div class="flex justify-between py-2">
+            <span class="text-[#7a766d] text-sm">Средний Calmness</span>
+            <span class="font-data text-[#f7f6f1]">68</span>
+          </div>
+        </div>
+
+        <p class="text-[#7a766d] text-center text-sm mb-auto">Полный отчёт — в Telegram-боте</p>
+
+        <!-- Reset button -->
+        <div class="flex justify-end mt-4">
+          <button class="px-6 py-3 bg-[#1e3a8a] text-[#f7f6f1] text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity">
+            СБРОСИТЬ
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ПРАВАЯ КОЛОНКА — FUTURE -->
+    <aside class="flex flex-col gap-4">
+      <!-- Сюда добавим плашку и 4 виджета -->
+      <div class="text-[#7a766d] text-sm">[RIGHT COLUMN placeholder]</div>
+    </aside>
+
+  </main>
 
   <script>
     const STATES = ['state-idle', 'state-active', 'state-pending'];
