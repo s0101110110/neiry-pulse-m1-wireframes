@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Neiry Pulse · Чек-лист стенда · Startup Village</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 14mm 14mm 14mm 14mm;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, "Helvetica Neue", "Segoe UI", "Inter", sans-serif;
+    color: #111;
+    font-size: 10pt;
+    line-height: 1.45;
+  }
+  .header {
+    border-bottom: 2px solid #111;
+    padding-bottom: 6mm;
+    margin-bottom: 6mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .brand {
+    font-size: 18pt;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .brand .pulse {
+    color: #831843;
+    font-style: italic;
+    font-weight: 500;
+  }
+  .meta {
+    font-size: 9pt;
+    color: #666;
+    text-align: right;
+  }
+  h1 {
+    font-size: 16pt;
+    margin: 0 0 4mm;
+    font-weight: 700;
+  }
+  .subtitle {
+    color: #555;
+    font-size: 10pt;
+    margin: 0 0 6mm;
+  }
+  .category {
+    margin-bottom: 6mm;
+    page-break-inside: avoid;
+  }
+  .category h2 {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #831843;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 3mm;
+    padding-bottom: 2mm;
+    border-bottom: 1px solid #ddd;
+  }
+  ul.items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.items li {
+    display: flex;
+    align-items: flex-start;
+    gap: 3mm;
+    padding: 1.5mm 0;
+    border-bottom: 1px dashed #eee;
+    font-size: 10pt;
+  }
+  ul.items li:last-child {
+    border-bottom: none;
+  }
+  .box {
+    width: 4mm;
+    height: 4mm;
+    border: 1.2px solid #111;
+    flex-shrink: 0;
+    margin-top: 0.5mm;
+  }
+  .item-text {
+    flex: 1;
+  }
+  .item-text .what {
+    font-weight: 500;
+  }
+  .item-text .note {
+    color: #888;
+    font-size: 8.5pt;
+    margin-left: 4px;
+  }
+  .qty {
+    color: #831843;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9pt;
+    font-weight: 600;
+    flex-shrink: 0;
+    width: 14mm;
+    text-align: right;
+  }
+  .urgent {
+    background: #fff3cd;
+    padding: 4mm 5mm;
+    border-radius: 2mm;
+    border-left: 3px solid #b45309;
+    margin: 4mm 0 6mm;
+    font-size: 9.5pt;
+  }
+  .urgent strong { color: #b45309; }
+  .footer {
+    margin-top: 8mm;
+    padding-top: 4mm;
+    border-top: 1px solid #ddd;
+    font-size: 8pt;
+    color: #888;
+    text-align: center;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6mm;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">Neiry <span class="pulse">Pulse</span></div>
+  <div class="meta">
+    Чек-лист закупа и подготовки стенда<br>
+    Startup Village · 28–29.05.2026<br>
+    v0.1 · 2026-05-25
+  </div>
+</div>
+
+<h1>Что взять / закупить к 28.05</h1>
+<p class="subtitle">Всё, что нельзя сообразить в день выставки. Распечатать, отметить по мере закупа, привезти на стенд утром 28.05.</p>
+
+<div class="urgent">
+  <strong>Не позднее 27.05 вечером:</strong> все позиции из категорий «Электроника» и «Расходники» должны быть в одной коробке. Бумажные формы и чек-листы — распечатаны и сложены отдельно.
+</div>
+
+<div class="two-col">
+
+  <!-- Колонка 1 -->
+  <div>
+
+    <div class="category">
+      <h2>Электроника и кабели</h2>
+      <ul class="items">
+        <li><span class="box"></span><span class="item-text"><span class="what">Админ-ноут</span> <span class="note">(основной, заряжен 100%)</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Зарядка ноута</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">HDMI-кабель к плазме</span> <span class="note">(3–5 м)</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Переходник USB-C → HDMI</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Запасной переходник</span> <span class="note">(если первый сдохнет)</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Удлинитель сетевой</span> <span class="note">(5 розеток, мин. 3 м)</span></span><span class="qty">2</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Планшет для Stroop</span> <span class="note">(заряжен 100%)</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Зарядка планшета</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">3 Android-телефона</span> <span class="note">(спарены 1:1 с браслетами)</span></span><span class="qty">3</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Зарядки для телефонов</span></span><span class="qty">3</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Power bank</span> <span class="note">(20 000 mAh)</span></span><span class="qty">2</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Карманный 4G-роутер</span> <span class="note">(на случай отказа Wi-Fi)</span></span><span class="qty">1</span></li>
+      </ul>
+    </div>
+
+    <div class="category">
+      <h2>Браслеты и гигиена</h2>
+      <ul class="items">
+        <li><span class="box"></span><span class="item-text"><span class="what">Браслеты Neiry</span> <span class="note">(3 рабочих + 1 запасной)</span></span><span class="qty">4</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Антисептик / спирт 70%</span> <span class="note">(спрей)</span></span><span class="qty">1 фл</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Влажные антисептические салфетки</span></span><span class="qty">2 пач</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Микрофибра</span> <span class="note">(протирать браслеты)</span></span><span class="qty">3</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Бумажные салфетки сухие</span></span><span class="qty">1 пач</span></li>
+      </ul>
+    </div>
+
+    <div class="category">
+      <h2>Беговая дорожка</h2>
+      <ul class="items">
+        <li><span class="box"></span><span class="item-text"><span class="what">Дорожка</span> <span class="note">(тип / откуда — TBD)</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Удлинитель к дорожке</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Резиновый коврик под дорожку</span></span><span class="qty">1</span></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Колонка 2 -->
+  <div>
+
+    <div class="category">
+      <h2>Бумажные материалы</h2>
+      <ul class="items">
+        <li><span class="box"></span><span class="item-text"><span class="what">Лид-формы напечатанные</span> <span class="note">(A4, по 2 на лист, разрезать)</span></span><span class="qty">100</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Этот чек-лист напечатанный</span></span><span class="qty">2</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Скрипты Алексею напечатанные</span> <span class="note">(из exhibition-flow)</span></span><span class="qty">2</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Питч-нарратив для запасного ведущего</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Папка / коробка для заполненных форм</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Ручки</span> <span class="note">(чёрные, шариковые)</span></span><span class="qty">10</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Маркеры permanent</span></span><span class="qty">2</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Стикеры / скотч малярный</span></span><span class="qty">1</span></li>
+      </ul>
+    </div>
+
+    <div class="category">
+      <h2>Брендинг и навигация</h2>
+      <ul class="items">
+        <li><span class="box"></span><span class="item-text"><span class="what">Логотип Neiry на стенд</span> <span class="note">(если нет от организаторов)</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">QR с TG-ботом на отдельной табличке</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Бейджи команды</span> <span class="note">(Костя, Алексей, сменщик)</span></span><span class="qty">3</span></li>
+      </ul>
+    </div>
+
+    <div class="category">
+      <h2>Логистика и личное</h2>
+      <ul class="items">
+        <li><span class="box"></span><span class="item-text"><span class="what">Вода питьевая</span> <span class="note">(0.5 л)</span></span><span class="qty">6</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Перекусы</span> <span class="note">(батончики, орехи)</span></span><span class="qty">12</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Аптечка минимум</span> <span class="note">(пластырь, ибупрофен)</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Сумка / тележка для перевозки</span></span><span class="qty">1</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Visitor pass от организаторов</span> <span class="note">(уточнить заранее)</span></span><span class="qty">3</span></li>
+      </ul>
+    </div>
+
+    <div class="category">
+      <h2>Цифровое к утру 28.05</h2>
+      <ul class="items">
+        <li><span class="box"></span><span class="item-text"><span class="what">Браслеты на руках с ночи 26→27.05</span> <span class="note">(анкеры: Костя, Алексей, перформер)</span></span><span class="qty">3</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Sync анкеров 27.05 утром</span> <span class="note">(POST /admin/seed-rr)</span></span><span class="qty">—</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">Smoke-test всего flow на стыковке 27.05</span></span><span class="qty">—</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">demo.neiry.ru/personas работает</span></span><span class="qty">—</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">demo.neiry.ru/corporate работает</span></span><span class="qty">—</span></li>
+        <li><span class="box"></span><span class="item-text"><span class="what">TG-бот @NeiryPulseBot отвечает на PIN</span></span><span class="qty">—</span></li>
+      </ul>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer">
+  Neiry Pulse · Startup Village 28–29.05.2026 · подготовил PL (Костя) · 25.05.2026
+</div>
+
+</body>
+</html>
