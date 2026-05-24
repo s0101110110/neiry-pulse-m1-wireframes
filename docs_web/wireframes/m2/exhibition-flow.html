@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neiry · Flow выставки Startup Village 28–29.05.2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --surface-2: #f5f5f4;
+    --border: #e7e5e4;
+    --text: #1c1917;
+    --text-mute: #57534e;
+    --text-soft: #78716c;
+    --accent: #831843;
+    --accent-soft: #fce7f3;
+    --accent-line: #be185d;
+    --ok: #15803d;
+    --ok-soft: #dcfce7;
+    --warn: #b45309;
+    --warn-soft: #fef3c7;
+    --danger: #b91c1c;
+    --danger-soft: #fee2e2;
+    --info: #1d4ed8;
+    --info-soft: #dbeafe;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+
+  /* ============ Hero ============ */
+  .hero {
+    background: linear-gradient(135deg, #1c1917 0%, #44403c 100%);
+    color: #fafaf9;
+    padding: 56px 0 48px;
+    border-bottom: 4px solid var(--accent);
+  }
+  .hero .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #fbbf24; margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-size: 44px; line-height: 1.08; font-weight: 800; letter-spacing: -0.02em;
+    margin: 0 0 16px; max-width: 880px;
+  }
+  .hero h1 span.accent { color: #fbcfe8; }
+  .hero .subtitle {
+    font-size: 17px; color: #d6d3d1; max-width: 720px; margin-bottom: 28px;
+  }
+  .hero .meta-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;
+    max-width: 920px;
+  }
+  .hero .meta-cell {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    padding: 14px 16px; border-radius: 8px;
+  }
+  .hero .meta-cell .label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em;
+    color: #a8a29e; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .hero .meta-cell .value { font-size: 16px; font-weight: 600; color: #fafaf9; }
+
+  /* ============ KPI Strip ============ */
+  .kpi-strip { background: var(--surface); border-bottom: 1px solid var(--border); padding: 28px 0; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+  .kpi-cell {
+    text-align: center; padding: 8px 12px;
+    border-right: 1px solid var(--border);
+  }
+  .kpi-cell:last-child { border-right: none; }
+  .kpi-cell .num {
+    font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600;
+    color: var(--accent); line-height: 1; margin-bottom: 6px;
+  }
+  .kpi-cell .lbl { font-size: 12px; color: var(--text-mute); }
+
+  /* ============ Sections ============ */
+  section.block { padding: 56px 0; border-bottom: 1px solid var(--border); }
+  section.block:last-child { border-bottom: none; }
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px;
+  }
+  .section-title {
+    font-size: 30px; font-weight: 700; letter-spacing: -0.02em;
+    margin: 0 0 12px; color: var(--text);
+  }
+  .section-lead { font-size: 16px; color: var(--text-mute); max-width: 760px; margin: 0 0 28px; }
+  h3 { font-size: 19px; font-weight: 700; margin: 24px 0 10px; letter-spacing: -0.01em; }
+  h4 { font-size: 15px; font-weight: 600; margin: 16px 0 8px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.05em; }
+  p { margin: 0 0 12px; }
+
+  /* ============ Stand Map ============ */
+  .stand-map {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; margin-top: 16px;
+  }
+  .stand-map svg { width: 100%; height: auto; display: block; }
+  .stand-legend {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px; margin-top: 20px;
+  }
+  .stand-legend .item {
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 13px;
+  }
+  .stand-legend .dot {
+    width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; margin-top: 4px;
+  }
+
+  /* ============ Options grid ============ */
+  .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 20px; }
+  .opt {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px; position: relative;
+  }
+  .opt .tag {
+    position: absolute; top: 14px; right: 14px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+    color: var(--text-soft); text-transform: uppercase;
+  }
+  .opt h3 { margin-top: 0; }
+  .opt .duration {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--accent); margin-bottom: 12px;
+  }
+  .opt ul { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--text-mute); }
+  .opt ul li { margin: 4px 0; }
+  .opt.a { border-top: 3px solid var(--ok); }
+  .opt.b { border-top: 3px solid var(--accent); }
+  .opt.c { border-top: 3px solid var(--info); }
+  .opt.d { border-top: 3px solid var(--text-soft); }
+
+  /* ============ Flowchart ============ */
+  .flowchart {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; margin-top: 20px; overflow-x: auto;
+  }
+  .flowchart svg { display: block; margin: 0 auto; min-width: 880px; }
+
+  /* ============ Phrase blocks ============ */
+  .phrase-block {
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px; padding: 18px 22px; margin: 12px 0;
+  }
+  .phrase-block .meta {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .phrase-block blockquote {
+    margin: 0; font-size: 15.5px; color: var(--text);
+    font-style: italic; line-height: 1.5;
+  }
+  .phrase-block blockquote::before { content: '«'; color: var(--accent); }
+  .phrase-block blockquote::after { content: '»'; color: var(--accent); }
+
+  .phrase-block.alt { border-left-color: var(--info); }
+
+  /* ============ Tables ============ */
+  table {
+    width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: var(--surface-2); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-mute); }
+  tr:last-child td { border-bottom: none; }
+  code, .mono {
+    font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+    background: var(--surface-2); padding: 1px 6px; border-radius: 3px;
+  }
+
+  /* ============ Owner sections (Никита/Алексей/Кирилл) ============ */
+  .role-section {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px 32px; margin: 24px 0;
+  }
+  .role-section .role-header {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 18px;
+    padding-bottom: 14px; border-bottom: 1px solid var(--border);
+  }
+  .role-section .role-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 4px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .role-section.nikita .role-badge { background: var(--accent-soft); color: var(--accent); }
+  .role-section.alexey .role-badge { background: var(--info-soft); color: var(--info); }
+  .role-section.kirill .role-badge { background: var(--warn-soft); color: var(--warn); }
+  .role-section h2 { font-size: 24px; margin: 0; letter-spacing: -0.01em; }
+  .role-section .role-lead { color: var(--text-mute); font-size: 14px; margin: -2px 0 0; }
+
+  /* ============ Lead-gen form ============ */
+  .lead-form {
+    background: var(--surface); border: 2px dashed var(--accent);
+    border-radius: 10px; padding: 24px; max-width: 540px; margin: 16px 0;
+    font-family: 'Manrope', sans-serif;
+  }
+  .lead-form h4 { color: var(--accent); margin: 0 0 14px; text-transform: none; letter-spacing: -0.01em; font-size: 17px; }
+  .lead-form .field { margin: 14px 0; }
+  .lead-form .field label {
+    display: block; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-soft); margin-bottom: 4px;
+  }
+  .lead-form .field .line {
+    border-bottom: 1px solid var(--text-soft); height: 24px; width: 100%;
+  }
+  .lead-form .checks { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; }
+  .lead-form .checks label { display: flex; gap: 6px; align-items: center; }
+  .lead-form .checks .box { width: 14px; height: 14px; border: 1px solid var(--text-mute); display: inline-block; }
+
+  /* ============ Callouts ============ */
+  .callout {
+    padding: 14px 18px; border-radius: 8px; margin: 14px 0;
+    border-left: 4px solid; font-size: 14px;
+  }
+  .callout.ok { background: var(--ok-soft); border-left-color: var(--ok); color: #052e16; }
+  .callout.warn { background: var(--warn-soft); border-left-color: var(--warn); color: #451a03; }
+  .callout.danger { background: var(--danger-soft); border-left-color: var(--danger); color: #450a0a; }
+  .callout.info { background: var(--info-soft); border-left-color: var(--info); color: #172554; }
+  .callout strong { font-weight: 700; }
+
+  /* ============ Step list ============ */
+  ol.steps {
+    counter-reset: step; list-style: none; padding: 0; margin: 12px 0;
+  }
+  ol.steps > li {
+    counter-increment: step; position: relative; padding-left: 44px;
+    margin-bottom: 12px;
+  }
+  ol.steps > li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: -2px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ============ Endpoint pill ============ */
+  .endpoint {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+    background: var(--surface-2); border: 1px solid var(--border);
+  }
+  .endpoint.post { color: var(--ok); border-color: #bbf7d0; background: var(--ok-soft); }
+  .endpoint.get { color: var(--info); border-color: #bfdbfe; background: var(--info-soft); }
+
+  /* ============ TOC ============ */
+  .toc {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 22px; margin: 24px 0;
+  }
+  .toc-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin-bottom: 10px; }
+  .toc ol { columns: 2; column-gap: 32px; padding-left: 22px; margin: 0; font-size: 14px; }
+  .toc a { color: var(--text); text-decoration: none; }
+  .toc a:hover { color: var(--accent); text-decoration: underline; }
+
+  /* ============ Footer ============ */
+  footer {
+    background: var(--surface-2); padding: 28px 0; font-size: 13px; color: var(--text-soft);
+    border-top: 1px solid var(--border);
+  }
+  footer .row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+
+  /* ============ Responsive ============ */
+  @media (max-width: 700px) {
+    .hero h1 { font-size: 30px; }
+    .section-title { font-size: 24px; }
+    .toc ol { columns: 1; }
+    .role-section { padding: 22px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================= HERO ========================= -->
+<div class="hero">
+  <div class="container">
+    <div class="eyebrow">Neiry · M2 · Внутренний документ</div>
+    <h1>Flow выставки <span class="accent">Startup Village</span><br>28–29 мая 2026</h1>
+    <p class="subtitle">
+      Питч-нарратив, операционка стенда, технический сценарий и блок-схема ветвления гостя.
+      Один источник правды для команды на 2 дня выставки.
+    </p>
+    <div class="meta-grid">
+      <div class="meta-cell"><div class="label">Когда</div><div class="value">28–29.05 · 10:00–19:00</div></div>
+      <div class="meta-cell"><div class="label">Где</div><div class="value">Сколково · Startup Village</div></div>
+      <div class="meta-cell"><div class="label">На стенде</div><div class="value">Костя (PM) · Алексей</div></div>
+      <div class="meta-cell"><div class="label">Удалённо</div><div class="value">Кирилл (backend)</div></div>
+      <div class="meta-cell"><div class="label">Анкеры</div><div class="value">Костя · Алексей · Перформер</div></div>
+      <div class="meta-cell"><div class="label">Версия</div><div class="value">v0.1 · 2026-05-25</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= KPI ========================= -->
+<div class="kpi-strip">
+  <div class="container kpi-grid">
+    <div class="kpi-cell"><div class="num">2</div><div class="lbl">дня выставки</div></div>
+    <div class="kpi-cell"><div class="num">9 ч</div><div class="lbl">смена 10–19</div></div>
+    <div class="kpi-cell"><div class="num">5–7</div><div class="lbl">гостей в час</div></div>
+    <div class="kpi-cell"><div class="num">50–63</div><div class="lbl">гостя в день</div></div>
+    <div class="kpi-cell"><div class="num">5–10 мин</div><div class="lbl">сессия с гостем</div></div>
+    <div class="kpi-cell"><div class="num">3</div><div class="lbl">браслета · 1:1 пары</div></div>
+  </div>
+</div>
+
+<!-- ========================= TOC ========================= -->
+<section class="block">
+  <div class="container">
+    <div class="section-eyebrow">Как пользоваться документом</div>
+    <h2 class="section-title">Содержание</h2>
+    <p class="section-lead">
+      Документ собран по трём ролям. Каждый читает свою секцию, общие части — карту стенда,
+      4 опции и блок-схему. Никите — что говорить. Алексею — что делать руками. Кириллу — что и когда вызывать.
+    </p>
+    <div class="toc">
+      <div class="toc-title">Разделы</div>
+      <ol>
+        <li><a href="#map">Карта стенда</a></li>
+        <li><a href="#options">4 опции гостя</a></li>
+        <li><a href="#flowchart">Блок-схема сценария</a></li>
+        <li><a href="#idle">Idle state · между гостями</a></li>
+        <li><a href="#nikita">Секция Никите · питч-нарратив</a></li>
+        <li><a href="#alexey">Секция Алексею · операционка</a></li>
+        <li><a href="#kirill">Секция Кириллу · техсцепление</a></li>
+        <li><a href="#contingency">Contingency · что если</a></li>
+        <li><a href="#leadgen">Лидген · форма и QR</a></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= STAND MAP ========================= -->
+<section class="block" id="map">
+  <div class="container">
+    <div class="section-eyebrow">01 · Где что стоит</div>
+    <h2 class="section-title">Карта стенда</h2>
+    <p class="section-lead">
+      Минимальный набор: плазма для Wow-эффекта, два стола для онбординга и Stroop, беговая дорожка как раздражитель.
+      Никаких лишних экранов: всё, что видит гость, — на одной плазме.
+    </p>
+    <div class="stand-map">
+      <svg viewBox="0 0 800 380" xmlns="http://www.w3.org/2000/svg">
+        <!-- Фон стенда -->
+        <rect x="20" y="20" width="760" height="340" rx="8" fill="#fafaf9" stroke="#d6d3d1" stroke-dasharray="4 4"/>
+
+        <!-- Плазма 42" -->
+        <rect x="280" y="40" width="240" height="60" rx="4" fill="#1c1917" stroke="#831843" stroke-width="2"/>
+        <text x="400" y="68" text-anchor="middle" fill="#fafaf9" font-family="Manrope" font-size="13" font-weight="600">Плазма 42"</text>
+        <text x="400" y="85" text-anchor="middle" fill="#a8a29e" font-family="JetBrains Mono" font-size="10">3 карточки · live BPM + NCI</text>
+
+        <!-- Беговая дорожка -->
+        <rect x="60" y="160" width="160" height="100" rx="4" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+        <text x="140" y="195" text-anchor="middle" fill="#451a03" font-family="Manrope" font-size="13" font-weight="600">Беговая дорожка</text>
+        <text x="140" y="213" text-anchor="middle" fill="#78716c" font-family="Manrope" font-size="11">перформер · фон активности</text>
+        <text x="140" y="230" text-anchor="middle" fill="#78716c" font-family="Manrope" font-size="11">+ опция для гостя</text>
+
+        <!-- Стол онбординга (Алексей) -->
+        <rect x="260" y="160" width="180" height="100" rx="4" fill="#fce7f3" stroke="#831843" stroke-width="1.5"/>
+        <text x="350" y="195" text-anchor="middle" fill="#831843" font-family="Manrope" font-size="13" font-weight="600">Стол · Алексей</text>
+        <text x="350" y="213" text-anchor="middle" fill="#57534e" font-family="Manrope" font-size="11">3 браслета · дезинф.</text>
+        <text x="350" y="230" text-anchor="middle" fill="#57534e" font-family="Manrope" font-size="11">бумажные лид-формы</text>
+
+        <!-- Стол PM (admin-ноут + планшет) -->
+        <rect x="480" y="160" width="180" height="100" rx="4" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="570" y="195" text-anchor="middle" fill="#1d4ed8" font-family="Manrope" font-size="13" font-weight="600">Стол · Костя (PM)</text>
+        <text x="570" y="213" text-anchor="middle" fill="#57534e" font-family="Manrope" font-size="11">admin-ноут · 2 вкладки</text>
+        <text x="570" y="230" text-anchor="middle" fill="#57534e" font-family="Manrope" font-size="11">планшет · Stroop test</text>
+
+        <!-- Зона гостя -->
+        <rect x="280" y="300" width="240" height="40" rx="4" fill="none" stroke="#78716c" stroke-dasharray="3 3"/>
+        <text x="400" y="325" text-anchor="middle" fill="#57534e" font-family="Manrope" font-size="12">Зона гостя · вид на плазму</text>
+
+        <!-- Стрелки -->
+        <line x1="350" y1="160" x2="350" y2="105" stroke="#831843" stroke-width="1" stroke-dasharray="2 2"/>
+        <line x1="570" y1="160" x2="570" y2="105" stroke="#1d4ed8" stroke-width="1" stroke-dasharray="2 2"/>
+
+        <!-- Подпись HDMI -->
+        <text x="635" y="135" fill="#78716c" font-family="JetBrains Mono" font-size="9">HDMI / AirPlay</text>
+      </svg>
+      <div class="stand-legend">
+        <div class="item"><span class="dot" style="background:#1c1917"></span><span><strong>Плазма 42"</strong> — Wow-экран, что видят все. 3 карточки (2 анкера + гость) одновременно.</span></div>
+        <div class="item"><span class="dot" style="background:#831843"></span><span><strong>Стол Алексея</strong> — онбординг, надевание браслета, дезинфекция, бумажные формы.</span></div>
+        <div class="item"><span class="dot" style="background:#1d4ed8"></span><span><strong>Стол PM</strong> — админ-ноут с 2 вкладками (personas / corporate), планшет со Stroop.</span></div>
+        <div class="item"><span class="dot" style="background:#b45309"></span><span><strong>Беговая дорожка</strong> — перформер на ней даёт визуальный фон активности. Опция для гостя — ходьба 1 мин.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= 4 OPTIONS ========================= -->
+<section class="block" id="options">
+  <div class="container">
+    <div class="section-eyebrow">02 · Что мы предлагаем гостю</div>
+    <h2 class="section-title">4 опции одновременно</h2>
+    <p class="section-lead">
+      Алексей на глаз или коротким вопросом понимает сегмент и предлагает одну из четырёх опций.
+      Это меню, не воронка — никого ни к чему не принуждаем.
+    </p>
+    <div class="options">
+      <div class="opt a">
+        <span class="tag">A · базовая</span>
+        <h3>Тест + Баевский</h3>
+        <div class="duration">5–7 мин · стандарт</div>
+        <p style="font-size:13.5px;color:var(--text-mute)">Полный круг: браслет → калибровка → drill-down → Тест Баевского (3+1+1 мин) → TG-отчёт.</p>
+        <ul>
+          <li>Калибровка baseline 15 сек</li>
+          <li>Гость видит свой NCI на плазме</li>
+          <li>Stroop на планшете (раздражитель)</li>
+          <li>Ходьба на дорожке 1 мин</li>
+          <li>TG-отчёт с ИН по фазам</li>
+        </ul>
+      </div>
+      <div class="opt b">
+        <span class="tag">B · B2B HR</span>
+        <h3>Тест + Баевский + Дашборд</h3>
+        <div class="duration">8–10 мин · корпораты</div>
+        <p style="font-size:13.5px;color:var(--text-mute)">Опция A + переключение на 2-ю вкладку браузера, показ дашборда Sport/Office/Drivers.</p>
+        <ul>
+          <li>Всё, что в A</li>
+          <li>В середине: Cmd+Tab → /corporate</li>
+          <li>Никита-стори про HR-аналитику</li>
+          <li>Возврат на /personas для финала</li>
+        </ul>
+      </div>
+      <div class="opt c">
+        <span class="tag">C · продукт-фокус</span>
+        <h3>Только дашборд</h3>
+        <div class="duration">3–5 мин · быстрый</div>
+        <p style="font-size:13.5px;color:var(--text-mute)">Без браслета. Показ корпоративного дашборда и табов Sport/Office/Drivers с готовыми данными.</p>
+        <ul>
+          <li>Открываем /corporate</li>
+          <li>Проходимся по 3 табам</li>
+          <li>Объясняем сегмент-специфику</li>
+          <li>Лидген сразу после</li>
+        </ul>
+      </div>
+      <div class="opt d">
+        <span class="tag">D · пассив</span>
+        <h3>Просто посмотреть</h3>
+        <div class="duration">1–3 мин · мимо</div>
+        <p style="font-size:13.5px;color:var(--text-mute)">Гость не хочет надевать ничего и не хочет питча. Смотрит на плазму, где идут анкеры.</p>
+        <ul>
+          <li>Никакого участия от гостя</li>
+          <li>Видит live-метрики анкеров</li>
+          <li>Видит перформера на дорожке</li>
+          <li>Опционально — оставить контакт</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= FLOWCHART ========================= -->
+<section class="block" id="flowchart">
+  <div class="container">
+    <div class="section-eyebrow">03 · Блок-схема</div>
+    <h2 class="section-title">Ветвление сценария</h2>
+    <p class="section-lead">
+      Любой гость попадает в одну из четырёх ветвей через короткий чек-ин у Алексея.
+      Точка слияния — лидген (TG QR + бумажная форма) и выход.
+    </p>
+    <div class="flowchart">
+      <svg viewBox="0 0 880 600" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#57534e"/>
+          </marker>
+          <style>
+            .node { font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 600; fill: #1c1917; }
+            .sub { font-family: 'Manrope', sans-serif; font-size: 11px; fill: #57534e; }
+            .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: #831843; }
+            .line { stroke: #57534e; stroke-width: 1.2; fill: none; }
+          </style>
+        </defs>
+
+        <!-- START -->
+        <ellipse cx="440" cy="40" rx="100" ry="22" fill="#1c1917"/>
+        <text x="440" y="46" text-anchor="middle" fill="#fafaf9" font-family="Manrope" font-size="13" font-weight="600">Гость подошёл</text>
+
+        <!-- DECISION 1: сегмент -->
+        <polygon points="440,90 580,150 440,210 300,150" fill="#fce7f3" stroke="#831843" stroke-width="1.5"/>
+        <text x="440" y="143" text-anchor="middle" class="node">Алексей</text>
+        <text x="440" y="160" text-anchor="middle" class="node">определяет сегмент</text>
+        <text x="440" y="178" text-anchor="middle" class="sub">«Откуда вы? Что вам интересно?»</text>
+
+        <!-- 4 ветви -->
+        <!-- A. Случайный → Тест+Баевский -->
+        <rect x="20" y="250" width="180" height="80" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+        <text x="110" y="275" text-anchor="middle" class="node">A · Случайный</text>
+        <text x="110" y="293" text-anchor="middle" class="sub">Тест + Баевский</text>
+        <text x="110" y="310" text-anchor="middle" class="sub">5–7 мин</text>
+
+        <!-- B. B2B HR → Тест+Баевский+Дашборд -->
+        <rect x="230" y="250" width="180" height="80" rx="6" fill="#fce7f3" stroke="#831843" stroke-width="1.5"/>
+        <text x="320" y="275" text-anchor="middle" class="node">B · B2B HR</text>
+        <text x="320" y="293" text-anchor="middle" class="sub">Тест + Баевский + Дашборд</text>
+        <text x="320" y="310" text-anchor="middle" class="sub">8–10 мин</text>
+
+        <!-- C. Продукт-интерес → Только дашборд -->
+        <rect x="440" y="250" width="180" height="80" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="530" y="275" text-anchor="middle" class="node">C · Продукт-интерес</text>
+        <text x="530" y="293" text-anchor="middle" class="sub">Только дашборд</text>
+        <text x="530" y="310" text-anchor="middle" class="sub">3–5 мин</text>
+
+        <!-- D. Пассив -->
+        <rect x="650" y="250" width="180" height="80" rx="6" fill="#f5f5f4" stroke="#78716c" stroke-width="1.5"/>
+        <text x="740" y="275" text-anchor="middle" class="node">D · Пассив</text>
+        <text x="740" y="293" text-anchor="middle" class="sub">Смотрит на плазму</text>
+        <text x="740" y="310" text-anchor="middle" class="sub">1–3 мин</text>
+
+        <!-- Линии от ромба к ветвям -->
+        <path class="line" d="M 350 175 Q 230 200, 110 250" marker-end="url(#arrow)"/>
+        <path class="line" d="M 400 200 Q 360 220, 320 250" marker-end="url(#arrow)"/>
+        <path class="line" d="M 480 200 Q 510 220, 530 250" marker-end="url(#arrow)"/>
+        <path class="line" d="M 530 175 Q 650 200, 740 250" marker-end="url(#arrow)"/>
+
+        <!-- Подграф для A/B (с браслетом) -->
+        <rect x="100" y="360" width="220" height="60" rx="6" fill="#fff" stroke="#d6d3d1" stroke-width="1.2"/>
+        <text x="210" y="384" text-anchor="middle" class="node">Браслет · калибровка 15с</text>
+        <text x="210" y="402" text-anchor="middle" class="label">POST /admin/seed-rr · /bayevsky/start</text>
+
+        <!-- Подграф для C/D (без браслета) -->
+        <rect x="500" y="360" width="220" height="60" rx="6" fill="#fff" stroke="#d6d3d1" stroke-width="1.2"/>
+        <text x="610" y="384" text-anchor="middle" class="node">Без браслета · показ дашборда</text>
+        <text x="610" y="402" text-anchor="middle" class="label">Cmd+Tab → /corporate</text>
+
+        <!-- Линии к подграфам -->
+        <path class="line" d="M 110 330 L 110 350 L 200 350 L 200 360" marker-end="url(#arrow)"/>
+        <path class="line" d="M 320 330 L 320 350 L 220 350 L 220 360" marker-end="url(#arrow)"/>
+        <path class="line" d="M 530 330 L 530 350 L 600 350 L 600 360" marker-end="url(#arrow)"/>
+        <path class="line" d="M 740 330 L 740 350 L 620 350 L 620 360" marker-end="url(#arrow)"/>
+
+        <!-- Точка слияния: лидген -->
+        <rect x="290" y="460" width="300" height="60" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+        <text x="440" y="484" text-anchor="middle" class="node">Лидген</text>
+        <text x="440" y="502" text-anchor="middle" class="sub">TG QR + бумажная форма (email + телефон)</text>
+
+        <path class="line" d="M 210 420 L 210 440 L 380 440 L 380 460" marker-end="url(#arrow)"/>
+        <path class="line" d="M 610 420 L 610 440 L 500 440 L 500 460" marker-end="url(#arrow)"/>
+
+        <!-- END -->
+        <ellipse cx="440" cy="560" rx="100" ry="22" fill="#1c1917"/>
+        <text x="440" y="566" text-anchor="middle" fill="#fafaf9" font-family="Manrope" font-size="13" font-weight="600">Гость ушёл</text>
+        <path class="line" d="M 440 520 L 440 538" marker-end="url(#arrow)"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= IDLE STATE ========================= -->
+<section class="block" id="idle">
+  <div class="container">
+    <div class="section-eyebrow">04 · Когда стенд пуст</div>
+    <h2 class="section-title">Idle state · между гостями</h2>
+    <p class="section-lead">
+      Стенд никогда не «пустой». Когда гостя нет в сессии — на плазме живые BPM/NCI трёх анкеров.
+      Прохожий видит работающую систему ещё до того, как мы что-то скажем.
+    </p>
+    <table>
+      <tr><th>Карточка</th><th>Кто</th><th>Что видно</th><th>Назначение</th></tr>
+      <tr><td>#1</td><td>Костя (PM)</td><td>Live BPM, NCI, sparkline 60с</td><td>Спокойный baseline · «зелёная зона»</td></tr>
+      <tr><td>#2</td><td>Алексей</td><td>Live BPM, NCI, sparkline 60с</td><td>Активный (говорит с гостями) · «жёлтая зона»</td></tr>
+      <tr><td>#3</td><td>Перформер на дорожке</td><td>Live BPM, NCI, sparkline 60с</td><td>Физ. нагрузка · «красная зона»</td></tr>
+    </table>
+    <div class="callout info">
+      <strong>Эффект контраста.</strong> Три анкера на одной плазме одновременно показывают, как метрика разная для разных состояний. Это и есть наш главный Wow без участия гостя.
+    </div>
+  </div>
+</section>
+
+<!-- ========================= NIKITA SECTION ========================= -->
+<section class="block" id="nikita">
+  <div class="container">
+    <div class="role-section nikita">
+      <div class="role-header">
+        <span class="role-badge">Никите</span>
+        <div>
+          <h2>Питч-нарратив</h2>
+          <p class="role-lead">Что говорить, если гость заинтересовался · 3–5 минут · v0.1 на согласование</p>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <strong>Дисклеймер.</strong> Это первый драфт от PM. На стенде Алексей и второй ведущий, как и для писем гостям после выставки. Никита по итогам стыковки 27.05 правит формулировки.
+      </div>
+
+      <h3>1. Hook · 15 секунд</h3>
+      <div class="phrase-block">
+        <div class="meta">Дебют-фраза · ненавязчиво</div>
+        <blockquote>Посмотрите на экран — три цифры, три человека. Один сидит, второй говорит, третий бежит. Видите разницу? Это не камера и не интервью — это пульс и индекс концентрации в реальном времени.</blockquote>
+      </div>
+
+      <h3>2. Problem · 30 секунд</h3>
+      <p>Якоря:</p>
+      <ul>
+        <li>Компании теряют до 40% продуктивности на скрытом стрессе и выгорании</li>
+        <li>HR-у это не видно на KPI до увольнения или больничного</li>
+        <li>Whoop и Oura меряют для B2C — для корпоратов решений с понятными метриками нет</li>
+      </ul>
+
+      <h3>3. Solution · 45 секунд</h3>
+      <p>Якоря:</p>
+      <ul>
+        <li><strong>Neiry Pulse</strong> — экосистема носимых устройств + B2B-платформа</li>
+        <li>На одной платформе — <strong>3 сегмента в табах</strong>:
+          <ul>
+            <li>🏃 <strong>Спорт</strong> — Recovery и Performance для беговых клубов и лиг</li>
+            <li>🏢 <strong>Офис-команда</strong> — Stress / Burnout для HR</li>
+            <li>🚛 <strong>Драйверы</strong> — Fatigue / Drowsiness для транспортных компаний</li>
+          </ul>
+        </li>
+        <li>Под капотом — собственные расчёты, не доверяем готовым SDK</li>
+      </ul>
+
+      <h3>4. Tech · 45 секунд</h3>
+      <p>Якоря:</p>
+      <ul>
+        <li><strong>NCI</strong> — live на плазме, формула <code>100 − (BPM − Baseline) × 2</code></li>
+        <li><strong>Баевский ИН</strong> — научный, <code>AMo / (2·Mo·MxDMn)</code> с двухступенчатым фильтром R-R</li>
+        <li>RMSSD / SDNN / LF·HF по Task Force HRV Standards 1996</li>
+        <li>Экосистема: браслет + Headband (NIRS) + tVNS (стимуляция блуждающего нерва)</li>
+      </ul>
+
+      <h3>5. Proof · 45 секунд</h3>
+      <p>Якоря:</p>
+      <ul>
+        <li>Пилот <strong>Neiry Unite</strong> — 20 браслетов, 2 компании, 7 дней непрерывного ношения</li>
+        <li>Партнёрство с <strong>беговой лигой</strong> — спортсмены носят браслеты, мы строим командную аналитику</li>
+        <li>Линейка устройств: Base (есть), Health и Sport — старт июнь 2026</li>
+      </ul>
+
+      <h3>6. CTA · 15 секунд</h3>
+      <div class="phrase-block">
+        <div class="meta">Закрытие · без давления</div>
+        <blockquote>Если вы — корпорат с командой больше 100 человек, беговой клуб, транспортная компания или сеть гериатрических клиник — оставьте контакт. Пришлём демо-доступ к платформе.</blockquote>
+      </div>
+
+      <h3>7. FAQ · ответы на возражения</h3>
+      <table>
+        <tr><th>Вопрос</th><th>Ответ</th></tr>
+        <tr>
+          <td><strong>iOS-приложение есть?</strong></td>
+          <td>iOS-сборка в работе, релиз M3 (июнь). Для пилотов — Android. Если хотите ранний доступ — оставьте контакт.</td>
+        </tr>
+        <tr>
+          <td><strong>Сертификация (CE / FDA / Росздрав)?</strong></td>
+          <td>Base-устройство — wellness-категория. Health-линейка с ECG — сертификация в работе, Q3 2026.</td>
+        </tr>
+        <tr>
+          <td><strong>Чем отличаетесь от Whoop / Oura / Apple?</strong></td>
+          <td>Whoop и Oura — B2C-only без корпоративного дашборда. Apple — general-purpose. Мы — единственные с B2B-фокусом и сегмент-специфичными метриками.</td>
+        </tr>
+        <tr>
+          <td><strong>А если браслет соврёт на выгорании?</strong></td>
+          <td>Три уровня защиты: wellness-метрики (не диагноз), агрегация 7–14 дней, алерт HR-у в формате «обсудить», не «уволить».</td>
+        </tr>
+        <tr>
+          <td><strong>Сколько стоит?</strong></td>
+          <td>Подписка от 2 000 ₽/сотрудник/месяц, браслет в комплекте. Точная смета — под скоуп пилота. На стенде цену не называем — переговорный момент.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= ALEXEY SECTION ========================= -->
+<section class="block" id="alexey">
+  <div class="container">
+    <div class="role-section alexey">
+      <div class="role-header">
+        <span class="role-badge">Алексею</span>
+        <div>
+          <h2>Операционка стенда</h2>
+          <p class="role-lead">Что делать руками, что говорить, когда что переключать · день за днём</p>
+        </div>
+      </div>
+
+      <h3>Утренний чек-лист · 09:30–10:00</h3>
+      <ol class="steps">
+        <li>Зарядить 3 браслета до 100% (анкеры с ночи носят — снять для утренней зарядки на 10 мин).</li>
+        <li>Зарядить 3 Android-телефона. Не переподключать браслет к другому телефону — пары жёсткие 1:1.</li>
+        <li>Включить Bluetooth, проверить, что все 3 браслета видны в HBand-приложениях.</li>
+        <li>Открыть на админ-ноуте две вкладки: <code>demo.neiry.ru/personas</code> и <code>demo.neiry.ru/corporate</code>.</li>
+        <li>Подключить ноут к плазме через HDMI или AirPlay. Вкладка 1 на весь экран.</li>
+        <li>Положить на стол: салфетки 70% спирт, бумажные лид-формы, ручки, планшет со Stroop-приложением.</li>
+        <li>Прогнать 1 пробную сессию на самом себе — проверить, что калибровка идёт и NCI считается.</li>
+      </ol>
+
+      <h3>Дебют-фразы · открывашки</h3>
+      <p class="section-lead">Ненавязчиво, без заискивания. Гость должен почувствовать, что мы предлагаем, а не выпрашиваем.</p>
+
+      <div class="phrase-block">
+        <div class="meta">Если гость остановился у плазмы</div>
+        <blockquote>Это пульс трёх человек прямо сейчас. У одного спокойно, у второго активно, у третьего нагрузка. Хотите увидеть свой?</blockquote>
+      </div>
+
+      <div class="phrase-block">
+        <div class="meta">Если гость прошёл мимо, но посмотрел</div>
+        <blockquote>За 5 минут покажем, как ваш организм реагирует на стресс. Без иголок и без обещаний — просто браслет.</blockquote>
+      </div>
+
+      <div class="phrase-block alt">
+        <div class="meta">Если гость в костюме / с бейджем компании</div>
+        <blockquote>Если у вас HR-команда — у нас есть отдельный дашборд для офисов. Покажу за минуту?</blockquote>
+      </div>
+
+      <h3>Определение сегмента · на глаз или одним вопросом</h3>
+      <table>
+        <tr><th>Сигнал</th><th>Сегмент</th><th>Опция</th></tr>
+        <tr><td>Бейдж корпорации, HR-роль, костюм</td><td>B2B HR</td><td>B · Тест + Баевский + Дашборд</td></tr>
+        <tr><td>Бейдж транспортной компании / спортклуба</td><td>B2B нишевый</td><td>B (с акцентом на нужный таб)</td></tr>
+        <tr><td>Без бейджа, заинтересованный взгляд</td><td>Случайный</td><td>A · Тест + Баевский</td></tr>
+        <tr><td>«Я только посмотреть»</td><td>Пассив</td><td>D · только смотрит на плазму</td></tr>
+        <tr><td>«Расскажите про продукт, у нас есть похожее»</td><td>Продукт-интерес</td><td>C · Только дашборд</td></tr>
+      </table>
+
+      <p>Контрольный вопрос, если непонятно:</p>
+      <div class="phrase-block">
+        <div class="meta">Вопрос-уточнение</div>
+        <blockquote>А откуда вы? Что у вас в работе?</blockquote>
+      </div>
+
+      <h3>Поток онбординга гостя · опция A/B (с браслетом)</h3>
+      <ol class="steps">
+        <li><strong>Приветствие 15 сек.</strong> Открывашка + предложение опции.</li>
+        <li><strong>Надевание браслета 30 сек.</strong> Перед каждым гостем — протереть салфеткой 2–3 раза, дать 30 сек подсохнуть. На руку — чёрной стороной к коже.</li>
+        <li><strong>Калибровка 15 сек.</strong> Гость стоит спокойно. Скрипт: «Сейчас замеряем ваш спокойный пульс, не двигайтесь 15 секунд».</li>
+        <li><strong>Гость смотрит на плазму.</strong> Видит свою карточку, BPM растёт/падает. Скрипт: «Видите цифру? Это вы прямо сейчас».</li>
+        <li><strong>Раздражитель (опционально).</strong> Планшет со Stroop test 60 сек ИЛИ беговая дорожка 1 мин ходьбы. Скрипт: «Сейчас задам нагрузку — посмотрим, как меняется NCI».</li>
+        <li><strong>Drill-down с PM.</strong> Костя кликает по карточке на админ-ноуте → плазма показывает график BPM + кнопку «Тест Баевского». Гость соглашается на расширенный тест? → 3 мин стоит, 1 мин Stroop, 1 мин дорожка.</li>
+        <li><strong>Финал.</strong> Костя нажимает [СТОП] → PENDING_CLAIM, QR с PIN появляется на админ-вкладке. Алексей: «Просканируйте QR — отчёт придёт в Telegram через минуту».</li>
+        <li><strong>Лидген.</strong> Параллельно с QR — предложить бумажную форму. Скрипт: «Если хотите ещё и на почту — оставьте email и телефон».</li>
+        <li><strong>Снять браслет, продезинфицировать, положить обратно на стол.</strong> Костя нажимает [СБРОСИТЬ] → карточка чистая, готова к следующему гостю.</li>
+      </ol>
+
+      <h3>Поток опции C · только дашборд</h3>
+      <ol class="steps">
+        <li>Костя переключает вкладку: Cmd+Tab → <code>/corporate</code>.</li>
+        <li>Алексей: «Вот так это выглядит для HR-команды. Три таба: Спорт, Офис, Драйверы».</li>
+        <li>Проход по табам, 60–90 сек на каждый.</li>
+        <li>Лидген — бумажная форма + TG QR.</li>
+        <li>Костя возвращается на <code>/personas</code> для следующего гостя.</li>
+      </ol>
+
+      <h3>Драматургия · куда смотреть, что говорить</h3>
+      <table>
+        <tr><th>Момент</th><th>Что показываем</th><th>Скрипт</th></tr>
+        <tr>
+          <td>Калибровка</td>
+          <td>Плазма: «Калибровка... 12с»</td>
+          <td>«Спокойствие. Замеряем ваш baseline».</td>
+        </tr>
+        <tr>
+          <td>Live BPM на плазме</td>
+          <td>Большая цифра, sparkline ползёт</td>
+          <td>«Видите цифру? Это вы».</td>
+        </tr>
+        <tr>
+          <td>Контраст с перформером</td>
+          <td>Карточка #3 в красной зоне</td>
+          <td>«А у бегуна — красная зона. Разница в реакции вегетатики».</td>
+        </tr>
+        <tr>
+          <td>Stroop пошёл</td>
+          <td>NCI ползёт в жёлтую зону</td>
+          <td>«Тест Струпа активирует когнитивную нагрузку. Не стресс — концентрация».</td>
+        </tr>
+        <tr>
+          <td>Drill-down</td>
+          <td>График BPM 60 сек, кнопка теста</td>
+          <td>«Хотите более точный анализ? 5 минут».</td>
+        </tr>
+        <tr>
+          <td>TG-отчёт</td>
+          <td>QR с PIN на админ-вкладке</td>
+          <td>«Просканируйте — отчёт в Telegram через минуту».</td>
+        </tr>
+      </table>
+
+      <h3>Передача смены</h3>
+      <p>Сменщик (имя — TBD, подтвердит Алексей до 27.05) приходит, когда Алексею нужен перерыв. Передать:</p>
+      <ul>
+        <li>Какой браслет на каком анкере (не путать!).</li>
+        <li>Статус очереди: кто сейчас идёт, какие лид-формы заполнены.</li>
+        <li>Что не работает (если что-то отвалилось — записать на бумажке).</li>
+      </ul>
+      <p>Анкеры (Костя, Алексей, перформер) браслеты не снимают весь день — это HRV-фон, а не оперативный браслет.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= KIRILL SECTION ========================= -->
+<section class="block" id="kirill">
+  <div class="container">
+    <div class="role-section kirill">
+      <div class="role-header">
+        <span class="role-badge">Кириллу</span>
+        <div>
+          <h2>Техсцепление · когда какой эндпоинт</h2>
+          <p class="role-lead">Удалённо, на связи в Telegram. Какие вызовы случаются в каждом из 4 сценариев</p>
+        </div>
+      </div>
+
+      <h3>Архитектура · напоминание</h3>
+      <p>Плазма = HDMI с админ-ноута. Админ-ноут = 2 вкладки браузера:</p>
+      <ul>
+        <li><code>demo.neiry.ru/personas</code> — основная демка с карточками, drill-down, QR</li>
+        <li><code>demo.neiry.ru/corporate</code> — корпоративный дашборд с 3 табами Sport/Office/Drivers</li>
+      </ul>
+      <p>Никаких REST-эндпоинтов для переключения экранов. Cmd+Tab делает PM руками.</p>
+
+      <h3>Сценарий A · Тест + Баевский · полный цикл</h3>
+      <ol class="steps">
+        <li>Гостевой браслет уже спарен с Android-телефоном (1:1). Телефон уже в HBand-приложении.</li>
+        <li>На <code>/personas</code> Костя нажимает [СТАРТ] на карточке #3 → state-active, калибровка 15с собирает <code>Baseline_BPM</code>.</li>
+        <li>NCI обновляется 1 Гц на плазме: <code>NCI = 100 − (BPM − Baseline) × 2</code>, clamp [0..100].</li>
+        <li>Костя кликает по карточке → drill-down (тот же URL, новый view): график BPM за 60с + кнопка «Тест Баевского».</li>
+        <li>Костя нажимает кнопку → <span class="endpoint post">POST</span> <code>/v1/demo/sessions/{id}/bayevsky/start</code> → возвращает <code>phase_id = baseline</code>. Таймер 3 мин.</li>
+        <li>Через 3 мин → <span class="endpoint post">POST</span> <code>/v1/demo/sessions/{id}/bayevsky/next-phase</code> → <code>phase = stroop</code>. Гость идёт к планшету, делает Stroop 1 мин.</li>
+        <li>Через 1 мин → <span class="endpoint post">POST</span> <code>/v1/demo/sessions/{id}/bayevsky/next-phase</code> → <code>phase = treadmill</code>. Гость идёт на дорожку, 1 мин ходьбы.</li>
+        <li>Через 1 мин → <span class="endpoint get">GET</span> <code>/v1/demo/sessions/{id}/bayevsky/result</code> → ИН по трём фазам.</li>
+        <li>Костя нажимает [СТОП] → state-pending-claim. QR с PIN рендерится в админ-вкладке (на плазме НЕ показывается).</li>
+        <li>Гость сканирует QR → TG-бот тянет результат по PIN → отчёт уходит в Telegram гостю с тремя ИН + рекомендациями.</li>
+        <li>Костя нажимает [СБРОСИТЬ] → state-idle, готов к следующему.</li>
+      </ol>
+
+      <h3>Сценарий B · Тест + Баевский + Дашборд</h3>
+      <p>То же, что A. Дополнительно: между шагом 6 и 7 Костя делает Cmd+Tab на <code>/corporate</code>, показывает дашборд 60–90с,
+        возвращается на <code>/personas</code>. Backend в эти 60–90с продолжает собирать данные на фазе Stroop — это нормально.</p>
+
+      <h3>Сценарий C · Только дашборд</h3>
+      <p>Никаких backend-вызовов. Costя открывает <code>/corporate</code>, ходит по табам. Дашборд статичный — данные mock'ом
+        или из seed-RR анкеров.</p>
+
+      <h3>Сценарий D · Пассив</h3>
+      <p>Никаких backend-вызовов от сценария гостя. Но три анкерских карточки на плазме продолжают тянуть live-данные
+        с трёх Android-телефонов (через тот же канал, что для гостя).</p>
+
+      <h3>Эндпоинты · сводная таблица</h3>
+      <table>
+        <tr><th>Эндпоинт</th><th>Когда вызывается</th><th>Кто триггерит</th></tr>
+        <tr>
+          <td><span class="endpoint post">POST</span> <code>/admin/seed-rr</code></td>
+          <td>Утром 28.05 и 29.05 — sync архивов анкеров за ночь</td>
+          <td>Алексей или Костя из dev-UI</td>
+        </tr>
+        <tr>
+          <td><span class="endpoint post">POST</span> <code>/v1/demo/sessions/{id}/bayevsky/start</code></td>
+          <td>Гость нажал «Тест Баевского» в drill-down</td>
+          <td>UI · клик Кости</td>
+        </tr>
+        <tr>
+          <td><span class="endpoint post">POST</span> <code>/v1/demo/sessions/{id}/bayevsky/next-phase</code></td>
+          <td>Конец каждой фазы (baseline → stroop → treadmill)</td>
+          <td>UI · таймер</td>
+        </tr>
+        <tr>
+          <td><span class="endpoint get">GET</span> <code>/v1/demo/sessions/{id}/bayevsky/result</code></td>
+          <td>Конец фазы treadmill → собираем ИН</td>
+          <td>UI · автоматически</td>
+        </tr>
+      </table>
+
+      <h3>Формулы · напоминание</h3>
+      <table>
+        <tr><th>Метрика</th><th>Где</th><th>Формула</th></tr>
+        <tr>
+          <td>NCI · Fast UI</td>
+          <td>Плазма, live, 1 Гц</td>
+          <td><code>NCI = 100 − (BPM − Baseline) × 2</code>, clamp [0..100]</td>
+        </tr>
+        <tr>
+          <td>Баевский ИН · Slow</td>
+          <td>TG-отчёт после сессии</td>
+          <td><code>ИН = AMo / (2 · Mo · MxDMn)</code> с двухступенчатым фильтром R-R</td>
+        </tr>
+      </table>
+
+      <h3>Фильтр R-R · двухступенчатый</h3>
+      <p><strong>Шаг 1 · поточечный медианный 20%:</strong> для каждого R-R[i] взять 5 соседей,
+        выкинуть, если <code>|R-R[i] − median| &gt; 0.20 × median</code>.</p>
+      <p><strong>Шаг 2 · перцентильный 5/95%:</strong> на выживших оставить только R-R в диапазоне [P5, P95].</p>
+      <p><strong>Шаг 3:</strong> на очищенной выборке считать Mo, AMo, MxDMn и ИН.</p>
+
+      <h3>Что критично к выставке</h3>
+      <ul>
+        <li>Все 4 эндпоинта работают (хотя бы заглушки до 27.05, полная логика — на стыковке).</li>
+        <li>Двухступенчатый фильтр прошёл acceptance на синтетике с выбросом 1400 ms.</li>
+        <li>Session recovery: разрыв BLE до 15 сек — дыра в данных, не обнуление окна.</li>
+        <li>TG-бот стабильно тянет отчёт по PIN.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= CONTINGENCY ========================= -->
+<section class="block" id="contingency">
+  <div class="container">
+    <div class="section-eyebrow">05 · Что если</div>
+    <h2 class="section-title">Contingency · план Б</h2>
+    <p class="section-lead">Главное правило: плазма никогда не должна выглядеть «сломанной». Любая проблема — переход в idle с тремя анкерами.</p>
+
+    <table>
+      <tr><th>Что произошло</th><th>Действие</th><th>Кто</th></tr>
+      <tr>
+        <td>Браслет не коннектится за 30 сек</td>
+        <td>Перезагрузить Bluetooth на телефоне (выключить на 5с, включить). Не помогло — пересканировать в HBand. Не помогло — пропускаем гостя, извиняемся, предлагаем опцию C/D.</td>
+        <td>Алексей</td>
+      </tr>
+      <tr>
+        <td>Гость снял браслет посреди сессии</td>
+        <td>Карточка переходит в PENDING_CLAIM (не падает в 0). Алексей: «Сессия завершена». Костя [СБРОСИТЬ]. TG-отчёт уйдёт с тем, что собрано.</td>
+        <td>Алексей · Костя</td>
+      </tr>
+      <tr>
+        <td>Калибровка не идёт (гость двигается)</td>
+        <td>Скрипт: «Встаньте спокойнее, ещё 15 секунд». Повторить. Если у гостя реально высокий пульс в покое (&gt;100) — это норма, идём дальше.</td>
+        <td>Алексей</td>
+      </tr>
+      <tr>
+        <td>TG-отчёт не пришёл за 5 мин</td>
+        <td>Не критично — Wow уже отработал на плазме. Скрипт: «Отчёт придёт чуть позже, оставьте email — продублирую туда».</td>
+        <td>Алексей</td>
+      </tr>
+      <tr>
+        <td>Очередь из 3–4 гостей</td>
+        <td>Алексей запускает следующего на онбординг параллельно с финалом текущего. Карточек только 3 — четвёртый ждёт, пока освободится.</td>
+        <td>Алексей</td>
+      </tr>
+      <tr>
+        <td>Плазма зависла / отвалилась</td>
+        <td>Перезапустить вкладку <code>/personas</code>. Если не помогло — F5 на обеих вкладках. Карточки анкеров поднимутся сами, гостевые — после нового [СТАРТ].</td>
+        <td>Костя · Кирилл удалённо</td>
+      </tr>
+      <tr>
+        <td>Backend упал</td>
+        <td>Костя пишет Кириллу в TG. Опция: переключаемся на C/D, не показываем live. Анкерские карточки могут пережить короткий разрыв через session_recovery.</td>
+        <td>Костя · Кирилл</td>
+      </tr>
+      <tr>
+        <td>Stroop / дорожка недоступна</td>
+        <td>Опция A без раздражителя — гость стоит 3 мин на baseline, Баевский считается, TG-отчёт уходит. Wow слабее, но сценарий жив.</td>
+        <td>Алексей</td>
+      </tr>
+      <tr>
+        <td>iOS-инвестор настойчиво просит iOS-демо</td>
+        <td>Ответ из FAQ Никиты (раздел 7 секции «Никите»). Запись контакта в бумажную форму, помечаем «iOS pilot interest».</td>
+        <td>Костя</td>
+      </tr>
+    </table>
+
+    <div class="callout danger">
+      <strong>Жёсткое правило.</strong> Никогда не пытаемся «починить на лету» при гостях. Если что-то отвалилось у конкретного гостя — извиняемся, переключаемся на опцию C/D, лидим в лидген. Чинить можно только между гостями.
+    </div>
+  </div>
+</section>
+
+<!-- ========================= LEADGEN ========================= -->
+<section class="block" id="leadgen">
+  <div class="container">
+    <div class="section-eyebrow">06 · Сбор контактов</div>
+    <h2 class="section-title">Лидген · форма и QR</h2>
+    <p class="section-lead">Два канала параллельно: TG QR для тех, кто прошёл сессию, и бумажная форма для всех остальных.</p>
+
+    <h3>Канал 1 · TG QR</h3>
+    <p>После [СТОП] на админ-вкладке появляется QR с PIN. Гость сканирует → попадает в <code>@NeiryPulseBot</code> → получает отчёт с Баевским в личку. PIN живёт 24ч.</p>
+    <div class="callout warn">
+      <strong>QR на плазме НЕ показываем.</strong> Только на админ-ноуте у Кости. Иначе любой прохожий сосканирует и заберёт чужой отчёт.
+    </div>
+
+    <h3>Канал 2 · Бумажная форма</h3>
+    <p>Лежит стопкой на столе Алексея. После сессии (или вместо неё) — заполняется от руки. Костя забирает заполненные формы в коробку, после выставки оцифровывает.</p>
+
+    <div class="lead-form">
+      <h4>Neiry Pulse · Контакт для пилота</h4>
+      <div class="field">
+        <label>Имя</label>
+        <div class="line"></div>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <div class="line"></div>
+      </div>
+      <div class="field">
+        <label>Телефон</label>
+        <div class="line"></div>
+      </div>
+      <div class="field">
+        <label>Компания (если есть)</label>
+        <div class="line"></div>
+      </div>
+      <div class="field">
+        <label>Интерес</label>
+        <div class="checks">
+          <label><span class="box"></span> Корпоративный HR</label>
+          <label><span class="box"></span> Спорт / беговой клуб</label>
+          <label><span class="box"></span> Транспорт / водители</label>
+          <label><span class="box"></span> iOS-пилот</label>
+          <label><span class="box"></span> Просто интересно</label>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text-soft);margin-top:14px;margin-bottom:0">
+        Подписывая, вы соглашаетесь на обработку персональных данных Neiry для целей пилота. Данные не передаются третьим лицам.
+      </p>
+    </div>
+
+    <h3>Что делаем с лидами после выставки</h3>
+    <ul>
+      <li><strong>30.05–02.06:</strong> Костя оцифровывает бумажные формы в Google Sheet.</li>
+      <li><strong>02.06:</strong> Сегментирует — B2B HR / Спорт / Транспорт / iOS / Прочее.</li>
+      <li><strong>03.06+:</strong> Письма с демо-доступом или приглашением на созвон по сегменту.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ========================= FOOTER ========================= -->
+<footer>
+  <div class="container">
+    <div>
+      <strong>Neiry · Flow выставки Startup Village v0.1</strong><br>
+      Составлен: 2026-05-25 · PM (Костя)<br>
+      Согласование питча: Никита · к стыковке 27.05<br>
+      Согласование операционки: Алексей · к стыковке 27.05
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
