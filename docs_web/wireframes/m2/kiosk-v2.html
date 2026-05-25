@@ -251,7 +251,7 @@
   .dev-bar {
     position: fixed;
     bottom: 18px;
-    left: 50%;
+    left: 62%;
     transform: translateX(-50%);
     z-index: 60;
     display: flex;
@@ -367,6 +367,123 @@
   body[data-state="active-3"]      [data-marker="guest"],
   body[data-state="pending-claim"] [data-marker="guest"]  { display: flex; }
 
+  /* ============================================
+     BLE link status — встроен в существующую строку «● Подключен» под BPM.
+     3 состояния: connected (зелёный live-blink + «Подключен»),
+     lost (жёлтый + «Нет связи»), disconnected (серый + overlay
+     «Переподключаемся…» поверх всей карточки).
+     Лейбл задаётся через data-ble на <article>.
+     ============================================ */
+  .ble-status-dot {
+    transition: background-color 280ms ease, opacity 280ms ease;
+  }
+  .card-anchor[data-ble="connected"] .ble-status-dot {
+    background: hsl(var(--success));
+    animation: live-blink 1.4s ease-in-out infinite;
+  }
+  .card-anchor[data-ble="lost"] .ble-status-dot {
+    background: hsl(var(--warning));
+    animation: none;
+  }
+  .card-anchor[data-ble="disconnected"] .ble-status-dot {
+    background: hsl(var(--muted-foreground));
+    opacity: 0.5;
+    animation: none;
+  }
+  .card-anchor[data-ble="lost"] .ble-status-text,
+  .card-anchor[data-ble="disconnected"] .ble-status-text {
+    color: hsl(var(--warning));
+  }
+
+  /* Disconnected: блюрим карточку + показываем overlay «Переподключаемся…».
+     Overlay сидит внутри <article>, поэтому article должен быть relative. */
+  .card-anchor { position: relative; }
+  .card-anchor .ble-overlay {
+    display: none;
+    position: absolute; inset: 0;
+    z-index: 10;
+    align-items: center; justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    background: hsl(var(--card) / 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: inherit;
+  }
+  .card-anchor[data-ble="disconnected"] .ble-overlay { display: flex; }
+  .card-anchor .ble-overlay .ble-spinner {
+    width: 38px; height: 38px;
+    border-radius: 9999px;
+    border: 3px solid hsl(var(--muted));
+    border-top-color: hsl(var(--warning));
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* При disconnected hover/click отключены (overlay поверх + всё равно ничего не открыть) */
+  .card-anchor[data-ble="disconnected"][data-href] { cursor: default; pointer-events: none; }
+  .card-anchor[data-ble="disconnected"][data-href]:hover,
+  .card-anchor[data-ble="disconnected"][data-href]:focus-visible {
+    border-color: hsl(var(--border));
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  /* ============================================
+     CALIBRATION state (per-card, data-card-state="calibrating") —
+     спиннер + текст с обратным отсчётом. Карточка остаётся в when-active
+     контейнере, но контент подменяется через CSS overlay-слот «.when-calibrating».
+     ============================================ */
+  .when-calibrating {
+    display: none;
+    flex-direction: column;
+    flex: 1 1 0%;
+    min-height: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    text-align: center;
+  }
+  .card-anchor[data-card-state="calibrating"] .when-active,
+  .card-anchor[data-card-state="calibrating"] .when-idle,
+  .card-anchor[data-card-state="calibrating"] .when-done { display: none !important; }
+  .card-anchor[data-card-state="calibrating"] .when-calibrating { display: flex; }
+  .calib-spinner {
+    width: 64px; height: 64px;
+    border-radius: 9999px;
+    border: 4px solid hsl(var(--muted));
+    border-top-color: hsl(var(--primary));
+    animation: spin 0.9s linear infinite;
+  }
+
+  /* ============================================
+     CARD HOVER — wine glow + лёгкая wine-заливка, чтобы намекнуть
+     что карточка кликабельна (ведёт на drill-down). Применяется ко
+     всем 3 карточкам, кроме body[data-state="idle"] где смотреть нечего.
+     ============================================ */
+  .card-anchor[data-href] { cursor: pointer; }
+  .card-anchor {
+    transition: border-color 220ms ease, background-color 220ms ease, box-shadow 220ms ease;
+  }
+  .card-anchor[data-href]:hover,
+  .card-anchor[data-href]:focus-visible {
+    border-color: hsl(var(--primary));
+    background-color: hsl(var(--primary) / 0.04);
+    box-shadow:
+      0 0 0 1px hsl(var(--primary) / 0.5),
+      0 12px 48px hsl(var(--primary) / 0.28),
+      0 0 80px hsl(var(--primary) / 0.18);
+    outline: none;
+  }
+  /* В idle не подсвечиваем — карточки заглушены, кликать некуда */
+  body[data-state="idle"] .card-anchor[data-href] { cursor: default; }
+  body[data-state="idle"] .card-anchor[data-href]:hover,
+  body[data-state="idle"] .card-anchor[data-href]:focus-visible {
+    border-color: hsl(var(--border));
+    background-color: transparent;
+    box-shadow: none;
+  }
+
   /* Accessibility — выключаем motion для пользователей с вестибулярными чувствительностями */
   @media (prefers-reduced-motion: reduce) {
     .animate-heart,
@@ -375,7 +492,10 @@
     .scale-marker,
     .card-anchor,
     .qr-modal,
-    .qr-modal > .qr-card {
+    .qr-modal > .qr-card,
+    .ble-status-dot,
+    .ble-overlay .ble-spinner,
+    .calib-spinner {
       animation: none !important;
       transition: none !important;
     }
@@ -412,12 +532,11 @@
     <!-- =========================================
          CARD: КОСТЯ (Project Lead, anchor)
          ========================================= -->
-    <article data-id="kostya" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
+    <article data-id="kostya" data-active="true" data-ble="connected" data-href="./kiosk-drilldown.html?id=kostya" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
       <!-- Top: name + device id (caption 14px вместо 10px — читается с дистанции) -->
       <header class="flex items-center gap-3 mb-2">
         <p class="font-display t-h2 text-foreground" style="letter-spacing:-0.02em">Костя</p>
-        <span class="ml-auto t-caption uppercase tracking-wider text-muted-foreground font-data">Neiry.Pulse #1</span>
-      </header>
+        <span class="ml-auto t-caption uppercase tracking-wider text-muted-foreground font-data">Neiry.Pulse #1</span>      </header>
 
       <!-- IDLE placeholder -->
       <div class="when-idle">
@@ -433,9 +552,9 @@
             <span class="font-display t-display text-foreground bpm-value" data-bpm="kostya">142</span>
             <span class="font-data t-lead text-muted-foreground">BPM</span>
           </div>
-          <p class="text-center t-caption uppercase tracking-wider text-muted-foreground font-data">
-            <span class="inline-block w-2 h-2 rounded-full bg-success live-dot mr-2 align-middle"></span>
-            Подключен
+          <p class="ble-status text-center t-caption uppercase tracking-wider text-muted-foreground font-data">
+            <span class="ble-status-dot inline-block w-2 h-2 rounded-full mr-2 align-middle"></span>
+            <span class="ble-status-text">Подключен</span>
           </p>
         </div>
 
@@ -483,16 +602,21 @@
           </div>
         </div>
       </div>
+
+      <!-- BLE disconnected overlay -->
+      <div class="ble-overlay" aria-hidden="true">
+        <div class="ble-spinner"></div>
+        <p class="t-body text-muted-foreground font-data">Переподключаемся…</p>
+      </div>
     </article>
 
     <!-- =========================================
          CARD: АЛЕКСЕЙ (B2B Lead, anchor)
          ========================================= -->
-    <article data-id="alexey" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
+    <article data-id="alexey" data-active="true" data-ble="connected" data-href="./kiosk-drilldown.html?id=alexey" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
       <header class="flex items-center gap-3 mb-2">
         <p class="font-display t-h2 text-foreground" style="letter-spacing:-0.02em">Алексей</p>
-        <span class="ml-auto t-caption uppercase tracking-wider text-muted-foreground font-data">Neiry.Pulse #2</span>
-      </header>
+        <span class="ml-auto t-caption uppercase tracking-wider text-muted-foreground font-data">Neiry.Pulse #2</span>      </header>
 
       <div class="when-idle">
         <span class="text-5xl animate-heart text-primary">&#9829;</span>
@@ -506,9 +630,9 @@
             <span class="font-display t-display text-foreground bpm-value" data-bpm="alexey">78</span>
             <span class="font-data t-lead text-muted-foreground">BPM</span>
           </div>
-          <p class="text-center t-caption uppercase tracking-wider text-muted-foreground font-data">
-            <span class="inline-block w-2 h-2 rounded-full bg-success live-dot mr-2 align-middle"></span>
-            Подключен
+          <p class="ble-status text-center t-caption uppercase tracking-wider text-muted-foreground font-data">
+            <span class="ble-status-dot inline-block w-2 h-2 rounded-full mr-2 align-middle"></span>
+            <span class="ble-status-text">Подключен</span>
           </p>
         </div>
 
@@ -554,16 +678,21 @@
           </div>
         </div>
       </div>
+
+      <!-- BLE disconnected overlay -->
+      <div class="ble-overlay" aria-hidden="true">
+        <div class="ble-spinner"></div>
+        <p class="t-body text-muted-foreground font-data">Переподключаемся…</p>
+      </div>
     </article>
 
     <!-- =========================================
          CARD: ГОСТЬ (slot #3)
          ========================================= -->
-    <article data-id="guest" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
+    <article data-id="guest" data-active="true" data-ble="connected" data-href="./kiosk-drilldown.html?id=guest" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
       <header class="flex items-center gap-3 mb-2">
         <p class="font-display t-h2 text-foreground" style="letter-spacing:-0.02em">Гость</p>
-        <span class="ml-auto t-caption uppercase tracking-wider text-muted-foreground font-data">Neiry.Pulse #3</span>
-      </header>
+        <span class="ml-auto t-caption uppercase tracking-wider text-muted-foreground font-data">Neiry.Pulse #3</span>      </header>
 
       <!-- IDLE placeholder -->
       <div class="when-idle">
@@ -580,9 +709,9 @@
             <span class="font-display t-display text-foreground bpm-value" data-bpm="guest">88</span>
             <span class="font-data t-lead text-muted-foreground">BPM</span>
           </div>
-          <p class="text-center t-caption uppercase tracking-wider text-muted-foreground font-data">
-            <span class="inline-block w-2 h-2 rounded-full bg-success live-dot mr-2 align-middle"></span>
-            Подключен
+          <p class="ble-status text-center t-caption uppercase tracking-wider text-muted-foreground font-data">
+            <span class="ble-status-dot inline-block w-2 h-2 rounded-full mr-2 align-middle"></span>
+            <span class="ble-status-text">Подключен</span>
           </p>
         </div>
 
@@ -629,6 +758,17 @@
         </div>
       </div>
 
+      <!-- CALIBRATING — 12 сек baseline для нового гостя -->
+      <div class="when-calibrating">
+        <div class="calib-spinner"></div>
+        <p class="font-display t-h2 text-foreground" style="letter-spacing:-0.02em; white-space:nowrap">
+          Калибровка <span data-calib-countdown="guest">12</span> сек…
+        </p>
+        <p class="t-caption text-muted-foreground" data-calib-extended-hint="guest" hidden>
+          Чуть дольше, ловим baseline…
+        </p>
+      </div>
+
       <!-- DONE (PENDING_CLAIM) -->
       <div class="when-done">
         <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background: hsl(var(--success) / 0.18)">
@@ -639,6 +779,12 @@
         <p class="font-display t-h2 text-foreground">Сессия завершена</p>
         <p class="t-body text-muted-foreground max-w-[220px]">Сканируй QR — получи отчёт в Telegram</p>
         <span class="badge status-done"><span class="dot"></span>СКАНИРУЙ QR</span>
+      </div>
+
+      <!-- BLE disconnected overlay -->
+      <div class="ble-overlay" aria-hidden="true">
+        <div class="ble-spinner"></div>
+        <p class="t-body text-muted-foreground font-data">Переподключаемся…</p>
       </div>
     </article>
 
@@ -799,6 +945,11 @@
     <button data-state="active-2"      class="dev-btn px-3 py-1.5 font-semibold rounded-full" style="font-size:12px">Active 2</button>
     <button data-state="active-3"      class="dev-btn px-3 py-1.5 font-semibold rounded-full" style="font-size:12px">Active 3</button>
     <button data-state="pending-claim" class="dev-btn px-3 py-1.5 font-semibold rounded-full" style="font-size:12px">Pending</button>
+    <span class="dev-label">калибровка</span>
+    <button data-action="calibrate-guest" class="dev-btn px-3 py-1.5 font-semibold rounded-full" style="font-size:12px" disabled>Calibrate Guest</button>
+    <button data-flag="slow-calibration"  class="dev-btn px-3 py-1.5 font-semibold rounded-full" style="font-size:12px" data-active="false">Slow Calibration</button>
+    <span class="dev-label">BLE</span>
+    <button data-action="cycle-ble" class="dev-btn px-3 py-1.5 font-semibold rounded-full" style="font-size:12px">BLE: connected</button>
   </nav>
 
   <!-- ============================================
@@ -825,7 +976,8 @@
 
       const STATES = ['idle', 'active-2', 'active-3', 'pending-claim'];
       const body   = document.body;
-      const btns   = document.querySelectorAll('.dev-btn');
+      const btns   = document.querySelectorAll('.dev-btn[data-state]');
+      const calibrateBtn = document.querySelector('.dev-btn[data-action="calibrate-guest"]');
 
       function setState(state) {
         if (!STATES.includes(state)) return;
@@ -835,12 +987,113 @@
         // update per-card data-active for grayscale effect
         const guest = document.querySelector('[data-id="guest"]');
         if (guest) guest.setAttribute('data-active', state === 'idle' ? 'false' : 'true');
+
+        // Calibrate Guest доступна только в active-3 (гость на сцене и в активном режиме)
+        if (calibrateBtn) calibrateBtn.disabled = (state !== 'active-3');
       }
 
       btns.forEach(b => b.addEventListener('click', () => setState(b.dataset.state)));
 
       // Init dev-bar state attrs to match body
       setState(body.dataset.state || 'active-3');
+
+      // ========================================
+      // CALIBRATION (A2) — таймер 12 сек, с расширением до 16 сек при slow-флаге
+      // ========================================
+      (function initCalibration() {
+        const guestCard   = document.querySelector('[data-id="guest"]');
+        const countdownEl = document.querySelector('[data-calib-countdown="guest"]');
+        const hintEl      = document.querySelector('[data-calib-extended-hint="guest"]');
+        const slowFlagBtn = document.querySelector('.dev-btn[data-flag="slow-calibration"]');
+        if (!guestCard || !calibrateBtn || !countdownEl || !hintEl || !slowFlagBtn) return;
+
+        let timerId = null;
+
+        function isSlow() { return slowFlagBtn.dataset.active === 'true'; }
+
+        function stopTimer() {
+          if (timerId) { clearInterval(timerId); timerId = null; }
+        }
+
+        function finish() {
+          stopTimer();
+          guestCard.dataset.cardState = 'active';
+          hintEl.hidden = true;
+          countdownEl.textContent = '12';
+        }
+
+        function startCalibration() {
+          if (body.dataset.state !== 'active-3') return;
+          stopTimer();
+          guestCard.dataset.cardState = 'calibrating';
+          hintEl.hidden = true;
+          const slow = isSlow();
+          let remaining = slow ? 16 : 12;
+          countdownEl.textContent = String(remaining);
+          // edge-case hint показываем сразу при slow, чтобы гость понимал что timer длиннее
+          if (slow) hintEl.hidden = false;
+          timerId = setInterval(() => {
+            remaining -= 1;
+            if (remaining <= 0) { finish(); return; }
+            countdownEl.textContent = String(remaining);
+          }, 1000);
+        }
+
+        calibrateBtn.addEventListener('click', startCalibration);
+
+        slowFlagBtn.addEventListener('click', () => {
+          const next = slowFlagBtn.dataset.active === 'true' ? 'false' : 'true';
+          slowFlagBtn.dataset.active = next;
+        });
+      })();
+
+      // ========================================
+      // CARD CLICK (A3) — все 3 карточки кликабельны, ведут на drill-down.
+      // В idle кликать некуда — игнор. Keyboard a11y: Enter/Space.
+      // ========================================
+      document.querySelectorAll('.card-anchor[data-href]').forEach(card => {
+        card.setAttribute('role', 'link');
+        card.setAttribute('tabindex', '0');
+        card.addEventListener('click', () => {
+          if (body.dataset.state === 'idle') return;
+          window.location.href = card.dataset.href;
+        });
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            if (body.dataset.state === 'idle') return;
+            e.preventDefault();
+            window.location.href = card.dataset.href;
+          }
+        });
+      });
+
+      // ========================================
+      // BLE CYCLE (A5) — кнопка циклит все 3 карточки по 3 состояниям.
+      // Текст в строке «● ПОДКЛЮЧЕН» под BPM меняется на «НЕТ СВЯЗИ»/«ОТКЛЮЧЕНО».
+      // ========================================
+      (function initBleCycle() {
+        const bleBtn = document.querySelector('.dev-btn[data-action="cycle-ble"]');
+        if (!bleBtn) return;
+        const PHASES = ['connected', 'lost', 'disconnected'];
+        const TEXTS = {
+          connected:    'Подключен',
+          lost:         'Нет связи',
+          disconnected: 'Отключено'
+        };
+        let idx = 0;
+        function apply(phase) {
+          document.querySelectorAll('.card-anchor[data-ble]').forEach(card => {
+            card.dataset.ble = phase;
+            const textEl = card.querySelector('.ble-status-text');
+            if (textEl) textEl.textContent = TEXTS[phase];
+          });
+          bleBtn.textContent = 'BLE: ' + phase;
+        }
+        bleBtn.addEventListener('click', () => {
+          idx = (idx + 1) % PHASES.length;
+          apply(PHASES[idx]);
+        });
+      })();
 
       // QR modal close — return to active-2 (guest disappears)
       const closeBtn = document.getElementById('qr-close');
