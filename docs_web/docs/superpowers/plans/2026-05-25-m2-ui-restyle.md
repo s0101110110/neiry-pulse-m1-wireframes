@@ -66,7 +66,7 @@ PM подтвердил:
 Структура страницы:
 1. **Tokens** — палитра (semantic CSS-переменные `--background`, `--foreground`, `--primary`, `--accent`, `--muted`, `--success`, `--warning`, `--destructive`), типографика (Manrope/Fraunces/JetBrains Mono с размерами), spacing-scale, радиусы, тени
 2. **Base components** (shadcn-style) — Button (5 вариантов: primary, secondary, ghost, outline, destructive + sizes sm/md/lg), Card, Badge, Input, Select, Tabs, Dialog/Sheet, Tooltip, Avatar
-3. **Биометрические виджеты** (кастом) — BPM-card (большое число + sparkline), NCI-gauge (полукруг-шкала со светофором 🟢🟡🔴), Status-pill (NORMAL/ELEVATED/RECOVERY), RMSSD-индикатор с цветовой зоной, R-R sparkline (mini-chart), Heartbeat-pulse-animation
+3. **Биометрические виджеты** (кастом) — BPM-card (большое число + sparkline), NSI-gauge (полукруг-шкала со светофором 🟢🟡🔴, ↑ значение = ↑ стресс), Status-pill (NORMAL/ELEVATED/RECOVERY), RMSSD-индикатор с цветовой зоной, R-R sparkline (mini-chart), Heartbeat-pulse-animation
 4. **Tremor-style виджеты для дашборда** — KPI-card (заголовок + большая цифра + delta + sparkline), BarList (top-N сотрудников), Progress-bar с цветовыми зонами
 
 Каждый компонент с примером использования и кратким описанием «когда применять».
@@ -83,50 +83,39 @@ PM подтвердил:
 
 ---
 
-### Задача 4: Kiosk restyle (2 анкера + 1 гость)
+### Задача 4: Kiosk restyle (2 анкера + 1 гость) — на ревью у PM
 
 **Файлы:**
 - Create: `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m2/kiosk-v2.html`
 
-- [ ] **Шаг 1: Создать kiosk-v2.html**
+Технические шаги пройдены: `3f076f5` (создание) → `1bcb4c7` (QR fix) → `03c0f96` (NSI math + focus-ring). Spec PASS + Code Quality APPROVED. **Принятие PM ожидается.**
+
+- [x] **Шаг 1: Создать kiosk-v2.html**
 
 Layout (плазма 1920×1080, ландшафт):
 - Header: лого Neiry + название «Live Demo» + dev-bar для переключения состояний (IDLE / ACTIVE_2 / ACTIVE_3 / PENDING_CLAIM)
 - Main area: **3 карточки в ряд** (два анкера + слот гостя)
-  - Каждая карточка: имя/роль (Костя/Алексей/Гость) + большой BPM + NCI-gauge + status-pill + R-R sparkline за 60 сек
+  - Каждая карточка: имя/роль (Костя/Алексей/Гость) + большой BPM + NSI-gauge + status-pill + R-R sparkline за 60 сек
   - Слот гостя в IDLE: «Надень браслет, чтобы начать» + анимация ожидания
-- Footer: NCI-легенда (🟢 ≤30 / 🟡 31-60 / 🔴 >60) + QR-код для TG-отчёта
+- Footer: NSI-легенда (🟢 0–39 НОРМА / 🟡 40–59 ПОВЫШЕН / 🔴 60–100 ВЫСОКИЙ) + QR-код для TG-отчёта
 
 Использовать токены и компоненты из ui-kit.html.
 
-- [ ] **Шаг 2: Реализовать 4 состояния через JS-switcher в dev-bar**
+- [x] **Шаг 2: Реализовать 4 состояния через JS-switcher в dev-bar**
+- [x] **Шаг 3: Fake live BPM анимация**
+- [x] **Шаг 4: Проверить в браузере**
+- [x] **Шаг 5: Закоммитить**
+- [x] **Шаг 6: Обновить план + PROJECT_STATE**
 
-IDLE (3 пустых слота) / ACTIVE_2 (2 анкера, гостя нет) / ACTIVE_3 (все 3 активны, fake live BPM) / PENDING_CLAIM (гость закончил → QR-модалка).
+- [ ] **Шаг 7: Round 2 правок Kiosk v2 после PM-ревью 25.05**
 
-- [ ] **Шаг 3: Fake live BPM анимация**
+Правки, которые PM зафиксировал отдельным проходом:
+- **A2 калибровка:** прогресс-бар калибровки строится на 12 сек (раньше шло 10–15). При недостатке семплов окно расширяется до 16 сек — добавить визуальный edge-case (текст «Чуть дольше, обнимаем данные…» поверх той же шкалы).
+- **A3 drill-down CTA:** в карточке гостя на плазме появляется маленький CTA «Открыть карточку → админ-ноут» (визуальная отметка, что drill-down существует, но активируется со второго экрана). Без перехода в kiosk.html — только подпись.
+- **A5 BLE-индикатор:** в карточке каждого участника статус-pill показывает BLE-уровень: 🟢 active (heartbeat ≤ 2 сек) / 🟡 lost (≥5 сек, окно не обнуляется) / 🔴 disconnect (≥30 сек, карточка blur + "Переподключаемся…"). Анимация плавная.
+- **A6 убрать QR из футера:** футер плазмы без QR-кода. QR-код выезжает только в `PENDING_CLAIM` (модалка по центру). Освободившееся место в футере — короткая подпись «Сними браслет → получи отчёт» + дискретная анимация.
 
-`setInterval` на ±2 BPM каждые 1.5 сек для каждой карточки. Sparkline дорисовывает точки.
-
-- [ ] **Шаг 4: Проверить в браузере**
-
-Открыть kiosk-v2.html. Переключить все 4 состояния. Убедиться:
-- BPM «дышит» в ACTIVE_3
-- QR-модалка открывается в PENDING_CLAIM
-- Нет горизонтального скролла на 1920×1080
-
-- [ ] **Шаг 5: Закоммитить**
-
-```bash
-git add docs_web/wireframes/m2/kiosk-v2.html
-git commit -m "Добавил kiosk v2: рестайл 2+1, новая эстетика shadcn + fake live BPM"
-git push
-```
-
-- [ ] **Шаг 6: Обновить план + PROJECT_STATE**
-
-Отметить чекбоксы. Обновить ссылку в PROJECT_STATE и project_neiry_m2_artifacts.md.
-
-- [ ] **Шаг 7: Чекпоинт с PM**
+- [ ] **Шаг 8: Чекпоинт с PM**
 
 ---
 
@@ -139,7 +128,7 @@ git push
 
 Layout (админ-ноут, 1440×900, светлая тема — оговорено в брифе 24.05):
 - Top bar: ← back to wall + «Гость #3 · 02:47» (timer от начала сессии)
-- **Главный блок NCI** — большое число + NCI-gauge + caption «Когнитивная нагрузка»
+- **Главный блок NSI** — большое число + NSI-gauge + caption «Уровень стресса (NSI · Neiry Stress Index, ↑ = стресс ↑)»
 - **4 метрики 2×2** — BPM с sparkline / HRV-RMSSD (или «— нет данных») / SpO₂ / Шаги
 - **60-сек график BPM** (line chart, SVG inline)
 - **CTA «🧪 Запустить Тест Баевского (5 мин)»** — large primary button + caption «3 мин покоя + Stroop + дорожка»
@@ -149,9 +138,13 @@ Layout (админ-ноут, 1440×900, светлая тема — оговор
 
 Состояния (переключаются по клику CTA + dev-bar):
 - BAYEVSKY_PHASE_1 — «Покой 3 мин»: большой обратный таймер 03:00 → 00:00, инструкция «Стой неподвижно, дыши спокойно», прогресс-полоса
-- BAYEVSKY_PHASE_2 — «Stroop 1 мин»: имитация теста (плашка цвета/слова), таймер 01:00
+- BAYEVSKY_PHASE_2 — «Stroop 1 мин»: имитация теста (плашка цвета/слова), таймер 01:00, подпись «Это нормально, что стресс чуть подскочит — мозг работает»
 - BAYEVSKY_PHASE_3 — «Беговая дорожка 1 мин»: «Перейди на дорожку, лёгкий бег», таймер 01:00
 - BAYEVSKY_RESULT — таблица 3 фаз × значение ИН Баевского + общий вывод (цветовая зона)
+
+**Формула Баевского (Slow, для TG-отчёта):** `ИН = AMo / (2·Mo·MxDMn)`, окно 3-5 мин.
+**Двухступенчатый фильтр R-R:** медианный фильтр (отсечь ±20% от медианы) → перцентильный (отсечь 5/95%). Если в окне < 60% валидных R-R → выводить «недостаточно данных, продли фазу».
+**CTA «Тест Баевского»** — опциональный, не запускается автоматически; кнопка large primary рядом с NSI-блоком.
 
 - [ ] **Шаг 3: Проверить в браузере**
 
@@ -208,7 +201,7 @@ git push
 
 ---
 
-### Задача 7: Mobile pairing — рестайл
+### Задача 7: Mobile pairing — рестайл + state machine с handoff на плазму
 
 **Файлы:**
 - Modify: `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m1/mobile-splash.html`
@@ -216,6 +209,11 @@ git push
 - Modify: `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m1/mobile-registration.html`
 - Modify: `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m1/mobile-ble-pairing.html`
 - Modify: `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m1/mobile-home.html`
+- Create: `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m1/mobile-name-input.html` (новый экран ввода имени гостя)
+- Create: `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m1/mobile-calibrating.html` (12-сек калибровка)
+
+**State machine** (зафиксирована в брифе A1 раздел 3.3, 25.05):
+`pairing → name_input → calibrating → active → ended`
 
 - [ ] **Шаг 1: Применить новую палитру и компоненты UI Kit к 5 mobile-экранам**
 
@@ -223,6 +221,19 @@ In-place edit:
 - Заменить старые цвета на CSS-переменные UI Kit
 - Заменить кастомные кнопки на компоненты shadcn-стиля
 - Применить новый BPM-card и status-pill из Kit на mobile-home
+
+- [ ] **Шаг 1a: Создать mobile-name-input.html (новое состояние `name_input`)**
+
+После BLE-паринга стенд-оператор передаёт телефон гостю; гость вводит имя в input «Как тебя зовут?» → primary-button «Начать». Имя уходит на плазму как `participant.display_name`. Шаг скиппится для анкеров (Костя/Алексей) — у них имя из БД.
+
+- [ ] **Шаг 1b: Создать mobile-calibrating.html (новое состояние `calibrating`)**
+
+12-сек обратный таймер + текст «Стой спокойно, ловим baseline пульс». На 13-й секунде если семплов < 60% → текст «Чуть дольше, ловим стабильный сигнал…», окно расширяется до 16 сек. По завершении → переход на `active` + handoff на плазму.
+
+**BLE lifecycle (фоновая логика, отразить визуально):**
+- heartbeat 2 сек (active state)
+- lost timeout 5 сек (warning, окно сессии НЕ обнуляется)
+- hard disconnect 30 сек (карточка на плазме blur + кнопка переподключения в mobile)
 
 - [ ] **Шаг 2: Дополнительно — почистить дев-жаргон в mobile-hrv-sync.html и mobile-hrv-result.html**
 

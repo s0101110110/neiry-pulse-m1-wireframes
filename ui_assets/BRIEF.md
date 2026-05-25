@@ -23,7 +23,7 @@
 ### Стек React-имплементации (для понимания целевой компонентной модели)
 - **Foundation:** shadcn/ui (Radix Primitives + Tailwind) — base-компоненты
 - **Дашборд:** Tremor — KPI strip, sparklines, BarList
-- **Кастом:** биометрические виджеты на shadcn-базе (BPM-card, NCI-gauge, status-pill)
+- **Кастом:** биометрические виджеты на shadcn-базе (BPM-card, NSI-gauge, status-pill)
 - **Точечно:** Aceternity для 1-2 wow-эффектов на kiosk (НЕ применять на дашборде)
 
 ### Палитра — shadcn-defaults (zinc/slate) + Neiry wine accent
@@ -46,11 +46,11 @@
 ### Типографика
 - **Manrope** — основной UI sans-serif
 - **Fraunces** — brand-italic («Pulse», hero-числовые)
-- **JetBrains Mono** — для данных (BPM, NCI, цифры, временные метки)
+- **JetBrains Mono** — для данных (BPM, NSI, цифры, временные метки)
 
 ### Референсы — визуальная школа
 - **Linear / Vercel / shadcn-defaults** — baseline всех экранов: плотная типографика, дисциплина spacing, hover-states, минимум декора, отличная читаемость
-- **Hume Band** (humehealth.com/pages/hume-band) — для био-визуализаций (NCI-gauge, BPM-card, recovery-индикаторы): премиум-clinic-вайб
+- **Hume Band** (humehealth.com/pages/hume-band) — для био-визуализаций (NSI-gauge, BPM-card, recovery-индикаторы): премиум-clinic-вайб
 
 НЕ референсы: Whoop (спортивный), Oura (мягкие), Apple Health (декоративные градиенты).
 

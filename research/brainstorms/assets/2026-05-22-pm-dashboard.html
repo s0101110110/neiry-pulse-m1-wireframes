@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Neiry · PM Dashboard · Startup Village 28-29.05</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e0b;
+    --surface: #17150f;
+    --surface-2: #1f1c14;
+    --border: #2a261b;
+    --border-bright: #3a3525;
+    --text: #f4ede0;
+    --muted: #9b927d;
+    --label: #6e6750;
+    --accent: #831843;
+    --accent-bright: #be185d;
+    --accent-dim: rgba(131, 24, 67, 0.15);
+    --green: #65a30d;
+    --yellow: #d97706;
+    --red: #b91c1c;
+    --blue: #1d4ed8;
+    --done: rgba(101, 163, 13, 0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); }
+  body {
+    font-family: 'Manrope', -apple-system, sans-serif;
+    font-size: 14px; line-height: 1.5;
+    min-height: 100vh;
+    padding: 32px 24px 64px;
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(131,24,67,0.08), transparent 40%),
+      radial-gradient(circle at 80% 100%, rgba(101,163,13,0.05), transparent 50%);
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  .container { max-width: 1400px; margin: 0 auto; }
+
+  /* === Header === */
+  .header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
+  }
+  .header h1 {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
+  }
+  .header h1 span.brand { color: var(--accent-bright); }
+  .header .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-top: 6px;
+  }
+  .header .meta {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .header .meta .live-dot {
+    display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green); margin-right: 6px;
+    animation: pulse 1.6s infinite;
+    vertical-align: middle;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* === Hero strip === */
+  .hero {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin-bottom: 28px;
+  }
+  .hero-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    position: relative; overflow: hidden;
+  }
+  .hero-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--border-bright);
+  }
+  .hero-card.accent::before { background: var(--accent); }
+  .hero-card .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+  .hero-card .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 38px; font-weight: 700; color: var(--text);
+    line-height: 1; letter-spacing: -0.02em;
+  }
+  .hero-card .value .unit {
+    font-size: 14px; color: var(--muted); margin-left: 4px;
+    font-weight: 500;
+  }
+  .hero-card .caption {
+    font-size: 11px; color: var(--muted); margin-top: 8px;
+  }
+  .progress-bar {
+    height: 4px; background: var(--border); border-radius: 2px;
+    margin-top: 12px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--green); border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* === Tabs === */
+  .tabs {
+    display: flex; gap: 4px; margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 12px 18px; background: transparent; border: none;
+    color: var(--muted); cursor: pointer;
+    font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--accent-bright); }
+  .tab .kbd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; padding: 2px 5px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 3px; color: var(--label);
+  }
+  .tab-count {
+    background: var(--accent-dim); color: var(--accent-bright);
+    padding: 1px 7px; border-radius: 9px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700;
+  }
+
+  /* === Views === */
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn 0.2s; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === Calendar view === */
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  .day-col {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 14px;
+    min-height: 480px;
+  }
+  .day-col.today {
+    border-color: var(--accent);
+    background: linear-gradient(to bottom, var(--accent-dim) 0%, var(--surface) 30%);
+  }
+  .day-col.event {
+    background: linear-gradient(to bottom, rgba(101,163,13,0.10) 0%, var(--surface) 40%);
+    border-color: var(--green);
+  }
+  .day-col.post {
+    background: var(--surface-2);
+    border-style: dashed;
+  }
+  .day-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .day-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px; font-weight: 700; color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .day-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .day-badge {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 4px; font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 6px;
+  }
+  .day-badge.today { background: var(--accent); color: white; }
+  .day-badge.event { background: var(--green); color: #0a0a0a; }
+  .day-badge.upcoming { background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
+  .day-badge.done { background: var(--done); color: var(--green); border: 1px solid rgba(101,163,13,0.4); }
+
+  /* === Task cards === */
+  .task {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .task:hover {
+    border-color: var(--border-bright);
+    transform: translateX(2px);
+  }
+  .task.done {
+    background: var(--done);
+    border-color: rgba(101,163,13,0.3);
+  }
+  .task.done .task-text {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+  .task-row {
+    display: flex; align-items: flex-start; gap: 9px;
+  }
+  .task-check {
+    appearance: none; -webkit-appearance: none;
+    width: 16px; height: 16px; min-width: 16px;
+    border: 1.5px solid var(--border-bright); border-radius: 4px;
+    background: var(--bg); cursor: pointer;
+    margin-top: 1px;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .task-check:hover { border-color: var(--accent-bright); }
+  .task-check:checked {
+    background: var(--green); border-color: var(--green);
+  }
+  .task-check:checked::after {
+    content: '✓'; position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    color: #0a0a0a; font-size: 11px; font-weight: 900;
+  }
+  .task-text {
+    flex: 1; font-size: 12.5px; line-height: 1.4;
+    color: var(--text);
+  }
+  .task-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    margin-top: 3px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .task-owners {
+    display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap;
+  }
+  .owner-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; font-weight: 700;
+    padding: 1px 6px; border-radius: 3px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .owner-badge.pm { color: #fbbf24; border-color: rgba(251,191,36,0.3); }
+  .owner-badge.kirill { color: #60a5fa; border-color: rgba(96,165,250,0.3); }
+  .owner-badge.uxui { color: #c084fc; border-color: rgba(192,132,252,0.3); }
+  .owner-badge.alexey { color: #f87171; border-color: rgba(248,113,113,0.3); }
+  .owner-badge.team { color: #65a30d; border-color: rgba(101,163,13,0.4); }
+
+  /* === Owners view === */
+  .owners-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .owner-lane {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .owner-lane h2 {
+    font-size: 15px; font-weight: 700;
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .owner-lane h2 .icon {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1px solid var(--border-bright);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .owner-lane .role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 16px; padding-left: 42px;
+  }
+  .owner-section {
+    margin-top: 14px;
+  }
+  .owner-section h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--accent-bright);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  /* === Questions view === */
+  .questions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .question-card:hover {
+    border-left-color: var(--accent-bright);
+    background: var(--surface-2);
+  }
+  .question-card.resolved {
+    opacity: 0.45;
+    border-left-color: var(--green);
+  }
+  .question-card.resolved .question-text { text-decoration: line-through; }
+  .question-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--accent-bright);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .question-text {
+    font-size: 13.5px; line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .question-meta {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+  }
+  .q-category {
+    padding: 2px 7px; border-radius: 3px;
+    background: var(--surface-2);
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .q-category.logistics { color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+  .q-category.tech { color: #60a5fa; border: 1px solid rgba(96,165,250,0.25); }
+  .q-category.strategy { color: #c084fc; border: 1px solid rgba(192,132,252,0.25); }
+  .q-category.fallback { color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
+  .q-resolve-btn {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; padding: 3px 9px;
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--muted); cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .q-resolve-btn:hover {
+    border-color: var(--green); color: var(--green);
+  }
+  .question-card.resolved .q-resolve-btn {
+    border-color: var(--green); color: var(--green);
+  }
+
+  /* === Artifacts view === */
+  .artifacts-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .artifact-row {
+    display: grid;
+    grid-template-columns: 40px 2fr 3fr;
+    gap: 16px;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+  }
+  .artifact-row:last-child { border-bottom: none; }
+  .artifact-row:hover { background: var(--surface-2); }
+  .artifact-icon {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .artifact-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--accent-bright);
+    font-weight: 600;
+  }
+  .artifact-desc {
+    font-size: 12.5px; color: var(--muted);
+  }
+
+  /* === Footer === */
+  .footer {
+    margin-top: 48px; padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .footer .reset-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); cursor: pointer;
+    padding: 5px 12px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+    transition: all 0.15s;
+  }
+  .footer .reset-btn:hover {
+    border-color: var(--red); color: var(--red);
+  }
+
+  /* === Responsive === */
+  @media (max-width: 1200px) {
+    .calendar { grid-template-columns: repeat(3, 1fr); }
+    .owners-grid, .questions-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: repeat(2, 1fr); }
+    .calendar { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <h1>Neiry · <span class="brand">Startup Village</span> — Панель управления</h1>
+      <div class="subtitle">PM Dashboard · M2 Stand · Brief 2026-05-22</div>
+    </div>
+    <div class="meta">
+      <div><span class="live-dot"></span>LIVE · <span id="now-time">--:--</span></div>
+      <div style="margin-top:4px;" id="today-date">--</div>
+    </div>
+  </div>
+
+  <!-- HERO STRIP -->
+  <div class="hero">
+    <div class="hero-card accent">
+      <div class="label">До Village</div>
+      <div class="value mono"><span id="countdown">--</span><span class="unit">дн.</span></div>
+      <div class="caption">Демо 28-29.05.2026 · Стыковка 27.05 · Москва</div>
+    </div>
+    <div class="hero-card">
+      <div class="label">Задач закрыто</div>
+      <div class="value mono"><span id="tasks-done">0</span><span class="unit">/ <span id="tasks-total">0</span></span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width: 0%"></div></div>
+    </div>
+    <div class="hero-card">
+      <div class="label">Открытых вопросов</div>
+      <div class="value mono"><span id="questions-open">10</span><span class="unit">/ 10</span></div>
+      <div class="caption">Ждут решения PM</div>
+    </div>
+    <div class="hero-card">
+      <div class="label">Текущий этап</div>
+      <div class="value mono" style="font-size: 22px; padding-top: 8px;" id="current-stage">Спринт 2 дня</div>
+      <div class="caption" id="current-stage-desc">Пн 25.05 + Вт 26.05 → Ср 27.05 стыковка → Чт-Пт выставка</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" data-tab="calendar">📅 Календарь <span class="kbd">1</span></button>
+    <button class="tab" data-tab="owners">👥 По исполнителям <span class="kbd">2</span></button>
+    <button class="tab" data-tab="questions">❓ Вопросы <span class="tab-count">10</span> <span class="kbd">3</span></button>
+    <button class="tab" data-tab="artifacts">📎 Артефакты <span class="kbd">4</span></button>
+  </div>
+
+  <!-- VIEW: CALENDAR -->
+  <div class="view active" data-view="calendar">
+    <div class="calendar">
+
+      <!-- 24.05 (прошло) -->
+      <div class="day-col post">
+        <div class="day-header">
+          <div>
+            <div class="day-date">24.05</div>
+            <div class="day-name">Вс · D-4 · прошло</div>
+          </div>
+        </div>
+        <div class="day-badge done">Done · Брифы отправлены</div>
+        <div style="margin-top: 14px;">
+          <div class="task done" data-task="t1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check" checked>
+              <div style="flex:1;">
+                <div class="task-text">Брифы A1-A5 + PDF для Кирилла отправлены</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task done" data-task="t2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check" checked>
+              <div style="flex:1;">
+                <div class="task-text">Decisions: фильтр R-R 2 ступени, simplicity rule, стратегия рисков</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t2b">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Объединённый риск-документ для Никиты (M2-specific)</div>
+                <div class="task-time">перенос на 25.05</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 25.05 -->
+      <div class="day-col today">
+        <div class="day-header">
+          <div>
+            <div class="day-date">25.05</div>
+            <div class="day-name">Пн · D-3 · сегодня</div>
+          </div>
+        </div>
+        <div class="day-badge today">Сегодня · 3 трека параллельно</div>
+        <div style="margin-top: 14px;">
+
+          <div class="task" data-task="t-pm1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>PM:</b> Объединённый риск-документ для Никиты (M2-specific)</div>
+                <div class="task-time">утро</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t-pm2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>PM:</b> Flow выставки + блок-схема сценария гостя/питча</div>
+                <div class="task-time">первая половина</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t-pm3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>PM:</b> Бриф UX/UI на редизайн стенда + дашборда (React kit)</div>
+                <div class="task-time">вторая половина</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                  <span class="owner-badge uxui">UX/UI</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="task" data-task="t-k1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>Кирилл:</b> Утилита фильтра R-R (медиана 20% → перцентиль 5/95) + ИН Баевского</div>
+                <div class="task-time">первая половина</div>
+                <div class="task-owners">
+                  <span class="owner-badge kirill">Кирилл</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t-k2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>Кирилл:</b> <span class="mono">POST /admin/seed-rr</span> + RMSSD/SDNN + ИН</div>
+                <div class="task-time">вторая половина</div>
+                <div class="task-owners">
+                  <span class="owner-badge kirill">Кирилл</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t-k3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>Кирилл:</b> Заглушки 3 drill-down эндпоинтов Баевского (<span class="mono">/start · /next-phase · /result</span>)</div>
+                <div class="task-time">вечер</div>
+                <div class="task-owners">
+                  <span class="owner-badge kirill">Кирилл</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="task" data-task="t-c1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>Команда:</b> 3 разных Android выделены + дев-UI APK + паринг 1:1 с браслетами</div>
+                <div class="task-time">первая половина</div>
+                <div class="task-owners">
+                  <span class="owner-badge team">Команда</span>
+                  <span class="owner-badge kirill">Кирилл (на связи)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t-c2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>Анкеры:</b> Алексей, Илья, перформер надевают браслеты — <b>не снимают до 29.05</b></div>
+                <div class="task-time">вечер</div>
+                <div class="task-owners">
+                  <span class="owner-badge alexey">Алексей</span>
+                  <span class="owner-badge team">Илья</span>
+                  <span class="owner-badge team">Перформер</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="task" data-task="t-u1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>UX/UI:</b> Чистка M1 wireframes (mobile-hrv-sync / result) + старт drill-down макета</div>
+                <div class="task-time">в течение дня</div>
+                <div class="task-owners">
+                  <span class="owner-badge uxui">UX/UI</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 26.05 -->
+      <div class="day-col">
+        <div class="day-header">
+          <div>
+            <div class="day-date">26.05</div>
+            <div class="day-name">Вт · D-2 · последний полный день</div>
+          </div>
+        </div>
+        <div class="day-badge upcoming">Sync #1 + Smoke-test стенда</div>
+        <div style="margin-top: 14px;">
+          <div class="task" data-task="t-d2-1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">1-й sync ночных данных анкеров через dev-UI → <span class="mono">/admin/seed-rr</span></div>
+                <div class="task-time">утро</div>
+                <div class="task-owners">
+                  <span class="owner-badge alexey">Анкеры</span>
+                  <span class="owner-badge kirill">Кирилл</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t-d2-2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>Проверка RMSSD/ИН анкеров</b> — если красная зона: план Б по замене</div>
+                <div class="task-time">утро</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                  <span class="owner-badge kirill">Кирилл</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t-d2-3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>Кирилл:</b> Полная логика drill-down Баевского (3 фазы baseline/Stroop/treadmill)</div>
+                <div class="task-time">в течение дня</div>
+                <div class="task-owners">
+                  <span class="owner-badge kirill">Кирилл</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t-d2-4">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>UX/UI:</b> Drill-down + Neiry Unite v5 (4 cards вместо 5) — в репо к вечеру</div>
+                <div class="task-time">в течение дня</div>
+                <div class="task-owners">
+                  <span class="owner-badge uxui">UX/UI</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t-d2-5">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>PM:</b> Аренда дорожки, костюм перформера, приложение Тест Струпа</div>
+                <div class="task-time">в течение дня</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t-d2-6">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>PM:</b> Тезисы питча v1.0 (финал) + слайды на стыковку</div>
+                <div class="task-time">в течение дня</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t-d2-7">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text"><b>Smoke-test:</b> сквозной прогон браслет → backend → плазма (NSI live)</div>
+                <div class="task-time">вечер</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                  <span class="owner-badge kirill">Кирилл</span>
+                  <span class="owner-badge team">Команда</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 27.05 -->
+      <div class="day-col">
+        <div class="day-header">
+          <div>
+            <div class="day-date">27.05</div>
+            <div class="day-name">Ср · D-1</div>
+          </div>
+        </div>
+        <div class="day-badge upcoming">Стыковка · офис</div>
+        <div style="margin-top: 14px;">
+          <div class="task" data-task="t-stykovka">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Прогон питча + проверка стенда (плазма, drill-down, TG-отчёт)</div>
+                <div class="task-time">в течение дня</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                  <span class="owner-badge kirill">Кирилл</span>
+                  <span class="owner-badge team">все</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 28-29.05 -->
+      <div class="day-col event">
+        <div class="day-header">
+          <div>
+            <div class="day-date">28-29.05</div>
+            <div class="day-name">Чт-Пт · DAY</div>
+          </div>
+        </div>
+        <div class="day-badge event">Startup Village</div>
+        <div style="margin-top: 14px;">
+          <div class="task" data-task="t11">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Финальный sync ночных данных + загрузка через <span class="mono">/admin/seed-rr</span></div>
+                <div class="task-time">утро</div>
+                <div class="task-owners">
+                  <span class="owner-badge alexey">Алексей</span>
+                  <span class="owner-badge kirill">Кирилл</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t12">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Развёртывание стенда: плазма, дорожка, браслеты-ротация</div>
+                <div class="task-time">до открытия</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                  <span class="owner-badge team">все</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t13">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">🚀 <b>DEMO DAY</b> — Wow-сценарий: Струп + перформер + браслеты гостей</div>
+                <div class="task-time">весь день</div>
+                <div class="task-owners">
+                  <span class="owner-badge team">все</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- POST-VILLAGE -->
+      <div class="day-col post">
+        <div class="day-header">
+          <div>
+            <div class="day-date">30.05+</div>
+            <div class="day-name">После</div>
+          </div>
+        </div>
+        <div class="day-badge upcoming">Post-Village</div>
+        <div style="margin-top: 14px;">
+          <div class="task" data-task="t14">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">4 типа event-алертов в Celery (Sleep/Illness/Burnout/Recovery)</div>
+                <div class="task-time">M3</div>
+                <div class="task-owners">
+                  <span class="owner-badge kirill">Кирилл</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t15">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Backend для Neiry Unite v4 (Никитин дизайн)</div>
+                <div class="task-time">M3</div>
+                <div class="task-owners">
+                  <span class="owner-badge kirill">Кирилл</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t16">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Блоки B-C-D-E из BRIEF (метрики, ограничения, архитектура)</div>
+                <div class="task-time">отложено</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                  <span class="owner-badge team">R&D</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="t17">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Privacy / consent для Neiry Unite — юрист</div>
+                <div class="task-time">M3</div>
+                <div class="task-owners">
+                  <span class="owner-badge pm">PM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VIEW: OWNERS -->
+  <div class="view" data-view="owners">
+    <div class="owners-grid">
+
+      <!-- PM -->
+      <div class="owner-lane">
+        <h2><span class="icon">👔</span> Константин · PM</h2>
+        <div class="role">Раздать и закрыть открытые вопросы</div>
+
+        <div class="owner-section">
+          <h3>Сегодня (25.05, пн)</h3>
+          <div class="task" data-task="pm-today-1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Объединённый риск-документ для Никиты (M2-specific) — отправить до вечера</div>
+            </div>
+          </div>
+          <div class="task" data-task="pm-today-2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Flow выставки + блок-схема сценария гостя / питча</div>
+            </div>
+          </div>
+          <div class="task" data-task="pm-today-3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Бриф UX/UI на редизайн стенда + дашборда корпоратов (React kit выбран)</div>
+            </div>
+          </div>
+          <div class="task" data-task="pm-today-4">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Скоординировать паринг 3 Android'ов с браслетами (команда исполняет)</div>
+            </div>
+          </div>
+          <div class="task" data-task="pm-today-5">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Подтвердить анкерам: браслеты на ночь 25→26, не снимать до 29.05</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="owner-section">
+          <h3>Логистика M2 (до 28.05)</h3>
+          <div class="task" data-task="pm2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Аренда беговой дорожки (~10-20 тыс ₽) — 26.05</div>
+            </div>
+          </div>
+          <div class="task" data-task="pm3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">2 актёра-перформера посменно</div>
+            </div>
+          </div>
+          <div class="task" data-task="pm4">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Найти готовое приложение «Тест Струпа»</div>
+            </div>
+          </div>
+          <div class="task" data-task="pm5">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">2-3 запасных браслета для ротации, дезинфекция</div>
+            </div>
+          </div>
+          <div class="task" data-task="pm6">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Wi-Fi/4G на стенде Startup Village</div>
+            </div>
+          </div>
+          <div class="task" data-task="pm7">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">План Б: замена якоря если RMSSD в красной зоне</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="owner-section">
+          <h3>Стратегические (post-Village)</h3>
+          <div class="task" data-task="pm8">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Privacy / consent для Neiry Unite — сессия с юристом</div>
+            </div>
+          </div>
+          <div class="task" data-task="pm9">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Роадмап Neiry Headband / tVNS</div>
+            </div>
+          </div>
+          <div class="task" data-task="pm10">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Группы / Сравнение / Инсайты — отдельный брейншторм</div>
+            </div>
+          </div>
+          <div class="task" data-task="pm11">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Решить нужны ли блоки B-C-D-E из BRIEF до/после Village</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KIRILL -->
+      <div class="owner-lane">
+        <h2><span class="icon">⚙️</span> Кирилл · Backend + Mobile</h2>
+        <div class="role">Endpoints · APK · RMSSD · M3 алерты</div>
+
+        <div class="owner-section">
+          <h3>Сегодня (25.05, пн) — 3 backend-задачи</h3>
+          <div class="task" data-task="k1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Утилита: двухступенчатый фильтр R-R (медиана 20% → перцентиль 5/95) + расчёт ИН Баевского</div>
+            </div>
+          </div>
+          <div class="task" data-task="k2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text"><span class="mono">POST /admin/seed-rr</span> (RMSSD/SDNN + ИН с фильтром) — готов к ночному sync анкеров</div>
+            </div>
+          </div>
+          <div class="task" data-task="k3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Заглушки 3 эндпоинтов drill-down Баевского (<span class="mono">/start · /next-phase · /result</span>)</div>
+            </div>
+          </div>
+          <div class="task" data-task="k3b">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Быть на связи в первой половине — техподдержка команды на паринге</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="owner-section">
+          <h3>Завтра (26.05, вт) — финализация</h3>
+          <div class="task" data-task="k4">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Полная логика drill-down Баевского (3 фазы: baseline / Stroop / treadmill)</div>
+            </div>
+          </div>
+          <div class="task" data-task="k5">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">NSI на бэке (формула <span class="mono">100 − (BPM − Baseline) × 2</span>, clamp 0..100, ↑ = ↑ стресс) + цветовые зоны 🟢 0–39 / 🟡 40–59 / 🔴 60–100</div>
+            </div>
+          </div>
+          <div class="task" data-task="k5b">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Smoke-test вечером 26.05 — сквозной прогон браслет → backend → плазма</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="owner-section">
+          <h3>Mobile pairing + handoff на плазму (бриф A1 §3.3, добавлено 25.05)</h3>
+          <div class="task" data-task="k6">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Экран mobile name_input — input «Как тебя зовут?» → POST имени гостя как <span class="mono">participant.display_name</span> (скип для анкеров)</div>
+            </div>
+          </div>
+          <div class="task" data-task="k7">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Session state machine: <span class="mono">pairing → name_input → calibrating → active → ended</span></div>
+            </div>
+          </div>
+          <div class="task" data-task="k8">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Калибровка 12 сек (расширение до 16 при недостатке семплов) + текст «Чуть дольше, ловим baseline»</div>
+            </div>
+          </div>
+          <div class="task" data-task="k9">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">BLE lifecycle: heartbeat 2 сек · lost timeout 5 сек (окно не обнуляется) · hard disconnect 30 сек</div>
+            </div>
+          </div>
+          <div class="task" data-task="k10">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">WebSocket-схема: 11 событий backend→plasma + 2 команды plasma→backend</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="owner-section">
+          <h3>M3 (после выставки)</h3>
+          <div class="task" data-task="k7">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Celery: 4 типа event-алертов (Sleep/Illness/Burnout/Recovery)</div>
+            </div>
+          </div>
+          <div class="task" data-task="k8">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Backend для Neiry Unite (Никитин v4)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UX/UI -->
+      <div class="owner-lane">
+        <h2><span class="icon">🎨</span> UX/UI Designer</h2>
+        <div class="role">Mobile полировка · Kiosk · Neiry Unite</div>
+
+        <div class="owner-section">
+          <h3>Mobile UI (жаргон → язык пользователя)</h3>
+          <div class="task" data-task="u1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text"><span class="mono">mobile-hrv-sync</span>: убрать <span class="mono">readOriginData</span>, «пакет 50 из 158»</div>
+            </div>
+          </div>
+          <div class="task" data-task="u2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text"><span class="mono">mobile-hrv-result</span>: <b>RMSSD-блок наверху</b> над графиком + светофор</div>
+            </div>
+          </div>
+          <div class="task" data-task="u3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">«2230 HRV · RR/resRates: 169 знач.» → человеческий язык</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="owner-section">
+          <h3>Kiosk / плазма M2</h3>
+          <div class="task" data-task="u4">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">L4-прототип → <span class="mono">m2/kiosk.html</span> (шкала + модули)</div>
+            </div>
+          </div>
+          <div class="task" data-task="u5">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">5-й модуль HRV ночной (RMSSD + светофор + caption)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="owner-section">
+          <h3>Neiry Unite v4</h3>
+          <div class="task" data-task="u6">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Убрать Activity из KPI strip (5 → 4 cards)</div>
+            </div>
+          </div>
+          <div class="task" data-task="u7">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Activity остаётся в drill-down side-panel</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALEXEY -->
+      <div class="owner-lane">
+        <h2><span class="icon">🏃</span> Алексей · Илья · Перформер</h2>
+        <div class="role">Якоря HRV · 3 ночи мониторинга</div>
+
+        <div class="owner-section">
+          <h3>Сегодня (25.05, пн, вечер)</h3>
+          <div class="task" data-task="a1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Спарить браслеты с Android-телефонами по фиксированной схеме (1↔1)</div>
+            </div>
+          </div>
+          <div class="task" data-task="a2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Зарядить браслеты и телефоны до 100%</div>
+            </div>
+          </div>
+          <div class="task" data-task="a3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text"><b>Надеть браслеты, не снимать до 29.05 (4 ночи: 25→29)</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="owner-section">
+          <h3>Ежедневно (26–28.05)</h3>
+          <div class="task" data-task="a4">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Утром: sync через dev-UI, проверка чтения данных</div>
+            </div>
+          </div>
+          <div class="task" data-task="a5">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Записывать когда снимали (душ) — для понимания gaps</div>
+            </div>
+          </div>
+          <div class="task" data-task="a6">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div class="task-text">Илья: использует Android от команды (iOS bridge снят со скоупа M2)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VIEW: QUESTIONS -->
+  <div class="view" data-view="questions">
+    <div class="questions-grid">
+
+      <div class="question-card" data-q="q1">
+        <div class="question-num mono">Q1 / 10</div>
+        <div class="question-text">Костюм перформера: пиджак vs джинсы+рубашка (визуальный код «офис»)</div>
+        <div class="question-meta">
+          <span class="q-category logistics">Логистика</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q2">
+        <div class="question-num mono">Q2 / 10</div>
+        <div class="question-text">2 или 3 одновременных гостя на плазме — финальное число от Кирилла</div>
+        <div class="question-meta">
+          <span class="q-category tech">Tech</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q3">
+        <div class="question-num mono">Q3 / 10</div>
+        <div class="question-text">HBandSDK: 3 BLE-connection с одного телефона — поддерживает или нет?</div>
+        <div class="question-meta">
+          <span class="q-category tech">Tech</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q4">
+        <div class="question-num mono">Q4 / 10</div>
+        <div class="question-text">Конкретные модели 3 Android-телефонов и минимальная Android-версия</div>
+        <div class="question-meta">
+          <span class="q-category logistics">Логистика</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q5">
+        <div class="question-num mono">Q5 / 10</div>
+        <div class="question-text">SIM / Wi-Fi на стенде Startup Village</div>
+        <div class="question-meta">
+          <span class="q-category logistics">Логистика</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q6">
+        <div class="question-num mono">Q6 / 10</div>
+        <div class="question-text">iOS bridge для Ильи — готов или fallback через Алексея?</div>
+        <div class="question-meta">
+          <span class="q-category tech">Tech</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q7">
+        <div class="question-num mono">Q7 / 10</div>
+        <div class="question-text">Если RMSSD у якоря критика 24.05 — план Б по замене?</div>
+        <div class="question-meta">
+          <span class="q-category fallback">Fallback</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q8">
+        <div class="question-num mono">Q8 / 10</div>
+        <div class="question-text">Privacy / consent в Neiry Unite — когда обсуждаем?</div>
+        <div class="question-meta">
+          <span class="q-category strategy">Стратегия</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q9">
+        <div class="question-num mono">Q9 / 10</div>
+        <div class="question-text">Neiry Headband / tVNS roadmap — когда готовы для drill-down рекомендаций?</div>
+        <div class="question-meta">
+          <span class="q-category strategy">Стратегия</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q10">
+        <div class="question-num mono">Q10 / 10</div>
+        <div class="question-text">KPI strip Neiry Unite на пустой команде (нет данных) — onboarding UX?</div>
+        <div class="question-meta">
+          <span class="q-category strategy">Стратегия</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VIEW: ARTIFACTS -->
+  <div class="view" data-view="artifacts">
+    <div class="artifacts-list">
+      <a class="artifact-row" href="../2026-05-22-task-package.md">
+        <div class="artifact-icon">📦</div>
+        <div class="artifact-title">2026-05-22-task-package.md</div>
+        <div class="artifact-desc">Полный пакет задач: календарь, исполнители, открытые вопросы</div>
+      </a>
+      <a class="artifact-row" href="../2026-05-18-ui-i-metriki.md">
+        <div class="artifact-icon">🧠</div>
+        <div class="artifact-title">2026-05-18-ui-i-metriki.md</div>
+        <div class="artifact-desc">Брейншторм: 5 подблоков с обоснованиями (Wow-сценарий, L4, HRV, Mobile UI, Neiry Unite)</div>
+      </a>
+      <a class="artifact-row" href="2026-05-18-m2-plasma-layout-l4.html">
+        <div class="artifact-icon">🎨</div>
+        <div class="artifact-title">2026-05-18-m2-plasma-layout-l4.html</div>
+        <div class="artifact-desc">Standalone L4-прототип плазмы 42" (открывается без сервера)</div>
+      </a>
+      <a class="artifact-row" href="../../metrics/hrv.md">
+        <div class="artifact-icon">💓</div>
+        <div class="artifact-title">metrics/hrv.md</div>
+        <div class="artifact-desc">RMSSD: формула, шкала 60-100/30-60/15-25/&lt;15, окно 00:00–07:00</div>
+      </a>
+      <a class="artifact-row" href="../../metrics/rhr.md">
+        <div class="artifact-icon">🫀</div>
+        <div class="artifact-title">metrics/rhr.md</div>
+        <div class="artifact-desc">RHR: шкала, окно, формула Early Illness Alert</div>
+      </a>
+      <a class="artifact-row" href="../../metrics/vitro-metrics-registry.md">
+        <div class="artifact-icon">📊</div>
+        <div class="artifact-title">metrics/vitro-metrics-registry.md</div>
+        <div class="artifact-desc">Vitro Metrics Registry v0.2 — реестр 58 метрик</div>
+      </a>
+      <a class="artifact-row" href="../../../docs_web/wireframes/m1/">
+        <div class="artifact-icon">📱</div>
+        <div class="artifact-title">docs_web/wireframes/m1/</div>
+        <div class="artifact-desc">Mobile UI baseline для M2 (M1 wireframes)</div>
+      </a>
+      <a class="artifact-row" href="../../../docs_web/wireframes/m2/kiosk.html">
+        <div class="artifact-icon">🖥️</div>
+        <div class="artifact-title">docs_web/wireframes/m2/kiosk.html</div>
+        <div class="artifact-desc">M2 Kiosk: IDLE / ACTIVE / PENDING_CLAIM (нужно дополнить L4 + HRV-модуль)</div>
+      </a>
+      <a class="artifact-row" href="../../sources/metrics-audit-v0.1.txt">
+        <div class="artifact-icon">🔍</div>
+        <div class="artifact-title">sources/metrics-audit-v0.1.txt</div>
+        <div class="artifact-desc">Аудит Никиты по 58 метрикам, trust-маркеры, 6 архитектурных слоёв</div>
+      </a>
+      <a class="artifact-row" href="../../../knowledge-base/milestones/m2.md">
+        <div class="artifact-icon">🎯</div>
+        <div class="artifact-title">knowledge-base/milestones/m2.md</div>
+        <div class="artifact-desc">M2 strategy: medical traffic light, PIN-flow</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>Neiry · PM Dashboard · v1.0 · 2026-05-22</div>
+    <div>
+      <button class="reset-btn" id="reset-btn">⟲ Сбросить состояние</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // === Time & countdown ===
+  function updateClock() {
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('now-time').textContent = `${hh}:${mm}`;
+
+    const days = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+    const months = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+    document.getElementById('today-date').textContent =
+      `${days[now.getDay()]} · ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+    // Countdown to 28.05.2026 (Startup Village day 1)
+    const village = new Date(2026, 4, 28);
+    const diff = Math.ceil((village - now) / (1000 * 60 * 60 * 24));
+    document.getElementById('countdown').textContent = diff > 0 ? diff : 0;
+
+    // Current stage
+    const stageEl = document.getElementById('current-stage');
+    const stageDesc = document.getElementById('current-stage-desc');
+    const day = now.getDate();
+    const month = now.getMonth() + 1;
+    if (month < 5 || (month === 5 && day < 24)) {
+      stageEl.textContent = 'Pre-flight'; stageDesc.textContent = 'Брейншторм закрыт';
+    } else if (month === 5 && day === 24) {
+      stageEl.textContent = 'Done'; stageDesc.textContent = 'Брифы отправлены, Кирилл взял в работу';
+    } else if (month === 5 && day === 25) {
+      stageEl.textContent = 'Спринт · день 1/2';
+      stageDesc.textContent = 'Параллельно: PM (риски + flow) · Кирилл (backend) · команда (паринг)';
+    } else if (month === 5 && day === 26) {
+      stageEl.textContent = 'Спринт · день 2/2';
+      stageDesc.textContent = 'Sync #1 + drill-down + smoke-test вечером';
+    } else if (month === 5 && day === 27) {
+      stageEl.textContent = 'Стыковка'; stageDesc.textContent = 'Прогон питча в офисе с Никитой';
+    } else if (month === 5 && (day === 28 || day === 29)) {
+      stageEl.textContent = '🚀 LIVE'; stageDesc.textContent = 'Startup Village · DEMO';
+    } else {
+      stageEl.textContent = 'Post-Village'; stageDesc.textContent = 'Unified риск-док · M3 · Unite';
+    }
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+
+  // === Tabs ===
+  const tabs = document.querySelectorAll('.tab');
+  const views = document.querySelectorAll('.view');
+  function switchTab(name) {
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    views.forEach(v => v.classList.toggle('active', v.dataset.view === name));
+  }
+  tabs.forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const map = { '1': 'calendar', '2': 'owners', '3': 'questions', '4': 'artifacts' };
+    if (map[e.key]) switchTab(map[e.key]);
+  });
+
+  // === Tasks (localStorage) ===
+  const STORAGE_PREFIX = 'neiry-pm-task-';
+  const Q_PREFIX = 'neiry-pm-q-';
+
+  function loadTasks() {
+    document.querySelectorAll('.task').forEach(task => {
+      const id = task.dataset.task;
+      const checkbox = task.querySelector('.task-check');
+      if (!id || !checkbox) return;
+      const saved = localStorage.getItem(STORAGE_PREFIX + id) === '1';
+      checkbox.checked = saved;
+      task.classList.toggle('done', saved);
+    });
+    updateCounters();
+  }
+
+  function loadQuestions() {
+    document.querySelectorAll('.question-card').forEach(q => {
+      const id = q.dataset.q;
+      if (!id) return;
+      const saved = localStorage.getItem(Q_PREFIX + id) === '1';
+      q.classList.toggle('resolved', saved);
+    });
+    updateCounters();
+  }
+
+  function updateCounters() {
+    const tasks = document.querySelectorAll('.task');
+    const total = tasks.length;
+    let done = 0;
+    tasks.forEach(t => {
+      const checkbox = t.querySelector('.task-check');
+      if (checkbox && checkbox.checked) done++;
+    });
+    document.getElementById('tasks-done').textContent = done;
+    document.getElementById('tasks-total').textContent = total;
+    const pct = total ? (done / total * 100) : 0;
+    document.getElementById('progress-fill').style.width = pct + '%';
+
+    const qResolved = document.querySelectorAll('.question-card.resolved').length;
+    const qTotal = document.querySelectorAll('.question-card').length;
+    document.getElementById('questions-open').textContent = qTotal - qResolved;
+    document.querySelector('[data-tab="questions"] .tab-count').textContent = qTotal - qResolved;
+  }
+
+  document.querySelectorAll('.task-check').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      const task = e.target.closest('.task');
+      const id = task.dataset.task;
+      if (id) localStorage.setItem(STORAGE_PREFIX + id, e.target.checked ? '1' : '0');
+      task.classList.toggle('done', e.target.checked);
+      updateCounters();
+    });
+  });
+
+  document.querySelectorAll('.task').forEach(task => {
+    task.addEventListener('click', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      const cb = task.querySelector('.task-check');
+      if (cb) {
+        cb.checked = !cb.checked;
+        cb.dispatchEvent(new Event('change'));
+      }
+    });
+  });
+
+  document.querySelectorAll('.q-resolve-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const card = btn.closest('.question-card');
+      const id = card.dataset.q;
+      const isResolved = card.classList.toggle('resolved');
+      if (id) localStorage.setItem(Q_PREFIX + id, isResolved ? '1' : '0');
+      btn.textContent = isResolved ? '✓ Resolved' : 'Resolved';
+      updateCounters();
+    });
+  });
+
+  // === Reset ===
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    if (!confirm('Сбросить все галочки и resolved-вопросы?')) return;
+    Object.keys(localStorage)
+      .filter(k => k.startsWith(STORAGE_PREFIX) || k.startsWith(Q_PREFIX))
+      .forEach(k => localStorage.removeItem(k));
+    loadTasks();
+    loadQuestions();
+  });
+
+  // === Init ===
+  loadTasks();
+  loadQuestions();
+</script>
+
+</body>
+</html>
