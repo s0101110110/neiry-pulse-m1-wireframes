@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1.0">
+<title>Neiry Pulse · Kiosk v2 · Live Demo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+  /* ============================================
+     SHADCN-STYLE SEMANTIC TOKENS (dark only — kiosk)
+     ============================================ */
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 6%;
+    --card-foreground: 0 0% 98%;
+    --primary: 336 76% 45%;           /* wine #831843 (lightened for dark) */
+    --primary-hover: 336 76% 52%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 348 100% 54%;      /* #FF1744 */
+    --destructive-foreground: 0 0% 100%;
+    --success: 151 100% 45%;          /* #00E676 */
+    --warning: 42 100% 50%;           /* #FFB300 */
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 336 76% 45%;
+    --radius: 0.75rem;
+
+    --chart-1: 217 91% 60%;
+    --chart-2: 151 100% 45%;
+    --chart-3: 271 81% 56%;
+    --chart-4: 42 100% 50%;
+    --chart-5: 173 80% 40%;
+
+    --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --font-display: 'Onest', 'Space Grotesk', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+  .font-display { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.04em; }
+  .font-data    { font-family: var(--font-mono); }
+
+  /* Token helpers */
+  .bg-background        { background-color: hsl(var(--background)); }
+  .bg-card              { background-color: hsl(var(--card)); }
+  .bg-muted             { background-color: hsl(var(--muted)); }
+  .bg-primary           { background-color: hsl(var(--primary)); }
+  .bg-secondary         { background-color: hsl(var(--secondary)); }
+  .bg-destructive       { background-color: hsl(var(--destructive)); }
+  .bg-accent            { background-color: hsl(var(--accent)); }
+  .bg-success           { background-color: hsl(var(--success)); }
+  .bg-warning           { background-color: hsl(var(--warning)); }
+  .bg-chart-1           { background-color: hsl(var(--chart-1)); }
+  .bg-chart-2           { background-color: hsl(var(--chart-2)); }
+  .bg-chart-4           { background-color: hsl(var(--chart-4)); }
+
+  .text-foreground         { color: hsl(var(--foreground)); }
+  .text-muted-foreground   { color: hsl(var(--muted-foreground)); }
+  .text-primary            { color: hsl(var(--primary)); }
+  .text-primary-foreground { color: hsl(var(--primary-foreground)); }
+  .text-destructive        { color: hsl(var(--destructive)); }
+  .text-success            { color: hsl(var(--success)); }
+  .text-warning            { color: hsl(var(--warning)); }
+
+  .border-border    { border-color: hsl(var(--border)); }
+  .border-primary   { border-color: hsl(var(--primary)); }
+
+  /* Badge */
+  .badge {
+    display: inline-flex; align-items: center;
+    padding: 4px 12px;
+    font-size: 12px; font-weight: 600;
+    border-radius: 9999px;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 9999px;
+    margin-right: 8px;
+    display: inline-block;
+    background: currentColor;
+    opacity: 0.95;
+  }
+  .status-norm     { background: hsl(var(--success) / 0.18);     color: hsl(var(--success)); }
+  .status-elevated { background: hsl(var(--warning) / 0.18);     color: hsl(var(--warning)); }
+  .status-high     { background: hsl(var(--destructive) / 0.18); color: hsl(var(--destructive)); }
+  .status-idle     { background: hsl(var(--muted));              color: hsl(var(--muted-foreground)); }
+  .status-done     { background: hsl(var(--primary) / 0.22);     color: hsl(var(--primary-foreground)); }
+
+  /* Heart pulse animation */
+  @keyframes heart-pulse {
+    0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 0 hsl(var(--primary) / 0)); }
+    50%      { transform: scale(1.12); filter: drop-shadow(0 0 16px hsl(var(--primary) / 0.55)); }
+  }
+  .animate-heart { animation: heart-pulse 0.85s ease-in-out infinite; will-change: transform, filter; }
+
+  /* Live blink dot */
+  @keyframes live-blink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+  }
+  .live-dot { animation: live-blink 1.4s ease-in-out infinite; }
+
+  /* BPM digit subtle pulse on update */
+  @keyframes bpm-tick {
+    0%   { transform: scale(1.015); }
+    100% { transform: scale(1); }
+  }
+  .bpm-value { display: inline-block; transition: color 200ms; }
+  .bpm-value.tick { animation: bpm-tick 220ms ease-out; }
+
+  /* Card state opacity */
+  .card-anchor {
+    transition: opacity 280ms ease, filter 280ms ease;
+  }
+  .card-anchor[data-active="false"] { opacity: 0.55; filter: grayscale(0.4); }
+
+  /* Slot visibility per state — defaults hidden, opted-in via state */
+  .when-idle, .when-active, .when-done {
+    display: none;
+    flex-direction: column;
+    flex: 1 1 0%;
+    min-height: 0;
+  }
+
+  /* IDLE: all 3 cards show placeholder */
+  body[data-state="idle"]      [data-id="kostya"] .when-idle,
+  body[data-state="idle"]      [data-id="alexey"] .when-idle,
+  body[data-state="idle"]      [data-id="guest"]  .when-idle { display: flex; align-items: center; justify-content: center; text-align: center; gap: 1rem; }
+
+  /* ACTIVE-2: anchors active, guest idle */
+  body[data-state="active-2"]  [data-id="kostya"] .when-active,
+  body[data-state="active-2"]  [data-id="alexey"] .when-active { display: flex; }
+  body[data-state="active-2"]  [data-id="guest"]  .when-idle   { display: flex; align-items: center; justify-content: center; text-align: center; gap: 1rem; }
+
+  /* ACTIVE-3: all active */
+  body[data-state="active-3"]  .when-active { display: flex; }
+
+  /* PENDING-CLAIM: anchors active, guest = done */
+  body[data-state="pending-claim"] [data-id="kostya"] .when-active,
+  body[data-state="pending-claim"] [data-id="alexey"] .when-active { display: flex; }
+  body[data-state="pending-claim"] [data-id="guest"]  .when-done   { display: flex; align-items: center; justify-content: center; text-align: center; gap: 1rem; }
+
+  /* Card grayed-out when guest is idle in active-2 (anchors stay full opacity) */
+  body[data-state="active-2"]      [data-id="guest"]  { opacity: 0.78; }
+  body[data-state="idle"]          .card-anchor       { opacity: 0.78; }
+  body[data-state="pending-claim"] [data-id="guest"]  { opacity: 0.92; }
+
+  /* QR modal — only on pending-claim */
+  .qr-modal {
+    display: none;
+    position: fixed; inset: 0; z-index: 50;
+    align-items: center; justify-content: center;
+    background: hsla(240, 10%, 2%, 0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: modal-fade 240ms ease forwards;
+  }
+  body[data-state="pending-claim"] .qr-modal { display: flex; }
+  @keyframes modal-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes modal-pop {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .qr-modal > .qr-card {
+    animation: modal-pop 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Dev-bar button states */
+  .dev-btn {
+    transition: background-color 120ms, color 120ms;
+  }
+  .dev-btn[data-active="true"] {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+  .dev-btn[data-active="false"] {
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+  }
+  .dev-btn[data-active="false"]:hover {
+    background: hsl(var(--accent));
+    color: hsl(var(--foreground));
+  }
+</style>
+</head>
+<body data-state="active-3" class="h-screen overflow-hidden flex flex-col">
+
+  <!-- HEADER (≈ 8% viewport height = ~86px) -->
+  <header class="shrink-0 h-[86px] px-10 border-b border-border bg-card/40 flex items-center justify-between gap-6">
+    <!-- Left: logo + status -->
+    <div class="flex items-center gap-5">
+      <!-- Neiry wordmark (inline SVG, currentColor = foreground) -->
+      <svg viewBox="0 0 733 280" class="h-7 w-auto text-foreground" aria-hidden="true">
+        <path fill="currentColor" fill-rule="evenodd" d="M364.3,0v45.5h53V0h-53ZM363.9,65.2v156.5h53.8V65.2h-53.8ZM530.9,64.3h14.2v49.6h-20.8c-9.5,0-16.3,2.2-20.6,6.7-4.2,4.4-6.3,11.6-6.3,21.4v79.7h-53.8V65.2h35.9l8.4,17.4c10.4-12.2,24.8-18.2,43.1-18.2l-.1-.1ZM675.1,65.2h57.9l-65.4,149.6c-10.8,24.3-22,41.3-33.6,50.7-11.6,9.6-27.3,14.5-47.2,14.5h-18.5v-46.4h14.7c10.2,0,17.5-1.6,22-4.9,4.4-3.3,8.5-10,12.2-20l-64.5-143.5h58.4l33,86.1,31-86.1h0ZM342.4,142c0,4.4-.4,9.2-1.2,14.2h-116.1c1.7,8.9,5.3,15.6,10.7,20.3,5.6,4.6,12.6,7,21.1,7s8.2-.6,11.9-1.7c3.7-1.2,6.8-2.8,9.6-4.9,2.9-2.3,5.2-5,7-8.1h53.5c-5.4,18-15.5,32.2-30.4,42.6-14.7,10.5-31.8,15.6-51.5,15.6s-44.6-7.9-60.8-23.8c-16-16.1-24-35.9-24-59.7s3.7-30.1,11-42.9c7.3-12.8,17.5-22.7,30.4-29.9s27.4-10.7,43.4-10.7,31.3,3.7,44.3,11c13.1,7.2,23.3,17,30.4,29.6,7.1,12.4,10.7,26.2,10.7,41.5h0v-.1ZM257.1,102.3c-7.7,0-14.3,2.1-19.7,6.4-5.2,4-9,10-11.3,17.7h63.4c-4.8-16.1-15.6-24-32.4-24v-.1ZM137.8,78.6c-10.8-12-25.3-18-43.4-18s-36.9,7-49.2,20.9l-7.5-16.3H0v156.5h53.8v-83.5c0-6.8,1-12.5,2.9-17.1,2.1-4.9,5.1-8.5,9-11,4-2.5,8.9-3.8,14.5-3.8,13.5,0,20.3,9.1,20.3,27.3v88.1h53.8v-95.4c0-19.9-5.5-35.9-16.5-47.8h0v.1Z"/>
+      </svg>
+      <span class="text-muted-foreground/40 text-xl">·</span>
+      <div class="flex items-center gap-3">
+        <span class="w-2 h-2 rounded-full bg-success live-dot" aria-hidden="true"></span>
+        <span class="text-foreground text-sm font-medium">Live Demo · Startup Village 2026</span>
+      </div>
+    </div>
+
+    <!-- Right: dev-bar -->
+    <div class="flex items-center gap-2">
+      <span class="text-[10px] uppercase tracking-widest text-muted-foreground font-data mr-3">dev · state</span>
+      <button data-state="idle"          class="dev-btn px-3 py-1.5 text-xs font-semibold rounded-md">IDLE</button>
+      <button data-state="active-2"      class="dev-btn px-3 py-1.5 text-xs font-semibold rounded-md">ACTIVE 2</button>
+      <button data-state="active-3"      class="dev-btn px-3 py-1.5 text-xs font-semibold rounded-md">ACTIVE 3</button>
+      <button data-state="pending-claim" class="dev-btn px-3 py-1.5 text-xs font-semibold rounded-md">PENDING CLAIM</button>
+    </div>
+  </header>
+
+  <!-- MAIN (≈ 78% — 3 anchor cards) -->
+  <main class="flex-1 min-h-0 px-10 py-8 grid grid-cols-3 gap-6 overflow-hidden">
+
+    <!-- =========================================
+         CARD: КОСТЯ (Project Lead, anchor)
+         ========================================= -->
+    <article data-id="kostya" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
+      <!-- Top: avatar + name + role -->
+      <header class="flex items-center gap-4 mb-2">
+        <div class="w-12 h-12 rounded-full bg-muted flex items-center justify-center font-display text-xl text-foreground shrink-0">К</div>
+        <div class="min-w-0">
+          <p class="font-display text-[26px] leading-tight text-foreground">Костя</p>
+          <p class="text-xs text-muted-foreground tracking-wide">Project Lead · якорь</p>
+        </div>
+        <span class="ml-auto text-[10px] uppercase tracking-widest text-muted-foreground font-data">Neiry.Pulse #1</span>
+      </header>
+
+      <!-- IDLE placeholder -->
+      <div class="when-idle">
+        <span class="text-5xl animate-heart text-primary">&#9829;</span>
+        <p class="text-muted-foreground text-base">Надень браслет,<br>чтобы начать</p>
+      </div>
+
+      <!-- ACTIVE content -->
+      <div class="when-active">
+        <!-- BPM hero -->
+        <div class="flex items-baseline justify-center gap-3 mb-2">
+          <span class="font-display text-[104px] leading-none text-foreground bpm-value" data-bpm="kostya">142</span>
+          <span class="font-data text-sm text-muted-foreground">BPM</span>
+        </div>
+        <p class="text-center text-[11px] uppercase tracking-widest text-muted-foreground font-data mb-3">
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-success live-dot mr-1.5 align-middle"></span>
+          live
+        </p>
+
+        <!-- NCI-gauge (Apple Rings 270° arc) — NCI=22, success -->
+        <div class="flex items-center justify-center my-2">
+          <div class="relative w-44 h-44">
+            <svg viewBox="0 0 180 180" class="w-44 h-44">
+              <!-- track -->
+              <path d="M 35 145 A 70 70 0 1 1 145 145"
+                    fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
+              <!-- fill: offset = 330 * (1 - 22/100) = 257 -->
+              <path d="M 35 145 A 70 70 0 1 1 145 145"
+                    fill="none" stroke="hsl(var(--success))" stroke-width="14" stroke-linecap="round"
+                    stroke-dasharray="330" stroke-dashoffset="257"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
+              <span class="font-display text-[52px] leading-none" style="color: hsl(var(--success))">22</span>
+              <span class="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Neiry Stress Score</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status pill + R-R sparkline -->
+        <div class="mt-auto pt-3 flex items-center justify-between gap-3">
+          <span class="badge status-norm"><span class="dot"></span>NORM</span>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-data">R-R 60s</span>
+            <svg viewBox="0 0 80 24" style="width:96px;height:28px" data-rr="kostya">
+              <polyline points="0,12 8,8 16,14 24,10 32,12 40,8 48,14 56,10 64,12 72,8 80,12"
+                        fill="none" stroke="hsl(var(--chart-1))" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- =========================================
+         CARD: АЛЕКСЕЙ (B2B Lead, anchor)
+         ========================================= -->
+    <article data-id="alexey" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
+      <header class="flex items-center gap-4 mb-2">
+        <div class="w-12 h-12 rounded-full bg-muted flex items-center justify-center font-display text-xl text-foreground shrink-0">А</div>
+        <div class="min-w-0">
+          <p class="font-display text-[26px] leading-tight text-foreground">Алексей</p>
+          <p class="text-xs text-muted-foreground tracking-wide">B2B Lead · якорь</p>
+        </div>
+        <span class="ml-auto text-[10px] uppercase tracking-widest text-muted-foreground font-data">Neiry.Pulse #2</span>
+      </header>
+
+      <div class="when-idle">
+        <span class="text-5xl animate-heart text-primary">&#9829;</span>
+        <p class="text-muted-foreground text-base">Надень браслет,<br>чтобы начать</p>
+      </div>
+
+      <div class="when-active">
+        <div class="flex items-baseline justify-center gap-3 mb-2">
+          <span class="font-display text-[104px] leading-none text-foreground bpm-value" data-bpm="alexey">78</span>
+          <span class="font-data text-sm text-muted-foreground">BPM</span>
+        </div>
+        <p class="text-center text-[11px] uppercase tracking-widest text-muted-foreground font-data mb-3">
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-success live-dot mr-1.5 align-middle"></span>
+          live
+        </p>
+
+        <!-- NCI = 55, warning. offset = 330*(1-55/100) = 149 -->
+        <div class="flex items-center justify-center my-2">
+          <div class="relative w-44 h-44">
+            <svg viewBox="0 0 180 180" class="w-44 h-44">
+              <path d="M 35 145 A 70 70 0 1 1 145 145"
+                    fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 35 145 A 70 70 0 1 1 145 145"
+                    fill="none" stroke="hsl(var(--warning))" stroke-width="14" stroke-linecap="round"
+                    stroke-dasharray="330" stroke-dashoffset="149"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
+              <span class="font-display text-[52px] leading-none" style="color: hsl(var(--warning))">55</span>
+              <span class="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Neiry Stress Score</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-auto pt-3 flex items-center justify-between gap-3">
+          <span class="badge status-elevated"><span class="dot"></span>ELEVATED</span>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-data">R-R 60s</span>
+            <svg viewBox="0 0 80 24" style="width:96px;height:28px" data-rr="alexey">
+              <polyline points="0,16 8,6 16,18 24,4 32,20 40,6 48,16 56,4 64,18 72,8 80,16"
+                        fill="none" stroke="hsl(var(--chart-4))" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- =========================================
+         CARD: ГОСТЬ (slot #3)
+         ========================================= -->
+    <article data-id="guest" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
+      <header class="flex items-center gap-4 mb-2">
+        <div class="w-12 h-12 rounded-full bg-muted flex items-center justify-center font-display text-xl text-muted-foreground shrink-0">Г</div>
+        <div class="min-w-0">
+          <p class="font-display text-[26px] leading-tight text-foreground">Гость</p>
+          <p class="text-xs text-muted-foreground tracking-wide">slot #3</p>
+        </div>
+        <span class="ml-auto text-[10px] uppercase tracking-widest text-muted-foreground font-data">Neiry.Pulse #3</span>
+      </header>
+
+      <!-- IDLE placeholder -->
+      <div class="when-idle">
+        <span class="text-5xl animate-heart text-primary">&#9829;</span>
+        <p class="text-muted-foreground text-base">Надень браслет,<br>чтобы начать</p>
+        <span class="badge status-idle mt-2"><span class="dot"></span>WAITING</span>
+      </div>
+
+      <!-- ACTIVE — NCI = 42, success -->
+      <div class="when-active">
+        <div class="flex items-baseline justify-center gap-3 mb-2">
+          <span class="font-display text-[104px] leading-none text-foreground bpm-value" data-bpm="guest">88</span>
+          <span class="font-data text-sm text-muted-foreground">BPM</span>
+        </div>
+        <p class="text-center text-[11px] uppercase tracking-widest text-muted-foreground font-data mb-3">
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-success live-dot mr-1.5 align-middle"></span>
+          live
+        </p>
+
+        <!-- NCI=42 → offset = 330*(1-42/100) = 191 -->
+        <div class="flex items-center justify-center my-2">
+          <div class="relative w-44 h-44">
+            <svg viewBox="0 0 180 180" class="w-44 h-44">
+              <path d="M 35 145 A 70 70 0 1 1 145 145"
+                    fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 35 145 A 70 70 0 1 1 145 145"
+                    fill="none" stroke="hsl(var(--success))" stroke-width="14" stroke-linecap="round"
+                    stroke-dasharray="330" stroke-dashoffset="191"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
+              <span class="font-display text-[52px] leading-none" style="color: hsl(var(--success))">42</span>
+              <span class="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Neiry Stress Score</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-auto pt-3 flex items-center justify-between gap-3">
+          <span class="badge status-norm"><span class="dot"></span>NORM</span>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-data">R-R 60s</span>
+            <svg viewBox="0 0 80 24" style="width:96px;height:28px" data-rr="guest">
+              <polyline points="0,12 8,10 16,14 24,8 32,12 40,10 48,14 56,8 64,12 72,10 80,12"
+                        fill="none" stroke="hsl(var(--chart-1))" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- DONE (PENDING_CLAIM) -->
+      <div class="when-done">
+        <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background: hsl(var(--success) / 0.18)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="hsl(var(--success))" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <p class="font-display text-2xl text-foreground">Сессия завершена</p>
+        <p class="text-sm text-muted-foreground max-w-[220px]">Сканируй QR — получи отчёт в Telegram</p>
+        <span class="badge status-done"><span class="dot"></span>READY · CLAIM</span>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- FOOTER (≈ 14%) -->
+  <footer class="shrink-0 h-[150px] px-10 py-5 border-t border-border bg-card/40 flex items-center justify-between gap-10">
+
+    <!-- Left: NCI legend -->
+    <div class="flex flex-col gap-2 min-w-0">
+      <p class="text-[10px] uppercase tracking-widest text-muted-foreground font-data">Neiry Stress Score · легенда</p>
+      <div class="flex items-center gap-6 flex-wrap">
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-3 h-3 rounded-full bg-success"></span>
+          <span class="text-sm text-foreground"><span class="font-data text-success">&le; 30</span> norm</span>
+        </div>
+        <span class="text-muted-foreground/40">·</span>
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-3 h-3 rounded-full bg-warning"></span>
+          <span class="text-sm text-foreground"><span class="font-data text-warning">31&ndash;60</span> elevated</span>
+        </div>
+        <span class="text-muted-foreground/40">·</span>
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-3 h-3 rounded-full bg-destructive"></span>
+          <span class="text-sm text-foreground"><span class="font-data text-destructive">&gt; 60</span> high</span>
+        </div>
+      </div>
+      <p class="text-xs text-muted-foreground">RMSSD + R-R distribution &middot; обновление каждые 5 сек</p>
+    </div>
+
+    <!-- Right: QR + report CTA -->
+    <div class="flex items-center gap-5 shrink-0">
+      <div class="text-right">
+        <p class="font-display text-base text-foreground leading-tight">Подробный отчёт по сессии</p>
+        <p class="text-sm text-muted-foreground">Сканируй QR &rarr; Telegram-бот</p>
+      </div>
+      <!-- QR placeholder 80x80, checker pattern -->
+      <div class="bg-foreground p-1.5 rounded-md">
+        <svg viewBox="0 0 21 21" width="80" height="80" aria-hidden="true">
+          <rect x="0"  y="0"  width="3" height="3" fill="black"/>
+          <rect x="4"  y="0"  width="1" height="1" fill="black"/>
+          <rect x="6"  y="0"  width="2" height="1" fill="black"/>
+          <rect x="10" y="0"  width="1" height="2" fill="black"/>
+          <rect x="13" y="0"  width="2" height="1" fill="black"/>
+          <rect x="18" y="0"  width="3" height="3" fill="black"/>
+
+          <rect x="0"  y="4"  width="1" height="1" fill="black"/>
+          <rect x="2"  y="4"  width="1" height="1" fill="black"/>
+          <rect x="5"  y="4"  width="2" height="2" fill="black"/>
+          <rect x="9"  y="4"  width="1" height="1" fill="black"/>
+          <rect x="11" y="4"  width="2" height="1" fill="black"/>
+          <rect x="14" y="4"  width="1" height="2" fill="black"/>
+          <rect x="18" y="4"  width="1" height="1" fill="black"/>
+          <rect x="20" y="4"  width="1" height="1" fill="black"/>
+
+          <rect x="0"  y="6"  width="3" height="1" fill="black"/>
+          <rect x="5"  y="6"  width="1" height="2" fill="black"/>
+          <rect x="8"  y="6"  width="2" height="2" fill="black"/>
+          <rect x="12" y="6"  width="3" height="1" fill="black"/>
+          <rect x="17" y="6"  width="2" height="2" fill="black"/>
+
+          <rect x="2"  y="9"  width="1" height="2" fill="black"/>
+          <rect x="4"  y="9"  width="2" height="1" fill="black"/>
+          <rect x="7"  y="9"  width="1" height="3" fill="black"/>
+          <rect x="10" y="9"  width="2" height="2" fill="black"/>
+          <rect x="13" y="9"  width="1" height="1" fill="black"/>
+          <rect x="16" y="9"  width="2" height="1" fill="black"/>
+          <rect x="20" y="9"  width="1" height="3" fill="black"/>
+
+          <rect x="0"  y="12" width="2" height="1" fill="black"/>
+          <rect x="4"  y="12" width="1" height="2" fill="black"/>
+          <rect x="9"  y="12" width="2" height="1" fill="black"/>
+          <rect x="14" y="12" width="2" height="2" fill="black"/>
+          <rect x="17" y="12" width="1" height="2" fill="black"/>
+
+          <rect x="0"  y="15" width="1" height="1" fill="black"/>
+          <rect x="2"  y="15" width="3" height="2" fill="black"/>
+          <rect x="6"  y="15" width="1" height="1" fill="black"/>
+          <rect x="8"  y="15" width="2" height="2" fill="black"/>
+          <rect x="11" y="15" width="3" height="1" fill="black"/>
+          <rect x="16" y="15" width="2" height="2" fill="black"/>
+          <rect x="19" y="15" width="2" height="1" fill="black"/>
+
+          <rect x="0"  y="18" width="3" height="3" fill="black"/>
+          <rect x="5"  y="18" width="2" height="2" fill="black"/>
+          <rect x="9"  y="18" width="1" height="3" fill="black"/>
+          <rect x="12" y="18" width="2" height="1" fill="black"/>
+          <rect x="15" y="18" width="1" height="2" fill="black"/>
+          <rect x="18" y="18" width="3" height="3" fill="black"/>
+        </svg>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================
+       QR MODAL — only visible on pending-claim
+       ========================================= -->
+  <div class="qr-modal" role="dialog" aria-modal="true" aria-label="QR для отчёта">
+    <div class="qr-card bg-card border border-border rounded-2xl px-10 py-9 max-w-[420px] w-full mx-6 text-center">
+      <!-- Header -->
+      <div class="flex items-center justify-center gap-2 mb-1">
+        <span class="inline-block w-2 h-2 rounded-full bg-success live-dot"></span>
+        <span class="text-[11px] uppercase tracking-widest text-muted-foreground font-data">отчёт готов</span>
+      </div>
+      <h3 class="font-display text-2xl text-foreground mb-1">Сессия завершена</h3>
+      <p class="text-sm text-muted-foreground mb-6">Сканируй для отчёта в Telegram</p>
+
+      <!-- QR placeholder 240x240 -->
+      <div class="flex justify-center mb-6">
+        <div class="bg-foreground p-3 rounded-xl">
+          <svg viewBox="0 0 21 21" width="216" height="216" aria-hidden="true">
+            <rect x="0"  y="0"  width="3" height="3" fill="black"/>
+            <rect x="4"  y="0"  width="1" height="1" fill="black"/>
+            <rect x="6"  y="0"  width="2" height="1" fill="black"/>
+            <rect x="10" y="0"  width="1" height="2" fill="black"/>
+            <rect x="13" y="0"  width="2" height="1" fill="black"/>
+            <rect x="18" y="0"  width="3" height="3" fill="black"/>
+
+            <rect x="0"  y="4"  width="1" height="1" fill="black"/>
+            <rect x="2"  y="4"  width="1" height="1" fill="black"/>
+            <rect x="5"  y="4"  width="2" height="2" fill="black"/>
+            <rect x="9"  y="4"  width="1" height="1" fill="black"/>
+            <rect x="11" y="4"  width="2" height="1" fill="black"/>
+            <rect x="14" y="4"  width="1" height="2" fill="black"/>
+            <rect x="18" y="4"  width="1" height="1" fill="black"/>
+            <rect x="20" y="4"  width="1" height="1" fill="black"/>
+
+            <rect x="0"  y="6"  width="3" height="1" fill="black"/>
+            <rect x="5"  y="6"  width="1" height="2" fill="black"/>
+            <rect x="8"  y="6"  width="2" height="2" fill="black"/>
+            <rect x="12" y="6"  width="3" height="1" fill="black"/>
+            <rect x="17" y="6"  width="2" height="2" fill="black"/>
+
+            <rect x="2"  y="9"  width="1" height="2" fill="black"/>
+            <rect x="4"  y="9"  width="2" height="1" fill="black"/>
+            <rect x="7"  y="9"  width="1" height="3" fill="black"/>
+            <rect x="10" y="9"  width="2" height="2" fill="black"/>
+            <rect x="13" y="9"  width="1" height="1" fill="black"/>
+            <rect x="16" y="9"  width="2" height="1" fill="black"/>
+            <rect x="20" y="9"  width="1" height="3" fill="black"/>
+
+            <rect x="0"  y="12" width="2" height="1" fill="black"/>
+            <rect x="4"  y="12" width="1" height="2" fill="black"/>
+            <rect x="9"  y="12" width="2" height="1" fill="black"/>
+            <rect x="14" y="12" width="2" height="2" fill="black"/>
+            <rect x="17" y="12" width="1" height="2" fill="black"/>
+
+            <rect x="0"  y="15" width="1" height="1" fill="black"/>
+            <rect x="2"  y="15" width="3" height="2" fill="black"/>
+            <rect x="6"  y="15" width="1" height="1" fill="black"/>
+            <rect x="8"  y="15" width="2" height="2" fill="black"/>
+            <rect x="11" y="15" width="3" height="1" fill="black"/>
+            <rect x="16" y="15" width="2" height="2" fill="black"/>
+            <rect x="19" y="15" width="2" height="1" fill="black"/>
+
+            <rect x="0"  y="18" width="3" height="3" fill="black"/>
+            <rect x="5"  y="18" width="2" height="2" fill="black"/>
+            <rect x="9"  y="18" width="1" height="3" fill="black"/>
+            <rect x="12" y="18" width="2" height="1" fill="black"/>
+            <rect x="15" y="18" width="1" height="2" fill="black"/>
+            <rect x="18" y="18" width="3" height="3" fill="black"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Close button -->
+      <button id="qr-close" class="px-6 py-2.5 rounded-md bg-secondary text-secondary-foreground text-sm font-semibold hover:bg-accent transition-colors">
+        Закрыть
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================
+       SCRIPTS — state-switcher + fake live BPM
+       ============================================ -->
+  <script>
+    (function () {
+      const STATES = ['idle', 'active-2', 'active-3', 'pending-claim'];
+      const body   = document.body;
+      const btns   = document.querySelectorAll('.dev-btn');
+
+      function setState(state) {
+        if (!STATES.includes(state)) return;
+        body.dataset.state = state;
+        btns.forEach(b => b.setAttribute('data-active', b.dataset.state === state ? 'true' : 'false'));
+
+        // update per-card data-active for grayscale effect
+        const guest = document.querySelector('[data-id="guest"]');
+        if (guest) guest.setAttribute('data-active', state === 'idle' ? 'false' : 'true');
+      }
+
+      btns.forEach(b => b.addEventListener('click', () => setState(b.dataset.state)));
+
+      // Init dev-bar state attrs to match body
+      setState(body.dataset.state || 'active-3');
+
+      // QR modal close — return to active-2 (guest disappears)
+      const closeBtn = document.getElementById('qr-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => setState('active-2'));
+      }
+
+      // ========================================
+      // Fake live BPM (±2 BPM each 1.5s)
+      // ========================================
+      const baseBPMs = { kostya: 142, alexey: 78, guest: 88 };
+      const VARIANCE = 2;
+
+      function tickBPM() {
+        const state = body.dataset.state;
+        if (state !== 'active-2' && state !== 'active-3' && state !== 'pending-claim') return;
+        ['kostya', 'alexey', 'guest'].forEach(id => {
+          // guest is not "live" in active-2 or pending-claim
+          if (id === 'guest' && state !== 'active-3') return;
+          const el = document.querySelector(`[data-bpm="${id}"]`);
+          if (!el) return;
+          const delta  = (Math.random() - 0.5) * 2 * VARIANCE;
+          const newBPM = Math.round(baseBPMs[id] + delta);
+          el.textContent = newBPM;
+          // little tick animation
+          el.classList.remove('tick');
+          // force reflow to restart
+          void el.offsetWidth;
+          el.classList.add('tick');
+        });
+      }
+      setInterval(tickBPM, 1500);
+    })();
+  </script>
+
+</body>
+</html>
