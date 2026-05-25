@@ -21,6 +21,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
     --primary: 336 76% 33%;          /* wine #831843 — Neiry brand accent (НЕ менять) */
+    --primary-hover: 336 76% 28%;    /* hover-state для primary в light-теме */
     --primary-foreground: 0 0% 98%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -50,6 +51,7 @@
     --popover: 240 10% 6%;
     --popover-foreground: 0 0% 98%;
     --primary: 336 76% 45%;          /* wine, чуть осветлен для тёмного фона */
+    --primary-hover: 336 76% 52%;    /* hover-state для primary в dark-теме */
     --primary-foreground: 0 0% 98%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
@@ -118,8 +120,8 @@
 
   /* Heart pulse animation */
   @keyframes heart-pulse {
-    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(190,24,93,0)); }
-    50% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(190,24,93,0.55)); }
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 hsl(var(--primary) / 0)); }
+    50% { transform: scale(1.15); filter: drop-shadow(0 0 12px hsl(var(--primary) / 0.55)); }
   }
   .animate-heart { animation: heart-pulse 0.75s ease-in-out infinite; will-change: transform, filter; }
 
@@ -171,8 +173,8 @@
   .btn-md { height: 38px; padding: 0 16px; font-size: 14px; border-radius: 6px; }
   .btn-lg { height: 44px; padding: 0 20px; font-size: 15px; border-radius: 8px; }
   .btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
-  .btn-primary:hover:not(:disabled) { background: hsl(336 76% 28%); }
-  .dark .btn-primary:hover:not(:disabled) { background: hsl(336 76% 52%); }
+  .btn-primary:hover:not(:disabled) { background: hsl(var(--primary-hover)); }
+  .btn-primary--hover-demo { background: hsl(var(--primary-hover)); }
   .btn-secondary { background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); }
   .btn-secondary:hover:not(:disabled) { background: hsl(var(--muted)); filter: brightness(0.96); }
   .btn-ghost { background: transparent; color: hsl(var(--foreground)); }
@@ -197,6 +199,7 @@
 
   /* Badge */
   .badge { display: inline-flex; align-items: center; padding: 2px 9px; font-size: 11px; font-weight: 600; border-radius: 9999px; line-height: 1.5; letter-spacing: 0.02em; border: 1px solid transparent; }
+  .badge-outline { border-color: hsl(var(--border)); }
 
   /* Card shadow */
   .shadow-sm-token { box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
@@ -232,8 +235,8 @@
     <div class="flex items-center gap-2">
       <span class="text-xs text-muted-foreground hidden sm:inline">Тема:</span>
       <button id="theme-toggle" class="btn btn-outline btn-sm" aria-label="Переключить тему">
-        <svg id="icon-sun" class="w-4 h-4 hidden dark:inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-        <svg id="icon-moon" class="w-4 h-4 inline dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+        <svg class="w-4 h-4 hidden dark:inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="w-4 h-4 inline dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
         <span id="theme-label">Тёмная</span>
       </button>
     </div>
@@ -532,7 +535,7 @@
           <div class="border-t border-border pt-4 flex flex-wrap items-center gap-4">
             <span class="text-xs text-muted-foreground w-16">состояния</span>
             <button class="btn btn-primary btn-md">default</button>
-            <button class="btn btn-primary btn-md" style="background: hsl(336 76% 28%);">hover</button>
+            <button class="btn btn-primary btn-md btn-primary--hover-demo">hover</button>
             <button class="btn btn-primary btn-md" disabled>disabled</button>
             <button class="btn btn-primary btn-md">
               <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M22 12a10 10 0 0 1-10 10" stroke-linecap="round"/></svg>
@@ -596,13 +599,13 @@
           <span class="badge bg-secondary text-secondary-foreground">Secondary</span>
           <span class="badge bg-primary text-primary-foreground">Primary</span>
           <span class="badge bg-destructive text-destructive-foreground">Destructive</span>
-          <span class="badge bg-transparent border-border text-foreground" style="border: 1px solid hsl(var(--border));">Outline</span>
-          <span class="badge bg-chart-2 text-white">Success</span>
-          <span class="badge bg-chart-4 text-white">Warning</span>
+          <span class="badge badge-outline text-foreground">Outline</span>
+          <span class="badge bg-chart-2 text-primary-foreground">Success</span>
+          <span class="badge bg-chart-4 text-primary-foreground">Warning</span>
         </div>
         <pre class="code-block"><code>&lt;span class="badge bg-primary text-primary-foreground"&gt;Live&lt;/span&gt;
-&lt;span class="badge bg-chart-2 text-white"&gt;NORMAL&lt;/span&gt;
-&lt;span class="badge bg-chart-4 text-white"&gt;ELEVATED&lt;/span&gt;</code></pre>
+&lt;span class="badge bg-chart-2 text-primary-foreground"&gt;NORMAL&lt;/span&gt;
+&lt;span class="badge bg-chart-4 text-primary-foreground"&gt;ELEVATED&lt;/span&gt;</code></pre>
       </article>
 
       <!-- 2.4 INPUTS -->
@@ -707,7 +710,7 @@
                   <div class="flex justify-between"><span class="text-muted-foreground">ID</span><span class="font-data text-foreground">NP-A1B3</span></div>
                   <div class="flex justify-between"><span class="text-muted-foreground">BPM</span><span class="font-data text-foreground">72</span></div>
                   <div class="flex justify-between"><span class="text-muted-foreground">NCI</span><span class="font-data text-foreground">22</span></div>
-                  <div class="flex justify-between"><span class="text-muted-foreground">Статус</span><span class="badge bg-chart-2 text-white">NORMAL</span></div>
+                  <div class="flex justify-between"><span class="text-muted-foreground">Статус</span><span class="badge bg-chart-2 text-primary-foreground">NORMAL</span></div>
                 </div>
                 <button class="btn btn-primary btn-sm w-full mt-3">Запустить тест</button>
               </div>
@@ -744,7 +747,7 @@
             <div class="flex items-center gap-4">
               <div class="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold text-foreground border border-border">АК</div>
               <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-semibold text-primary-foreground">КО</div>
-              <div class="w-14 h-14 rounded-full bg-chart-5 flex items-center justify-center text-base font-semibold text-white">НП</div>
+              <div class="w-14 h-14 rounded-full bg-chart-5 flex items-center justify-center text-base font-semibold text-primary-foreground">НП</div>
             </div>
             <p class="text-[11px] text-muted-foreground">sm 32 · md 40 · lg 56</p>
           </div>
@@ -778,7 +781,7 @@
           <div class="bg-card border border-border rounded-lg p-5 space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Neiry.Pulse #1</span>
-              <span class="badge bg-chart-2 text-white">NORMAL</span>
+              <span class="badge bg-chart-2 text-primary-foreground">NORMAL</span>
             </div>
             <div class="flex items-baseline gap-2">
               <span class="font-brand text-[64px] leading-none font-semibold text-foreground">72</span>
@@ -793,7 +796,7 @@
           <div class="bg-card border border-border rounded-lg p-5 space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Neiry.Pulse #2</span>
-              <span class="badge bg-chart-4 text-white">ELEVATED</span>
+              <span class="badge bg-chart-4 text-primary-foreground">ELEVATED</span>
             </div>
             <div class="flex items-baseline gap-2">
               <span class="font-brand text-[64px] leading-none font-semibold text-foreground">110</span>
@@ -823,7 +826,7 @@
         <pre class="code-block"><code>&lt;div class="bg-card border border-border rounded-lg p-5 space-y-3"&gt;
   &lt;div class="flex items-center justify-between"&gt;
     &lt;span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold"&gt;Neiry.Pulse #1&lt;/span&gt;
-    &lt;span class="badge bg-chart-2 text-white"&gt;NORMAL&lt;/span&gt;
+    &lt;span class="badge bg-chart-2 text-primary-foreground"&gt;NORMAL&lt;/span&gt;
   &lt;/div&gt;
   &lt;div class="flex items-baseline gap-2"&gt;
     &lt;span class="font-brand text-[64px] leading-none font-semibold text-foreground"&gt;72&lt;/span&gt;
@@ -905,10 +908,10 @@
       <article id="status-pill" class="space-y-4">
         <h3 class="text-lg font-semibold text-foreground">3.3 Status-pill · 4 состояния</h3>
         <div class="bg-card border border-border rounded-lg p-6 flex flex-wrap items-center gap-3">
-          <span class="badge bg-chart-2 text-white">
+          <span class="badge bg-chart-2 text-primary-foreground">
             <span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5 inline-block"></span>NORMAL
           </span>
-          <span class="badge bg-chart-4 text-white">
+          <span class="badge bg-chart-4 text-primary-foreground">
             <span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5 inline-block"></span>ELEVATED
           </span>
           <span class="badge bg-primary text-primary-foreground">
@@ -921,8 +924,8 @@
             <span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5 inline-block"></span>ALERT
           </span>
         </div>
-        <pre class="code-block"><code>&lt;span class="badge bg-chart-2 text-white"&gt;NORMAL&lt;/span&gt;     &lt;!-- зелёный --&gt;
-&lt;span class="badge bg-chart-4 text-white"&gt;ELEVATED&lt;/span&gt;   &lt;!-- амбра --&gt;
+        <pre class="code-block"><code>&lt;span class="badge bg-chart-2 text-primary-foreground"&gt;NORMAL&lt;/span&gt;     &lt;!-- зелёный --&gt;
+&lt;span class="badge bg-chart-4 text-primary-foreground"&gt;ELEVATED&lt;/span&gt;   &lt;!-- амбра --&gt;
 &lt;span class="badge bg-primary text-primary-foreground"&gt;RECOVERY&lt;/span&gt;  &lt;!-- wine --&gt;
 &lt;span class="badge bg-muted text-muted-foreground"&gt;RESTING&lt;/span&gt;  &lt;!-- neutral --&gt;</code></pre>
       </article>
