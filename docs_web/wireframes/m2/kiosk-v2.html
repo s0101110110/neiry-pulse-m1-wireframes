@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1920, initial-scale=1.0">
-<title>Neiry Pulse · Kiosk v2 · Live Demo</title>
+<title>Neiry Pulse · Kiosk v2 · Живая демонстрация</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -205,22 +205,70 @@
     background: hsl(var(--accent));
     color: hsl(var(--foreground));
   }
+
+  /* ============================================
+     TEAM SCALE — горизонтальная градиентная шкала
+     ============================================ */
+  .team-scale {
+    background: linear-gradient(to right,
+      hsl(var(--success)),
+      hsl(var(--warning)),
+      hsl(var(--destructive)));
+  }
+  .scale-marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 280ms ease, left 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scale-marker .pin {
+    width: 36px; height: 36px;
+    border-radius: 9999px;
+    background: hsl(var(--background));
+    border: 2px solid hsl(var(--foreground));
+    box-shadow: 0 2px 12px hsla(0, 0%, 0%, 0.45);
+    display: flex; align-items: center; justify-content: center;
+    color: hsl(var(--foreground));
+  }
+  .scale-marker .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: hsl(var(--foreground));
+    background: hsl(var(--card) / 0.9);
+    border: 1px solid hsl(var(--border));
+    padding: 2px 8px;
+    border-radius: 9999px;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+  /* Видимость маркеров по состоянию */
+  body[data-state="idle"]          .team-scale-wrap { display: none; }
+  body[data-state="active-2"]      [data-marker="guest"]  { display: none; }
+  body[data-state="active-3"]      [data-marker="guest"],
+  body[data-state="pending-claim"] [data-marker="guest"]  { display: flex; }
 </style>
 </head>
 <body data-state="active-3" class="h-screen overflow-hidden flex flex-col">
 
   <!-- HEADER (≈ 8% viewport height = ~86px) -->
   <header class="shrink-0 h-[86px] px-10 border-b border-border bg-card/40 flex items-center justify-between gap-6">
-    <!-- Left: logo + status -->
+    <!-- Left: logo + product name + status -->
     <div class="flex items-center gap-5">
       <!-- Neiry wordmark (inline SVG, currentColor = foreground) -->
-      <svg viewBox="0 0 733 280" class="h-7 w-auto text-foreground" aria-hidden="true">
-        <path fill="currentColor" fill-rule="evenodd" d="M364.3,0v45.5h53V0h-53ZM363.9,65.2v156.5h53.8V65.2h-53.8ZM530.9,64.3h14.2v49.6h-20.8c-9.5,0-16.3,2.2-20.6,6.7-4.2,4.4-6.3,11.6-6.3,21.4v79.7h-53.8V65.2h35.9l8.4,17.4c10.4-12.2,24.8-18.2,43.1-18.2l-.1-.1ZM675.1,65.2h57.9l-65.4,149.6c-10.8,24.3-22,41.3-33.6,50.7-11.6,9.6-27.3,14.5-47.2,14.5h-18.5v-46.4h14.7c10.2,0,17.5-1.6,22-4.9,4.4-3.3,8.5-10,12.2-20l-64.5-143.5h58.4l33,86.1,31-86.1h0ZM342.4,142c0,4.4-.4,9.2-1.2,14.2h-116.1c1.7,8.9,5.3,15.6,10.7,20.3,5.6,4.6,12.6,7,21.1,7s8.2-.6,11.9-1.7c3.7-1.2,6.8-2.8,9.6-4.9,2.9-2.3,5.2-5,7-8.1h53.5c-5.4,18-15.5,32.2-30.4,42.6-14.7,10.5-31.8,15.6-51.5,15.6s-44.6-7.9-60.8-23.8c-16-16.1-24-35.9-24-59.7s3.7-30.1,11-42.9c7.3-12.8,17.5-22.7,30.4-29.9s27.4-10.7,43.4-10.7,31.3,3.7,44.3,11c13.1,7.2,23.3,17,30.4,29.6,7.1,12.4,10.7,26.2,10.7,41.5h0v-.1ZM257.1,102.3c-7.7,0-14.3,2.1-19.7,6.4-5.2,4-9,10-11.3,17.7h63.4c-4.8-16.1-15.6-24-32.4-24v-.1ZM137.8,78.6c-10.8-12-25.3-18-43.4-18s-36.9,7-49.2,20.9l-7.5-16.3H0v156.5h53.8v-83.5c0-6.8,1-12.5,2.9-17.1,2.1-4.9,5.1-8.5,9-11,4-2.5,8.9-3.8,14.5-3.8,13.5,0,20.3,9.1,20.3,27.3v88.1h53.8v-95.4c0-19.9-5.5-35.9-16.5-47.8h0v.1Z"/>
-      </svg>
+      <div class="flex items-baseline gap-2">
+        <svg viewBox="0 0 733 280" class="h-7 w-auto text-foreground self-center" aria-hidden="true">
+          <path fill="currentColor" fill-rule="evenodd" d="M364.3,0v45.5h53V0h-53ZM363.9,65.2v156.5h53.8V65.2h-53.8ZM530.9,64.3h14.2v49.6h-20.8c-9.5,0-16.3,2.2-20.6,6.7-4.2,4.4-6.3,11.6-6.3,21.4v79.7h-53.8V65.2h35.9l8.4,17.4c10.4-12.2,24.8-18.2,43.1-18.2l-.1-.1ZM675.1,65.2h57.9l-65.4,149.6c-10.8,24.3-22,41.3-33.6,50.7-11.6,9.6-27.3,14.5-47.2,14.5h-18.5v-46.4h14.7c10.2,0,17.5-1.6,22-4.9,4.4-3.3,8.5-10,12.2-20l-64.5-143.5h58.4l33,86.1,31-86.1h0ZM342.4,142c0,4.4-.4,9.2-1.2,14.2h-116.1c1.7,8.9,5.3,15.6,10.7,20.3,5.6,4.6,12.6,7,21.1,7s8.2-.6,11.9-1.7c3.7-1.2,6.8-2.8,9.6-4.9,2.9-2.3,5.2-5,7-8.1h53.5c-5.4,18-15.5,32.2-30.4,42.6-14.7,10.5-31.8,15.6-51.5,15.6s-44.6-7.9-60.8-23.8c-16-16.1-24-35.9-24-59.7s3.7-30.1,11-42.9c7.3-12.8,17.5-22.7,30.4-29.9s27.4-10.7,43.4-10.7,31.3,3.7,44.3,11c13.1,7.2,23.3,17,30.4,29.6,7.1,12.4,10.7,26.2,10.7,41.5h0v-.1ZM257.1,102.3c-7.7,0-14.3,2.1-19.7,6.4-5.2,4-9,10-11.3,17.7h63.4c-4.8-16.1-15.6-24-32.4-24v-.1ZM137.8,78.6c-10.8-12-25.3-18-43.4-18s-36.9,7-49.2,20.9l-7.5-16.3H0v156.5h53.8v-83.5c0-6.8,1-12.5,2.9-17.1,2.1-4.9,5.1-8.5,9-11,4-2.5,8.9-3.8,14.5-3.8,13.5,0,20.3,9.1,20.3,27.3v88.1h53.8v-95.4c0-19.9-5.5-35.9-16.5-47.8h0v.1Z"/>
+        </svg>
+        <span class="font-display text-xl text-foreground tracking-tight">Pulse</span>
+      </div>
       <span class="text-muted-foreground/40 text-xl">·</span>
       <div class="flex items-center gap-3">
         <span class="w-2 h-2 rounded-full bg-success live-dot" aria-hidden="true"></span>
-        <span class="text-foreground text-sm font-medium">Live Demo · Startup Village 2026</span>
+        <span class="text-foreground text-sm font-medium">Живая демонстрация · Startup Village 2026</span>
       </div>
     </div>
 
@@ -234,20 +282,58 @@
     </div>
   </header>
 
+  <!-- TEAM SCALE (под шапкой, скрыта в idle) -->
+  <section class="team-scale-wrap shrink-0 px-10 pt-6 pb-4 border-b border-border bg-card/20">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-[10px] uppercase tracking-widest text-muted-foreground font-data">Состояние команды · сейчас</p>
+      <p class="text-[10px] uppercase tracking-widest text-muted-foreground font-data">NSI 0 → 100</p>
+    </div>
+    <div class="relative">
+      <!-- Градиентная полоса -->
+      <div class="team-scale h-3 rounded-full w-full"></div>
+      <!-- Маркеры (NSI: Костя 22, Алексей 55, Гость 42) -->
+      <div data-marker="kostya" class="scale-marker" style="left: 22%">
+        <div class="pin">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+          </svg>
+        </div>
+        <span class="label">Костя · 22</span>
+      </div>
+      <div data-marker="alexey" class="scale-marker" style="left: 55%">
+        <div class="pin">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+          </svg>
+        </div>
+        <span class="label">Алексей · 55</span>
+      </div>
+      <div data-marker="guest" class="scale-marker" style="left: 42%">
+        <div class="pin">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+          </svg>
+        </div>
+        <span class="label">Гость · 42</span>
+      </div>
+    </div>
+    <!-- Spacer под маркерами чтобы лейблы не перекрывали -->
+    <div class="h-12"></div>
+  </section>
+
   <!-- MAIN (≈ 78% — 3 anchor cards) -->
-  <main class="flex-1 min-h-0 px-10 py-8 grid grid-cols-3 gap-6 overflow-hidden">
+  <main class="flex-1 min-h-0 px-10 py-6 grid grid-cols-3 gap-6 overflow-hidden">
 
     <!-- =========================================
          CARD: КОСТЯ (Project Lead, anchor)
          ========================================= -->
     <article data-id="kostya" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
-      <!-- Top: avatar + name + role -->
+      <!-- Top: name + device id -->
       <header class="flex items-center gap-4 mb-2">
-        <div class="w-12 h-12 rounded-full bg-muted flex items-center justify-center font-display text-xl text-foreground shrink-0">К</div>
-        <div class="min-w-0">
-          <p class="font-display text-[26px] leading-tight text-foreground">Костя</p>
-          <p class="text-xs text-muted-foreground tracking-wide">Project Lead · якорь</p>
-        </div>
+        <p class="font-display text-[26px] leading-tight text-foreground">Костя</p>
         <span class="ml-auto text-[10px] uppercase tracking-widest text-muted-foreground font-data">Neiry.Pulse #1</span>
       </header>
 
@@ -260,17 +346,26 @@
       <!-- ACTIVE content -->
       <div class="when-active">
         <!-- BPM hero -->
-        <div class="flex items-baseline justify-center gap-3 mb-2">
+        <div class="flex items-baseline justify-center gap-3 mb-1">
           <span class="font-display text-[104px] leading-none text-foreground bpm-value" data-bpm="kostya">142</span>
           <span class="font-data text-sm text-muted-foreground">BPM</span>
         </div>
-        <p class="text-center text-[11px] uppercase tracking-widest text-muted-foreground font-data mb-3">
+        <p class="text-center text-[11px] uppercase tracking-widest text-muted-foreground font-data mb-2">
           <span class="inline-block w-1.5 h-1.5 rounded-full bg-success live-dot mr-1.5 align-middle"></span>
-          live
+          вживую
         </p>
 
+        <!-- R-R sparkline (под BPM) -->
+        <div class="flex items-center justify-center gap-2 mb-2">
+          <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-data">R-R 60s</span>
+          <svg viewBox="0 0 80 24" style="width:140px;height:32px" data-rr="kostya">
+            <polyline points="0,12 8,8 16,14 24,10 32,12 40,8 48,14 56,10 64,12 72,8 80,12"
+                      fill="none" stroke="hsl(var(--chart-1))" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+
         <!-- NCI-gauge (Apple Rings 270° arc) — NCI=22, success -->
-        <div class="flex items-center justify-center my-2">
+        <div class="flex items-center justify-center my-1">
           <div class="relative w-44 h-44">
             <svg viewBox="0 0 180 180" class="w-44 h-44">
               <!-- track -->
@@ -283,21 +378,14 @@
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
               <span class="font-display text-[52px] leading-none" style="color: hsl(var(--success))">22</span>
-              <span class="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Neiry Stress Score</span>
+              <span class="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">NSI</span>
             </div>
           </div>
         </div>
 
-        <!-- Status pill + R-R sparkline -->
-        <div class="mt-auto pt-3 flex items-center justify-between gap-3">
-          <span class="badge status-norm"><span class="dot"></span>NORM</span>
-          <div class="flex items-center gap-2">
-            <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-data">R-R 60s</span>
-            <svg viewBox="0 0 80 24" style="width:96px;height:28px" data-rr="kostya">
-              <polyline points="0,12 8,8 16,14 24,10 32,12 40,8 48,14 56,10 64,12 72,8 80,12"
-                        fill="none" stroke="hsl(var(--chart-1))" stroke-width="1.4" stroke-linecap="round"/>
-            </svg>
-          </div>
+        <!-- Status pill -->
+        <div class="mt-auto pt-3 flex items-center justify-center">
+          <span class="badge status-norm"><span class="dot"></span>НОРМА</span>
         </div>
       </div>
     </article>
@@ -307,11 +395,7 @@
          ========================================= -->
     <article data-id="alexey" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
       <header class="flex items-center gap-4 mb-2">
-        <div class="w-12 h-12 rounded-full bg-muted flex items-center justify-center font-display text-xl text-foreground shrink-0">А</div>
-        <div class="min-w-0">
-          <p class="font-display text-[26px] leading-tight text-foreground">Алексей</p>
-          <p class="text-xs text-muted-foreground tracking-wide">B2B Lead · якорь</p>
-        </div>
+        <p class="font-display text-[26px] leading-tight text-foreground">Алексей</p>
         <span class="ml-auto text-[10px] uppercase tracking-widest text-muted-foreground font-data">Neiry.Pulse #2</span>
       </header>
 
@@ -321,17 +405,26 @@
       </div>
 
       <div class="when-active">
-        <div class="flex items-baseline justify-center gap-3 mb-2">
+        <div class="flex items-baseline justify-center gap-3 mb-1">
           <span class="font-display text-[104px] leading-none text-foreground bpm-value" data-bpm="alexey">78</span>
           <span class="font-data text-sm text-muted-foreground">BPM</span>
         </div>
-        <p class="text-center text-[11px] uppercase tracking-widest text-muted-foreground font-data mb-3">
+        <p class="text-center text-[11px] uppercase tracking-widest text-muted-foreground font-data mb-2">
           <span class="inline-block w-1.5 h-1.5 rounded-full bg-success live-dot mr-1.5 align-middle"></span>
-          live
+          вживую
         </p>
 
+        <!-- R-R sparkline (под BPM) -->
+        <div class="flex items-center justify-center gap-2 mb-2">
+          <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-data">R-R 60s</span>
+          <svg viewBox="0 0 80 24" style="width:140px;height:32px" data-rr="alexey">
+            <polyline points="0,16 8,6 16,18 24,4 32,20 40,6 48,16 56,4 64,18 72,8 80,16"
+                      fill="none" stroke="hsl(var(--chart-4))" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+
         <!-- NCI = 55, warning. offset = 330*(1-55/100) = 149 -->
-        <div class="flex items-center justify-center my-2">
+        <div class="flex items-center justify-center my-1">
           <div class="relative w-44 h-44">
             <svg viewBox="0 0 180 180" class="w-44 h-44">
               <path d="M 35 145 A 70 70 0 1 1 145 145"
@@ -343,20 +436,13 @@
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
               <span class="font-display text-[52px] leading-none" style="color: hsl(var(--warning))">55</span>
-              <span class="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Neiry Stress Score</span>
+              <span class="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">NSI</span>
             </div>
           </div>
         </div>
 
-        <div class="mt-auto pt-3 flex items-center justify-between gap-3">
-          <span class="badge status-elevated"><span class="dot"></span>ELEVATED</span>
-          <div class="flex items-center gap-2">
-            <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-data">R-R 60s</span>
-            <svg viewBox="0 0 80 24" style="width:96px;height:28px" data-rr="alexey">
-              <polyline points="0,16 8,6 16,18 24,4 32,20 40,6 48,16 56,4 64,18 72,8 80,16"
-                        fill="none" stroke="hsl(var(--chart-4))" stroke-width="1.4" stroke-linecap="round"/>
-            </svg>
-          </div>
+        <div class="mt-auto pt-3 flex items-center justify-center">
+          <span class="badge status-elevated"><span class="dot"></span>ПОВЫШЕН</span>
         </div>
       </div>
     </article>
@@ -366,11 +452,7 @@
          ========================================= -->
     <article data-id="guest" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
       <header class="flex items-center gap-4 mb-2">
-        <div class="w-12 h-12 rounded-full bg-muted flex items-center justify-center font-display text-xl text-muted-foreground shrink-0">Г</div>
-        <div class="min-w-0">
-          <p class="font-display text-[26px] leading-tight text-foreground">Гость</p>
-          <p class="text-xs text-muted-foreground tracking-wide">slot #3</p>
-        </div>
+        <p class="font-display text-[26px] leading-tight text-foreground">Гость</p>
         <span class="ml-auto text-[10px] uppercase tracking-widest text-muted-foreground font-data">Neiry.Pulse #3</span>
       </header>
 
@@ -378,22 +460,31 @@
       <div class="when-idle">
         <span class="text-5xl animate-heart text-primary">&#9829;</span>
         <p class="text-muted-foreground text-base">Надень браслет,<br>чтобы начать</p>
-        <span class="badge status-idle mt-2"><span class="dot"></span>WAITING</span>
+        <span class="badge status-idle mt-2"><span class="dot"></span>ОЖИДАНИЕ</span>
       </div>
 
       <!-- ACTIVE — NCI = 42, success -->
       <div class="when-active">
-        <div class="flex items-baseline justify-center gap-3 mb-2">
+        <div class="flex items-baseline justify-center gap-3 mb-1">
           <span class="font-display text-[104px] leading-none text-foreground bpm-value" data-bpm="guest">88</span>
           <span class="font-data text-sm text-muted-foreground">BPM</span>
         </div>
-        <p class="text-center text-[11px] uppercase tracking-widest text-muted-foreground font-data mb-3">
+        <p class="text-center text-[11px] uppercase tracking-widest text-muted-foreground font-data mb-2">
           <span class="inline-block w-1.5 h-1.5 rounded-full bg-success live-dot mr-1.5 align-middle"></span>
-          live
+          вживую
         </p>
 
+        <!-- R-R sparkline (под BPM) -->
+        <div class="flex items-center justify-center gap-2 mb-2">
+          <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-data">R-R 60s</span>
+          <svg viewBox="0 0 80 24" style="width:140px;height:32px" data-rr="guest">
+            <polyline points="0,12 8,10 16,14 24,8 32,12 40,10 48,14 56,8 64,12 72,10 80,12"
+                      fill="none" stroke="hsl(var(--chart-1))" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+
         <!-- NCI=42 → offset = 330*(1-42/100) = 191 -->
-        <div class="flex items-center justify-center my-2">
+        <div class="flex items-center justify-center my-1">
           <div class="relative w-44 h-44">
             <svg viewBox="0 0 180 180" class="w-44 h-44">
               <path d="M 35 145 A 70 70 0 1 1 145 145"
@@ -405,20 +496,13 @@
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
               <span class="font-display text-[52px] leading-none" style="color: hsl(var(--success))">42</span>
-              <span class="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Neiry Stress Score</span>
+              <span class="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">NSI</span>
             </div>
           </div>
         </div>
 
-        <div class="mt-auto pt-3 flex items-center justify-between gap-3">
-          <span class="badge status-norm"><span class="dot"></span>NORM</span>
-          <div class="flex items-center gap-2">
-            <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-data">R-R 60s</span>
-            <svg viewBox="0 0 80 24" style="width:96px;height:28px" data-rr="guest">
-              <polyline points="0,12 8,10 16,14 24,8 32,12 40,10 48,14 56,8 64,12 72,10 80,12"
-                        fill="none" stroke="hsl(var(--chart-1))" stroke-width="1.4" stroke-linecap="round"/>
-            </svg>
-          </div>
+        <div class="mt-auto pt-3 flex items-center justify-center">
+          <span class="badge status-norm"><span class="dot"></span>НОРМА</span>
         </div>
       </div>
 
@@ -431,7 +515,7 @@
         </div>
         <p class="font-display text-2xl text-foreground">Сессия завершена</p>
         <p class="text-sm text-muted-foreground max-w-[220px]">Сканируй QR — получи отчёт в Telegram</p>
-        <span class="badge status-done"><span class="dot"></span>READY · CLAIM</span>
+        <span class="badge status-done"><span class="dot"></span>ОЖИДАЕТ ВЛАДЕЛЬЦА</span>
       </div>
     </article>
 
@@ -442,21 +526,21 @@
 
     <!-- Left: NCI legend -->
     <div class="flex flex-col gap-2 min-w-0">
-      <p class="text-[10px] uppercase tracking-widest text-muted-foreground font-data">Neiry Stress Score · легенда</p>
+      <p class="text-[10px] uppercase tracking-widest text-muted-foreground font-data">NSI · легенда</p>
       <div class="flex items-center gap-6 flex-wrap">
         <div class="flex items-center gap-2">
           <span class="inline-block w-3 h-3 rounded-full bg-success"></span>
-          <span class="text-sm text-foreground"><span class="font-data text-success">&le; 30</span> norm</span>
+          <span class="text-sm text-foreground"><span class="font-data text-success">&le; 30</span> норма</span>
         </div>
         <span class="text-muted-foreground/40">·</span>
         <div class="flex items-center gap-2">
           <span class="inline-block w-3 h-3 rounded-full bg-warning"></span>
-          <span class="text-sm text-foreground"><span class="font-data text-warning">31&ndash;60</span> elevated</span>
+          <span class="text-sm text-foreground"><span class="font-data text-warning">31&ndash;60</span> повышен</span>
         </div>
         <span class="text-muted-foreground/40">·</span>
         <div class="flex items-center gap-2">
           <span class="inline-block w-3 h-3 rounded-full bg-destructive"></span>
-          <span class="text-sm text-foreground"><span class="font-data text-destructive">&gt; 60</span> high</span>
+          <span class="text-sm text-foreground"><span class="font-data text-destructive">&gt; 60</span> высокий</span>
         </div>
       </div>
       <p class="text-xs text-muted-foreground">RMSSD + R-R distribution &middot; обновление каждые 5 сек</p>
