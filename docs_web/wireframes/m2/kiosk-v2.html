@@ -187,7 +187,11 @@
 
   /* Dev-bar button states */
   .dev-btn {
-    transition: background-color 120ms, color 120ms;
+    transition: background-color 120ms, color 120ms, box-shadow 120ms;
+  }
+  .dev-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px hsl(var(--ring));
   }
   .dev-btn[data-active="true"] {
     background: hsl(var(--primary));
@@ -272,10 +276,10 @@
               <!-- track -->
               <path d="M 35 145 A 70 70 0 1 1 145 145"
                     fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
-              <!-- fill: offset = 330 * (1 - 22/100) = 257 -->
-              <path d="M 35 145 A 70 70 0 1 1 145 145"
+              <!-- fill: pathLength=100, offset = 100 - NCI = 78 -->
+              <path d="M 35 145 A 70 70 0 1 1 145 145" pathLength="100"
                     fill="none" stroke="hsl(var(--success))" stroke-width="14" stroke-linecap="round"
-                    stroke-dasharray="330" stroke-dashoffset="257"/>
+                    stroke-dasharray="100" stroke-dashoffset="78"/>
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
               <span class="font-display text-[52px] leading-none" style="color: hsl(var(--success))">22</span>
@@ -332,9 +336,10 @@
             <svg viewBox="0 0 180 180" class="w-44 h-44">
               <path d="M 35 145 A 70 70 0 1 1 145 145"
                     fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
-              <path d="M 35 145 A 70 70 0 1 1 145 145"
+              <!-- fill: pathLength=100, offset = 100 - NCI = 45 -->
+              <path d="M 35 145 A 70 70 0 1 1 145 145" pathLength="100"
                     fill="none" stroke="hsl(var(--warning))" stroke-width="14" stroke-linecap="round"
-                    stroke-dasharray="330" stroke-dashoffset="149"/>
+                    stroke-dasharray="100" stroke-dashoffset="45"/>
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
               <span class="font-display text-[52px] leading-none" style="color: hsl(var(--warning))">55</span>
@@ -393,9 +398,10 @@
             <svg viewBox="0 0 180 180" class="w-44 h-44">
               <path d="M 35 145 A 70 70 0 1 1 145 145"
                     fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
-              <path d="M 35 145 A 70 70 0 1 1 145 145"
+              <!-- fill: pathLength=100, offset = 100 - NCI = 58 -->
+              <path d="M 35 145 A 70 70 0 1 1 145 145" pathLength="100"
                     fill="none" stroke="hsl(var(--success))" stroke-width="14" stroke-linecap="round"
-                    stroke-dasharray="330" stroke-dashoffset="191"/>
+                    stroke-dasharray="100" stroke-dashoffset="58"/>
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
               <span class="font-display text-[52px] leading-none" style="color: hsl(var(--success))">42</span>
