@@ -85,6 +85,8 @@
   .bg-destructive { background-color: hsl(var(--destructive)); }
   .bg-popover { background-color: hsl(var(--popover)); }
   .bg-accent { background-color: hsl(var(--accent)); }
+  .bg-primary-foreground { background-color: hsl(var(--primary-foreground)); }
+  .bg-destructive-foreground { background-color: hsl(var(--destructive-foreground)); }
   .text-foreground { color: hsl(var(--foreground)); }
   .text-muted-foreground { color: hsl(var(--muted-foreground)); }
   .text-card-foreground { color: hsl(var(--card-foreground)); }
@@ -909,19 +911,19 @@
         <h3 class="text-lg font-semibold text-foreground">3.3 Status-pill · 4 состояния</h3>
         <div class="bg-card border border-border rounded-lg p-6 flex flex-wrap items-center gap-3">
           <span class="badge bg-chart-2 text-primary-foreground">
-            <span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5 inline-block"></span>NORMAL
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-foreground mr-1.5 inline-block"></span>NORMAL
           </span>
           <span class="badge bg-chart-4 text-primary-foreground">
-            <span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5 inline-block"></span>ELEVATED
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-foreground mr-1.5 inline-block"></span>ELEVATED
           </span>
           <span class="badge bg-primary text-primary-foreground">
-            <span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5 inline-block"></span>RECOVERY
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-foreground mr-1.5 inline-block"></span>RECOVERY
           </span>
           <span class="badge bg-muted text-muted-foreground">
             <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground mr-1.5 inline-block"></span>RESTING
           </span>
           <span class="badge bg-destructive text-destructive-foreground">
-            <span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5 inline-block"></span>ALERT
+            <span class="w-1.5 h-1.5 rounded-full bg-destructive-foreground mr-1.5 inline-block"></span>ALERT
           </span>
         </div>
         <pre class="code-block"><code>&lt;span class="badge bg-chart-2 text-primary-foreground"&gt;NORMAL&lt;/span&gt;     &lt;!-- зелёный --&gt;
