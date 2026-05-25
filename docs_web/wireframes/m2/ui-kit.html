@@ -7,7 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Onest:wght@400;500;600;700;900&family=Geist+Mono:wght@400;500;600&display=swap">
 <style>
   /* ============================================
      SHADCN-STYLE SEMANTIC TOKENS (zinc base + wine accent)
@@ -29,17 +29,19 @@
     --muted-foreground: 240 3.8% 46.1%;
     --accent: 240 4.8% 95.9%;
     --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 348 100% 54%;        /* #FF1744 — red-laser (cyber-flat B) */
+    --destructive-foreground: 0 0% 100%;
+    --success: 151 100% 45%;            /* #00E676 — mint-neon */
+    --warning: 42 100% 50%;             /* #FFB300 — amber-pure */
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
     --ring: 336 76% 33%;
     --radius: 0.5rem;
     /* Chart palette — semantic для био-данных */
     --chart-1: 217 91% 60%;   /* blue — neutral data */
-    --chart-2: 142 71% 45%;   /* green — success / norm */
+    --chart-2: 151 100% 45%;  /* mint-neon — success / norm */
     --chart-3: 271 81% 56%;   /* purple — secondary metric */
-    --chart-4: 38 92% 50%;    /* amber — warning */
+    --chart-4: 42 100% 50%;   /* amber-pure — warning */
     --chart-5: 173 80% 40%;   /* teal — recovery */
   }
   .dark {
@@ -59,22 +61,32 @@
     --muted-foreground: 240 5% 64.9%;
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 72.2% 50.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 348 100% 54%;        /* #FF1744 — red-laser (cyber-flat B) */
+    --destructive-foreground: 0 0% 100%;
+    --success: 151 100% 45%;            /* #00E676 — mint-neon */
+    --warning: 42 100% 50%;             /* #FFB300 — amber-pure */
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 336 76% 45%;
     --chart-1: 217 91% 60%;
-    --chart-2: 142 71% 45%;
+    --chart-2: 151 100% 45%;             /* alias for success */
     --chart-3: 271 81% 56%;
-    --chart-4: 38 92% 50%;
+    --chart-4: 42 100% 50%;              /* alias for warning */
     --chart-5: 173 80% 40%;
   }
 
+  /* Font tokens */
+  :root {
+    --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --font-display: 'Onest', 'Space Grotesk', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+  }
+
   /* Map shadcn vars → Tailwind utility classes via CSS */
-  body { font-family: 'Manrope', sans-serif; -webkit-font-smoothing: antialiased; background: hsl(var(--background)); color: hsl(var(--foreground)); }
-  .font-brand { font-family: 'Fraunces', serif; }
-  .font-data { font-family: 'JetBrains Mono', monospace; }
+  body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; background: hsl(var(--background)); color: hsl(var(--foreground)); }
+  .font-brand { font-family: var(--font-display) !important; font-weight: 900 !important; letter-spacing: -0.04em !important; font-style: normal !important; }
+  .font-display { font-family: var(--font-display) !important; font-weight: 900 !important; letter-spacing: -0.04em !important; font-style: normal !important; }
+  .font-data { font-family: var(--font-mono); }
 
   /* Token-driven helper classes */
   .bg-background { background-color: hsl(var(--background)); }
@@ -134,7 +146,7 @@
   pre.code-block {
     background: hsl(var(--muted));
     color: hsl(var(--foreground));
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
     line-height: 1.5;
     padding: 12px 14px;
@@ -230,7 +242,7 @@
         <path fill="currentColor" fill-rule="evenodd" d="M364.3,0v45.5h53V0h-53ZM363.9,65.2v156.5h53.8V65.2h-53.8ZM530.9,64.3h14.2v49.6h-20.8c-9.5,0-16.3,2.2-20.6,6.7-4.2,4.4-6.3,11.6-6.3,21.4v79.7h-53.8V65.2h35.9l8.4,17.4c10.4-12.2,24.8-18.2,43.1-18.2l-.1-.1ZM675.1,65.2h57.9l-65.4,149.6c-10.8,24.3-22,41.3-33.6,50.7-11.6,9.6-27.3,14.5-47.2,14.5h-18.5v-46.4h14.7c10.2,0,17.5-1.6,22-4.9,4.4-3.3,8.5-10,12.2-20l-64.5-143.5h58.4l33,86.1,31-86.1h0ZM342.4,142c0,4.4-.4,9.2-1.2,14.2h-116.1c1.7,8.9,5.3,15.6,10.7,20.3,5.6,4.6,12.6,7,21.1,7s8.2-.6,11.9-1.7c3.7-1.2,6.8-2.8,9.6-4.9,2.9-2.3,5.2-5,7-8.1h53.5c-5.4,18-15.5,32.2-30.4,42.6-14.7,10.5-31.8,15.6-51.5,15.6s-44.6-7.9-60.8-23.8c-16-16.1-24-35.9-24-59.7s3.7-30.1,11-42.9c7.3-12.8,17.5-22.7,30.4-29.9s27.4-10.7,43.4-10.7,31.3,3.7,44.3,11c13.1,7.2,23.3,17,30.4,29.6,7.1,12.4,10.7,26.2,10.7,41.5h0v-.1ZM257.1,102.3c-7.7,0-14.3,2.1-19.7,6.4-5.2,4-9,10-11.3,17.7h63.4c-4.8-16.1-15.6-24-32.4-24v-.1ZM137.8,78.6c-10.8-12-25.3-18-43.4-18s-36.9,7-49.2,20.9l-7.5-16.3H0v156.5h53.8v-83.5c0-6.8,1-12.5,2.9-17.1,2.1-4.9,5.1-8.5,9-11,4-2.5,8.9-3.8,14.5-3.8,13.5,0,20.3,9.1,20.3,27.3v88.1h53.8v-95.4c0-19.9-5.5-35.9-16.5-47.8h0v.1Z"/>
       </svg>
       <span class="text-foreground/40">·</span>
-      <h1 class="text-sm font-medium text-foreground">UI Kit · <span class="font-brand italic text-primary">Pulse</span></h1>
+      <h1 class="text-sm font-medium text-foreground">UI Kit · <span class="font-display text-primary">Pulse</span></h1>
       <span class="badge bg-muted text-muted-foreground font-data">v1.0</span>
       <span class="text-xs text-muted-foreground font-data hidden md:inline">2026-05-25</span>
     </div>
@@ -284,7 +296,7 @@
     </div>
     <div class="text-[11px] text-muted-foreground border-t border-border pt-4 leading-relaxed">
       <p class="font-data">shadcn/ui (zinc) + Neiry wine #831843</p>
-      <p class="mt-1">Manrope · Fraunces · JetBrains Mono</p>
+      <p class="mt-1">Space Grotesk · Onest · Geist Mono</p>
     </div>
   </aside>
 
@@ -294,10 +306,10 @@
     <!-- INTRO -->
     <section class="space-y-3">
       <p class="text-[11px] uppercase tracking-widest text-muted-foreground font-semibold">Styleguide · Foundation для рестайла</p>
-      <h2 class="text-3xl font-bold text-foreground">Neiry <span class="font-brand italic text-primary">Pulse</span> · UI Kit</h2>
+      <h2 class="text-3xl font-bold text-foreground">Neiry <span class="font-display text-primary">Pulse</span> · UI Kit</h2>
       <p class="text-muted-foreground max-w-3xl text-sm leading-relaxed">
         Живой стайлгайд дизайн-системы. Семантические токены shadcn (zinc base) + Neiry wine accent (<span class="font-data text-primary">#831843</span>),
-        две темы (тёмная для плазмы, светлая для админ-ноута), Manrope/Fraunces/JetBrains Mono.
+        две темы (тёмная для плазмы, светлая для админ-ноута), Space Grotesk / Onest / Geist Mono.
         Все компоненты для рестайла собраны в одном месте: токены, base shadcn-компоненты, кастомные био-виджеты и Tremor-стиль для дашборда корпоратов.
       </p>
     </section>
@@ -334,9 +346,9 @@
               <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-muted-foreground">--border</span><span class="font-data text-foreground">240 4% 16%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(240 3.7% 15.9%)"></div></div>
               <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-primary">--primary</span><span class="font-data text-primary">#831843</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(336 76% 45%)"></div></div>
               <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-muted-foreground">--secondary</span><span class="font-data text-foreground">240 4% 16%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(240 3.7% 15.9%)"></div></div>
-              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(0 72.2% 50.6%)">--destructive</span><span class="font-data text-foreground">0 72% 51%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(0 72.2% 50.6%)"></div></div>
-              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-chart-2">--chart-2 (success)</span><span class="font-data text-foreground">142 71% 45%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(142 71% 45%)"></div></div>
-              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-chart-4">--chart-4 (warning)</span><span class="font-data text-foreground">38 92% 50%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(38 92% 50%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(348 100% 54%)">--destructive</span><span class="font-data text-foreground">348 100% 54%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(348 100% 54%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-chart-2">--chart-2 (success)</span><span class="font-data text-foreground">151 100% 45%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(151 100% 45%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-chart-4">--chart-4 (warning)</span><span class="font-data text-foreground">42 100% 50%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(42 100% 50%)"></div></div>
               <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-chart-1">--chart-1</span><span class="font-data text-foreground">217 91% 60%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(217 91% 60%)"></div></div>
               <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-chart-5">--chart-5</span><span class="font-data text-foreground">173 80% 40%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(173 80% 40%)"></div></div>
             </div>
@@ -357,9 +369,9 @@
               <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(240 3.8% 46.1%)">--border</span><span class="font-data">240 6% 90%</span><div class="w-6 h-6 rounded" style="background: hsl(240 5.9% 90%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
               <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(336 76% 33%)">--primary</span><span class="font-data" style="color: hsl(336 76% 33%)">#831843</span><div class="w-6 h-6 rounded" style="background: hsl(336 76% 33%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
               <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(240 3.8% 46.1%)">--secondary</span><span class="font-data">240 5% 96%</span><div class="w-6 h-6 rounded" style="background: hsl(240 4.8% 95.9%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
-              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(0 84.2% 60.2%)">--destructive</span><span class="font-data">0 84% 60%</span><div class="w-6 h-6 rounded" style="background: hsl(0 84.2% 60.2%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
-              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(142 71% 35%)">--chart-2 (success)</span><span class="font-data">142 71% 45%</span><div class="w-6 h-6 rounded" style="background: hsl(142 71% 45%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
-              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(38 92% 40%)">--chart-4 (warning)</span><span class="font-data">38 92% 50%</span><div class="w-6 h-6 rounded" style="background: hsl(38 92% 50%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(348 100% 54%)">--destructive</span><span class="font-data">348 100% 54%</span><div class="w-6 h-6 rounded" style="background: hsl(348 100% 54%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(151 100% 38%)">--chart-2 (success)</span><span class="font-data">151 100% 45%</span><div class="w-6 h-6 rounded" style="background: hsl(151 100% 45%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(42 100% 42%)">--chart-4 (warning)</span><span class="font-data">42 100% 50%</span><div class="w-6 h-6 rounded" style="background: hsl(42 100% 50%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
               <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(217 91% 50%)">--chart-1</span><span class="font-data">217 91% 60%</span><div class="w-6 h-6 rounded" style="background: hsl(217 91% 60%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
               <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(173 80% 30%)">--chart-5</span><span class="font-data">173 80% 40%</span><div class="w-6 h-6 rounded" style="background: hsl(173 80% 40%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
             </div>
@@ -383,49 +395,47 @@
       <!-- 1.2 TYPOGRAPHY -->
       <article id="typography" class="space-y-4">
         <h3 class="text-lg font-semibold text-foreground">1.2 Типографика</h3>
-        <p class="text-sm text-muted-foreground">Три семейства: Manrope (UI), Fraunces (brand italic + hero-числа), JetBrains Mono (data).</p>
+        <p class="text-sm text-muted-foreground">Три семейства: Space Grotesk (UI), Onest 900 (hero/display, tight tracking -0.04em), Geist Mono (data).</p>
 
         <div class="grid grid-cols-3 gap-4">
-          <!-- Manrope -->
+          <!-- Space Grotesk -->
           <div class="bg-card border border-border rounded-lg p-5 space-y-3">
             <div class="flex items-baseline justify-between border-b border-border pb-2">
-              <h4 class="text-sm font-semibold text-foreground">Manrope</h4>
+              <h4 class="text-sm font-semibold text-foreground">Space Grotesk</h4>
               <span class="badge bg-muted text-muted-foreground">UI sans-serif</span>
             </div>
             <div class="space-y-2.5">
-              <div class="flex items-baseline justify-between gap-3"><span class="text-[48px] font-bold leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">48 · text-5xl · bold</span></div>
-              <div class="flex items-baseline justify-between gap-3"><span class="text-[32px] font-bold leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">32 · text-3xl · bold</span></div>
-              <div class="flex items-baseline justify-between gap-3"><span class="text-[24px] font-semibold leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">24 · text-2xl · semibold</span></div>
-              <div class="flex items-baseline justify-between gap-3"><span class="text-[20px] font-semibold leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">20 · text-xl · semibold</span></div>
-              <div class="flex items-baseline justify-between gap-3"><span class="text-[18px] font-medium leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">18 · text-lg · medium</span></div>
-              <div class="flex items-baseline justify-between gap-3"><span class="text-[16px] font-medium leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">16 · text-base · medium</span></div>
-              <div class="flex items-baseline justify-between gap-3"><span class="text-[14px] font-normal leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">14 · text-sm · normal</span></div>
-              <div class="flex items-baseline justify-between gap-3"><span class="text-[12px] font-normal leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">12 · text-xs · normal</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[40px] font-bold leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">40 · 700 · bold</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[28px] font-semibold leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">28 · 600 · semibold</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[20px] font-medium leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">20 · 500 · medium</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[16px] font-normal leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">16 · 400 · regular</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[14px] font-light leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">14 · 300 · light</span></div>
+              <div class="border-t border-border my-3"></div>
+              <p class="text-[11px] text-muted-foreground">Weights: 300 / 400 / 500 / 600 / 700. Используется для body, UI-меток, заголовков базовых.</p>
             </div>
           </div>
 
-          <!-- Fraunces -->
+          <!-- Onest 900 — Hero/Display -->
           <div class="bg-card border border-border rounded-lg p-5 space-y-3">
             <div class="flex items-baseline justify-between border-b border-border pb-2">
-              <h4 class="text-sm font-semibold text-foreground">Fraunces</h4>
-              <span class="badge bg-muted text-muted-foreground">brand italic</span>
+              <h4 class="text-sm font-semibold text-foreground">Onest 900</h4>
+              <span class="badge bg-muted text-muted-foreground">Hero/Display</span>
             </div>
             <div class="space-y-2.5">
-              <div class="flex items-baseline justify-between gap-3"><span class="font-brand italic text-[48px] font-semibold leading-none text-primary">Pulse</span><span class="font-data text-[10px] text-muted-foreground">48 · italic · semi</span></div>
-              <div class="flex items-baseline justify-between gap-3"><span class="font-brand italic text-[32px] font-semibold leading-none text-primary">Pulse</span><span class="font-data text-[10px] text-muted-foreground">32 · italic · semi</span></div>
-              <div class="flex items-baseline justify-between gap-3"><span class="font-brand italic text-[24px] font-medium leading-none text-foreground">Pulse</span><span class="font-data text-[10px] text-muted-foreground">24 · italic · med</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="font-display text-[56px] leading-none text-foreground">142</span><span class="font-data text-[10px] text-muted-foreground">56 · BPM hero</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="font-display text-[48px] leading-none text-foreground">22</span><span class="font-data text-[10px] text-muted-foreground">48 · NCI hero</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="font-display text-[40px] leading-none text-primary">Pulse</span><span class="font-data text-[10px] text-muted-foreground">40 · brand word</span></div>
               <div class="border-t border-border my-3"></div>
-              <div class="flex items-baseline justify-between gap-3"><span class="font-brand text-[64px] font-bold leading-none text-foreground">72</span><span class="font-data text-[10px] text-muted-foreground">hero number 64</span></div>
-              <div class="flex items-baseline justify-between gap-3"><span class="font-brand text-[48px] font-semibold leading-none text-foreground">72</span><span class="font-data text-[10px] text-muted-foreground">hero number 48</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="font-display text-[32px] leading-none text-foreground">78</span><span class="font-data text-[10px] text-muted-foreground">32 · KPI</span></div>
             </div>
-            <p class="text-[11px] text-muted-foreground pt-2 border-t border-border">Только для «Pulse» (italic) и hero-чисел (KPI 48/64px). Не использовать в body.</p>
+            <p class="text-[11px] text-muted-foreground pt-2 border-t border-border">Weight 900 + letter-spacing -0.04em. Только для hero-чисел (BPM, NCI, KPI) и слова «Pulse». Не для body.</p>
           </div>
 
-          <!-- JetBrains Mono -->
+          <!-- Geist Mono -->
           <div class="bg-card border border-border rounded-lg p-5 space-y-3">
             <div class="flex items-baseline justify-between border-b border-border pb-2">
-              <h4 class="text-sm font-semibold text-foreground">JetBrains Mono</h4>
-              <span class="badge bg-muted text-muted-foreground">data</span>
+              <h4 class="text-sm font-semibold text-foreground">Geist Mono</h4>
+              <span class="badge bg-muted text-muted-foreground">Data</span>
             </div>
             <div class="space-y-2.5">
               <div class="flex items-baseline justify-between gap-3"><span class="font-data text-[16px] font-medium leading-none text-foreground">72 BPM</span><span class="font-data text-[10px] text-muted-foreground">16 · data-base</span></div>
@@ -433,7 +443,7 @@
               <div class="flex items-baseline justify-between gap-3"><span class="font-data text-[12px] font-normal leading-none text-muted-foreground">14:23:08</span><span class="font-data text-[10px] text-muted-foreground">12 · timestamp</span></div>
               <div class="border-t border-border my-3"></div>
               <div class="space-y-1.5">
-                <p class="text-[11px] text-muted-foreground">Примеры: BPM, NCI, RMSSD, временные метки, hex-коды в токенах, ID браслетов</p>
+                <p class="text-[11px] text-muted-foreground">Weights: 400 / 500 / 600. Примеры: BPM, NCI, RMSSD, временные метки, hex-коды, ID браслетов.</p>
                 <p class="font-data text-[11px] text-foreground">#831843 · 0xA1B3 · 142/85</p>
               </div>
             </div>
@@ -776,7 +786,7 @@
       <!-- 3.1 BPM-card · 3 states -->
       <article id="bpm-card" class="space-y-4">
         <h3 class="text-lg font-semibold text-foreground">3.1 BPM-card · 3 состояния</h3>
-        <p class="text-sm text-muted-foreground">Hero-число (Fraunces 64-80px) + sparkline 60 сек + status-pill. Используется на kiosk для якорей и гостя.</p>
+        <p class="text-sm text-muted-foreground">Hero-число (Onest 900, 64-80px, tracking -0.04em) + sparkline 60 сек + status-pill. Используется на kiosk для якорей и гостя.</p>
 
         <div class="grid grid-cols-3 gap-4">
           <!-- NORM -->
@@ -838,72 +848,143 @@
 &lt;/div&gt;</code></pre>
       </article>
 
-      <!-- 3.2 NCI-gauge -->
-      <article id="nci-gauge" class="space-y-4">
-        <h3 class="text-lg font-semibold text-foreground">3.2 NCI-gauge · полукруговая шкала</h3>
-        <p class="text-sm text-muted-foreground">Когнитивная нагрузка (Neiry Stress Index). Зоны: 🟢 ≤30 · 🟡 31-60 · 🔴 >60. SVG inline, без зависимостей.</p>
+      <!-- 3.2 NCI-gauge — два варианта -->
+      <article id="nci-gauge" class="space-y-6">
+        <h3 class="text-lg font-semibold text-foreground">3.2 NCI-gauge · два варианта</h3>
+        <p class="text-sm text-muted-foreground">Когнитивная нагрузка (Neiry Stress Index). Зоны: 🟢 ≤30 · 🟡 31-60 · 🔴 >60. Два варианта: Apple Rings (270° arc) для kiosk и Tremor Radial (360° donut) для drill-down.</p>
 
-        <div class="grid grid-cols-3 gap-4">
-          <!-- NCI 22 -->
-          <div class="bg-card border border-border rounded-lg p-5 flex flex-col items-center space-y-2">
-            <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold self-start">Когнитивная нагрузка</p>
-            <svg viewBox="0 0 200 110" class="w-full max-w-[200px]">
-              <!-- Background arc -->
-              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
-              <!-- Zone segments -->
-              <path d="M 20 100 A 80 80 0 0 1 68 36" fill="none" stroke="hsl(var(--chart-2))" stroke-width="14" stroke-linecap="round"/>
-              <path d="M 75 32 A 80 80 0 0 1 125 32" fill="none" stroke="hsl(var(--chart-4))" stroke-width="14" stroke-linecap="round"/>
-              <path d="M 132 36 A 80 80 0 0 1 180 100" fill="none" stroke="hsl(var(--destructive))" stroke-width="14" stroke-linecap="round"/>
-              <!-- Needle for value 22 (left zone) -->
-              <line x1="100" y1="100" x2="42" y2="48" stroke="hsl(var(--foreground))" stroke-width="2.5" stroke-linecap="round"/>
-              <circle cx="100" cy="100" r="5" fill="hsl(var(--foreground))"/>
-            </svg>
-            <div class="text-center">
-              <p class="font-brand text-[40px] leading-none font-semibold text-chart-2">22</p>
-              <p class="text-[11px] text-muted-foreground font-data mt-1">norm · low</p>
+        <!-- 3.2.A — Apple Rings (270° arc) -->
+        <div class="space-y-3">
+          <div class="flex items-baseline justify-between">
+            <h4 class="text-sm font-semibold text-foreground">3.2.A · Apple Rings (270° arc)</h4>
+            <span class="text-[11px] text-muted-foreground">для kiosk · далёкая дистанция</span>
+          </div>
+          <p class="text-xs text-muted-foreground">Дуга открыта снизу как Apple Watch Activity. Огромное число в центре (Onest 900). Хорошо читается с 2-3м.</p>
+
+          <div class="grid grid-cols-3 gap-4">
+            <!-- NCI 22 — success -->
+            <div class="bg-card border border-border rounded-lg p-5 flex flex-col items-center space-y-2">
+              <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold self-start">Когнитивная нагрузка</p>
+              <div class="relative flex items-center justify-center w-44 h-44">
+                <svg viewBox="0 0 180 180" class="w-44 h-44">
+                  <path d="M 35 145 A 70 70 0 1 1 145 145"
+                        fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
+                  <path d="M 35 145 A 70 70 0 1 1 145 145"
+                        fill="none" stroke="hsl(var(--success))" stroke-width="14" stroke-linecap="round"
+                        stroke-dasharray="330" stroke-dashoffset="257"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
+                  <span class="font-display text-[56px] leading-none" style="color: hsl(var(--success))">22</span>
+                  <span class="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">norm</span>
+                </div>
+              </div>
+            </div>
+            <!-- NCI 55 — warning -->
+            <div class="bg-card border border-border rounded-lg p-5 flex flex-col items-center space-y-2">
+              <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold self-start">Когнитивная нагрузка</p>
+              <div class="relative flex items-center justify-center w-44 h-44">
+                <svg viewBox="0 0 180 180" class="w-44 h-44">
+                  <path d="M 35 145 A 70 70 0 1 1 145 145"
+                        fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
+                  <path d="M 35 145 A 70 70 0 1 1 145 145"
+                        fill="none" stroke="hsl(var(--warning))" stroke-width="14" stroke-linecap="round"
+                        stroke-dasharray="330" stroke-dashoffset="149"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
+                  <span class="font-display text-[56px] leading-none" style="color: hsl(var(--warning))">55</span>
+                  <span class="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">elevated</span>
+                </div>
+              </div>
+            </div>
+            <!-- NCI 78 — danger -->
+            <div class="bg-card border border-border rounded-lg p-5 flex flex-col items-center space-y-2">
+              <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold self-start">Когнитивная нагрузка</p>
+              <div class="relative flex items-center justify-center w-44 h-44">
+                <svg viewBox="0 0 180 180" class="w-44 h-44">
+                  <path d="M 35 145 A 70 70 0 1 1 145 145"
+                        fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
+                  <path d="M 35 145 A 70 70 0 1 1 145 145"
+                        fill="none" stroke="hsl(var(--destructive))" stroke-width="14" stroke-linecap="round"
+                        stroke-dasharray="330" stroke-dashoffset="73"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
+                  <span class="font-display text-[56px] leading-none" style="color: hsl(var(--destructive))">78</span>
+                  <span class="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">high</span>
+                </div>
+              </div>
             </div>
           </div>
-          <!-- NCI 55 -->
-          <div class="bg-card border border-border rounded-lg p-5 flex flex-col items-center space-y-2">
-            <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold self-start">Когнитивная нагрузка</p>
-            <svg viewBox="0 0 200 110" class="w-full max-w-[200px]">
-              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
-              <path d="M 20 100 A 80 80 0 0 1 68 36" fill="none" stroke="hsl(var(--chart-2))" stroke-width="14" stroke-linecap="round"/>
-              <path d="M 75 32 A 80 80 0 0 1 125 32" fill="none" stroke="hsl(var(--chart-4))" stroke-width="14" stroke-linecap="round"/>
-              <path d="M 132 36 A 80 80 0 0 1 180 100" fill="none" stroke="hsl(var(--destructive))" stroke-width="14" stroke-linecap="round"/>
-              <!-- Needle for value 55 (middle zone) -->
-              <line x1="100" y1="100" x2="100" y2="28" stroke="hsl(var(--foreground))" stroke-width="2.5" stroke-linecap="round"/>
-              <circle cx="100" cy="100" r="5" fill="hsl(var(--foreground))"/>
-            </svg>
-            <div class="text-center">
-              <p class="font-brand text-[40px] leading-none font-semibold text-chart-4">55</p>
-              <p class="text-[11px] text-muted-foreground font-data mt-1">elevated · mid</p>
-            </div>
-          </div>
-          <!-- NCI 78 -->
-          <div class="bg-card border border-border rounded-lg p-5 flex flex-col items-center space-y-2">
-            <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold self-start">Когнитивная нагрузка</p>
-            <svg viewBox="0 0 200 110" class="w-full max-w-[200px]">
-              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
-              <path d="M 20 100 A 80 80 0 0 1 68 36" fill="none" stroke="hsl(var(--chart-2))" stroke-width="14" stroke-linecap="round"/>
-              <path d="M 75 32 A 80 80 0 0 1 125 32" fill="none" stroke="hsl(var(--chart-4))" stroke-width="14" stroke-linecap="round"/>
-              <path d="M 132 36 A 80 80 0 0 1 180 100" fill="none" stroke="hsl(var(--destructive))" stroke-width="14" stroke-linecap="round"/>
-              <!-- Needle for value 78 (right zone) -->
-              <line x1="100" y1="100" x2="158" y2="48" stroke="hsl(var(--foreground))" stroke-width="2.5" stroke-linecap="round"/>
-              <circle cx="100" cy="100" r="5" fill="hsl(var(--foreground))"/>
-            </svg>
-            <div class="text-center">
-              <p class="font-brand text-[40px] leading-none font-semibold text-destructive">78</p>
-              <p class="text-[11px] text-muted-foreground font-data mt-1">high · danger</p>
-            </div>
-          </div>
-        </div>
-        <pre class="code-block"><code>&lt;svg viewBox="0 0 200 110"&gt;
-  &lt;path d="M 20 100 A 80 80 0 0 1 68 36" stroke="hsl(var(--chart-2))" stroke-width="14"/&gt;
-  &lt;path d="M 75 32 A 80 80 0 0 1 125 32" stroke="hsl(var(--chart-4))" stroke-width="14"/&gt;
-  &lt;path d="M 132 36 A 80 80 0 0 1 180 100" stroke="hsl(var(--destructive))" stroke-width="14"/&gt;
-  &lt;line x1="100" y1="100" x2="..." y2="..." stroke="hsl(var(--foreground))"/&gt;
+          <pre class="code-block"><code>&lt;svg viewBox="0 0 180 180" class="w-44 h-44"&gt;
+  &lt;!-- 270° track --&gt;
+  &lt;path d="M 35 145 A 70 70 0 1 1 145 145" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round" fill="none"/&gt;
+  &lt;!-- fill: dasharray=330, offset=330*(1-value/100) --&gt;
+  &lt;path d="M 35 145 A 70 70 0 1 1 145 145" stroke="hsl(var(--success))" stroke-width="14" stroke-linecap="round" fill="none"
+        stroke-dasharray="330" stroke-dashoffset="257"/&gt;
 &lt;/svg&gt;</code></pre>
+        </div>
+
+        <!-- 3.2.B — Tremor Radial (360° donut) -->
+        <div class="space-y-3 pt-4 border-t border-border">
+          <div class="flex items-baseline justify-between">
+            <h4 class="text-sm font-semibold text-foreground">3.2.B · Tremor Radial (360° donut)</h4>
+            <span class="text-[11px] text-muted-foreground">для drill-down · карточка гостя</span>
+          </div>
+          <p class="text-xs text-muted-foreground">Полный круг, тонкий track, число и status-label в центре. Стандартный donut-стиль Tremor.</p>
+
+          <div class="grid grid-cols-3 gap-4">
+            <!-- NCI 22 — success -->
+            <div class="bg-card border border-border rounded-lg p-5 flex flex-col items-center space-y-2">
+              <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold self-start">Когнитивная нагрузка</p>
+              <div class="relative flex items-center justify-center w-44 h-44">
+                <svg viewBox="0 0 180 180" class="w-44 h-44 -rotate-90">
+                  <circle cx="90" cy="90" r="75" fill="none" stroke="hsl(var(--muted))" stroke-width="10" opacity="0.3"/>
+                  <circle cx="90" cy="90" r="75" fill="none" stroke="hsl(var(--success))" stroke-width="10"
+                          stroke-dasharray="471" stroke-dashoffset="367" stroke-linecap="round"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <span class="font-display text-[56px] leading-none" style="color: hsl(var(--success))">22</span>
+                  <span class="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">norm</span>
+                </div>
+              </div>
+            </div>
+            <!-- NCI 55 — warning -->
+            <div class="bg-card border border-border rounded-lg p-5 flex flex-col items-center space-y-2">
+              <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold self-start">Когнитивная нагрузка</p>
+              <div class="relative flex items-center justify-center w-44 h-44">
+                <svg viewBox="0 0 180 180" class="w-44 h-44 -rotate-90">
+                  <circle cx="90" cy="90" r="75" fill="none" stroke="hsl(var(--muted))" stroke-width="10" opacity="0.3"/>
+                  <circle cx="90" cy="90" r="75" fill="none" stroke="hsl(var(--warning))" stroke-width="10"
+                          stroke-dasharray="471" stroke-dashoffset="212" stroke-linecap="round"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <span class="font-display text-[56px] leading-none" style="color: hsl(var(--warning))">55</span>
+                  <span class="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">elevated</span>
+                </div>
+              </div>
+            </div>
+            <!-- NCI 78 — danger -->
+            <div class="bg-card border border-border rounded-lg p-5 flex flex-col items-center space-y-2">
+              <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold self-start">Когнитивная нагрузка</p>
+              <div class="relative flex items-center justify-center w-44 h-44">
+                <svg viewBox="0 0 180 180" class="w-44 h-44 -rotate-90">
+                  <circle cx="90" cy="90" r="75" fill="none" stroke="hsl(var(--muted))" stroke-width="10" opacity="0.3"/>
+                  <circle cx="90" cy="90" r="75" fill="none" stroke="hsl(var(--destructive))" stroke-width="10"
+                          stroke-dasharray="471" stroke-dashoffset="104" stroke-linecap="round"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <span class="font-display text-[56px] leading-none" style="color: hsl(var(--destructive))">78</span>
+                  <span class="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">high</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre class="code-block"><code>&lt;svg viewBox="0 0 180 180" class="w-44 h-44 -rotate-90"&gt;
+  &lt;circle cx="90" cy="90" r="75" stroke="hsl(var(--muted))" stroke-width="10" opacity="0.3" fill="none"/&gt;
+  &lt;!-- circumference=471, offset=471*(1-value/100) --&gt;
+  &lt;circle cx="90" cy="90" r="75" stroke="hsl(var(--success))" stroke-width="10" stroke-linecap="round" fill="none"
+          stroke-dasharray="471" stroke-dashoffset="367"/&gt;
+&lt;/svg&gt;</code></pre>
+        </div>
       </article>
 
       <!-- 3.3 STATUS-PILL -->
@@ -1060,7 +1141,7 @@
       <!-- 4.1 KPI cards -->
       <article id="kpi" class="space-y-4">
         <h3 class="text-lg font-semibold text-foreground">4.1 KPI-card · 4 примера</h3>
-        <p class="text-sm text-muted-foreground">Заголовок (uppercase small) + hero-число (Fraunces 48px) + delta + sparkline.</p>
+        <p class="text-sm text-muted-foreground">Заголовок (uppercase small) + hero-число (Onest 900, 48px) + delta + sparkline.</p>
 
         <div class="grid grid-cols-4 gap-4">
           <!-- Recovery -->
