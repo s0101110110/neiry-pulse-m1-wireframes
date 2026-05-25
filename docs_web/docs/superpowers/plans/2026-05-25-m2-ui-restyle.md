@@ -54,12 +54,14 @@ PM подтвердил:
 
 ---
 
-### Задача 3: UI Kit — живой styleguide
+### Задача 3: UI Kit — живой styleguide ✅ ЗАКРЫТА 25.05.2026
 
 **Файлы:**
 - Create: `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m2/ui-kit.html`
 
-- [ ] **Шаг 1: Создать ui-kit.html**
+Готов в коммите `e18bae3` (создание), `8e1d254` (правки code-review). Spec PASS + code quality APPROVED.
+
+- [x] **Шаг 1: Создать ui-kit.html**
 
 Структура страницы:
 1. **Tokens** — палитра (semantic CSS-переменные `--background`, `--foreground`, `--primary`, `--accent`, `--muted`, `--success`, `--warning`, `--destructive`), типографика (Manrope/Fraunces/JetBrains Mono с размерами), spacing-scale, радиусы, тени
@@ -69,25 +71,11 @@ PM подтвердил:
 
 Каждый компонент с примером использования и кратким описанием «когда применять».
 
-- [ ] **Шаг 2: Проверить в браузере**
+- [x] **Шаг 2: Проверить в браузере**
 
-Открыть `file:///.../docs_web/wireframes/m2/ui-kit.html`. Проверить:
-- Все компоненты рендерятся без ошибок
-- Палитра консистентна
-- Шрифты подгружаются (Manrope основной, JetBrains Mono для данных)
-- Адаптивность 1280px и 1920px
+- [x] **Шаг 3: Закоммитить**
 
-- [ ] **Шаг 3: Закоммитить**
-
-```bash
-git add docs_web/wireframes/m2/ui-kit.html
-git commit -m "Добавил UI Kit M2: токены + base-компоненты shadcn + био-виджеты + Tremor-стиль для дашборда"
-git push
-```
-
-- [ ] **Шаг 4: Обновить план + PROJECT_STATE**
-
-Отметить чекбоксы Задачи 3. Добавить ссылку на ui-kit.html в `knowledge-base/PROJECT_STATE.md` (раздел «Артефакты M2»).
+- [x] **Шаг 4: Обновить план + PROJECT_STATE**
 
 - [ ] **Шаг 5: Чекпоинт с PM**
 
