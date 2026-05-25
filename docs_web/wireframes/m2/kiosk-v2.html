@@ -2,7 +2,7 @@
 <html lang="ru" class="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=1920, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neiry Pulse · Kiosk v2 · Живая демонстрация</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
   :root {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 6%;
+    --card: 240 10% 8.5%;             /* +2.5% lightness — карточки «всплывают» из фона */
     --card-foreground: 0 0% 98%;
     --primary: 336 76% 45%;           /* wine #831843 (lightened for dark) */
     --primary-hover: 336 76% 52%;
@@ -26,10 +26,10 @@
     --muted-foreground: 240 5% 64.9%;
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
-    --destructive: 348 100% 54%;      /* #FF1744 */
+    --destructive: 0 84% 60%;         /* red-500 — менее агрессивный на плазме */
     --destructive-foreground: 0 0% 100%;
-    --success: 151 100% 45%;          /* #00E676 */
-    --warning: 42 100% 50%;           /* #FFB300 */
+    --success: 151 60% 53%;           /* emerald-500-tinted — спокойнее для длительной демки */
+    --warning: 38 92% 50%;            /* amber-500 — теплее, мягче для глаз */
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 336 76% 45%;
@@ -44,13 +44,88 @@
     --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
     --font-display: 'Onest', 'Space Grotesk', system-ui, sans-serif;
     --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+    /* ============================================
+       TYPE SCALE — единая шкала из 6 ступеней.
+       Дашборд читается с дистанции 1.5-3 м, поэтому baseline = 16px,
+       caption = 14px (минимум для uppercase), display = 120px (BPM hero).
+       ============================================ */
+    --t-caption: 14px;   /* uppercase labels, device tags, marker labels, легенда */
+    --t-body:    16px;   /* статусы, описания, IDLE-копия */
+    --t-lead:    20px;   /* CTA-микрокопия, BPM unit, заголовки секций */
+    --t-h2:      28px;   /* имена в карточках, Pulse wordmark, модалка-h3 */
+    --t-h1:      72px;   /* NSI digit */
+    --t-display: 120px;  /* BPM digit */
   }
 
+  /* ECG monitor plate — тёмная плашка-контейнер для sparkline в стиле кардиомонитора */
+  .ecg-plate {
+    background: hsl(var(--background) / 0.55);
+    border: 1px solid hsl(var(--border));
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+
+  /* Единый wrapper для 3 групп карточки (BPM-hero / ECG / NSI-gauge).
+     items-center + min-w-0 — общий контракт расположения; ширину задаёт сама группа. */
+  .kiosk-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+  }
+
+  /* Плавная смена цвета/заполнения NSI-gauge при дрейфе значения. */
+  [data-nsi-arc], [data-nsi-digit] {
+    transition: stroke 0.6s ease, color 0.6s ease, stroke-dashoffset 0.9s ease-out;
+  }
+
+  /* ЭКГ-линия и пульсирующая голова перекрашиваются вслед за NSI-зоной
+     (success/warning/destructive) — даёт второй визуальный канал смены состояния
+     помимо самой NSI-арки. Transition сглаживает переход между зонами. */
+  [data-spark-line], [data-spark-pulse], [data-spark-halo] {
+    transition: stroke 0.6s ease, fill 0.6s ease;
+  }
+
+  /* Type-scale helpers */
+  .t-caption { font-size: var(--t-caption); line-height: 1.3; }
+  .t-body    { font-size: var(--t-body);    line-height: 1.4; }
+  .t-lead    { font-size: var(--t-lead);    line-height: 1.3; }
+  .t-h2      { font-size: var(--t-h2);      line-height: 1.1; }
+  .t-h1      { font-size: var(--t-h1);      line-height: 1; }
+  .t-display { font-size: var(--t-display); line-height: 0.95; }
+
+  html, body {
+    margin: 0; padding: 0;
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+  }
   body {
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     background: hsl(var(--background));
     color: hsl(var(--foreground));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ============================================
+     KIOSK STAGE — фиксированный canvas 1920×1080,
+     масштабируется через transform: scale() под любой viewport.
+     Гарантирует корректный рендер на 13/15" MacBook, плазме 1920×1080,
+     UHD 3840×2160 и любом промежуточном размере без зависимости от browser zoom.
+     ============================================ */
+  #kiosk-stage {
+    width: 1920px;
+    height: 1080px;
+    flex-shrink: 0;
+    transform-origin: center center;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: hsl(var(--background));
+    overflow: hidden;
   }
   .font-display { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.04em; }
   .font-data    { font-family: var(--font-mono); }
@@ -80,17 +155,17 @@
   .border-border    { border-color: hsl(var(--border)); }
   .border-primary   { border-color: hsl(var(--primary)); }
 
-  /* Badge */
+  /* Badge — выровнен по caption (14px) для консистентности с остальными labels */
   .badge {
     display: inline-flex; align-items: center;
-    padding: 4px 12px;
-    font-size: 12px; font-weight: 600;
+    padding: 6px 14px;
+    font-size: var(--t-caption); font-weight: 600;
     border-radius: 9999px;
     letter-spacing: 0.04em;
-    line-height: 1.4;
+    line-height: 1.3;
   }
   .badge .dot {
-    width: 6px; height: 6px;
+    width: 7px; height: 7px;
     border-radius: 9999px;
     margin-right: 8px;
     display: inline-block;
@@ -131,12 +206,16 @@
   }
   .card-anchor[data-active="false"] { opacity: 0.55; filter: grayscale(0.4); }
 
-  /* Slot visibility per state — defaults hidden, opted-in via state */
+  /* Slot visibility per state — defaults hidden, opted-in via state.
+     gap: 24px — одинаковый ритм между 3 группами карточки
+     (BPM-hero / ECG-plate / NSI-gauge). */
   .when-idle, .when-active, .when-done {
     display: none;
     flex-direction: column;
     flex: 1 1 0%;
     min-height: 0;
+    justify-content: center;
+    gap: 24px;
   }
 
   /* IDLE: all 3 cards show placeholder */
@@ -162,10 +241,43 @@
   body[data-state="idle"]          .card-anchor       { opacity: 0.78; }
   body[data-state="pending-claim"] [data-id="guest"]  { opacity: 0.92; }
 
-  /* QR modal — only on pending-claim */
+  /* Гость — пустой «слот»: dashed-border в состояниях ожидания/idle */
+  body[data-state="idle"]          [data-id="guest"],
+  body[data-state="active-2"]      [data-id="guest"] {
+    border-style: dashed;
+  }
+
+  /* Dev-bar — floating pill внизу по центру, всегда виден на стенде */
+  .dev-bar {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: hsl(var(--card) / 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid hsl(var(--border));
+    border-radius: 9999px;
+    box-shadow: 0 8px 28px hsla(0, 0%, 0%, 0.5);
+  }
+  .dev-bar .dev-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: hsl(var(--muted-foreground));
+    padding: 0 8px 0 4px;
+  }
+
+  /* QR modal — only on pending-claim. position: absolute → масштабируется со stage */
   .qr-modal {
     display: none;
-    position: fixed; inset: 0; z-index: 50;
+    position: absolute; inset: 0; z-index: 50;
     align-items: center; justify-content: center;
     background: hsla(240, 10%, 2%, 0.72);
     backdrop-filter: blur(12px);
@@ -218,13 +330,17 @@
   .scale-marker {
     position: absolute;
     top: 50%;
-    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
     transition: opacity 280ms ease, left 480ms cubic-bezier(0.22, 1, 0.36, 1);
   }
+  /* Вертикальный stack — pin'ы и label'ы не перекрываются даже при близких NSI */
+  [data-marker="kostya"] { transform: translate(-50%, -88%); }
+  [data-marker="guest"]  { transform: translate(-50%, -88%); }
+  [data-marker="alexey"] { transform: translate(-50%, -12%); }
+  [data-marker="alexey"] { flex-direction: column-reverse; }
   .scale-marker .pin {
     width: 36px; height: 36px;
     border-radius: 9999px;
@@ -236,11 +352,11 @@
   }
   .scale-marker .label {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: var(--t-caption);
     color: hsl(var(--foreground));
     background: hsl(var(--card) / 0.9);
     border: 1px solid hsl(var(--border));
-    padding: 2px 8px;
+    padding: 3px 10px;
     border-radius: 9999px;
     white-space: nowrap;
     letter-spacing: 0.02em;
@@ -250,43 +366,289 @@
   body[data-state="active-2"]      [data-marker="guest"]  { display: none; }
   body[data-state="active-3"]      [data-marker="guest"],
   body[data-state="pending-claim"] [data-marker="guest"]  { display: flex; }
+
+  /* Accessibility — выключаем motion для пользователей с вестибулярными чувствительностями */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-heart,
+    .live-dot,
+    .bpm-value.tick,
+    .scale-marker,
+    .card-anchor,
+    .qr-modal,
+    .qr-modal > .qr-card {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
 </style>
 </head>
-<body data-state="active-3" class="h-screen overflow-hidden flex flex-col">
+<body data-state="active-3">
+
+<!-- =========================================
+     KIOSK STAGE — fixed 1920×1080 canvas, JS-scaled to fit viewport
+     ========================================= -->
+<div id="kiosk-stage">
 
   <!-- HEADER (≈ 8% viewport height = ~86px) -->
   <header class="shrink-0 h-[86px] px-10 border-b border-border bg-card/40 flex items-center justify-between gap-6">
-    <!-- Left: logo + product name + status -->
-    <div class="flex items-center gap-5">
-      <!-- Neiry wordmark (inline SVG, currentColor = foreground) -->
-      <div class="flex items-baseline gap-2">
-        <svg viewBox="0 0 733 280" class="h-7 w-auto text-foreground self-center" aria-hidden="true">
-          <path fill="currentColor" fill-rule="evenodd" d="M364.3,0v45.5h53V0h-53ZM363.9,65.2v156.5h53.8V65.2h-53.8ZM530.9,64.3h14.2v49.6h-20.8c-9.5,0-16.3,2.2-20.6,6.7-4.2,4.4-6.3,11.6-6.3,21.4v79.7h-53.8V65.2h35.9l8.4,17.4c10.4-12.2,24.8-18.2,43.1-18.2l-.1-.1ZM675.1,65.2h57.9l-65.4,149.6c-10.8,24.3-22,41.3-33.6,50.7-11.6,9.6-27.3,14.5-47.2,14.5h-18.5v-46.4h14.7c10.2,0,17.5-1.6,22-4.9,4.4-3.3,8.5-10,12.2-20l-64.5-143.5h58.4l33,86.1,31-86.1h0ZM342.4,142c0,4.4-.4,9.2-1.2,14.2h-116.1c1.7,8.9,5.3,15.6,10.7,20.3,5.6,4.6,12.6,7,21.1,7s8.2-.6,11.9-1.7c3.7-1.2,6.8-2.8,9.6-4.9,2.9-2.3,5.2-5,7-8.1h53.5c-5.4,18-15.5,32.2-30.4,42.6-14.7,10.5-31.8,15.6-51.5,15.6s-44.6-7.9-60.8-23.8c-16-16.1-24-35.9-24-59.7s3.7-30.1,11-42.9c7.3-12.8,17.5-22.7,30.4-29.9s27.4-10.7,43.4-10.7,31.3,3.7,44.3,11c13.1,7.2,23.3,17,30.4,29.6,7.1,12.4,10.7,26.2,10.7,41.5h0v-.1ZM257.1,102.3c-7.7,0-14.3,2.1-19.7,6.4-5.2,4-9,10-11.3,17.7h63.4c-4.8-16.1-15.6-24-32.4-24v-.1ZM137.8,78.6c-10.8-12-25.3-18-43.4-18s-36.9,7-49.2,20.9l-7.5-16.3H0v156.5h53.8v-83.5c0-6.8,1-12.5,2.9-17.1,2.1-4.9,5.1-8.5,9-11,4-2.5,8.9-3.8,14.5-3.8,13.5,0,20.3,9.1,20.3,27.3v88.1h53.8v-95.4c0-19.9-5.5-35.9-16.5-47.8h0v.1Z"/>
-        </svg>
-        <span class="font-display text-xl text-foreground tracking-tight">Pulse</span>
-      </div>
-      <span class="text-muted-foreground/40 text-xl">·</span>
-      <div class="flex items-center gap-3">
-        <span class="w-2 h-2 rounded-full bg-success live-dot" aria-hidden="true"></span>
-        <span class="text-foreground text-sm font-medium">Живая демонстрация · Startup Village 2026</span>
-      </div>
+    <!-- Left: brand (Neiry + Pulse) -->
+    <div class="flex items-center gap-2.5">
+      <svg viewBox="0 0 733 280" class="h-7 w-auto text-foreground" aria-hidden="true">
+        <path fill="currentColor" fill-rule="evenodd" d="M364.3,0v45.5h53V0h-53ZM363.9,65.2v156.5h53.8V65.2h-53.8ZM530.9,64.3h14.2v49.6h-20.8c-9.5,0-16.3,2.2-20.6,6.7-4.2,4.4-6.3,11.6-6.3,21.4v79.7h-53.8V65.2h35.9l8.4,17.4c10.4-12.2,24.8-18.2,43.1-18.2l-.1-.1ZM675.1,65.2h57.9l-65.4,149.6c-10.8,24.3-22,41.3-33.6,50.7-11.6,9.6-27.3,14.5-47.2,14.5h-18.5v-46.4h14.7c10.2,0,17.5-1.6,22-4.9,4.4-3.3,8.5-10,12.2-20l-64.5-143.5h58.4l33,86.1,31-86.1h0ZM342.4,142c0,4.4-.4,9.2-1.2,14.2h-116.1c1.7,8.9,5.3,15.6,10.7,20.3,5.6,4.6,12.6,7,21.1,7s8.2-.6,11.9-1.7c3.7-1.2,6.8-2.8,9.6-4.9,2.9-2.3,5.2-5,7-8.1h53.5c-5.4,18-15.5,32.2-30.4,42.6-14.7,10.5-31.8,15.6-51.5,15.6s-44.6-7.9-60.8-23.8c-16-16.1-24-35.9-24-59.7s3.7-30.1,11-42.9c7.3-12.8,17.5-22.7,30.4-29.9s27.4-10.7,43.4-10.7,31.3,3.7,44.3,11c13.1,7.2,23.3,17,30.4,29.6,7.1,12.4,10.7,26.2,10.7,41.5h0v-.1ZM257.1,102.3c-7.7,0-14.3,2.1-19.7,6.4-5.2,4-9,10-11.3,17.7h63.4c-4.8-16.1-15.6-24-32.4-24v-.1ZM137.8,78.6c-10.8-12-25.3-18-43.4-18s-36.9,7-49.2,20.9l-7.5-16.3H0v156.5h53.8v-83.5c0-6.8,1-12.5,2.9-17.1,2.1-4.9,5.1-8.5,9-11,4-2.5,8.9-3.8,14.5-3.8,13.5,0,20.3,9.1,20.3,27.3v88.1h53.8v-95.4c0-19.9-5.5-35.9-16.5-47.8h0v.1Z"/>
+      </svg>
+      <span class="font-display text-primary tracking-tight t-h2">Pulse</span>
     </div>
 
-    <!-- Right: dev-bar -->
-    <div class="flex items-center gap-2">
-      <span class="text-[10px] uppercase tracking-widest text-muted-foreground font-data mr-3">dev · state</span>
-      <button data-state="idle"          class="dev-btn px-3 py-1.5 text-xs font-semibold rounded-md">IDLE</button>
-      <button data-state="active-2"      class="dev-btn px-3 py-1.5 text-xs font-semibold rounded-md">ACTIVE 2</button>
-      <button data-state="active-3"      class="dev-btn px-3 py-1.5 text-xs font-semibold rounded-md">ACTIVE 3</button>
-      <button data-state="pending-claim" class="dev-btn px-3 py-1.5 text-xs font-semibold rounded-md">PENDING CLAIM</button>
+    <!-- Right: live event status -->
+    <div class="flex items-center gap-3">
+      <span class="w-2.5 h-2.5 rounded-full bg-success live-dot" aria-hidden="true"></span>
+      <span class="text-foreground t-lead font-medium">Живая демонстрация · Startup Village 2026</span>
     </div>
   </header>
 
-  <!-- TEAM SCALE (под шапкой, скрыта в idle) -->
-  <section class="team-scale-wrap shrink-0 px-10 pt-6 pb-4 border-b border-border bg-card/20">
+  <!-- MAIN (≈ 78% — 3 anchor cards) -->
+  <main class="flex-1 min-h-0 px-10 py-6 grid grid-cols-3 gap-6 overflow-hidden">
+
+    <!-- =========================================
+         CARD: КОСТЯ (Project Lead, anchor)
+         ========================================= -->
+    <article data-id="kostya" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
+      <!-- Top: name + device id (caption 14px вместо 10px — читается с дистанции) -->
+      <header class="flex items-center gap-3 mb-2">
+        <p class="font-display t-h2 text-foreground" style="letter-spacing:-0.02em">Костя</p>
+        <span class="ml-auto t-caption uppercase tracking-wider text-muted-foreground font-data">Neiry.Pulse #1</span>
+      </header>
+
+      <!-- IDLE placeholder -->
+      <div class="when-idle">
+        <span class="text-5xl animate-heart text-primary">&#9829;</span>
+        <p class="text-muted-foreground t-body">Надень браслет,<br>чтобы начать</p>
+      </div>
+
+      <!-- ACTIVE content — 3 группы с одинаковым вертикальным отступом -->
+      <div class="when-active">
+        <!-- ГРУППА 1: BPM hero + Подключен -->
+        <div class="kiosk-group gap-2">
+          <div class="flex items-baseline justify-center gap-3">
+            <span class="font-display t-display text-foreground bpm-value" data-bpm="kostya">142</span>
+            <span class="font-data t-lead text-muted-foreground">BPM</span>
+          </div>
+          <p class="text-center t-caption uppercase tracking-wider text-muted-foreground font-data">
+            <span class="inline-block w-2 h-2 rounded-full bg-success live-dot mr-2 align-middle"></span>
+            Подключен
+          </p>
+        </div>
+
+        <!-- ГРУППА 2: ECG-плашка + label «BPM · 60 сек» -->
+        <div class="kiosk-group gap-2 w-full">
+          <div class="ecg-plate w-full">
+            <svg viewBox="0 0 320 72" preserveAspectRatio="none" data-spark="kostya" class="block w-full" style="height:72px">
+              <defs>
+                <filter id="ecg-glow-kostya" x="-2%" y="-30%" width="104%" height="160%">
+                  <feGaussianBlur stdDeviation="1.2" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <polyline data-spark-line="kostya" points=""
+                        fill="none" stroke="hsl(var(--warning))" stroke-width="1.8"
+                        stroke-linejoin="round" stroke-linecap="round"
+                        vector-effect="non-scaling-stroke"
+                        filter="url(#ecg-glow-kostya)"/>
+              <circle data-spark-pulse="kostya" cx="320" cy="36" r="3" fill="hsl(var(--warning))"/>
+              <circle data-spark-halo="kostya"  cx="320" cy="36" r="6" fill="hsl(var(--warning))" opacity="0.35"/>
+            </svg>
+          </div>
+          <span class="font-data t-caption uppercase tracking-wider text-muted-foreground">BPM · 60 сек</span>
+        </div>
+
+        <!-- ГРУППА 3: NSI gauge с digit + «Стресс» + badge внутри.
+             top:90px — «СТРЕСС» лежит на основании арки (поднято на 4px).
+             bottom:4px — badge максимально опущен. -->
+        <div class="kiosk-group justify-center">
+          <div class="relative w-56 h-56">
+            <svg viewBox="0 0 180 180" class="w-56 h-56">
+              <path d="M 35 145 A 70 70 0 1 1 145 145"
+                    fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
+              <path data-nsi-arc="kostya" d="M 35 145 A 70 70 0 1 1 145 145" pathLength="100"
+                    fill="none" stroke="hsl(var(--success))" stroke-width="14" stroke-linecap="round"
+                    stroke-dasharray="100" stroke-dashoffset="78"/>
+            </svg>
+            <div class="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style="top:90px">
+              <span data-nsi-digit="kostya" class="font-display t-h1" style="color: hsl(var(--success))">22</span>
+              <span class="t-caption font-semibold uppercase tracking-widest text-muted-foreground font-data" style="margin-top:-4px">Стресс</span>
+            </div>
+            <div class="absolute left-1/2 -translate-x-1/2" style="bottom:4px">
+              <span data-nsi-badge="kostya" class="badge status-norm"><span class="dot"></span>НОРМА</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- =========================================
+         CARD: АЛЕКСЕЙ (B2B Lead, anchor)
+         ========================================= -->
+    <article data-id="alexey" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
+      <header class="flex items-center gap-3 mb-2">
+        <p class="font-display t-h2 text-foreground" style="letter-spacing:-0.02em">Алексей</p>
+        <span class="ml-auto t-caption uppercase tracking-wider text-muted-foreground font-data">Neiry.Pulse #2</span>
+      </header>
+
+      <div class="when-idle">
+        <span class="text-5xl animate-heart text-primary">&#9829;</span>
+        <p class="text-muted-foreground t-body">Надень браслет,<br>чтобы начать</p>
+      </div>
+
+      <div class="when-active">
+        <!-- ГРУППА 1: BPM hero + Подключен -->
+        <div class="kiosk-group gap-2">
+          <div class="flex items-baseline justify-center gap-3">
+            <span class="font-display t-display text-foreground bpm-value" data-bpm="alexey">78</span>
+            <span class="font-data t-lead text-muted-foreground">BPM</span>
+          </div>
+          <p class="text-center t-caption uppercase tracking-wider text-muted-foreground font-data">
+            <span class="inline-block w-2 h-2 rounded-full bg-success live-dot mr-2 align-middle"></span>
+            Подключен
+          </p>
+        </div>
+
+        <!-- ГРУППА 2: ECG-плашка + label «BPM · 60 сек» -->
+        <div class="kiosk-group gap-2 w-full">
+          <div class="ecg-plate w-full">
+            <svg viewBox="0 0 320 72" preserveAspectRatio="none" data-spark="alexey" class="block w-full" style="height:72px">
+              <defs>
+                <filter id="ecg-glow-alexey" x="-2%" y="-30%" width="104%" height="160%">
+                  <feGaussianBlur stdDeviation="1.2" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <polyline data-spark-line="alexey" points=""
+                        fill="none" stroke="hsl(var(--foreground))" stroke-width="1.8"
+                        stroke-linejoin="round" stroke-linecap="round"
+                        vector-effect="non-scaling-stroke"
+                        filter="url(#ecg-glow-alexey)"/>
+              <circle data-spark-pulse="alexey" cx="320" cy="36" r="3" fill="hsl(var(--foreground))"/>
+              <circle data-spark-halo="alexey"  cx="320" cy="36" r="6" fill="hsl(var(--foreground))" opacity="0.35"/>
+            </svg>
+          </div>
+          <span class="font-data t-caption uppercase tracking-wider text-muted-foreground">BPM · 60 сек</span>
+        </div>
+
+        <!-- ГРУППА 3: NSI gauge с digit + «Стресс» + badge внутри. NSI=55, warning -->
+        <div class="kiosk-group justify-center">
+          <div class="relative w-56 h-56">
+            <svg viewBox="0 0 180 180" class="w-56 h-56">
+              <path d="M 35 145 A 70 70 0 1 1 145 145"
+                    fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
+              <path data-nsi-arc="alexey" d="M 35 145 A 70 70 0 1 1 145 145" pathLength="100"
+                    fill="none" stroke="hsl(var(--warning))" stroke-width="14" stroke-linecap="round"
+                    stroke-dasharray="100" stroke-dashoffset="45"/>
+            </svg>
+            <div class="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style="top:90px">
+              <span data-nsi-digit="alexey" class="font-display t-h1" style="color: hsl(var(--warning))">55</span>
+              <span class="t-caption font-semibold uppercase tracking-widest text-muted-foreground font-data" style="margin-top:-4px">Стресс</span>
+            </div>
+            <div class="absolute left-1/2 -translate-x-1/2" style="bottom:4px">
+              <span data-nsi-badge="alexey" class="badge status-elevated"><span class="dot"></span>ПОВЫШЕН</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- =========================================
+         CARD: ГОСТЬ (slot #3)
+         ========================================= -->
+    <article data-id="guest" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
+      <header class="flex items-center gap-3 mb-2">
+        <p class="font-display t-h2 text-foreground" style="letter-spacing:-0.02em">Гость</p>
+        <span class="ml-auto t-caption uppercase tracking-wider text-muted-foreground font-data">Neiry.Pulse #3</span>
+      </header>
+
+      <!-- IDLE placeholder -->
+      <div class="when-idle">
+        <span class="text-5xl animate-heart text-primary">&#9829;</span>
+        <p class="text-muted-foreground t-body">Надень браслет,<br>чтобы начать</p>
+        <span class="badge status-idle mt-2"><span class="dot"></span>ОЖИДАНИЕ</span>
+      </div>
+
+      <!-- ACTIVE — NSI = 42, success -->
+      <div class="when-active">
+        <!-- ГРУППА 1: BPM hero + Подключен -->
+        <div class="kiosk-group gap-2">
+          <div class="flex items-baseline justify-center gap-3">
+            <span class="font-display t-display text-foreground bpm-value" data-bpm="guest">88</span>
+            <span class="font-data t-lead text-muted-foreground">BPM</span>
+          </div>
+          <p class="text-center t-caption uppercase tracking-wider text-muted-foreground font-data">
+            <span class="inline-block w-2 h-2 rounded-full bg-success live-dot mr-2 align-middle"></span>
+            Подключен
+          </p>
+        </div>
+
+        <!-- ГРУППА 2: ECG-плашка + label «BPM · 60 сек» -->
+        <div class="kiosk-group gap-2 w-full">
+          <div class="ecg-plate w-full">
+            <svg viewBox="0 0 320 72" preserveAspectRatio="none" data-spark="guest" class="block w-full" style="height:72px">
+              <defs>
+                <filter id="ecg-glow-guest" x="-2%" y="-30%" width="104%" height="160%">
+                  <feGaussianBlur stdDeviation="1.2" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <polyline data-spark-line="guest" points=""
+                        fill="none" stroke="hsl(var(--foreground))" stroke-width="1.8"
+                        stroke-linejoin="round" stroke-linecap="round"
+                        vector-effect="non-scaling-stroke"
+                        filter="url(#ecg-glow-guest)"/>
+              <circle data-spark-pulse="guest" cx="320" cy="36" r="3" fill="hsl(var(--foreground))"/>
+              <circle data-spark-halo="guest"  cx="320" cy="36" r="6" fill="hsl(var(--foreground))" opacity="0.35"/>
+            </svg>
+          </div>
+          <span class="font-data t-caption uppercase tracking-wider text-muted-foreground">BPM · 60 сек</span>
+        </div>
+
+        <!-- ГРУППА 3: NSI gauge с digit + «Стресс» + badge внутри. NSI=42, success -->
+        <div class="kiosk-group justify-center">
+          <div class="relative w-56 h-56">
+            <svg viewBox="0 0 180 180" class="w-56 h-56">
+              <path d="M 35 145 A 70 70 0 1 1 145 145"
+                    fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
+              <path data-nsi-arc="guest" d="M 35 145 A 70 70 0 1 1 145 145" pathLength="100"
+                    fill="none" stroke="hsl(var(--success))" stroke-width="14" stroke-linecap="round"
+                    stroke-dasharray="100" stroke-dashoffset="58"/>
+            </svg>
+            <div class="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style="top:90px">
+              <span data-nsi-digit="guest" class="font-display t-h1" style="color: hsl(var(--success))">42</span>
+              <span class="t-caption font-semibold uppercase tracking-widest text-muted-foreground font-data" style="margin-top:-4px">Стресс</span>
+            </div>
+            <div class="absolute left-1/2 -translate-x-1/2" style="bottom:4px">
+              <span data-nsi-badge="guest" class="badge status-norm"><span class="dot"></span>НОРМА</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DONE (PENDING_CLAIM) -->
+      <div class="when-done">
+        <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background: hsl(var(--success) / 0.18)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="hsl(var(--success))" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <p class="font-display t-h2 text-foreground">Сессия завершена</p>
+        <p class="t-body text-muted-foreground max-w-[220px]">Сканируй QR — получи отчёт в Telegram</p>
+        <span class="badge status-done"><span class="dot"></span>СКАНИРУЙ QR</span>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- TEAM SCALE — общая шкала NSI команды, под карточками -->
+  <section class="team-scale-wrap shrink-0 px-10 pt-5 pb-3 border-t border-border bg-card/20">
     <div class="flex items-center justify-between mb-3">
-      <p class="text-[10px] uppercase tracking-widest text-muted-foreground font-data">Состояние команды · сейчас</p>
-      <p class="text-[10px] uppercase tracking-widest text-muted-foreground font-data">NSI 0 → 100</p>
+      <p class="t-caption uppercase tracking-wider text-muted-foreground font-data">Уровень стресса · команда сейчас</p>
+      <p class="t-caption uppercase tracking-widest text-muted-foreground font-data">Шкала 0 → 100 · NSI</p>
     </div>
     <div class="relative">
       <!-- Градиентная полоса -->
@@ -321,307 +683,45 @@
       </div>
     </div>
     <!-- Spacer под маркерами чтобы лейблы не перекрывали -->
-    <div class="h-12"></div>
+    <div class="h-10"></div>
   </section>
 
-  <!-- MAIN (≈ 78% — 3 anchor cards) -->
-  <main class="flex-1 min-h-0 px-10 py-6 grid grid-cols-3 gap-6 overflow-hidden">
-
-    <!-- =========================================
-         CARD: КОСТЯ (Project Lead, anchor)
-         ========================================= -->
-    <article data-id="kostya" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
-      <!-- Top: name + device id -->
-      <header class="flex items-center gap-4 mb-2">
-        <p class="font-display text-[26px] leading-tight text-foreground">Костя</p>
-        <span class="ml-auto text-[10px] uppercase tracking-widest text-muted-foreground font-data">Neiry.Pulse #1</span>
-      </header>
-
-      <!-- IDLE placeholder -->
-      <div class="when-idle">
-        <span class="text-5xl animate-heart text-primary">&#9829;</span>
-        <p class="text-muted-foreground text-base">Надень браслет,<br>чтобы начать</p>
-      </div>
-
-      <!-- ACTIVE content -->
-      <div class="when-active">
-        <!-- BPM hero -->
-        <div class="flex items-baseline justify-center gap-3 mb-1">
-          <span class="font-display text-[104px] leading-none text-foreground bpm-value" data-bpm="kostya">142</span>
-          <span class="font-data text-sm text-muted-foreground">BPM</span>
-        </div>
-        <p class="text-center text-[11px] uppercase tracking-widest text-muted-foreground font-data mb-2">
-          <span class="inline-block w-1.5 h-1.5 rounded-full bg-success live-dot mr-1.5 align-middle"></span>
-          вживую
-        </p>
-
-        <!-- R-R sparkline (под BPM) -->
-        <div class="flex items-center justify-center gap-2 mb-2">
-          <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-data">R-R 60s</span>
-          <svg viewBox="0 0 80 24" style="width:140px;height:32px" data-rr="kostya">
-            <polyline points="0,12 8,8 16,14 24,10 32,12 40,8 48,14 56,10 64,12 72,8 80,12"
-                      fill="none" stroke="hsl(var(--chart-1))" stroke-width="1.4" stroke-linecap="round"/>
-          </svg>
-        </div>
-
-        <!-- NCI-gauge (Apple Rings 270° arc) — NCI=22, success -->
-        <div class="flex items-center justify-center my-1">
-          <div class="relative w-44 h-44">
-            <svg viewBox="0 0 180 180" class="w-44 h-44">
-              <!-- track -->
-              <path d="M 35 145 A 70 70 0 1 1 145 145"
-                    fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
-              <!-- fill: pathLength=100, offset = 100 - NCI = 78 -->
-              <path d="M 35 145 A 70 70 0 1 1 145 145" pathLength="100"
-                    fill="none" stroke="hsl(var(--success))" stroke-width="14" stroke-linecap="round"
-                    stroke-dasharray="100" stroke-dashoffset="78"/>
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
-              <span class="font-display text-[52px] leading-none" style="color: hsl(var(--success))">22</span>
-              <span class="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">NSI</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Status pill -->
-        <div class="mt-auto pt-3 flex items-center justify-center">
-          <span class="badge status-norm"><span class="dot"></span>НОРМА</span>
-        </div>
-      </div>
-    </article>
-
-    <!-- =========================================
-         CARD: АЛЕКСЕЙ (B2B Lead, anchor)
-         ========================================= -->
-    <article data-id="alexey" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
-      <header class="flex items-center gap-4 mb-2">
-        <p class="font-display text-[26px] leading-tight text-foreground">Алексей</p>
-        <span class="ml-auto text-[10px] uppercase tracking-widest text-muted-foreground font-data">Neiry.Pulse #2</span>
-      </header>
-
-      <div class="when-idle">
-        <span class="text-5xl animate-heart text-primary">&#9829;</span>
-        <p class="text-muted-foreground text-base">Надень браслет,<br>чтобы начать</p>
-      </div>
-
-      <div class="when-active">
-        <div class="flex items-baseline justify-center gap-3 mb-1">
-          <span class="font-display text-[104px] leading-none text-foreground bpm-value" data-bpm="alexey">78</span>
-          <span class="font-data text-sm text-muted-foreground">BPM</span>
-        </div>
-        <p class="text-center text-[11px] uppercase tracking-widest text-muted-foreground font-data mb-2">
-          <span class="inline-block w-1.5 h-1.5 rounded-full bg-success live-dot mr-1.5 align-middle"></span>
-          вживую
-        </p>
-
-        <!-- R-R sparkline (под BPM) -->
-        <div class="flex items-center justify-center gap-2 mb-2">
-          <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-data">R-R 60s</span>
-          <svg viewBox="0 0 80 24" style="width:140px;height:32px" data-rr="alexey">
-            <polyline points="0,16 8,6 16,18 24,4 32,20 40,6 48,16 56,4 64,18 72,8 80,16"
-                      fill="none" stroke="hsl(var(--chart-4))" stroke-width="1.4" stroke-linecap="round"/>
-          </svg>
-        </div>
-
-        <!-- NCI = 55, warning. offset = 330*(1-55/100) = 149 -->
-        <div class="flex items-center justify-center my-1">
-          <div class="relative w-44 h-44">
-            <svg viewBox="0 0 180 180" class="w-44 h-44">
-              <path d="M 35 145 A 70 70 0 1 1 145 145"
-                    fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
-              <!-- fill: pathLength=100, offset = 100 - NCI = 45 -->
-              <path d="M 35 145 A 70 70 0 1 1 145 145" pathLength="100"
-                    fill="none" stroke="hsl(var(--warning))" stroke-width="14" stroke-linecap="round"
-                    stroke-dasharray="100" stroke-dashoffset="45"/>
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
-              <span class="font-display text-[52px] leading-none" style="color: hsl(var(--warning))">55</span>
-              <span class="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">NSI</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-auto pt-3 flex items-center justify-center">
-          <span class="badge status-elevated"><span class="dot"></span>ПОВЫШЕН</span>
-        </div>
-      </div>
-    </article>
-
-    <!-- =========================================
-         CARD: ГОСТЬ (slot #3)
-         ========================================= -->
-    <article data-id="guest" data-active="true" class="card-anchor bg-card border border-border rounded-xl p-6 flex flex-col min-h-0">
-      <header class="flex items-center gap-4 mb-2">
-        <p class="font-display text-[26px] leading-tight text-foreground">Гость</p>
-        <span class="ml-auto text-[10px] uppercase tracking-widest text-muted-foreground font-data">Neiry.Pulse #3</span>
-      </header>
-
-      <!-- IDLE placeholder -->
-      <div class="when-idle">
-        <span class="text-5xl animate-heart text-primary">&#9829;</span>
-        <p class="text-muted-foreground text-base">Надень браслет,<br>чтобы начать</p>
-        <span class="badge status-idle mt-2"><span class="dot"></span>ОЖИДАНИЕ</span>
-      </div>
-
-      <!-- ACTIVE — NCI = 42, success -->
-      <div class="when-active">
-        <div class="flex items-baseline justify-center gap-3 mb-1">
-          <span class="font-display text-[104px] leading-none text-foreground bpm-value" data-bpm="guest">88</span>
-          <span class="font-data text-sm text-muted-foreground">BPM</span>
-        </div>
-        <p class="text-center text-[11px] uppercase tracking-widest text-muted-foreground font-data mb-2">
-          <span class="inline-block w-1.5 h-1.5 rounded-full bg-success live-dot mr-1.5 align-middle"></span>
-          вживую
-        </p>
-
-        <!-- R-R sparkline (под BPM) -->
-        <div class="flex items-center justify-center gap-2 mb-2">
-          <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-data">R-R 60s</span>
-          <svg viewBox="0 0 80 24" style="width:140px;height:32px" data-rr="guest">
-            <polyline points="0,12 8,10 16,14 24,8 32,12 40,10 48,14 56,8 64,12 72,10 80,12"
-                      fill="none" stroke="hsl(var(--chart-1))" stroke-width="1.4" stroke-linecap="round"/>
-          </svg>
-        </div>
-
-        <!-- NCI=42 → offset = 330*(1-42/100) = 191 -->
-        <div class="flex items-center justify-center my-1">
-          <div class="relative w-44 h-44">
-            <svg viewBox="0 0 180 180" class="w-44 h-44">
-              <path d="M 35 145 A 70 70 0 1 1 145 145"
-                    fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
-              <!-- fill: pathLength=100, offset = 100 - NCI = 58 -->
-              <path d="M 35 145 A 70 70 0 1 1 145 145" pathLength="100"
-                    fill="none" stroke="hsl(var(--success))" stroke-width="14" stroke-linecap="round"
-                    stroke-dasharray="100" stroke-dashoffset="58"/>
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
-              <span class="font-display text-[52px] leading-none" style="color: hsl(var(--success))">42</span>
-              <span class="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">NSI</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-auto pt-3 flex items-center justify-center">
-          <span class="badge status-norm"><span class="dot"></span>НОРМА</span>
-        </div>
-      </div>
-
-      <!-- DONE (PENDING_CLAIM) -->
-      <div class="when-done">
-        <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background: hsl(var(--success) / 0.18)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="hsl(var(--success))" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </div>
-        <p class="font-display text-2xl text-foreground">Сессия завершена</p>
-        <p class="text-sm text-muted-foreground max-w-[220px]">Сканируй QR — получи отчёт в Telegram</p>
-        <span class="badge status-done"><span class="dot"></span>ОЖИДАЕТ ВЛАДЕЛЬЦА</span>
-      </div>
-    </article>
-
-  </main>
-
   <!-- FOOTER (≈ 14%) -->
-  <footer class="shrink-0 h-[150px] px-10 py-5 border-t border-border bg-card/40 flex items-center justify-between gap-10">
+  <footer class="shrink-0 h-[180px] px-10 py-6 border-t border-border bg-card/40 flex items-center justify-between gap-10">
 
-    <!-- Left: NCI legend -->
-    <div class="flex flex-col gap-2 min-w-0">
-      <p class="text-[10px] uppercase tracking-widest text-muted-foreground font-data">NSI · легенда</p>
-      <div class="flex items-center gap-6 flex-wrap">
-        <div class="flex items-center gap-2">
-          <span class="inline-block w-3 h-3 rounded-full bg-success"></span>
-          <span class="text-sm text-foreground"><span class="font-data text-success">&le; 30</span> норма</span>
-        </div>
-        <span class="text-muted-foreground/40">·</span>
-        <div class="flex items-center gap-2">
-          <span class="inline-block w-3 h-3 rounded-full bg-warning"></span>
-          <span class="text-sm text-foreground"><span class="font-data text-warning">31&ndash;60</span> повышен</span>
-        </div>
-        <span class="text-muted-foreground/40">·</span>
-        <div class="flex items-center gap-2">
-          <span class="inline-block w-3 h-3 rounded-full bg-destructive"></span>
-          <span class="text-sm text-foreground"><span class="font-data text-destructive">&gt; 60</span> высокий</span>
-        </div>
-      </div>
-      <p class="text-xs text-muted-foreground">RMSSD + R-R distribution &middot; обновление каждые 5 сек</p>
-    </div>
-
-    <!-- Right: QR + report CTA -->
-    <div class="flex items-center gap-5 shrink-0">
-      <div class="text-right">
-        <p class="font-display text-base text-foreground leading-tight">Подробный отчёт по сессии</p>
-        <p class="text-sm text-muted-foreground">Сканируй QR &rarr; Telegram-бот</p>
-      </div>
-      <!-- QR placeholder 80x80, checker pattern -->
-      <div class="bg-foreground p-1.5 rounded-md">
-        <svg viewBox="0 0 21 21" width="80" height="80" aria-hidden="true">
-          <rect x="0"  y="0"  width="3" height="3" fill="black"/>
-          <rect x="4"  y="0"  width="1" height="1" fill="black"/>
-          <rect x="6"  y="0"  width="2" height="1" fill="black"/>
-          <rect x="10" y="0"  width="1" height="2" fill="black"/>
-          <rect x="13" y="0"  width="2" height="1" fill="black"/>
-          <rect x="18" y="0"  width="3" height="3" fill="black"/>
-
-          <rect x="0"  y="4"  width="1" height="1" fill="black"/>
-          <rect x="2"  y="4"  width="1" height="1" fill="black"/>
-          <rect x="5"  y="4"  width="2" height="2" fill="black"/>
-          <rect x="9"  y="4"  width="1" height="1" fill="black"/>
-          <rect x="11" y="4"  width="2" height="1" fill="black"/>
-          <rect x="14" y="4"  width="1" height="2" fill="black"/>
-          <rect x="18" y="4"  width="1" height="1" fill="black"/>
-          <rect x="20" y="4"  width="1" height="1" fill="black"/>
-
-          <rect x="0"  y="6"  width="3" height="1" fill="black"/>
-          <rect x="5"  y="6"  width="1" height="2" fill="black"/>
-          <rect x="8"  y="6"  width="2" height="2" fill="black"/>
-          <rect x="12" y="6"  width="3" height="1" fill="black"/>
-          <rect x="17" y="6"  width="2" height="2" fill="black"/>
-
-          <rect x="2"  y="9"  width="1" height="2" fill="black"/>
-          <rect x="4"  y="9"  width="2" height="1" fill="black"/>
-          <rect x="7"  y="9"  width="1" height="3" fill="black"/>
-          <rect x="10" y="9"  width="2" height="2" fill="black"/>
-          <rect x="13" y="9"  width="1" height="1" fill="black"/>
-          <rect x="16" y="9"  width="2" height="1" fill="black"/>
-          <rect x="20" y="9"  width="1" height="3" fill="black"/>
-
-          <rect x="0"  y="12" width="2" height="1" fill="black"/>
-          <rect x="4"  y="12" width="1" height="2" fill="black"/>
-          <rect x="9"  y="12" width="2" height="1" fill="black"/>
-          <rect x="14" y="12" width="2" height="2" fill="black"/>
-          <rect x="17" y="12" width="1" height="2" fill="black"/>
-
-          <rect x="0"  y="15" width="1" height="1" fill="black"/>
-          <rect x="2"  y="15" width="3" height="2" fill="black"/>
-          <rect x="6"  y="15" width="1" height="1" fill="black"/>
-          <rect x="8"  y="15" width="2" height="2" fill="black"/>
-          <rect x="11" y="15" width="3" height="1" fill="black"/>
-          <rect x="16" y="15" width="2" height="2" fill="black"/>
-          <rect x="19" y="15" width="2" height="1" fill="black"/>
-
-          <rect x="0"  y="18" width="3" height="3" fill="black"/>
-          <rect x="5"  y="18" width="2" height="2" fill="black"/>
-          <rect x="9"  y="18" width="1" height="3" fill="black"/>
-          <rect x="12" y="18" width="2" height="1" fill="black"/>
-          <rect x="15" y="18" width="1" height="2" fill="black"/>
-          <rect x="18" y="18" width="3" height="3" fill="black"/>
-        </svg>
+    <!-- Left: упрощённая легенда статусов (пиктограммы) -->
+    <div class="flex flex-col gap-3 min-w-0">
+      <p class="t-caption uppercase tracking-wider text-muted-foreground font-data">Уровень стресса</p>
+      <div class="flex items-center gap-3 flex-wrap">
+        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full" style="background: hsl(var(--success) / 0.18); color: hsl(var(--success))">
+          <span class="w-2 h-2 rounded-full bg-success"></span>
+          <span class="t-caption font-semibold">Норма</span>
+        </span>
+        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full" style="background: hsl(var(--warning) / 0.18); color: hsl(var(--warning))">
+          <span class="w-2 h-2 rounded-full bg-warning"></span>
+          <span class="t-caption font-semibold">Повышен</span>
+        </span>
+        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full" style="background: hsl(var(--destructive) / 0.18); color: hsl(var(--destructive))">
+          <span class="w-2 h-2 rounded-full bg-destructive"></span>
+          <span class="t-caption font-semibold">Высокий</span>
+        </span>
       </div>
     </div>
+
   </footer>
 
   <!-- =========================================
-       QR MODAL — only visible on pending-claim
+       QR MODAL — only visible on pending-claim, inside stage so it scales
        ========================================= -->
   <div class="qr-modal" role="dialog" aria-modal="true" aria-label="QR для отчёта">
     <div class="qr-card bg-card border border-border rounded-2xl px-10 py-9 max-w-[420px] w-full mx-6 text-center">
       <!-- Header -->
       <div class="flex items-center justify-center gap-2 mb-1">
         <span class="inline-block w-2 h-2 rounded-full bg-success live-dot"></span>
-        <span class="text-[11px] uppercase tracking-widest text-muted-foreground font-data">отчёт готов</span>
+        <span class="t-caption uppercase tracking-wider text-muted-foreground font-data">отчёт готов</span>
       </div>
-      <h3 class="font-display text-2xl text-foreground mb-1">Сессия завершена</h3>
-      <p class="text-sm text-muted-foreground mb-6">Сканируй для отчёта в Telegram</p>
+      <h3 class="font-display t-h2 text-foreground mb-1">Сессия завершена</h3>
+      <p class="t-body text-muted-foreground mb-6">Сканируй для отчёта в Telegram</p>
 
       <!-- QR placeholder 240x240 -->
       <div class="flex justify-center mb-6">
@@ -682,17 +782,47 @@
       </div>
 
       <!-- Close button -->
-      <button id="qr-close" class="px-6 py-2.5 rounded-md bg-secondary text-secondary-foreground text-sm font-semibold hover:bg-accent transition-colors">
+      <button id="qr-close" class="px-6 py-2.5 rounded-md bg-secondary text-secondary-foreground t-body font-semibold hover:bg-accent transition-colors">
         Закрыть
       </button>
     </div>
   </div>
 
+</div><!-- /#kiosk-stage -->
+
+  <!-- =========================================
+       DEV-BAR — снаружи stage, native viewport size для удобства оператора
+       ========================================= -->
+  <nav class="dev-bar" aria-label="Переключатель сценариев демонстрации">
+    <span class="dev-label">сценарий</span>
+    <button data-state="idle"          class="dev-btn px-3 py-1.5 font-semibold rounded-full" style="font-size:12px">Idle</button>
+    <button data-state="active-2"      class="dev-btn px-3 py-1.5 font-semibold rounded-full" style="font-size:12px">Active 2</button>
+    <button data-state="active-3"      class="dev-btn px-3 py-1.5 font-semibold rounded-full" style="font-size:12px">Active 3</button>
+    <button data-state="pending-claim" class="dev-btn px-3 py-1.5 font-semibold rounded-full" style="font-size:12px">Pending</button>
+  </nav>
+
   <!-- ============================================
-       SCRIPTS — state-switcher + fake live BPM
+       SCRIPTS — state-switcher + fake live BPM + viewport-fit
        ============================================ -->
   <script>
     (function () {
+      // ========================================
+      // VIEWPORT FIT — масштабирование 1920×1080 stage под любой viewport.
+      // Работает на любом мониторе и при любом browser zoom (100%, 80%, 150%).
+      // ========================================
+      const stage = document.getElementById('kiosk-stage');
+      function fitStage() {
+        if (!stage) return;
+        const scale = Math.min(
+          window.innerWidth  / 1920,
+          window.innerHeight / 1080
+        );
+        stage.style.transform = `scale(${scale})`;
+      }
+      fitStage();
+      window.addEventListener('resize', fitStage);
+      window.addEventListener('orientationchange', fitStage);
+
       const STATES = ['idle', 'active-2', 'active-3', 'pending-claim'];
       const body   = document.body;
       const btns   = document.querySelectorAll('.dev-btn');
@@ -714,35 +844,211 @@
 
       // QR modal close — return to active-2 (guest disappears)
       const closeBtn = document.getElementById('qr-close');
+      const modal   = document.querySelector('.qr-modal');
       if (closeBtn) {
         closeBtn.addEventListener('click', () => setState('active-2'));
       }
+      // Click outside .qr-card на затемнённый backdrop — тоже закрывает
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) setState('active-2');
+        });
+      }
 
       // ========================================
-      // Fake live BPM (±2 BPM each 1.5s)
+      // Keyboard shortcuts: 1-4 для state, Escape для закрытия modal
+      // ========================================
+      const keyMap = { '1': 'idle', '2': 'active-2', '3': 'active-3', '4': 'pending-claim' };
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && body.dataset.state === 'pending-claim') {
+          setState('active-2');
+          return;
+        }
+        if (keyMap[e.key] && !e.metaKey && !e.ctrlKey && !e.altKey) {
+          setState(keyMap[e.key]);
+        }
+      });
+
+      // ========================================
+      // Fake live BPM (±2 BPM each 1.5s) + hospital-monitor ECG
       // ========================================
       const baseBPMs = { kostya: 142, alexey: 78, guest: 88 };
       const VARIANCE = 2;
+      const currentBPMs = { kostya: 142, alexey: 78, guest: 88 };
+
+      // ========================================
+      // ECG hospital monitor — параметрический P-QRS-T генератор.
+      // Окно ~5.1 сек (320 sample × 16ms = 5120ms) — соответствует
+      // классической развёртке кардиомонитора.
+      // ========================================
+      const ECG_W = 320, ECG_H = 72;
+      const ECG_N = 320;
+      const ECG_SAMPLE_MS = 16;
+
+      // Длительности компонентов QRS-комплекса (мс). При высоком BPM
+      // компоненты пропорционально сжимаются (см. scale ниже).
+      const ECG_DUR = { P: 110, PR: 50, Q: 25, R: 60, S: 30, ST: 100, T: 160 };
+      const ECG_BASE_TOTAL = 535;
+
+      function ecgWave(tInBeat, rrMs) {
+        const scale = rrMs < ECG_BASE_TOTAL * 1.3
+          ? Math.max(0.55, rrMs / (ECG_BASE_TOTAL * 1.3))
+          : 1.0;
+        const d = {};
+        for (const k in ECG_DUR) d[k] = ECG_DUR[k] * scale;
+
+        let t = tInBeat;
+        if (t < d.P)  return 0.16 * Math.sin((t / d.P) * Math.PI);
+        t -= d.P;
+        if (t < d.PR) return 0;
+        t -= d.PR;
+        if (t < d.Q)  return -0.20 * Math.sin((t / d.Q) * Math.PI);
+        t -= d.Q;
+        if (t < d.R) {
+          const p = t / d.R;
+          return p < 0.5 ? 1.05 * (p * 2) : 1.05 - 1.45 * ((p - 0.5) * 2);
+        }
+        t -= d.R;
+        if (t < d.S)  return -0.40 + 0.40 * (t / d.S);
+        t -= d.S;
+        if (t < d.ST) return 0;
+        t -= d.ST;
+        if (t < d.T)  return 0.32 * Math.sin((t / d.T) * Math.PI);
+        return 0;
+      }
+
+      const ecgState = {
+        kostya: { samples: new Array(ECG_N).fill(ECG_H/2), tInBeat: 0, lastTime: 0, acc: 0, lastZone: null },
+        alexey: { samples: new Array(ECG_N).fill(ECG_H/2), tInBeat: 0, lastTime: 0, acc: 0, lastZone: null },
+        guest:  { samples: new Array(ECG_N).fill(ECG_H/2), tInBeat: 0, lastTime: 0, acc: 0, lastZone: null }
+      };
+
+      // currentNSI обновляется в tickNSI; ecgFrame читает его, чтобы перекрасить
+      // линию/головку при смене зоны (success/warning/destructive).
+      const currentNSI = { kostya: NaN, alexey: NaN, guest: NaN };
+
+      function ecgFrame(now) {
+        ['kostya', 'alexey', 'guest'].forEach(id => {
+          const st = ecgState[id];
+          if (st.lastTime === 0) { st.lastTime = now; return; }
+          const dt = now - st.lastTime;
+          st.lastTime = now;
+
+          const bpm  = currentBPMs[id];
+          const rrMs = 60000 / Math.max(40, Math.min(200, bpm));
+
+          st.acc += dt;
+          while (st.acc >= ECG_SAMPLE_MS) {
+            st.acc -= ECG_SAMPLE_MS;
+            st.tInBeat += ECG_SAMPLE_MS;
+            if (st.tInBeat >= rrMs) st.tInBeat -= rrMs;
+            const amp = ecgWave(st.tInBeat, rrMs);
+            const y = ECG_H/2 - amp * (ECG_H/2 - 6);
+            st.samples.shift();
+            st.samples.push(y);
+          }
+
+          const line = document.querySelector(`[data-spark-line="${id}"]`);
+          if (!line) return;
+          const pts = st.samples.map((y, i) => `${i},${y.toFixed(1)}`).join(' ');
+          line.setAttribute('points', pts);
+
+          const lastY = st.samples[ECG_N - 1];
+          const pulse = document.querySelector(`[data-spark-pulse="${id}"]`);
+          const halo  = document.querySelector(`[data-spark-halo="${id}"]`);
+          if (pulse) pulse.setAttribute('cy', lastY.toFixed(1));
+          if (halo)  halo .setAttribute('cy', lastY.toFixed(1));
+
+          // Цвет ЭКГ привязан к NSI-зоне. Перекрашиваем только при смене зоны —
+          // setAttribute раз в кадр блокирует CSS transition.
+          const nsi = currentNSI[id];
+          if (Number.isFinite(nsi)) {
+            const zone = nsiZone(nsi).token;
+            if (zone !== st.lastZone) {
+              const color = `hsl(var(--${zone}))`;
+              line.setAttribute('stroke', color);
+              if (pulse) pulse.setAttribute('fill', color);
+              if (halo)  halo .setAttribute('fill', color);
+              st.lastZone = zone;
+            }
+          }
+        });
+        requestAnimationFrame(ecgFrame);
+      }
+      requestAnimationFrame(ecgFrame);
 
       function tickBPM() {
         const state = body.dataset.state;
         if (state !== 'active-2' && state !== 'active-3' && state !== 'pending-claim') return;
         ['kostya', 'alexey', 'guest'].forEach(id => {
-          // guest is not "live" in active-2 or pending-claim
           if (id === 'guest' && state !== 'active-3') return;
           const el = document.querySelector(`[data-bpm="${id}"]`);
           if (!el) return;
           const delta  = (Math.random() - 0.5) * 2 * VARIANCE;
           const newBPM = Math.round(baseBPMs[id] + delta);
-          el.textContent = newBPM;
-          // little tick animation
+          el.textContent  = newBPM;
+          currentBPMs[id] = newBPM;
           el.classList.remove('tick');
-          // force reflow to restart
           void el.offsetWidth;
           el.classList.add('tick');
         });
       }
       setInterval(tickBPM, 1500);
+
+      // ========================================
+      // Fake live NSI — sin-волна вокруг base, пересекающая границы зон.
+      // Цель: показать разработчикам корректную смену цвета арки/цифры
+      // и текста badge при переходе success → warning → destructive.
+      // Каждый персонаж дрейфует со своей фазой/периодом — карточки
+      // не «дышат» синхронно, выглядит как живые независимые источники.
+      // CSS transition (0.6-0.9s) сглаживает шаг между тиками.
+      // ========================================
+      const NSI_BASE = { kostya: 30, alexey: 55, guest: 42 };
+      const nsiOsc = {
+        kostya: { amp: 18, phase:    0, period: 14000 },
+        alexey: { amp: 17, phase: 3000, period: 16000 },
+        guest:  { amp: 15, phase: 6000, period: 13000 }
+      };
+
+      function nsiZone(v) {
+        if (v < 40)  return { token: 'success',     statusClass: 'status-norm',     label: 'НОРМА'   };
+        if (v < 60)  return { token: 'warning',     statusClass: 'status-elevated', label: 'ПОВЫШЕН' };
+        return              { token: 'destructive', statusClass: 'status-high',     label: 'ВЫСОКИЙ' };
+      }
+
+      function tickNSI() {
+        const state = body.dataset.state;
+        if (state !== 'active-2' && state !== 'active-3' && state !== 'pending-claim') return;
+        const now = performance.now();
+        ['kostya', 'alexey', 'guest'].forEach(id => {
+          if (id === 'guest' && state !== 'active-3') return;
+          const o = nsiOsc[id];
+          const v = Math.max(0, Math.min(100, Math.round(
+            NSI_BASE[id] + o.amp * Math.sin((now + o.phase) * 2 * Math.PI / o.period)
+          )));
+          currentNSI[id] = v;
+          const z = nsiZone(v);
+          const color = `hsl(var(--${z.token}))`;
+
+          const arc = document.querySelector(`[data-nsi-arc="${id}"]`);
+          if (arc) {
+            arc.setAttribute('stroke', color);
+            arc.setAttribute('stroke-dashoffset', String(100 - v));
+          }
+          const digit = document.querySelector(`[data-nsi-digit="${id}"]`);
+          if (digit) {
+            digit.textContent = v;
+            digit.style.color = color;
+          }
+          const badge = document.querySelector(`[data-nsi-badge="${id}"]`);
+          if (badge && !badge.classList.contains(z.statusClass)) {
+            badge.className = `badge ${z.statusClass}`;
+            badge.innerHTML = `<span class="dot"></span>${z.label}`;
+          }
+        });
+      }
+      setInterval(tickNSI, 200);
+      tickNSI();
     })();
   </script>
 
