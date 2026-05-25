@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neiry Pulse · UI Kit · v1.0</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================
+     SHADCN-STYLE SEMANTIC TOKENS (zinc base + wine accent)
+     ============================================ */
+  :root {
+    /* Light theme — zinc/slate base, for admin laptop screens */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 336 76% 33%;          /* wine #831843 — Neiry brand accent (НЕ менять) */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 336 76% 33%;
+    --radius: 0.5rem;
+    /* Chart palette — semantic для био-данных */
+    --chart-1: 217 91% 60%;   /* blue — neutral data */
+    --chart-2: 142 71% 45%;   /* green — success / norm */
+    --chart-3: 271 81% 56%;   /* purple — secondary metric */
+    --chart-4: 38 92% 50%;    /* amber — warning */
+    --chart-5: 173 80% 40%;   /* teal — recovery */
+  }
+  .dark {
+    /* Dark theme — для kiosk на плазме 42" */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 6%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 6%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 336 76% 45%;          /* wine, чуть осветлен для тёмного фона */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 336 76% 45%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 142 71% 45%;
+    --chart-3: 271 81% 56%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 173 80% 40%;
+  }
+
+  /* Map shadcn vars → Tailwind utility classes via CSS */
+  body { font-family: 'Manrope', sans-serif; -webkit-font-smoothing: antialiased; background: hsl(var(--background)); color: hsl(var(--foreground)); }
+  .font-brand { font-family: 'Fraunces', serif; }
+  .font-data { font-family: 'JetBrains Mono', monospace; }
+
+  /* Token-driven helper classes */
+  .bg-background { background-color: hsl(var(--background)); }
+  .bg-card { background-color: hsl(var(--card)); }
+  .bg-muted { background-color: hsl(var(--muted)); }
+  .bg-primary { background-color: hsl(var(--primary)); }
+  .bg-secondary { background-color: hsl(var(--secondary)); }
+  .bg-destructive { background-color: hsl(var(--destructive)); }
+  .bg-popover { background-color: hsl(var(--popover)); }
+  .bg-accent { background-color: hsl(var(--accent)); }
+  .text-foreground { color: hsl(var(--foreground)); }
+  .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+  .text-card-foreground { color: hsl(var(--card-foreground)); }
+  .text-primary { color: hsl(var(--primary)); }
+  .text-primary-foreground { color: hsl(var(--primary-foreground)); }
+  .text-secondary-foreground { color: hsl(var(--secondary-foreground)); }
+  .text-destructive { color: hsl(var(--destructive)); }
+  .border-border { border-color: hsl(var(--border)); }
+  .border-input { border-color: hsl(var(--input)); }
+  .border-primary { border-color: hsl(var(--primary)); }
+  .ring-ring { --tw-ring-color: hsl(var(--ring)); }
+
+  .text-chart-1 { color: hsl(var(--chart-1)); }
+  .text-chart-2 { color: hsl(var(--chart-2)); }
+  .text-chart-3 { color: hsl(var(--chart-3)); }
+  .text-chart-4 { color: hsl(var(--chart-4)); }
+  .text-chart-5 { color: hsl(var(--chart-5)); }
+  .bg-chart-1 { background-color: hsl(var(--chart-1)); }
+  .bg-chart-2 { background-color: hsl(var(--chart-2)); }
+  .bg-chart-3 { background-color: hsl(var(--chart-3)); }
+  .bg-chart-4 { background-color: hsl(var(--chart-4)); }
+  .bg-chart-5 { background-color: hsl(var(--chart-5)); }
+  .stroke-chart-1 { stroke: hsl(var(--chart-1)); }
+  .stroke-chart-2 { stroke: hsl(var(--chart-2)); }
+  .stroke-chart-4 { stroke: hsl(var(--chart-4)); }
+  .stroke-primary { stroke: hsl(var(--primary)); }
+  .stroke-destructive { stroke: hsl(var(--destructive)); }
+  .stroke-muted { stroke: hsl(var(--muted)); }
+  .fill-chart-2 { fill: hsl(var(--chart-2)); }
+  .fill-chart-4 { fill: hsl(var(--chart-4)); }
+  .fill-primary { fill: hsl(var(--primary)); }
+  .fill-destructive { fill: hsl(var(--destructive)); }
+
+  /* Heart pulse animation */
+  @keyframes heart-pulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(190,24,93,0)); }
+    50% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(190,24,93,0.55)); }
+  }
+  .animate-heart { animation: heart-pulse 0.75s ease-in-out infinite; will-change: transform, filter; }
+
+  /* Smooth scroll for anchor nav */
+  html { scroll-behavior: smooth; }
+
+  /* Code block */
+  pre.code-block {
+    background: hsl(var(--muted));
+    color: hsl(var(--foreground));
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    padding: 12px 14px;
+    border-radius: 6px;
+    overflow-x: auto;
+    border: 1px solid hsl(var(--border));
+  }
+
+  /* Sidebar active link */
+  .nav-link { color: hsl(var(--muted-foreground)); transition: color 150ms; }
+  .nav-link:hover { color: hsl(var(--foreground)); }
+  .nav-link.font-semibold { color: hsl(var(--foreground)); }
+
+  /* Tooltip */
+  .tooltip-wrap { position: relative; display: inline-block; }
+  .tooltip-wrap .tooltip-content {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    transition: opacity 120ms, visibility 120ms;
+    z-index: 50;
+  }
+  .tooltip-wrap:hover .tooltip-content { visibility: visible; opacity: 1; }
+
+  /* Buttons base */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; transition: all 150ms; cursor: pointer; border: 1px solid transparent; white-space: nowrap; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-sm { height: 32px; padding: 0 12px; font-size: 13px; border-radius: 6px; }
+  .btn-md { height: 38px; padding: 0 16px; font-size: 14px; border-radius: 6px; }
+  .btn-lg { height: 44px; padding: 0 20px; font-size: 15px; border-radius: 8px; }
+  .btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+  .btn-primary:hover:not(:disabled) { background: hsl(336 76% 28%); }
+  .dark .btn-primary:hover:not(:disabled) { background: hsl(336 76% 52%); }
+  .btn-secondary { background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); }
+  .btn-secondary:hover:not(:disabled) { background: hsl(var(--muted)); filter: brightness(0.96); }
+  .btn-ghost { background: transparent; color: hsl(var(--foreground)); }
+  .btn-ghost:hover:not(:disabled) { background: hsl(var(--accent)); }
+  .btn-outline { background: transparent; color: hsl(var(--foreground)); border-color: hsl(var(--input)); }
+  .btn-outline:hover:not(:disabled) { background: hsl(var(--accent)); }
+  .btn-destructive { background: hsl(var(--destructive)); color: hsl(var(--destructive-foreground)); }
+  .btn-destructive:hover:not(:disabled) { filter: brightness(1.08); }
+
+  /* Input */
+  .input-base { background: hsl(var(--background)); border: 1px solid hsl(var(--input)); color: hsl(var(--foreground)); height: 38px; padding: 0 12px; border-radius: 6px; font-size: 14px; transition: border-color 150ms, box-shadow 150ms; width: 100%; }
+  .input-base:focus { outline: none; border-color: hsl(var(--ring)); box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2); }
+  .input-base:disabled { background: hsl(var(--muted)); opacity: 0.6; cursor: not-allowed; }
+  .input-error { border-color: hsl(var(--destructive)); }
+  .input-error:focus { box-shadow: 0 0 0 2px hsl(var(--destructive) / 0.2); }
+
+  /* Tabs */
+  .tab-list { display: inline-flex; gap: 4px; padding: 4px; background: hsl(var(--muted)); border-radius: 8px; }
+  .tab-item { padding: 6px 14px; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; transition: all 150ms; color: hsl(var(--muted-foreground)); }
+  .tab-item:hover { color: hsl(var(--foreground)); }
+  .tab-item.active { background: hsl(var(--background)); color: hsl(var(--foreground)); box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+
+  /* Badge */
+  .badge { display: inline-flex; align-items: center; padding: 2px 9px; font-size: 11px; font-weight: 600; border-radius: 9999px; line-height: 1.5; letter-spacing: 0.02em; border: 1px solid transparent; }
+
+  /* Card shadow */
+  .shadow-sm-token { box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+  .shadow-md-token { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04); }
+  .shadow-lg-token { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.10), 0 4px 6px -2px rgba(0,0,0,0.04); }
+  .dark .shadow-sm-token { box-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+  .dark .shadow-md-token { box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+  .dark .shadow-lg-token { box-shadow: 0 10px 24px rgba(0,0,0,0.55); }
+
+  /* Section divider */
+  .section-divider { border-top: 1px solid hsl(var(--border)); }
+
+  /* Swatch */
+  .swatch { width: 100%; height: 56px; border-radius: 6px; border: 1px solid hsl(var(--border)); }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- ============================================
+     HEADER
+     ============================================ -->
+<header class="border-b border-border bg-card sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+  <div class="max-w-[1440px] mx-auto px-6 py-4 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <svg viewBox="0 0 733 280" class="h-6 w-auto" aria-hidden="true">
+        <path fill="currentColor" fill-rule="evenodd" d="M364.3,0v45.5h53V0h-53ZM363.9,65.2v156.5h53.8V65.2h-53.8ZM530.9,64.3h14.2v49.6h-20.8c-9.5,0-16.3,2.2-20.6,6.7-4.2,4.4-6.3,11.6-6.3,21.4v79.7h-53.8V65.2h35.9l8.4,17.4c10.4-12.2,24.8-18.2,43.1-18.2l-.1-.1ZM675.1,65.2h57.9l-65.4,149.6c-10.8,24.3-22,41.3-33.6,50.7-11.6,9.6-27.3,14.5-47.2,14.5h-18.5v-46.4h14.7c10.2,0,17.5-1.6,22-4.9,4.4-3.3,8.5-10,12.2-20l-64.5-143.5h58.4l33,86.1,31-86.1h0ZM342.4,142c0,4.4-.4,9.2-1.2,14.2h-116.1c1.7,8.9,5.3,15.6,10.7,20.3,5.6,4.6,12.6,7,21.1,7s8.2-.6,11.9-1.7c3.7-1.2,6.8-2.8,9.6-4.9,2.9-2.3,5.2-5,7-8.1h53.5c-5.4,18-15.5,32.2-30.4,42.6-14.7,10.5-31.8,15.6-51.5,15.6s-44.6-7.9-60.8-23.8c-16-16.1-24-35.9-24-59.7s3.7-30.1,11-42.9c7.3-12.8,17.5-22.7,30.4-29.9s27.4-10.7,43.4-10.7,31.3,3.7,44.3,11c13.1,7.2,23.3,17,30.4,29.6,7.1,12.4,10.7,26.2,10.7,41.5h0v-.1ZM257.1,102.3c-7.7,0-14.3,2.1-19.7,6.4-5.2,4-9,10-11.3,17.7h63.4c-4.8-16.1-15.6-24-32.4-24v-.1ZM137.8,78.6c-10.8-12-25.3-18-43.4-18s-36.9,7-49.2,20.9l-7.5-16.3H0v156.5h53.8v-83.5c0-6.8,1-12.5,2.9-17.1,2.1-4.9,5.1-8.5,9-11,4-2.5,8.9-3.8,14.5-3.8,13.5,0,20.3,9.1,20.3,27.3v88.1h53.8v-95.4c0-19.9-5.5-35.9-16.5-47.8h0v.1Z"/>
+      </svg>
+      <span class="text-foreground/40">·</span>
+      <h1 class="text-sm font-medium text-foreground">UI Kit · <span class="font-brand italic text-primary">Pulse</span></h1>
+      <span class="badge bg-muted text-muted-foreground font-data">v1.0</span>
+      <span class="text-xs text-muted-foreground font-data hidden md:inline">2026-05-25</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-xs text-muted-foreground hidden sm:inline">Тема:</span>
+      <button id="theme-toggle" class="btn btn-outline btn-sm" aria-label="Переключить тему">
+        <svg id="icon-sun" class="w-4 h-4 hidden dark:inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg id="icon-moon" class="w-4 h-4 inline dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+        <span id="theme-label">Тёмная</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================
+     LAYOUT: sidebar + main
+     ============================================ -->
+<div class="max-w-[1440px] mx-auto px-6 py-8 grid grid-cols-[200px_1fr] gap-10">
+
+  <!-- Sidebar nav -->
+  <aside class="sticky top-[88px] self-start space-y-6 text-sm">
+    <div>
+      <p class="text-[11px] uppercase tracking-wider text-muted-foreground mb-3 font-semibold">Содержание</p>
+      <nav class="flex flex-col gap-2">
+        <a href="#tokens" class="nav-link font-semibold">1. Tokens</a>
+        <a href="#palette" class="nav-link pl-3 text-xs">· Палитра</a>
+        <a href="#typography" class="nav-link pl-3 text-xs">· Типографика</a>
+        <a href="#spacing" class="nav-link pl-3 text-xs">· Spacing</a>
+        <a href="#radius" class="nav-link pl-3 text-xs">· Радиусы</a>
+        <a href="#shadows" class="nav-link pl-3 text-xs">· Тени</a>
+        <a href="#base" class="nav-link font-semibold mt-3">2. Base components</a>
+        <a href="#buttons" class="nav-link pl-3 text-xs">· Button</a>
+        <a href="#cards" class="nav-link pl-3 text-xs">· Card</a>
+        <a href="#badges" class="nav-link pl-3 text-xs">· Badge</a>
+        <a href="#inputs" class="nav-link pl-3 text-xs">· Input / Select</a>
+        <a href="#tabs" class="nav-link pl-3 text-xs">· Tabs</a>
+        <a href="#dialog" class="nav-link pl-3 text-xs">· Dialog / Sheet</a>
+        <a href="#tooltip-avatar" class="nav-link pl-3 text-xs">· Tooltip / Avatar</a>
+        <a href="#bio" class="nav-link font-semibold mt-3">3. Биометрия</a>
+        <a href="#bpm-card" class="nav-link pl-3 text-xs">· BPM-card</a>
+        <a href="#nci-gauge" class="nav-link pl-3 text-xs">· NCI-gauge</a>
+        <a href="#status-pill" class="nav-link pl-3 text-xs">· Status-pill</a>
+        <a href="#rmssd" class="nav-link pl-3 text-xs">· RMSSD</a>
+        <a href="#rr-spark" class="nav-link pl-3 text-xs">· R-R sparkline</a>
+        <a href="#heartbeat" class="nav-link pl-3 text-xs">· Heartbeat</a>
+        <a href="#tremor" class="nav-link font-semibold mt-3">4. Tremor / Дашборд</a>
+        <a href="#kpi" class="nav-link pl-3 text-xs">· KPI-card</a>
+        <a href="#barlist" class="nav-link pl-3 text-xs">· BarList</a>
+        <a href="#progress" class="nav-link pl-3 text-xs">· Progress</a>
+      </nav>
+    </div>
+    <div class="text-[11px] text-muted-foreground border-t border-border pt-4 leading-relaxed">
+      <p class="font-data">shadcn/ui (zinc) + Neiry wine #831843</p>
+      <p class="mt-1">Manrope · Fraunces · JetBrains Mono</p>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="space-y-20 min-w-0">
+
+    <!-- INTRO -->
+    <section class="space-y-3">
+      <p class="text-[11px] uppercase tracking-widest text-muted-foreground font-semibold">Styleguide · Foundation для рестайла</p>
+      <h2 class="text-3xl font-bold text-foreground">Neiry <span class="font-brand italic text-primary">Pulse</span> · UI Kit</h2>
+      <p class="text-muted-foreground max-w-3xl text-sm leading-relaxed">
+        Живой стайлгайд дизайн-системы. Семантические токены shadcn (zinc base) + Neiry wine accent (<span class="font-data text-primary">#831843</span>),
+        две темы (тёмная для плазмы, светлая для админ-ноута), Manrope/Fraunces/JetBrains Mono.
+        Все компоненты для рестайла собраны в одном месте: токены, base shadcn-компоненты, кастомные био-виджеты и Tremor-стиль для дашборда корпоратов.
+      </p>
+    </section>
+
+    <!-- ============================================
+         СЕКЦИЯ 1: TOKENS
+         ============================================ -->
+    <section id="tokens" class="space-y-10">
+      <header class="space-y-2">
+        <span class="text-[11px] uppercase tracking-widest text-primary font-bold font-data">01</span>
+        <h2 class="text-2xl font-bold text-foreground">Tokens</h2>
+        <p class="text-sm text-muted-foreground max-w-2xl">Семантические переменные shadcn — все компоненты ссылаются только на них. При смене темы меняется CSS-переменная, а не код компонента.</p>
+      </header>
+
+      <!-- 1.1 PALETTE -->
+      <article id="palette" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">1.1 Палитра — две темы</h3>
+        <p class="text-sm text-muted-foreground">Тёмная (kiosk на плазме 42") и светлая (админ-ноут) — обе варианты zinc/slate. Wine <span class="font-data text-primary">#831843</span> — единственный hex-хардкод (Neiry brand).</p>
+
+        <div class="grid grid-cols-2 gap-6">
+          <!-- DARK PREVIEW -->
+          <div class="dark bg-background border border-border rounded-lg p-5 space-y-3 shadow-sm-token">
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-semibold text-foreground">Тёмная (kiosk)</h4>
+              <span class="badge bg-muted text-muted-foreground">.dark</span>
+            </div>
+            <!-- Token rows: dark -->
+            <div class="space-y-1.5">
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-muted-foreground">--background</span><span class="font-data text-foreground">240 10% 4%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(240 10% 3.9%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-muted-foreground">--card</span><span class="font-data text-foreground">240 10% 6%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(240 10% 6%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-muted-foreground">--foreground</span><span class="font-data text-foreground">0 0% 98%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(0 0% 98%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-muted-foreground">--muted</span><span class="font-data text-foreground">240 4% 16%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(240 3.7% 15.9%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-muted-foreground">--muted-fg</span><span class="font-data text-foreground">240 5% 65%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(240 5% 64.9%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-muted-foreground">--border</span><span class="font-data text-foreground">240 4% 16%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(240 3.7% 15.9%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-primary">--primary</span><span class="font-data text-primary">#831843</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(336 76% 45%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-muted-foreground">--secondary</span><span class="font-data text-foreground">240 4% 16%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(240 3.7% 15.9%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(0 72.2% 50.6%)">--destructive</span><span class="font-data text-foreground">0 72% 51%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(0 72.2% 50.6%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-chart-2">--chart-2 (success)</span><span class="font-data text-foreground">142 71% 45%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(142 71% 45%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-chart-4">--chart-4 (warning)</span><span class="font-data text-foreground">38 92% 50%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(38 92% 50%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-chart-1">--chart-1</span><span class="font-data text-foreground">217 91% 60%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(217 91% 60%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data text-chart-5">--chart-5</span><span class="font-data text-foreground">173 80% 40%</span><div class="w-6 h-6 rounded border border-border" style="background: hsl(173 80% 40%)"></div></div>
+            </div>
+          </div>
+
+          <!-- LIGHT PREVIEW (force light scope) -->
+          <div style="background: hsl(0 0% 100%); color: hsl(240 10% 3.9%); border: 1px solid hsl(240 5.9% 90%);" class="rounded-lg p-5 space-y-3 shadow-sm-token">
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-semibold" style="color: hsl(240 10% 3.9%)">Светлая (админ-ноут)</h4>
+              <span class="badge" style="background: hsl(240 4.8% 95.9%); color: hsl(240 3.8% 46.1%)">:root</span>
+            </div>
+            <div class="space-y-1.5">
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(240 3.8% 46.1%)">--background</span><span class="font-data">0 0% 100%</span><div class="w-6 h-6 rounded" style="background: hsl(0 0% 100%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(240 3.8% 46.1%)">--card</span><span class="font-data">0 0% 100%</span><div class="w-6 h-6 rounded" style="background: hsl(0 0% 100%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(240 3.8% 46.1%)">--foreground</span><span class="font-data">240 10% 4%</span><div class="w-6 h-6 rounded" style="background: hsl(240 10% 3.9%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(240 3.8% 46.1%)">--muted</span><span class="font-data">240 5% 96%</span><div class="w-6 h-6 rounded" style="background: hsl(240 4.8% 95.9%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(240 3.8% 46.1%)">--muted-fg</span><span class="font-data">240 4% 46%</span><div class="w-6 h-6 rounded" style="background: hsl(240 3.8% 46.1%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(240 3.8% 46.1%)">--border</span><span class="font-data">240 6% 90%</span><div class="w-6 h-6 rounded" style="background: hsl(240 5.9% 90%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(336 76% 33%)">--primary</span><span class="font-data" style="color: hsl(336 76% 33%)">#831843</span><div class="w-6 h-6 rounded" style="background: hsl(336 76% 33%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(240 3.8% 46.1%)">--secondary</span><span class="font-data">240 5% 96%</span><div class="w-6 h-6 rounded" style="background: hsl(240 4.8% 95.9%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(0 84.2% 60.2%)">--destructive</span><span class="font-data">0 84% 60%</span><div class="w-6 h-6 rounded" style="background: hsl(0 84.2% 60.2%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(142 71% 35%)">--chart-2 (success)</span><span class="font-data">142 71% 45%</span><div class="w-6 h-6 rounded" style="background: hsl(142 71% 45%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(38 92% 40%)">--chart-4 (warning)</span><span class="font-data">38 92% 50%</span><div class="w-6 h-6 rounded" style="background: hsl(38 92% 50%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(217 91% 50%)">--chart-1</span><span class="font-data">217 91% 60%</span><div class="w-6 h-6 rounded" style="background: hsl(217 91% 60%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+              <div class="grid grid-cols-[1fr_70px_30px] gap-2 items-center text-xs"><span class="font-data" style="color: hsl(173 80% 30%)">--chart-5</span><span class="font-data">173 80% 40%</span><div class="w-6 h-6 rounded" style="background: hsl(173 80% 40%); border: 1px solid hsl(240 5.9% 90%)"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Semantic guide -->
+        <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+          <h4 class="text-sm font-semibold text-foreground">Когда применять</h4>
+          <div class="grid grid-cols-2 gap-x-8 gap-y-2 text-xs">
+            <div><span class="font-data text-primary">--primary</span> <span class="text-muted-foreground">— CTA, акценты, активные табы, фокус-ринги</span></div>
+            <div><span class="font-data text-chart-2">--chart-2</span> <span class="text-muted-foreground">— success / норма BPM / Recovery OK</span></div>
+            <div><span class="font-data text-chart-4">--chart-4</span> <span class="text-muted-foreground">— warning / каскад / повышенный stress</span></div>
+            <div><span class="font-data text-destructive">--destructive</span> <span class="text-muted-foreground">— danger / звоночек / критический NCI</span></div>
+            <div><span class="font-data text-muted-foreground">--muted-foreground</span> <span class="text-muted-foreground">— подписи, secondary-текст, иконки</span></div>
+            <div><span class="font-data text-chart-1">--chart-1</span> <span class="text-muted-foreground">— нейтральные графики, R-R sparkline</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 1.2 TYPOGRAPHY -->
+      <article id="typography" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">1.2 Типографика</h3>
+        <p class="text-sm text-muted-foreground">Три семейства: Manrope (UI), Fraunces (brand italic + hero-числа), JetBrains Mono (data).</p>
+
+        <div class="grid grid-cols-3 gap-4">
+          <!-- Manrope -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+            <div class="flex items-baseline justify-between border-b border-border pb-2">
+              <h4 class="text-sm font-semibold text-foreground">Manrope</h4>
+              <span class="badge bg-muted text-muted-foreground">UI sans-serif</span>
+            </div>
+            <div class="space-y-2.5">
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[48px] font-bold leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">48 · text-5xl · bold</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[32px] font-bold leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">32 · text-3xl · bold</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[24px] font-semibold leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">24 · text-2xl · semibold</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[20px] font-semibold leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">20 · text-xl · semibold</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[18px] font-medium leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">18 · text-lg · medium</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[16px] font-medium leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">16 · text-base · medium</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[14px] font-normal leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">14 · text-sm · normal</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="text-[12px] font-normal leading-none text-foreground">Aa</span><span class="font-data text-[10px] text-muted-foreground">12 · text-xs · normal</span></div>
+            </div>
+          </div>
+
+          <!-- Fraunces -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+            <div class="flex items-baseline justify-between border-b border-border pb-2">
+              <h4 class="text-sm font-semibold text-foreground">Fraunces</h4>
+              <span class="badge bg-muted text-muted-foreground">brand italic</span>
+            </div>
+            <div class="space-y-2.5">
+              <div class="flex items-baseline justify-between gap-3"><span class="font-brand italic text-[48px] font-semibold leading-none text-primary">Pulse</span><span class="font-data text-[10px] text-muted-foreground">48 · italic · semi</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="font-brand italic text-[32px] font-semibold leading-none text-primary">Pulse</span><span class="font-data text-[10px] text-muted-foreground">32 · italic · semi</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="font-brand italic text-[24px] font-medium leading-none text-foreground">Pulse</span><span class="font-data text-[10px] text-muted-foreground">24 · italic · med</span></div>
+              <div class="border-t border-border my-3"></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="font-brand text-[64px] font-bold leading-none text-foreground">72</span><span class="font-data text-[10px] text-muted-foreground">hero number 64</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="font-brand text-[48px] font-semibold leading-none text-foreground">72</span><span class="font-data text-[10px] text-muted-foreground">hero number 48</span></div>
+            </div>
+            <p class="text-[11px] text-muted-foreground pt-2 border-t border-border">Только для «Pulse» (italic) и hero-чисел (KPI 48/64px). Не использовать в body.</p>
+          </div>
+
+          <!-- JetBrains Mono -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+            <div class="flex items-baseline justify-between border-b border-border pb-2">
+              <h4 class="text-sm font-semibold text-foreground">JetBrains Mono</h4>
+              <span class="badge bg-muted text-muted-foreground">data</span>
+            </div>
+            <div class="space-y-2.5">
+              <div class="flex items-baseline justify-between gap-3"><span class="font-data text-[16px] font-medium leading-none text-foreground">72 BPM</span><span class="font-data text-[10px] text-muted-foreground">16 · data-base</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="font-data text-[14px] font-medium leading-none text-foreground">NCI · 22</span><span class="font-data text-[10px] text-muted-foreground">14 · data-sm</span></div>
+              <div class="flex items-baseline justify-between gap-3"><span class="font-data text-[12px] font-normal leading-none text-muted-foreground">14:23:08</span><span class="font-data text-[10px] text-muted-foreground">12 · timestamp</span></div>
+              <div class="border-t border-border my-3"></div>
+              <div class="space-y-1.5">
+                <p class="text-[11px] text-muted-foreground">Примеры: BPM, NCI, RMSSD, временные метки, hex-коды в токенах, ID браслетов</p>
+                <p class="font-data text-[11px] text-foreground">#831843 · 0xA1B3 · 142/85</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 1.3 SPACING -->
+      <article id="spacing" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">1.3 Spacing scale</h3>
+        <p class="text-sm text-muted-foreground">Tailwind-default: 4/8/12/16/24/32/48/64 px. Дисциплина spacing — основа плотного шрифтового стиля Linear/Vercel.</p>
+        <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+          <div class="flex items-end gap-4">
+            <div class="flex flex-col items-center gap-1"><div class="bg-primary" style="width:4px;height:48px"></div><span class="font-data text-[10px] text-muted-foreground">4 / 1</span></div>
+            <div class="flex flex-col items-center gap-1"><div class="bg-primary" style="width:8px;height:48px"></div><span class="font-data text-[10px] text-muted-foreground">8 / 2</span></div>
+            <div class="flex flex-col items-center gap-1"><div class="bg-primary" style="width:12px;height:48px"></div><span class="font-data text-[10px] text-muted-foreground">12 / 3</span></div>
+            <div class="flex flex-col items-center gap-1"><div class="bg-primary" style="width:16px;height:48px"></div><span class="font-data text-[10px] text-muted-foreground">16 / 4</span></div>
+            <div class="flex flex-col items-center gap-1"><div class="bg-primary" style="width:24px;height:48px"></div><span class="font-data text-[10px] text-muted-foreground">24 / 6</span></div>
+            <div class="flex flex-col items-center gap-1"><div class="bg-primary" style="width:32px;height:48px"></div><span class="font-data text-[10px] text-muted-foreground">32 / 8</span></div>
+            <div class="flex flex-col items-center gap-1"><div class="bg-primary" style="width:48px;height:48px"></div><span class="font-data text-[10px] text-muted-foreground">48 / 12</span></div>
+            <div class="flex flex-col items-center gap-1"><div class="bg-primary" style="width:64px;height:48px"></div><span class="font-data text-[10px] text-muted-foreground">64 / 16</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 1.4 RADIUS -->
+      <article id="radius" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">1.4 Border radius</h3>
+        <div class="bg-card border border-border rounded-lg p-5 flex items-center gap-6">
+          <div class="flex flex-col items-center gap-2"><div class="w-16 h-16 bg-muted border border-border" style="border-radius: 2px"></div><span class="font-data text-[10px] text-muted-foreground">sm · 2px</span></div>
+          <div class="flex flex-col items-center gap-2"><div class="w-16 h-16 bg-muted border border-border" style="border-radius: 6px"></div><span class="font-data text-[10px] text-muted-foreground">md · 6px</span></div>
+          <div class="flex flex-col items-center gap-2"><div class="w-16 h-16 bg-muted border border-border" style="border-radius: 8px"></div><span class="font-data text-[10px] text-muted-foreground">lg · 8px</span></div>
+          <div class="flex flex-col items-center gap-2"><div class="w-16 h-16 bg-muted border border-border" style="border-radius: 12px"></div><span class="font-data text-[10px] text-muted-foreground">xl · 12px</span></div>
+          <div class="flex flex-col items-center gap-2"><div class="w-16 h-16 bg-muted border border-border rounded-full"></div><span class="font-data text-[10px] text-muted-foreground">full · 9999</span></div>
+        </div>
+      </article>
+
+      <!-- 1.5 SHADOWS -->
+      <article id="shadows" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">1.5 Тени</h3>
+        <div class="bg-card border border-border rounded-lg p-8 grid grid-cols-3 gap-8">
+          <div class="flex flex-col items-center gap-3"><div class="w-32 h-20 rounded-md shadow-sm-token bg-card border border-border"></div><span class="font-data text-[10px] text-muted-foreground">shadow-sm</span></div>
+          <div class="flex flex-col items-center gap-3"><div class="w-32 h-20 rounded-md shadow-md-token bg-card border border-border"></div><span class="font-data text-[10px] text-muted-foreground">shadow-md</span></div>
+          <div class="flex flex-col items-center gap-3"><div class="w-32 h-20 rounded-md shadow-lg-token bg-card border border-border"></div><span class="font-data text-[10px] text-muted-foreground">shadow-lg</span></div>
+        </div>
+      </article>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================
+         СЕКЦИЯ 2: BASE COMPONENTS
+         ============================================ -->
+    <section id="base" class="space-y-10">
+      <header class="space-y-2">
+        <span class="text-[11px] uppercase tracking-widest text-primary font-bold font-data">02</span>
+        <h2 class="text-2xl font-bold text-foreground">Base components · shadcn-style</h2>
+        <p class="text-sm text-muted-foreground max-w-2xl">Базовая компонентная библиотека. В React-имплементации это будут shadcn/ui (Radix Primitives + Tailwind).</p>
+      </header>
+
+      <!-- 2.1 BUTTONS -->
+      <article id="buttons" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">2.1 Button</h3>
+        <p class="text-sm text-muted-foreground">5 вариантов × 3 размера. Hover/disabled — для всех. Primary — wine, единственная цветная кнопка; остальные нейтральные.</p>
+
+        <div class="bg-card border border-border rounded-lg p-6 space-y-5">
+          <!-- Variants × Sizes grid -->
+          <div class="grid grid-cols-[100px_1fr_1fr_1fr] gap-4 items-center">
+            <span class="text-xs text-muted-foreground"></span>
+            <span class="text-xs text-muted-foreground text-center">sm</span>
+            <span class="text-xs text-muted-foreground text-center">md</span>
+            <span class="text-xs text-muted-foreground text-center">lg</span>
+
+            <span class="text-xs font-medium text-foreground">primary</span>
+            <div class="flex justify-center"><button class="btn btn-primary btn-sm">Подключить</button></div>
+            <div class="flex justify-center"><button class="btn btn-primary btn-md">Подключить</button></div>
+            <div class="flex justify-center"><button class="btn btn-primary btn-lg">Подключить</button></div>
+
+            <span class="text-xs font-medium text-foreground">secondary</span>
+            <div class="flex justify-center"><button class="btn btn-secondary btn-sm">Отмена</button></div>
+            <div class="flex justify-center"><button class="btn btn-secondary btn-md">Отмена</button></div>
+            <div class="flex justify-center"><button class="btn btn-secondary btn-lg">Отмена</button></div>
+
+            <span class="text-xs font-medium text-foreground">outline</span>
+            <div class="flex justify-center"><button class="btn btn-outline btn-sm">Подробнее</button></div>
+            <div class="flex justify-center"><button class="btn btn-outline btn-md">Подробнее</button></div>
+            <div class="flex justify-center"><button class="btn btn-outline btn-lg">Подробнее</button></div>
+
+            <span class="text-xs font-medium text-foreground">ghost</span>
+            <div class="flex justify-center"><button class="btn btn-ghost btn-sm">Skip</button></div>
+            <div class="flex justify-center"><button class="btn btn-ghost btn-md">Skip</button></div>
+            <div class="flex justify-center"><button class="btn btn-ghost btn-lg">Skip</button></div>
+
+            <span class="text-xs font-medium text-foreground">destructive</span>
+            <div class="flex justify-center"><button class="btn btn-destructive btn-sm">Удалить</button></div>
+            <div class="flex justify-center"><button class="btn btn-destructive btn-md">Удалить</button></div>
+            <div class="flex justify-center"><button class="btn btn-destructive btn-lg">Удалить</button></div>
+          </div>
+
+          <!-- States -->
+          <div class="border-t border-border pt-4 flex flex-wrap items-center gap-4">
+            <span class="text-xs text-muted-foreground w-16">состояния</span>
+            <button class="btn btn-primary btn-md">default</button>
+            <button class="btn btn-primary btn-md" style="background: hsl(336 76% 28%);">hover</button>
+            <button class="btn btn-primary btn-md" disabled>disabled</button>
+            <button class="btn btn-primary btn-md">
+              <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M22 12a10 10 0 0 1-10 10" stroke-linecap="round"/></svg>
+              Загрузка
+            </button>
+          </div>
+        </div>
+
+        <pre class="code-block"><code>&lt;button class="btn btn-primary btn-md"&gt;Подключить&lt;/button&gt;
+&lt;button class="btn btn-secondary btn-sm"&gt;Отмена&lt;/button&gt;
+&lt;button class="btn btn-outline btn-lg"&gt;Подробнее&lt;/button&gt;
+&lt;button class="btn btn-destructive btn-md" disabled&gt;Удалить&lt;/button&gt;</code></pre>
+      </article>
+
+      <!-- 2.2 CARDS -->
+      <article id="cards" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">2.2 Card</h3>
+        <p class="text-sm text-muted-foreground">Базовый контейнер: card → header → content → footer. Использует <span class="font-data text-primary">--card</span> + <span class="font-data text-primary">--border</span>.</p>
+
+        <div class="grid grid-cols-3 gap-4">
+          <!-- Card 1: simple -->
+          <div class="bg-card border border-border rounded-lg p-5 shadow-sm-token">
+            <h4 class="text-sm font-semibold text-foreground mb-1">Простая карточка</h4>
+            <p class="text-xs text-muted-foreground mb-3">Заголовок + описание</p>
+            <p class="text-xs text-foreground/80">Минимальная структура — заголовок и контент без футера.</p>
+          </div>
+          <!-- Card 2: with footer -->
+          <div class="bg-card border border-border rounded-lg shadow-sm-token overflow-hidden flex flex-col">
+            <div class="p-5 pb-3">
+              <h4 class="text-sm font-semibold text-foreground mb-1">С футером</h4>
+              <p class="text-xs text-muted-foreground">Header / content / footer</p>
+            </div>
+            <div class="px-5 py-3 text-xs text-foreground/80">Контент карточки. Может содержать список, текст или вложенные элементы.</div>
+            <div class="mt-auto px-5 py-3 bg-muted/40 border-t border-border flex justify-end gap-2">
+              <button class="btn btn-ghost btn-sm">Отмена</button>
+              <button class="btn btn-primary btn-sm">OK</button>
+            </div>
+          </div>
+          <!-- Card 3: highlighted -->
+          <div class="bg-card border-2 border-primary rounded-lg p-5 shadow-md-token">
+            <div class="flex items-start justify-between mb-2">
+              <h4 class="text-sm font-semibold text-foreground">Акцентная</h4>
+              <span class="badge bg-primary text-primary-foreground">Live</span>
+            </div>
+            <p class="text-xs text-muted-foreground mb-3">Подсвечена primary-бордером</p>
+            <p class="font-data text-2xl font-medium text-foreground">142 BPM</p>
+          </div>
+        </div>
+
+        <pre class="code-block"><code>&lt;div class="bg-card border border-border rounded-lg p-5 shadow-sm-token"&gt;
+  &lt;h4 class="text-sm font-semibold text-foreground mb-1"&gt;Заголовок&lt;/h4&gt;
+  &lt;p class="text-xs text-muted-foreground"&gt;Описание&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+      </article>
+
+      <!-- 2.3 BADGES -->
+      <article id="badges" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">2.3 Badge</h3>
+        <div class="bg-card border border-border rounded-lg p-6 flex flex-wrap items-center gap-3">
+          <span class="badge bg-foreground text-background">Default</span>
+          <span class="badge bg-secondary text-secondary-foreground">Secondary</span>
+          <span class="badge bg-primary text-primary-foreground">Primary</span>
+          <span class="badge bg-destructive text-destructive-foreground">Destructive</span>
+          <span class="badge bg-transparent border-border text-foreground" style="border: 1px solid hsl(var(--border));">Outline</span>
+          <span class="badge bg-chart-2 text-white">Success</span>
+          <span class="badge bg-chart-4 text-white">Warning</span>
+        </div>
+        <pre class="code-block"><code>&lt;span class="badge bg-primary text-primary-foreground"&gt;Live&lt;/span&gt;
+&lt;span class="badge bg-chart-2 text-white"&gt;NORMAL&lt;/span&gt;
+&lt;span class="badge bg-chart-4 text-white"&gt;ELEVATED&lt;/span&gt;</code></pre>
+      </article>
+
+      <!-- 2.4 INPUTS -->
+      <article id="inputs" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">2.4 Input / Select</h3>
+        <div class="bg-card border border-border rounded-lg p-6 grid grid-cols-2 gap-5">
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-foreground">Имя гостя</label>
+            <input type="text" class="input-base" placeholder="Введите имя">
+            <p class="text-[11px] text-muted-foreground">default</p>
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-foreground">Имя гостя</label>
+            <input type="text" class="input-base" value="Александр" autofocus>
+            <p class="text-[11px] text-muted-foreground">focus</p>
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-foreground">Email</label>
+            <input type="text" class="input-base" value="not-an-email" placeholder="email">
+            <p class="text-[11px] text-destructive">error · введите валидный email</p>
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-foreground">ID браслета</label>
+            <input type="text" class="input-base" value="NP-A1B3" disabled>
+            <p class="text-[11px] text-muted-foreground">disabled</p>
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-foreground">Сегмент</label>
+            <select class="input-base">
+              <option>Офис</option>
+              <option>Спорт</option>
+              <option>Драйверы</option>
+            </select>
+            <p class="text-[11px] text-muted-foreground">select default</p>
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-foreground">Период</label>
+            <select class="input-base">
+              <option>За день</option>
+              <option>За неделю</option>
+              <option>За месяц</option>
+            </select>
+            <p class="text-[11px] text-muted-foreground">select default</p>
+          </div>
+        </div>
+        <pre class="code-block"><code>&lt;input type="text" class="input-base" placeholder="Введите имя"&gt;
+&lt;input type="text" class="input-base input-error" value="..."&gt;
+&lt;select class="input-base"&gt;&lt;option&gt;Офис&lt;/option&gt;&lt;/select&gt;</code></pre>
+      </article>
+
+      <!-- 2.5 TABS -->
+      <article id="tabs" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">2.5 Tabs</h3>
+        <div class="bg-card border border-border rounded-lg p-6 space-y-4">
+          <div class="tab-list">
+            <div class="tab-item active">Спорт</div>
+            <div class="tab-item">Офис</div>
+            <div class="tab-item">Драйверы</div>
+          </div>
+          <div class="text-xs text-muted-foreground bg-muted/50 rounded-md p-4">Контент активного таба «Спорт». В React-импле — Radix Tabs.</div>
+        </div>
+        <pre class="code-block"><code>&lt;div class="tab-list"&gt;
+  &lt;div class="tab-item active"&gt;Спорт&lt;/div&gt;
+  &lt;div class="tab-item"&gt;Офис&lt;/div&gt;
+  &lt;div class="tab-item"&gt;Драйверы&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      </article>
+
+      <!-- 2.6 DIALOG + SHEET -->
+      <article id="dialog" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">2.6 Dialog / Sheet</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Dialog -->
+          <div>
+            <p class="text-xs text-muted-foreground mb-2">Dialog · модалка</p>
+            <div class="relative bg-muted/40 rounded-lg p-6 h-72 overflow-hidden border border-border">
+              <div class="absolute inset-0 bg-foreground/40"></div>
+              <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card border border-border rounded-lg shadow-lg-token w-[320px] p-5 space-y-3">
+                <div class="flex items-start justify-between">
+                  <h4 class="text-sm font-semibold text-foreground">Подтвердить тест</h4>
+                  <button class="btn btn-ghost btn-sm p-1 h-6 w-6"><svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+                </div>
+                <p class="text-xs text-muted-foreground">Запустить тест Баевского для гостя? Длительность — 3 минуты.</p>
+                <div class="flex justify-end gap-2 pt-2">
+                  <button class="btn btn-outline btn-sm">Отмена</button>
+                  <button class="btn btn-primary btn-sm">Запустить</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Sheet -->
+          <div>
+            <p class="text-xs text-muted-foreground mb-2">Sheet · боковая панель</p>
+            <div class="relative bg-muted/40 rounded-lg h-72 overflow-hidden border border-border">
+              <div class="absolute inset-0 bg-foreground/30"></div>
+              <div class="absolute right-0 top-0 h-full w-[260px] bg-card border-l border-border shadow-lg-token p-5 space-y-3">
+                <div class="flex items-start justify-between">
+                  <h4 class="text-sm font-semibold text-foreground">Карточка гостя</h4>
+                  <button class="btn btn-ghost btn-sm p-1 h-6 w-6"><svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+                </div>
+                <div class="space-y-2 text-xs">
+                  <div class="flex justify-between"><span class="text-muted-foreground">ID</span><span class="font-data text-foreground">NP-A1B3</span></div>
+                  <div class="flex justify-between"><span class="text-muted-foreground">BPM</span><span class="font-data text-foreground">72</span></div>
+                  <div class="flex justify-between"><span class="text-muted-foreground">NCI</span><span class="font-data text-foreground">22</span></div>
+                  <div class="flex justify-between"><span class="text-muted-foreground">Статус</span><span class="badge bg-chart-2 text-white">NORMAL</span></div>
+                </div>
+                <button class="btn btn-primary btn-sm w-full mt-3">Запустить тест</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="code-block"><code>&lt;!-- Dialog --&gt;
+&lt;div class="bg-card border border-border rounded-lg shadow-lg-token p-5"&gt;...&lt;/div&gt;
+&lt;!-- Sheet --&gt;
+&lt;div class="h-full w-[260px] bg-card border-l border-border shadow-lg-token p-5"&gt;...&lt;/div&gt;</code></pre>
+      </article>
+
+      <!-- 2.7 TOOLTIP + AVATAR -->
+      <article id="tooltip-avatar" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">2.7 Tooltip / Avatar</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-card border border-border rounded-lg p-6 space-y-3">
+            <p class="text-xs text-muted-foreground">Tooltip · наведи курсор</p>
+            <div class="flex items-center gap-4">
+              <div class="tooltip-wrap">
+                <button class="btn btn-outline btn-sm">Hover me</button>
+                <span class="tooltip-content">Tooltip-подсказка</span>
+              </div>
+              <div class="tooltip-wrap">
+                <button class="btn btn-ghost btn-sm p-2 h-8 w-8" aria-label="info">
+                  <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </button>
+                <span class="tooltip-content">RMSSD — индекс HRV</span>
+              </div>
+            </div>
+          </div>
+          <div class="bg-card border border-border rounded-lg p-6 space-y-3">
+            <p class="text-xs text-muted-foreground">Avatar · 3 размера</p>
+            <div class="flex items-center gap-4">
+              <div class="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold text-foreground border border-border">АК</div>
+              <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-semibold text-primary-foreground">КО</div>
+              <div class="w-14 h-14 rounded-full bg-chart-5 flex items-center justify-center text-base font-semibold text-white">НП</div>
+            </div>
+            <p class="text-[11px] text-muted-foreground">sm 32 · md 40 · lg 56</p>
+          </div>
+        </div>
+        <pre class="code-block"><code>&lt;!-- Tooltip --&gt;
+&lt;div class="tooltip-wrap"&gt;&lt;button&gt;Hover&lt;/button&gt;&lt;span class="tooltip-content"&gt;Hint&lt;/span&gt;&lt;/div&gt;
+&lt;!-- Avatar --&gt;
+&lt;div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"&gt;КО&lt;/div&gt;</code></pre>
+      </article>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================
+         СЕКЦИЯ 3: BIOMETRIC WIDGETS
+         ============================================ -->
+    <section id="bio" class="space-y-10">
+      <header class="space-y-2">
+        <span class="text-[11px] uppercase tracking-widest text-primary font-bold font-data">03</span>
+        <h2 class="text-2xl font-bold text-foreground">Биометрические виджеты</h2>
+        <p class="text-sm text-muted-foreground max-w-2xl">Кастомные компоненты Neiry для отображения данных с браслета. Стилистика — премиум-clinic (Hume Band): крупная типографика, чёткие зоны, минимум декора.</p>
+      </header>
+
+      <!-- 3.1 BPM-card · 3 states -->
+      <article id="bpm-card" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">3.1 BPM-card · 3 состояния</h3>
+        <p class="text-sm text-muted-foreground">Hero-число (Fraunces 64-80px) + sparkline 60 сек + status-pill. Используется на kiosk для якорей и гостя.</p>
+
+        <div class="grid grid-cols-3 gap-4">
+          <!-- NORM -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Neiry.Pulse #1</span>
+              <span class="badge bg-chart-2 text-white">NORMAL</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="font-brand text-[64px] leading-none font-semibold text-foreground">72</span>
+              <span class="font-data text-xs text-muted-foreground">BPM</span>
+            </div>
+            <svg viewBox="0 0 200 40" class="w-full h-10" preserveAspectRatio="none">
+              <polyline points="0,22 10,18 20,24 30,20 40,18 50,22 60,16 70,20 80,18 90,22 100,18 110,24 120,20 130,18 140,22 150,18 160,20 170,22 180,18 190,20 200,22" fill="none" stroke="hsl(var(--chart-2))" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <p class="text-[11px] text-muted-foreground font-data">RMSSD 62 · 60 сек</p>
+          </div>
+          <!-- ELEVATED -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Neiry.Pulse #2</span>
+              <span class="badge bg-chart-4 text-white">ELEVATED</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="font-brand text-[64px] leading-none font-semibold text-foreground">110</span>
+              <span class="font-data text-xs text-muted-foreground">BPM</span>
+            </div>
+            <svg viewBox="0 0 200 40" class="w-full h-10" preserveAspectRatio="none">
+              <polyline points="0,28 10,12 20,30 30,10 40,32 50,14 60,28 70,8 80,30 90,12 100,32 110,10 120,28 130,14 140,30 150,12 160,32 170,10 180,28 190,12 200,30" fill="none" stroke="hsl(var(--chart-4))" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <p class="text-[11px] text-muted-foreground font-data">RMSSD 28 · 60 сек</p>
+          </div>
+          <!-- RECOVERY -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Neiry.Pulse #3</span>
+              <span class="badge bg-primary text-primary-foreground">RECOVERY</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="font-brand text-[64px] leading-none font-semibold text-foreground">50</span>
+              <span class="font-data text-xs text-muted-foreground">BPM</span>
+            </div>
+            <svg viewBox="0 0 200 40" class="w-full h-10" preserveAspectRatio="none">
+              <polyline points="0,24 10,20 20,22 30,18 40,20 50,22 60,18 70,20 80,22 90,18 100,20 110,22 120,18 130,20 140,22 150,18 160,20 170,22 180,18 190,20 200,22" fill="none" stroke="hsl(var(--primary))" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <p class="text-[11px] text-muted-foreground font-data">RMSSD 78 · 60 сек</p>
+          </div>
+        </div>
+        <pre class="code-block"><code>&lt;div class="bg-card border border-border rounded-lg p-5 space-y-3"&gt;
+  &lt;div class="flex items-center justify-between"&gt;
+    &lt;span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold"&gt;Neiry.Pulse #1&lt;/span&gt;
+    &lt;span class="badge bg-chart-2 text-white"&gt;NORMAL&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="flex items-baseline gap-2"&gt;
+    &lt;span class="font-brand text-[64px] leading-none font-semibold text-foreground"&gt;72&lt;/span&gt;
+    &lt;span class="font-data text-xs text-muted-foreground"&gt;BPM&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;svg viewBox="0 0 200 40" class="w-full h-10"&gt;...&lt;/svg&gt;
+&lt;/div&gt;</code></pre>
+      </article>
+
+      <!-- 3.2 NCI-gauge -->
+      <article id="nci-gauge" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">3.2 NCI-gauge · полукруговая шкала</h3>
+        <p class="text-sm text-muted-foreground">Когнитивная нагрузка (Neiry Stress Index). Зоны: 🟢 ≤30 · 🟡 31-60 · 🔴 >60. SVG inline, без зависимостей.</p>
+
+        <div class="grid grid-cols-3 gap-4">
+          <!-- NCI 22 -->
+          <div class="bg-card border border-border rounded-lg p-5 flex flex-col items-center space-y-2">
+            <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold self-start">Когнитивная нагрузка</p>
+            <svg viewBox="0 0 200 110" class="w-full max-w-[200px]">
+              <!-- Background arc -->
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
+              <!-- Zone segments -->
+              <path d="M 20 100 A 80 80 0 0 1 68 36" fill="none" stroke="hsl(var(--chart-2))" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 75 32 A 80 80 0 0 1 125 32" fill="none" stroke="hsl(var(--chart-4))" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 132 36 A 80 80 0 0 1 180 100" fill="none" stroke="hsl(var(--destructive))" stroke-width="14" stroke-linecap="round"/>
+              <!-- Needle for value 22 (left zone) -->
+              <line x1="100" y1="100" x2="42" y2="48" stroke="hsl(var(--foreground))" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="100" cy="100" r="5" fill="hsl(var(--foreground))"/>
+            </svg>
+            <div class="text-center">
+              <p class="font-brand text-[40px] leading-none font-semibold text-chart-2">22</p>
+              <p class="text-[11px] text-muted-foreground font-data mt-1">norm · low</p>
+            </div>
+          </div>
+          <!-- NCI 55 -->
+          <div class="bg-card border border-border rounded-lg p-5 flex flex-col items-center space-y-2">
+            <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold self-start">Когнитивная нагрузка</p>
+            <svg viewBox="0 0 200 110" class="w-full max-w-[200px]">
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 20 100 A 80 80 0 0 1 68 36" fill="none" stroke="hsl(var(--chart-2))" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 75 32 A 80 80 0 0 1 125 32" fill="none" stroke="hsl(var(--chart-4))" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 132 36 A 80 80 0 0 1 180 100" fill="none" stroke="hsl(var(--destructive))" stroke-width="14" stroke-linecap="round"/>
+              <!-- Needle for value 55 (middle zone) -->
+              <line x1="100" y1="100" x2="100" y2="28" stroke="hsl(var(--foreground))" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="100" cy="100" r="5" fill="hsl(var(--foreground))"/>
+            </svg>
+            <div class="text-center">
+              <p class="font-brand text-[40px] leading-none font-semibold text-chart-4">55</p>
+              <p class="text-[11px] text-muted-foreground font-data mt-1">elevated · mid</p>
+            </div>
+          </div>
+          <!-- NCI 78 -->
+          <div class="bg-card border border-border rounded-lg p-5 flex flex-col items-center space-y-2">
+            <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold self-start">Когнитивная нагрузка</p>
+            <svg viewBox="0 0 200 110" class="w-full max-w-[200px]">
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="hsl(var(--muted))" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 20 100 A 80 80 0 0 1 68 36" fill="none" stroke="hsl(var(--chart-2))" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 75 32 A 80 80 0 0 1 125 32" fill="none" stroke="hsl(var(--chart-4))" stroke-width="14" stroke-linecap="round"/>
+              <path d="M 132 36 A 80 80 0 0 1 180 100" fill="none" stroke="hsl(var(--destructive))" stroke-width="14" stroke-linecap="round"/>
+              <!-- Needle for value 78 (right zone) -->
+              <line x1="100" y1="100" x2="158" y2="48" stroke="hsl(var(--foreground))" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="100" cy="100" r="5" fill="hsl(var(--foreground))"/>
+            </svg>
+            <div class="text-center">
+              <p class="font-brand text-[40px] leading-none font-semibold text-destructive">78</p>
+              <p class="text-[11px] text-muted-foreground font-data mt-1">high · danger</p>
+            </div>
+          </div>
+        </div>
+        <pre class="code-block"><code>&lt;svg viewBox="0 0 200 110"&gt;
+  &lt;path d="M 20 100 A 80 80 0 0 1 68 36" stroke="hsl(var(--chart-2))" stroke-width="14"/&gt;
+  &lt;path d="M 75 32 A 80 80 0 0 1 125 32" stroke="hsl(var(--chart-4))" stroke-width="14"/&gt;
+  &lt;path d="M 132 36 A 80 80 0 0 1 180 100" stroke="hsl(var(--destructive))" stroke-width="14"/&gt;
+  &lt;line x1="100" y1="100" x2="..." y2="..." stroke="hsl(var(--foreground))"/&gt;
+&lt;/svg&gt;</code></pre>
+      </article>
+
+      <!-- 3.3 STATUS-PILL -->
+      <article id="status-pill" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">3.3 Status-pill · 4 состояния</h3>
+        <div class="bg-card border border-border rounded-lg p-6 flex flex-wrap items-center gap-3">
+          <span class="badge bg-chart-2 text-white">
+            <span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5 inline-block"></span>NORMAL
+          </span>
+          <span class="badge bg-chart-4 text-white">
+            <span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5 inline-block"></span>ELEVATED
+          </span>
+          <span class="badge bg-primary text-primary-foreground">
+            <span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5 inline-block"></span>RECOVERY
+          </span>
+          <span class="badge bg-muted text-muted-foreground">
+            <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground mr-1.5 inline-block"></span>RESTING
+          </span>
+          <span class="badge bg-destructive text-destructive-foreground">
+            <span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5 inline-block"></span>ALERT
+          </span>
+        </div>
+        <pre class="code-block"><code>&lt;span class="badge bg-chart-2 text-white"&gt;NORMAL&lt;/span&gt;     &lt;!-- зелёный --&gt;
+&lt;span class="badge bg-chart-4 text-white"&gt;ELEVATED&lt;/span&gt;   &lt;!-- амбра --&gt;
+&lt;span class="badge bg-primary text-primary-foreground"&gt;RECOVERY&lt;/span&gt;  &lt;!-- wine --&gt;
+&lt;span class="badge bg-muted text-muted-foreground"&gt;RESTING&lt;/span&gt;  &lt;!-- neutral --&gt;</code></pre>
+      </article>
+
+      <!-- 3.4 RMSSD indicator -->
+      <article id="rmssd" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">3.4 RMSSD-индикатор</h3>
+        <p class="text-sm text-muted-foreground">Горизонтальная шкала с тремя цветовыми зонами. Маркер на текущем значении.</p>
+
+        <div class="grid grid-cols-3 gap-4">
+          <!-- 25 -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+            <div class="flex items-baseline justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">RMSSD</span>
+              <span class="font-data text-lg font-medium text-destructive">25 <span class="text-xs text-muted-foreground">мс</span></span>
+            </div>
+            <div class="relative h-3 rounded-full overflow-hidden flex">
+              <div class="flex-1 bg-destructive"></div>
+              <div class="flex-1 bg-chart-4"></div>
+              <div class="flex-1 bg-chart-2"></div>
+              <!-- marker @ 25/100 -->
+              <div class="absolute top-1/2 -translate-y-1/2 w-3 h-5 rounded-sm bg-foreground border-2 border-card" style="left: calc(25% - 6px)"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-muted-foreground font-data"><span>0</span><span>30</span><span>60</span><span>100</span></div>
+          </div>
+          <!-- 45 -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+            <div class="flex items-baseline justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">RMSSD</span>
+              <span class="font-data text-lg font-medium text-chart-4">45 <span class="text-xs text-muted-foreground">мс</span></span>
+            </div>
+            <div class="relative h-3 rounded-full overflow-hidden flex">
+              <div class="flex-1 bg-destructive"></div>
+              <div class="flex-1 bg-chart-4"></div>
+              <div class="flex-1 bg-chart-2"></div>
+              <div class="absolute top-1/2 -translate-y-1/2 w-3 h-5 rounded-sm bg-foreground border-2 border-card" style="left: calc(45% - 6px)"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-muted-foreground font-data"><span>0</span><span>30</span><span>60</span><span>100</span></div>
+          </div>
+          <!-- 75 -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+            <div class="flex items-baseline justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">RMSSD</span>
+              <span class="font-data text-lg font-medium text-chart-2">75 <span class="text-xs text-muted-foreground">мс</span></span>
+            </div>
+            <div class="relative h-3 rounded-full overflow-hidden flex">
+              <div class="flex-1 bg-destructive"></div>
+              <div class="flex-1 bg-chart-4"></div>
+              <div class="flex-1 bg-chart-2"></div>
+              <div class="absolute top-1/2 -translate-y-1/2 w-3 h-5 rounded-sm bg-foreground border-2 border-card" style="left: calc(75% - 6px)"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-muted-foreground font-data"><span>0</span><span>30</span><span>60</span><span>100</span></div>
+          </div>
+        </div>
+        <pre class="code-block"><code>&lt;div class="relative h-3 rounded-full overflow-hidden flex"&gt;
+  &lt;div class="flex-1 bg-destructive"&gt;&lt;/div&gt;
+  &lt;div class="flex-1 bg-chart-4"&gt;&lt;/div&gt;
+  &lt;div class="flex-1 bg-chart-2"&gt;&lt;/div&gt;
+  &lt;div class="absolute w-3 h-5 bg-foreground" style="left: calc(45% - 6px)"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      </article>
+
+      <!-- 3.5 R-R sparkline -->
+      <article id="rr-spark" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">3.5 R-R sparkline</h3>
+        <p class="text-sm text-muted-foreground">Мини-график R-R интервалов, ширина ~80px. Использует <span class="font-data text-primary">--chart-1</span>.</p>
+        <div class="bg-card border border-border rounded-lg p-6 flex items-center gap-8 flex-wrap">
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-muted-foreground">norm</span>
+            <svg viewBox="0 0 80 24" class="h-6" style="width: 80px">
+              <polyline points="0,12 8,8 16,14 24,10 32,12 40,8 48,14 56,10 64,12 72,8 80,12" fill="none" stroke="hsl(var(--chart-1))" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+            <span class="font-data text-xs text-foreground">R-R 820мс</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-muted-foreground">stress</span>
+            <svg viewBox="0 0 80 24" class="h-6" style="width: 80px">
+              <polyline points="0,16 8,4 16,18 24,2 32,20 40,4 48,18 56,2 64,20 72,6 80,18" fill="none" stroke="hsl(var(--chart-4))" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+            <span class="font-data text-xs text-foreground">R-R 540мс</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-muted-foreground">rest</span>
+            <svg viewBox="0 0 80 24" class="h-6" style="width: 80px">
+              <polyline points="0,12 8,10 16,14 24,12 32,10 40,14 48,12 56,10 64,14 72,12 80,12" fill="none" stroke="hsl(var(--chart-2))" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+            <span class="font-data text-xs text-foreground">R-R 1100мс</span>
+          </div>
+        </div>
+        <pre class="code-block"><code>&lt;svg viewBox="0 0 80 24" class="h-6" style="width: 80px"&gt;
+  &lt;polyline points="0,12 8,8 16,14 ..." fill="none" stroke="hsl(var(--chart-1))" stroke-width="1.2"/&gt;
+&lt;/svg&gt;</code></pre>
+      </article>
+
+      <!-- 3.6 HEARTBEAT animation -->
+      <article id="heartbeat" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">3.6 Heartbeat pulse animation</h3>
+        <p class="text-sm text-muted-foreground">CSS-анимация для live-BPM. Скорость синхронизируется с реальным BPM (700мс ≈ 86 BPM). Иконка масштабируется 1.0 → 1.15 → 1.0.</p>
+        <div class="bg-card border border-border rounded-lg p-6 flex items-center gap-10">
+          <div class="flex flex-col items-center gap-2">
+            <svg viewBox="0 0 24 24" class="w-16 h-16 animate-heart text-primary" fill="currentColor">
+              <path d="M12 21s-7-4.5-9.5-9C.5 7 3.5 3 7 3c2 0 3.5 1 5 3 1.5-2 3-3 5-3 3.5 0 6.5 4 4.5 9-2.5 4.5-9.5 9-9.5 9z"/>
+            </svg>
+            <span class="font-data text-xs text-muted-foreground">animate-heart · 750ms</span>
+          </div>
+          <div class="flex-1 space-y-2">
+            <p class="text-xs text-foreground">Применение: декоративная индикация активного соединения с браслетом на kiosk и в мобильном приложении.</p>
+            <pre class="code-block"><code>@keyframes heart-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+.animate-heart { animation: heart-pulse 0.75s ease-in-out infinite; }</code></pre>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ============================================
+         СЕКЦИЯ 4: TREMOR-STYLE
+         ============================================ -->
+    <section id="tremor" class="space-y-10">
+      <header class="space-y-2">
+        <span class="text-[11px] uppercase tracking-widest text-primary font-bold font-data">04</span>
+        <h2 class="text-2xl font-bold text-foreground">Tremor-стиль · виджеты для дашборда</h2>
+        <p class="text-sm text-muted-foreground max-w-2xl">Для админ-дашборда (Neiry Unite v5). В React-импле — Tremor (или ребилд аналогов на shadcn). Здесь — HTML-мокапы для согласования визуала.</p>
+      </header>
+
+      <!-- 4.1 KPI cards -->
+      <article id="kpi" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">4.1 KPI-card · 4 примера</h3>
+        <p class="text-sm text-muted-foreground">Заголовок (uppercase small) + hero-число (Fraunces 48px) + delta + sparkline.</p>
+
+        <div class="grid grid-cols-4 gap-4">
+          <!-- Recovery -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-2">
+            <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Recovery</p>
+            <div class="flex items-baseline gap-2">
+              <span class="font-brand text-[48px] leading-none font-semibold text-foreground">72</span>
+              <span class="inline-flex items-center gap-0.5 text-xs font-medium text-chart-2">
+                <svg viewBox="0 0 24 24" class="w-3 h-3" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>
+                +5%
+              </span>
+            </div>
+            <svg viewBox="0 0 100 24" class="w-full h-6" preserveAspectRatio="none">
+              <polyline points="0,18 14,16 28,14 42,12 56,10 70,8 84,6 100,4" fill="none" stroke="hsl(var(--chart-2))" stroke-width="1.5"/>
+            </svg>
+            <p class="text-[10px] text-muted-foreground">за 7 дней</p>
+          </div>
+          <!-- Stress -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-2">
+            <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Stress Index</p>
+            <div class="flex items-baseline gap-2">
+              <span class="font-brand text-[48px] leading-none font-semibold text-foreground">38</span>
+              <span class="inline-flex items-center gap-0.5 text-xs font-medium text-chart-2">
+                <svg viewBox="0 0 24 24" class="w-3 h-3" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                -8%
+              </span>
+            </div>
+            <svg viewBox="0 0 100 24" class="w-full h-6" preserveAspectRatio="none">
+              <polyline points="0,6 14,10 28,8 42,12 56,10 70,14 84,12 100,16" fill="none" stroke="hsl(var(--chart-2))" stroke-width="1.5"/>
+            </svg>
+            <p class="text-[10px] text-muted-foreground">снижается · хорошо</p>
+          </div>
+          <!-- Sleep -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-2">
+            <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Sleep</p>
+            <div class="flex items-baseline gap-2">
+              <span class="font-brand text-[48px] leading-none font-semibold text-foreground">6.8<span class="text-2xl text-muted-foreground">h</span></span>
+              <span class="inline-flex items-center gap-0.5 text-xs font-medium text-destructive">
+                <svg viewBox="0 0 24 24" class="w-3 h-3" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                -12%
+              </span>
+            </div>
+            <svg viewBox="0 0 100 24" class="w-full h-6" preserveAspectRatio="none">
+              <polyline points="0,8 14,10 28,12 42,10 56,14 70,16 84,18 100,20" fill="none" stroke="hsl(var(--destructive))" stroke-width="1.5"/>
+            </svg>
+            <p class="text-[10px] text-muted-foreground">недосып · alert</p>
+          </div>
+          <!-- Burnout -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-2">
+            <p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Burnout risk</p>
+            <div class="flex items-baseline gap-2">
+              <span class="font-brand text-[48px] leading-none font-semibold text-foreground">18</span>
+              <span class="inline-flex items-center gap-0.5 text-xs font-medium text-chart-4">
+                <svg viewBox="0 0 24 24" class="w-3 h-3" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>
+                +3%
+              </span>
+            </div>
+            <svg viewBox="0 0 100 24" class="w-full h-6" preserveAspectRatio="none">
+              <polyline points="0,18 14,17 28,16 42,15 56,14 70,12 84,11 100,10" fill="none" stroke="hsl(var(--chart-4))" stroke-width="1.5"/>
+            </svg>
+            <p class="text-[10px] text-muted-foreground">тренд растёт · watch</p>
+          </div>
+        </div>
+        <pre class="code-block"><code>&lt;div class="bg-card border border-border rounded-lg p-5 space-y-2"&gt;
+  &lt;p class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold"&gt;Recovery&lt;/p&gt;
+  &lt;div class="flex items-baseline gap-2"&gt;
+    &lt;span class="font-brand text-[48px] font-semibold"&gt;72&lt;/span&gt;
+    &lt;span class="text-xs text-chart-2"&gt;▲ +5%&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;svg viewBox="0 0 100 24"&gt;...&lt;/svg&gt;
+&lt;/div&gt;</code></pre>
+      </article>
+
+      <!-- 4.2 BarList -->
+      <article id="barlist" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">4.2 BarList · top-5 сотрудников</h3>
+        <p class="text-sm text-muted-foreground">Горизонтальные бары + анонимные имена. Ширина бара = относительное значение.</p>
+        <div class="bg-card border border-border rounded-lg p-5 space-y-3 max-w-md">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-semibold text-foreground">Top Stress · Office Team</h4>
+            <span class="text-[10px] text-muted-foreground font-data">за неделю</span>
+          </div>
+          <div class="space-y-2">
+            <!-- bar 1 -->
+            <div class="relative">
+              <div class="relative h-7 bg-muted rounded overflow-hidden">
+                <div class="absolute inset-y-0 left-0 bg-destructive/25 rounded" style="width: 92%"></div>
+              </div>
+              <div class="absolute inset-0 flex items-center justify-between px-2.5 text-xs">
+                <span class="text-foreground font-medium">Сотрудник #001</span>
+                <span class="font-data text-foreground">78</span>
+              </div>
+            </div>
+            <div class="relative">
+              <div class="relative h-7 bg-muted rounded overflow-hidden">
+                <div class="absolute inset-y-0 left-0 bg-chart-4/30 rounded" style="width: 78%"></div>
+              </div>
+              <div class="absolute inset-0 flex items-center justify-between px-2.5 text-xs">
+                <span class="text-foreground font-medium">Сотрудник #002</span>
+                <span class="font-data text-foreground">66</span>
+              </div>
+            </div>
+            <div class="relative">
+              <div class="relative h-7 bg-muted rounded overflow-hidden">
+                <div class="absolute inset-y-0 left-0 bg-chart-4/30 rounded" style="width: 64%"></div>
+              </div>
+              <div class="absolute inset-0 flex items-center justify-between px-2.5 text-xs">
+                <span class="text-foreground font-medium">Сотрудник #003</span>
+                <span class="font-data text-foreground">54</span>
+              </div>
+            </div>
+            <div class="relative">
+              <div class="relative h-7 bg-muted rounded overflow-hidden">
+                <div class="absolute inset-y-0 left-0 bg-chart-2/35 rounded" style="width: 48%"></div>
+              </div>
+              <div class="absolute inset-0 flex items-center justify-between px-2.5 text-xs">
+                <span class="text-foreground font-medium">Сотрудник #004</span>
+                <span class="font-data text-foreground">41</span>
+              </div>
+            </div>
+            <div class="relative">
+              <div class="relative h-7 bg-muted rounded overflow-hidden">
+                <div class="absolute inset-y-0 left-0 bg-chart-2/35 rounded" style="width: 36%"></div>
+              </div>
+              <div class="absolute inset-0 flex items-center justify-between px-2.5 text-xs">
+                <span class="text-foreground font-medium">Сотрудник #005</span>
+                <span class="font-data text-foreground">31</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="code-block"><code>&lt;div class="relative"&gt;
+  &lt;div class="relative h-7 bg-muted rounded overflow-hidden"&gt;
+    &lt;div class="absolute inset-y-0 left-0 bg-destructive/25" style="width: 92%"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="absolute inset-0 flex items-center justify-between px-2.5 text-xs"&gt;
+    &lt;span&gt;Сотрудник #001&lt;/span&gt;&lt;span class="font-data"&gt;78&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      </article>
+
+      <!-- 4.3 Progress bar -->
+      <article id="progress" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">4.3 Progress · цветовые зоны</h3>
+        <p class="text-sm text-muted-foreground">Шкала 0-100 с тремя зонами: green ≤30, yellow 30-70, red >70. Маркер на текущем значении.</p>
+
+        <div class="grid grid-cols-3 gap-4">
+          <!-- 25 -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Stress Index</span>
+              <span class="font-data text-sm font-medium text-chart-2">25 / 100</span>
+            </div>
+            <div class="relative h-2 rounded-full overflow-hidden flex bg-muted">
+              <div style="width: 30%" class="bg-chart-2/40"></div>
+              <div style="width: 40%" class="bg-chart-4/40"></div>
+              <div style="width: 30%" class="bg-destructive/40"></div>
+              <div class="absolute top-1/2 -translate-y-1/2 w-1 h-4 bg-foreground rounded-sm" style="left: calc(25% - 2px)"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-muted-foreground font-data">
+              <span class="text-chart-2">norm</span><span>warning</span><span class="text-destructive">danger</span>
+            </div>
+          </div>
+          <!-- 55 -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Stress Index</span>
+              <span class="font-data text-sm font-medium text-chart-4">55 / 100</span>
+            </div>
+            <div class="relative h-2 rounded-full overflow-hidden flex bg-muted">
+              <div style="width: 30%" class="bg-chart-2/40"></div>
+              <div style="width: 40%" class="bg-chart-4/40"></div>
+              <div style="width: 30%" class="bg-destructive/40"></div>
+              <div class="absolute top-1/2 -translate-y-1/2 w-1 h-4 bg-foreground rounded-sm" style="left: calc(55% - 2px)"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-muted-foreground font-data">
+              <span class="text-chart-2">norm</span><span>warning</span><span class="text-destructive">danger</span>
+            </div>
+          </div>
+          <!-- 85 -->
+          <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Stress Index</span>
+              <span class="font-data text-sm font-medium text-destructive">85 / 100</span>
+            </div>
+            <div class="relative h-2 rounded-full overflow-hidden flex bg-muted">
+              <div style="width: 30%" class="bg-chart-2/40"></div>
+              <div style="width: 40%" class="bg-chart-4/40"></div>
+              <div style="width: 30%" class="bg-destructive/40"></div>
+              <div class="absolute top-1/2 -translate-y-1/2 w-1 h-4 bg-foreground rounded-sm" style="left: calc(85% - 2px)"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-muted-foreground font-data">
+              <span class="text-chart-2">norm</span><span>warning</span><span class="text-destructive">danger</span>
+            </div>
+          </div>
+        </div>
+        <pre class="code-block"><code>&lt;div class="relative h-2 rounded-full overflow-hidden flex bg-muted"&gt;
+  &lt;div style="width: 30%" class="bg-chart-2/40"&gt;&lt;/div&gt;
+  &lt;div style="width: 40%" class="bg-chart-4/40"&gt;&lt;/div&gt;
+  &lt;div style="width: 30%" class="bg-destructive/40"&gt;&lt;/div&gt;
+  &lt;div class="absolute w-1 h-4 bg-foreground" style="left: calc(55% - 2px)"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      </article>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="border-t border-border bg-card mt-20">
+  <div class="max-w-[1440px] mx-auto px-6 py-6 flex flex-wrap items-center justify-between gap-4 text-xs text-muted-foreground">
+    <p>Built for UI restyle · PM: Костя · UX/UI: subagent · Stack: shadcn/ui + Tremor (для React) → HTML + Tailwind CDN (для мокапа)</p>
+    <p class="font-data">v1.0 · 2026-05-25</p>
+  </div>
+</footer>
+
+<script>
+  // Theme toggle
+  const toggle = document.getElementById('theme-toggle');
+  const label = document.getElementById('theme-label');
+  toggle.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    const isDark = document.documentElement.classList.contains('dark');
+    label.textContent = isDark ? 'Тёмная' : 'Светлая';
+  });
+</script>
+
+</body>
+</html>
