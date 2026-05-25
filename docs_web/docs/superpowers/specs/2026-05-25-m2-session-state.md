@@ -1,99 +1,96 @@
-# M2 UI Restyle — Session State (2026-05-26, Этап 2 в работе, режим согласования)
+# M2 UI Restyle — Session State (2026-05-26, Этап 2 закрыт, готовимся к Этапу 3)
 
 > **Назначение:** handoff-документ для восстановления контекста после auto-compact. Читать первым при возобновлении работы по M2 UI Restyle.
 >
-> **Если контекст потерян:** прочти этот файл целиком → `memory/MEMORY.md` + 9 ключевых memory-файлов (см. список) → план M2 UI Restyle → бриф Кирилла A1 → продолжай с раздела «⏭ Очередь работы».
+> **Если контекст потерян:** прочти этот файл целиком → `memory/MEMORY.md` + 9 ключевых memory-файлов (см. список) → план M2 UI Restyle → продолжай с раздела «⏭ Очередь работы».
 
 ---
 
-## 🚨 СТАТУС НА МОМЕНТ ЭТОГО HANDOFF (2026-05-26, A5 только что внесён, ждёт приёмки PM)
+## 🚨 СТАТУС НА МОМЕНТ ЭТОГО HANDOFF (2026-05-26, Round 2 закрыт)
 
-**Этап 2 в работе, режим: согласование каждой правки PM перед внесением.**
+**Этап 2 закрыт. Готовимся к Этапу 3 — Задача 5 (Drill-down + 3 фазы Bayevsky test).**
 
-PM ввёл новое правило: **«Перед тем как вносить каждую правку, согласовывай её со мной, чтобы не внести лишнего».**
+**Round 2 правок Kiosk v2 — все 4 пункта внесены, закоммичены, запушены:**
+- ✅ A2 калибровка 12 сек (с расширением до 16 сек по slow-флагу)
+- ✅ A3 hover-glow на 3 карточки (вместо drill-hint «Подробнее →» — переделано по приказу PM)
+- ✅ A5 BLE-индикатор (data-ble: connected/lost/disconnected с overlay)
+- ✅ A6 чистка футера (dev-bar сдвинут на left:62% для пространства легенды)
 
-**Что произошло в этой сессии (Этап 2):**
-1. Изначально запустил implementer-агента в background (subagent-driven-development). PM сразу остановил с приказом перейти в режим согласования.
-2. Откатил подпись «Сними браслет → получи отчёт» из футера (агент успел добавить до остановки), CSS-инфраструктуру оставил.
-3. Согласовал и внёс **A2 калибровка 12 сек** → принято PM (после фикса размера текста: t-h1 → t-h2 + nowrap).
-4. Согласовал **A3 drill-down CTA** → PM **переделал концепцию**: вместо drill-hint «Подробнее →» — **hover-glow на все 3 карточки (wine border + bg/4% + 3-слойный glow)** + клик ведёт на `kiosk-drilldown.html?id=kostya/alexey/guest`. **Принято PM.**
-5. Согласовал и внёс **A5 BLE-индикатор** → ждёт визуальной проверки PM.
+**Финальный коммит Round 2: `1226e0b`** — pushed to origin/main.
 
-**Состояние kiosk-v2.html сейчас:**
-- A2 калибровка ✅ внесена (HTML + dev-bar + JS)
-- A3 hover-glow ✅ внесена (CSS + 3× data-href + JS click + a11y)
-- A5 BLE-индикатор ✅ внесена (CSS + 3× ble-dot + 3× ble-overlay + dev-bar + JS cycle)
-- A6 чистка футера ⚪ НЕ начата
-
-**Состояние git:**
-- Все правки **НЕ закоммичены** (uncommitted в `docs_web/wireframes/m2/kiosk-v2.html`)
-- Финальный коммит Round 2 будет ПОСЛЕ приёмки A5 + согласования и внесения A6
-- Также НЕ закоммичен этот handoff-файл (после auto-compact восстановления — закоммитить)
+**Задача 4 (Kiosk v2) → ✅ ПРИНЯТО PM** (последняя реплика PM по приёмке: «да»).
 
 ---
 
 ## ⏭ Очередь работы (что делать сразу после auto-compact)
 
-### Шаг 1 — спросить PM: «Принимаешь A5 BLE-индикатор?»
+### Шаг 1 — выдать PM бриф на Этап 3 (Задача 5 — kiosk-drilldown.html)
 
-**Что проверять в браузере (Cmd+R kiosk-v2.html):**
-1. В каждой шапке карточки рядом с «Neiry.Pulse #N» — зелёный мигающий dot (`live-blink 1.4s`).
-2. dev-bar: новая кнопка «BLE: connected» (после блока калибровки).
-3. Клик → меняется на «BLE: lost» (жёлтый dot, без анимации) → клик → «BLE: disconnected» (серый dot opacity 0.5 + overlay поверх карточки + blur backdrop + спиннер + текст «Переподключаемся…») → клик → connected.
-4. На disconnected: hover/click отключены (cursor default, нет glow).
-5. В `idle` и `active-2` — гостевой dot скрыт (нет браслета пока).
-6. Switch state кнопками: всё должно сохраняться.
+PM попросил дословно: **«Сделай хэндов, а после этого сделай компакт чата, и после этого дай мне бриф.»**
 
-### Шаг 2 — после OK на A5 → согласовать **A6 чистка футера**
+После выполнения /compact (это делает сам PM, я не могу) — выдать бриф следующего содержания:
 
-Скоуп A6 (по брифу Round 2):
-- **Удалить** блок справа в `<footer>` kiosk-v2.html: «Подробный отчёт по сессии · Сканируй QR → Telegram-бот» + SVG QR 120×120.
-- В карточке гостя в `pending-claim` QR **ОСТАЁТСЯ** (внутри `.when-done`).
-- Модалка `.qr-modal` с QR 240×240 **ОСТАЁТСЯ**.
-- Освободившееся место — короткая подпись, например «Сними браслет → получи отчёт» (PM возможно поменяет формулировку, спросить).
+**Артефакт:** `docs_web/wireframes/m2/kiosk-drilldown.html` (новый файл)
 
-**Перед внесением A6 — обязательно** показать PM детали (что именно удаляю + что вставляю на освободившееся место) и получить OK.
+**Куда сейчас ведут клики:** все 3 карточки в kiosk-v2 имеют `data-href="./kiosk-drilldown.html?id={kostya|alexey|guest}"`. JS читает query-параметр `id` и подставляет имя/avatar/baseline в шапку.
 
-### Шаг 3 — финальный коммит и пуш Round 2
+**Layout (админ-ноут, 1440×900, ОТДЕЛЬНАЯ светлая тема — не плазма):**
+- **Top bar:** ← back to wall (ссылка на kiosk-v2.html) + «Гость #3 · 02:47» (timer от начала сессии)
+- **Главный блок NSI:** большое число (Onest 700) + NSI-gauge Tremor Radial 360° (отличается от Apple Rings 270° на плазме) + caption «Уровень стресса (NSI · Neiry Stress Index, ↑ = стресс ↑)»
+- **4 метрики 2×2:** BPM с sparkline / HRV-RMSSD (или «— нет данных») / SpO₂ / Шаги
+- **60-сек график BPM** (line chart, SVG inline)
+- **CTA «🧪 Запустить Тест Баевского (5 мин)»:** large primary button + caption «3 мин покоя + Stroop + дорожка»
+- **Footer:** STOP SESSION → QR/PIN экран
 
-Из `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY`:
-```bash
-git add docs_web/wireframes/m2/kiosk-v2.html docs_web/docs/superpowers/specs/2026-05-25-m2-session-state.md
-git commit -m "Применил Round 2 правок Kiosk v2: калибровка 12 сек, hover-glow на карточках, BLE-индикатор, чистка футера"
-git push
-```
+**3 фазы Bayevsky test (state-switcher через dev-bar):**
+- **BAYEVSKY_PHASE_1 — «Покой 3 мин»:** большой обратный таймер 03:00 → 00:00, инструкция «Стой неподвижно, дыши спокойно», прогресс-полоса
+- **BAYEVSKY_PHASE_2 — «Stroop 1 мин»:** имитация теста (плашка цвета/слова), таймер 01:00, подпись «Это нормально, что стресс чуть подскочит — мозг работает»
+- **BAYEVSKY_PHASE_3 — «Беговая дорожка 1 мин»:** «Перейди на дорожку, лёгкий бег», таймер 01:00
+- **BAYEVSKY_RESULT:** таблица 3 фаз × значение ИН Баевского + общий вывод (цветовая зона)
 
-После пуша — обновить handoff (этот файл) на «Round 2 закрыт» и приготовиться к Этапу 3 (Задача 5 — kiosk-drilldown.html с 3 фазами Bayevsky).
+**Формула Баевского (Slow, для TG-отчёта):** `ИН = AMo / (2·Mo·MxDMn)`, окно 3-5 мин.
+
+**Двухступенчатый фильтр R-R:** медианный (отсечь ±20% от медианы) → перцентильный (5/95%). Если в окне < 60% валидных R-R → выводить «недостаточно данных, продли фазу».
+
+**Принципы:**
+- Стек — тот же что в kiosk-v2: HTML + Tailwind CDN + shadcn semantic CSS-переменные + inline SVG + vanilla JS.
+- Шрифты те же: Space Grotesk + Onest 700 + Geist Mono.
+- Палитра светофора: success/warning/destructive HSL-токены.
+- CTA «Тест Баевского» — опциональный, не запускается автоматически.
+- Кнопка «← back to wall» — `<a href="./kiosk-v2.html">`.
+- dev-bar внизу: state-switcher для 5 состояний (drilldown / phase-1 / phase-2 / phase-3 / result).
+- NDA-safe: «Neiry.Pulse #N», «Neiry Stress Index». БЕЗ M1/M2/M3, VITRO, B2B-клиентов.
+
+**Режим работы:** как в Round 2 — каждый блок согласовываю с PM ДО внесения. НЕ запускать background-агентов.
+
+### Шаг 2 — ждать решений PM по уточняющим вопросам и согласовывать каждый блок drilldown
 
 ---
 
-## ✅ Что СДЕЛАНО в kiosk-v2.html (uncommitted)
+## ✅ Что СДЕЛАНО в Round 2 (commit 1226e0b)
 
 ### A2 — Калибровка 12 сек
-
-- **HTML (карточка гостя):** новый `<div class="when-calibrating">` со спиннером, текстом «Калибровка XX сек…», hidden hint «Чуть дольше, ловим baseline…».
+- **HTML (карточка гостя):** новый `<div class="when-calibrating">` со спиннером, текстом «Калибровка XX сек…» (t-h2 + nowrap), hidden hint «Чуть дольше, ловим baseline…».
 - **dev-bar:** label «калибровка» + кнопка `data-action="calibrate-guest"` (disabled когда `body[data-state]≠active-3`) + кнопка-toggle `data-flag="slow-calibration"`.
 - **JS:** IIFE `initCalibration` — счётчик 12→0 сек, при `slow-calibration=true` → 16→0 сек + сразу видна подпись «Чуть дольше…». `Calibrate Guest` setState-aware (enabled только в active-3).
-- **CSS** уже был внесён до этой сессии (`.when-calibrating`, `.calib-spinner`, `[data-card-state=calibrating]` toggle).
+- **CSS:** `.when-calibrating`, `.calib-spinner`, `[data-card-state=calibrating]` toggle.
 
 ### A3 — Hover-glow (переделано из drill-hint по приказу PM)
-
-- **CSS:** новый блок `.card-anchor[data-href]:hover/focus-visible` — wine border + `bg: hsl(--primary)/0.04` + 3-слойный box-shadow (1px ring + 12px middle + 80px halo). В `body[data-state="idle"]` — отключён.
+- **CSS:** `.card-anchor[data-href]:hover/focus-visible` — wine border + `bg: hsl(--primary)/0.04` + 3-слойный box-shadow (1px ring + 12px middle + 80px halo). В `body[data-state="idle"]` — отключён.
 - **HTML:** все 3 `<article>` получили `data-href="./kiosk-drilldown.html?id=kostya|alexey|guest"`.
 - **JS:** обработчик клика на `.card-anchor[data-href]` + `role="link"` + `tabindex="0"` + клавиатура (Enter/Space). В idle — клик игнорируется.
-- **CSS блок `.drill-hint` УДАЛЁН** (его в предыдущей версии оставлял агент).
-- **HTML drill-hint `<a>` элемент УДАЛЁН** (был в карточке гостя).
-- Default `cardState='active'` в JS тоже удалён (был только для видимости drill-hint).
 
 ### A5 — BLE-индикатор
-
-- **CSS** в основном был внесён до этой сессии (`.ble-dot`, `.ble-overlay`, состояния `[data-ble=connected/lost/disconnected]`). Этой сессией добавлено:
-  - `body[data-state="idle/active-2"] [data-id="guest"] .ble-dot { display: none }`
-  - `.card-anchor[data-ble="disconnected"][data-href]` — `cursor: default; pointer-events: none` + сброс hover-эффекта.
-- **HTML headers (3 карточки):** `<span class="ble-dot" data-ble-dot aria-label="Связь активна"></span>` рядом с «Neiry.Pulse #N».
-- **HTML articles (3 карточки):** `data-ble="connected"` атрибут + блок `<div class="ble-overlay" aria-hidden="true">` со спиннером и текстом «Переподключаемся…».
+- **CSS:** `.ble-status-dot` реагирует на `[data-ble]` родителя — connected (зелёный live-blink), lost (жёлтый без анимации), disconnected (серый opacity 0.5). Текст рядом тоже меняет цвет на warning при lost/disconnected.
+- **HTML:** существующая строка «● ПОДКЛЮЧЕН» под BPM переписана на `<span class="ble-status-dot"></span><span class="ble-status-text">Подключен</span>`.
+- **HTML overlay:** в каждой `<article>` добавлен `.ble-overlay` со спиннером и текстом «Переподключаемся…» (показывается на `data-ble=disconnected`).
+- **CSS:** `[data-ble="disconnected"][data-href]` — `cursor: default; pointer-events: none` + сброс hover-эффекта.
 - **dev-bar:** label «BLE» + кнопка `data-action="cycle-ble"` с динамическим текстом «BLE: <phase>».
-- **JS:** IIFE `initBleCycle` — циклит `connected → lost → disconnected → connected` для всех 3 карточек разом, обновляет `aria-label` у dots.
+- **JS:** IIFE `initBleCycle` — циклит `connected → lost → disconnected → connected` для всех 3 карточек разом, меняет текст «Подключен / Нет связи / Отключено».
+
+### A6 — Чистка футера
+- QR-блок справа в `<footer>` был удалён до Round 2 (коммит 3703975).
+- Round 2: dev-bar сдвинут на `left: 62%` (было `50%`) — освобождает пространство под легенду стрессовых зон.
 
 ---
 
@@ -104,16 +101,18 @@ git push
 | 1 | Метрика стресса на плазме | **NSI** (Neiry Stress Index). Зоны 0-39 НОРМА / 40-59 ПОВЫШЕН / 60-100 ВЫСОКИЙ. ↑=стресс↑ |
 | 2 | Имя гостя | mobile name_input. В kiosk-v2 хардкод «Гость» |
 | 3 | Калибровка | **12 сек**, расширение до 16 сек при недостатке семплов (флаг slow-calibration) |
-| 4 | Тест Баевского | Только в drill-down (Задача 5, Этап 3) |
-| 5 | BLE-индикатор | Dot в шапке. heartbeat 2 сек / lost 5 сек / disconnect 30 сек. В мокапе — циклит dev-bar кнопкой |
+| 4 | Тест Баевского | Только в drill-down (Задача 5, Этап 3), опциональный CTA |
+| 5 | BLE-индикатор | Dot под BPM (не в шапке!). heartbeat 2 сек / lost 5 сек / disconnect 30 сек. В мокапе — циклит dev-bar кнопкой |
 | 6 | QR на главном | В футере убрать. В `pending-claim` карточке остаётся. Модалка остаётся |
 | 7 | Welcome-screen | Использовать active-2 |
 | 8 | Dev-bar в продакшене | Оставить, PM сам уберёт через `?prod=1` |
 | 9 | NSI формула | `NSI = 100 − (Current_BPM − Baseline_BPM) × 2`, clamp [0..100]. Baseline = mean BPM за 12 сек |
 | 10 | Mobile pairing | Задача 7 в плане M2 UI Restyle |
 | 11 | ТЗ Кириллу | Бриф A1, раздел 3.3 |
-| 12 | **Drill-down CTA (A3 Round 2)** | **Hover-glow на все 3 карточки** (wine border + bg/4% + glow побольше). НЕ drill-hint «Подробнее →». Кликабельны все 3 → kiosk-drilldown.html?id=... |
-| 13 | **Режим работы Этапа 2** | Каждая правка согласовывается с PM ДО внесения. НЕ запускать background-агентов |
+| 12 | Drill-down CTA (A3 Round 2) | Hover-glow на все 3 карточки (wine border + bg/4% + glow). Кликабельны все 3 → kiosk-drilldown.html?id=... |
+| 13 | Режим работы Этапа 2+ | Каждая правка согласовывается с PM ДО внесения. НЕ запускать background-агентов |
+| 14 | Drilldown тема | Светлая (админ-ноут 1440×900). На плазме — тёмная |
+| 15 | Drilldown NSI-gauge | Tremor Radial 360° (отличается от Apple Rings 270° на плазме) |
 
 ---
 
@@ -124,8 +123,8 @@ git push
 | 1 | Калибровка эстетики | ✅ принято | `memory/project_neiry_ui_aesthetic.md` | — |
 | 2 | BRIEF.md UX/UI | ✅ принято | `UI_assets/BRIEF.md` | bf1bf9e |
 | 3 | UI Kit | ✅ принято | `docs_web/wireframes/m2/ui-kit.html` | bf1bf9e |
-| 4 | Kiosk v2 | 🟡 **Round 2 в работе** (A2/A3/A5 внесены uncommitted, A6 не начат) | `docs_web/wireframes/m2/kiosk-v2.html` | uncommitted |
-| 5 | Drill-down (3 фазы Bayevsky) | ⚪ pending (Этап 3 после Round 2 acceptance) | `docs_web/wireframes/m2/kiosk-drilldown.html` | — |
+| 4 | Kiosk v2 | ✅ **принято** (Round 2 закрыт) | `docs_web/wireframes/m2/kiosk-v2.html` | **1226e0b** |
+| 5 | Drill-down (3 фазы Bayevsky) | 🔴 **СЛЕДУЮЩАЯ** (Этап 3) | `docs_web/wireframes/m2/kiosk-drilldown.html` | — |
 | 6 | Dashboard корпоратов | ⚪ pending | `docs_web/wireframes/m3/dashboard-corporate.html` | — |
 | 7 | Mobile pairing + state machine | ⚪ pending | `docs_web/wireframes/m1/mobile-*.html` | — |
 | 8 | Финальная индексация | ⚪ pending | `docs_web/index.html` | — |
@@ -143,8 +142,8 @@ git push
 
 ## 🎨 Финальная эстетика (зафиксирована PM)
 
-- **Шрифты:** Space Grotesk (UI) + Onest 700 (hero) + Geist Mono (data). Кириллица.
-- **Палитра светофора:** success `#00E676` / warning `#FFB300` / destructive `#FF1744`.
+- **Шрифты:** Space Grotesk (UI) + Onest 700 (hero, letter-spacing −0.02em) + Geist Mono (data). Кириллица.
+- **Палитра светофора:** success `151 100% 45%` / warning `42 100% 50%` / destructive `348 100% 54%` (HSL-токены).
 - **Wine accent:** `#831843` (`var(--primary)`). Используется в hover-glow карточек.
 - **База:** shadcn zinc/slate semantic CSS-переменные.
 - **NSI-gauge:** Apple Rings 270° для kiosk + Tremor Radial 360° для drill-down. `pathLength=100`.
@@ -155,7 +154,7 @@ git push
 ## 🛡 Активные правила
 
 1. **PM acceptance gate** — задача НЕ закрывается без явного «принято».
-2. **Согласование Этапа 2** — каждая правка обсуждается с PM до внесения.
+2. **Согласование с PM** — каждая правка обсуждается с PM до внесения. Действует с Round 2 Kiosk v2 и продолжает действовать на drilldown.
 3. **HTML-first workflow** — HTML+Tailwind CDN → потом React.
 4. **NDA-safe UI** — НЕТ: VITRO, VANTA, VIGOR, M1/M2/M3, Сбер, Райффайзенбанк, Газпром, Илья. ДА: «Neiry.Pulse #N», «Neiry Stress Index».
 5. **Имена анкеров:** Костя + Алексей. НЕ Илья.
@@ -168,7 +167,7 @@ git push
 ## 📁 Ключевые memory-файлы
 
 - `memory/MEMORY.md` — индекс
-- `memory/project_neiry_stress_index.md` — NSI
+- `memory/project_neiry_stress_index.md` — NSI + Баевский + двухступенчатый R-R фильтр
 - `memory/project_neiry_ui_aesthetic.md` — палитра/шрифты
 - `memory/project_neiry_ui_stack.md` — стек
 - `memory/feedback_neiry_pm_acceptance_gate.md` — правило приёмки
@@ -176,6 +175,7 @@ git push
 - `memory/project_neiry_team_roles.md` — команда
 - `memory/project_neiry_m2_artifacts.md` — карта файлов
 - `memory/project_neiry_m2_kiosk_scenario.md` — сценарий стенда
+- `memory/project_neiry_kiosk_design_system.md` — type-scale, токены, layout-правила
 
 ---
 
@@ -183,27 +183,22 @@ git push
 
 1. Прочитать **этот файл** целиком.
 2. Прочитать `memory/MEMORY.md` + ключевые memory-файлы.
-3. `git status` + `git log --oneline -5` — посмотреть локальные uncommitted и последние коммиты.
-4. `git diff docs_web/wireframes/m2/kiosk-v2.html | head -200` — глянуть свежие правки.
-5. Сказать PM:
-   > «Контекст восстановлен. Этап 2 в работе:
-   > • A2 калибровка ✅ внесена и принята PM (фикс t-h2 + nowrap)
-   > • A3 hover-glow ✅ внесена и принята PM (переделано из drill-hint в hover-эффект на 3 карточки)
-   > • A5 BLE-индикатор ✅ внесена, ждёт визуальной приёмки PM
-   > • A6 чистка футера ⚪ не начата
-   > • Всё uncommitted в `docs_web/wireframes/m2/kiosk-v2.html`
-   > Продолжаем с приёмки A5?»
+3. `git status` + `git log --oneline -5` — последние коммиты, проверить что `1226e0b` на месте.
+4. Если PM уже сделал /compact → выдать ему **бриф на Задачу 5** из раздела «⏭ Очередь работы → Шаг 1».
+5. Если PM ещё не сделал /compact → напомнить ему и подождать.
+6. Сказать PM:
+   > «Контекст восстановлен. Round 2 Kiosk v2 закрыт (commit 1226e0b, принято). Готов выдать бриф на Задачу 5 (kiosk-drilldown.html + 3 фазы Bayevsky test). Поехали?»
 
 ---
 
 ## 💬 Последняя реплика PM
 
-> «Скоро произойдет авто-компакт. Обнови хенд-офф.»
+> «Сделай хэндов, а после этого сделай компакт чата, и после этого дай мне бриф.»
 
-(До этого: PM подтвердил все 3 уточнения по A5 → внёс A5 → теперь обновляю handoff.)
+(До этого: «да» — принял Round 2 и дал команду коммитить.)
 
 ---
 
 ## 🎯 Что отвечать PM сразу после восстановления
 
-> «Handoff обновлён. A2/A3/A5 внесены uncommitted в kiosk-v2.html. Жду приёмку A5 от тебя. Открыть файл в браузере?»
+> «Handoff обновлён и запушен. Round 2 Kiosk v2 закрыт коммитом 1226e0b. Я не могу сам вызвать /compact — это slash-команда. Когда сделаешь /compact, скажи мне и я выдам бриф на Задачу 5 (drilldown + Bayevsky).»
