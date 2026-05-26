@@ -206,6 +206,28 @@
     .stroop-btn:hover {
       border-color: hsl(var(--foreground));
     }
+
+    /* Result modal — Task 14 */
+    .result-close-btn {
+      background: transparent;
+      color: hsl(var(--muted-foreground));
+      transition: background 0.15s ease;
+    }
+    .result-close-btn:hover { background: hsl(var(--muted)); }
+
+    .result-in-sum-size { font-size: 120px; }
+
+    .result-phase-card {
+      background: hsl(var(--muted) / 0.3);
+      border: 1px solid hsl(var(--border));
+    }
+    .result-phase-num {
+      font-size: 64px;
+    }
+    .result-phase-num.is-success,
+    .result-phase-cap.is-success { color: hsl(var(--success)); }
+    .result-phase-num.is-warning,
+    .result-phase-cap.is-warning { color: hsl(var(--warning)); }
   </style>
 </head>
 <body class="state-drilldown min-h-screen overflow-hidden">
@@ -452,7 +474,21 @@
       </div>
       <!-- Result content -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="result">
-        <!-- заполнится в Task 14 -->
+        <div class="flex items-center justify-between mb-4">
+          <div class="font-medium text-2xl">Результат теста Баевского</div>
+          <button id="result-close" class="w-10 h-10 rounded-full flex items-center justify-center text-xl result-close-btn">×</button>
+        </div>
+        <div class="grid grid-cols-3 gap-6" id="result-phases">
+          <!-- 3 плашки заполняются JS updateResult() -->
+        </div>
+        <div class="flex-1 flex flex-col items-center justify-center">
+          <div class="font-data text-sm uppercase tracking-wider mb-2 phase-label-muted">Индекс напряжения Σ</div>
+          <div class="font-hero tnum leading-none result-in-sum-size" id="result-in-sum">145</div>
+        </div>
+        <div class="text-center">
+          <div class="font-medium text-2xl uppercase" id="result-verdict">🟢 Реактивность нормальная</div>
+          <div class="text-base mt-2 text-foreground">Здоровая адаптация ВНС к нагрузкам</div>
+        </div>
       </div>
     </div>
   </div>
@@ -605,6 +641,46 @@
         document.getElementById('bayevsky-done').classList.add('hidden');
       }
     }
+
+    function updateResult() {
+      const persona = document.querySelector('.persona-pill.active')?.dataset.persona || 'guest';
+      const data = MOCK_DATA[persona].bayevsky;
+      if (!data.done) return;
+      const phasesContainer = document.getElementById('result-phases');
+      phasesContainer.innerHTML = data.phases.map(p => {
+        const variant = p.icon === '🟢' ? 'is-success' : 'is-warning';
+        return `
+          <div class="rounded-xl p-4 flex flex-col items-center result-phase-card">
+            <div class="font-data text-xs uppercase tracking-wider phase-label-muted">${p.label}</div>
+            <div class="font-hero tnum leading-none my-2 result-phase-num ${variant}">${p.in}</div>
+            <div class="text-2xl">${p.icon}</div>
+            <div class="text-sm result-phase-cap ${variant}">${p.cap}</div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('result-in-sum').textContent = data.in;
+      document.getElementById('result-in-sum').style.color = data.color;
+      document.getElementById('result-verdict').textContent = data.verdict;
+      document.getElementById('result-verdict').style.color = data.color;
+    }
+
+    /* Запускать updateResult() при входе в state=result */
+    const _setState_original = setState;
+    setState = function(newState) {
+      _setState_original(newState);
+      if (newState === 'result') updateResult();
+    };
+
+    /* Close-X — возврат в drilldown с обновлённой Bayevsky-карточкой */
+    document.getElementById('result-close').addEventListener('click', () => {
+      const persona = document.querySelector('.persona-pill.active')?.dataset.persona || 'guest';
+      /* Для guest симулируем «прошёл тест прямо сейчас» — даём mock-результат как у Кости */
+      if (!MOCK_DATA[persona].bayevsky.done) {
+        MOCK_DATA[persona].bayevsky = MOCK_DATA.kostya.bayevsky;
+        applyPersona(persona);
+      }
+      setState('drilldown');
+    });
 
     /* URL params parsing — §12 */
     const urlParams = new URLSearchParams(window.location.search);
