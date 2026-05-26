@@ -130,6 +130,39 @@
     .bayevsky-card:hover {
       border-color: hsl(var(--foreground));
     }
+
+    /* Dev-bar z-index — поверх контента */
+    .devbar-z { z-index: 40; }
+
+    /* Утилита foreground (для state-indicator) */
+    .text-foreground { color: hsl(var(--foreground)); }
+
+    /* State pills — §10 */
+    .state-pill {
+      background: hsl(var(--muted) / 0.5);
+      color: hsl(var(--foreground));
+      transition: background 0.15s ease;
+    }
+    .state-pill:hover { background: hsl(var(--muted)); }
+    .state-pill.active {
+      background: #831843;
+      color: white;
+    }
+
+    /* State machine — §11 */
+    /* Эти элементы пока не существуют (Task 11+) — display: none по умолчанию */
+    #bayevsky-modal, #claim-screen, #empty-banner { display: none; }
+
+    body.state-phase-1 #bayevsky-modal,
+    body.state-phase-2 #bayevsky-modal,
+    body.state-phase-3 #bayevsky-modal,
+    body.state-result #bayevsky-modal { display: flex; }
+
+    body.state-claim #claim-screen { display: flex; }
+    body.state-claim main,
+    body.state-claim #empty-banner { display: none; }
+
+    body.state-empty #empty-banner { display: flex; }
   </style>
 </head>
 <body class="state-drilldown min-h-screen overflow-hidden">
@@ -328,8 +361,25 @@
     </section>
   </main>
 
-  <!-- Dev-bar — placeholder, заполнится в Task 9 -->
-  <footer id="dev-bar" class="h-20 fixed bottom-0 left-0 right-0 devbar-bg"></footer>
+  <!-- Dev-bar — §10 -->
+  <footer id="dev-bar" class="h-20 fixed bottom-0 left-0 right-0 devbar-bg flex items-center gap-6 px-8 devbar-z">
+    <button id="back-to-wall" class="px-4 py-2 rounded-lg text-sm btn-ghost">← на стену</button>
+    <div class="flex items-center gap-3">
+      <span class="font-data text-xs uppercase tracking-wider text-muted">Сценарий</span>
+      <div class="flex items-center gap-2" id="state-pills">
+        <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="empty">Empty</button>
+        <button class="state-pill px-3 py-1.5 rounded-full text-sm active" data-state="drilldown">Drilldown</button>
+        <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="phase-1">Phase-1</button>
+        <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="phase-2">Phase-2</button>
+        <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="phase-3">Phase-3</button>
+        <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="result">Result</button>
+        <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="claim">Claim</button>
+      </div>
+    </div>
+    <div class="ml-auto font-data text-sm uppercase tracking-wider text-muted">
+      STATE: <span id="state-indicator" class="text-foreground">drilldown</span>
+    </div>
+  </footer>
 
   <script>
     /* Session timer tick — §4 */
@@ -350,6 +400,27 @@
       const value = Math.round(bpmBase + variation);
       document.getElementById('bpm-value').textContent = value;
     }, 800);
+
+    /* State machine — §11 */
+    const STATES = ['empty', 'drilldown', 'phase-1', 'phase-2', 'phase-3', 'result', 'claim'];
+    function setState(newState) {
+      STATES.forEach(s => document.body.classList.remove(`state-${s}`));
+      document.body.classList.add(`state-${newState}`);
+      document.getElementById('state-indicator').textContent = newState;
+      document.querySelectorAll('.state-pill').forEach(p => {
+        p.classList.toggle('active', p.dataset.state === newState);
+      });
+    }
+
+    /* Bind dev-bar pills — §10 */
+    document.querySelectorAll('.state-pill').forEach(p => {
+      p.addEventListener('click', () => setState(p.dataset.state));
+    });
+
+    /* Back-to-wall — §10 */
+    document.getElementById('back-to-wall').addEventListener('click', () => {
+      window.location.href = 'kiosk-v2.html';
+    });
   </script>
 </body>
 </html>
