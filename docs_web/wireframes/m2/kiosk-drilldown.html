@@ -376,6 +376,14 @@
         <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="claim">Claim</button>
       </div>
     </div>
+    <div class="flex items-center gap-3">
+      <span class="font-data text-xs uppercase tracking-wider text-muted">Persona</span>
+      <div class="flex items-center gap-2" id="persona-pills">
+        <button class="persona-pill state-pill px-3 py-1.5 rounded-full text-sm" data-persona="kostya">Костя</button>
+        <button class="persona-pill state-pill px-3 py-1.5 rounded-full text-sm" data-persona="alexey">Алексей</button>
+        <button class="persona-pill state-pill px-3 py-1.5 rounded-full text-sm active" data-persona="guest">Гость</button>
+      </div>
+    </div>
     <div class="ml-auto font-data text-sm uppercase tracking-wider text-muted">
       STATE: <span id="state-indicator" class="text-foreground">drilldown</span>
     </div>
@@ -401,19 +409,126 @@
       document.getElementById('bpm-value').textContent = value;
     }, 800);
 
+    /* Mock-данные по 3 персонажам — §13 */
+    const MOCK_DATA = {
+      kostya: {
+        bpm: 82,
+        ecgColor: 'hsl(var(--success))',
+        stress: 32, stressLabel: 'Норма', stressColor: 'hsl(var(--success))',
+        imuLabel: 'Покой', imuColor: 'hsl(var(--success))',
+        recovery: 78, recoveryCap: '🟢 Хорошее восстановление', recoveryColor: 'hsl(var(--success))',
+        sleep: '7ч 12м', sleepCap: '🟢 Норма', sleepDeep: 22, sleepRem: 28, sleepLight: 50,
+        burnout: 12, burnoutCap: '🟢 Низкий риск', burnoutColor: 'hsl(var(--success))',
+        drowsy: 18, drowsyCap: '🟢 Бодрость', drowsyColor: 'hsl(var(--success))',
+        bayevsky: { done: true, in: 145, verdict: '🟢 Реактивность нормальная', color: 'hsl(var(--success))', phases: [{label:'ПОКОЙ', in:64, icon:'🟢', cap:'норма'},{label:'STROOP', in:145, icon:'🟢', cap:'норма'},{label:'ХОДЬБА', in:230, icon:'🟡', cap:'повышен.'}] }
+      },
+      alexey: {
+        bpm: 90,
+        ecgColor: 'hsl(var(--warning))',
+        stress: 63, stressLabel: 'Высокий', stressColor: 'hsl(var(--destructive))',
+        imuLabel: 'Покой', imuColor: 'hsl(var(--success))',
+        recovery: 35, recoveryCap: '🟡 Частичное восстановление', recoveryColor: 'hsl(var(--warning))',
+        sleep: '5ч 40м', sleepCap: '🟡 Граница нормы', sleepDeep: 14, sleepRem: 20, sleepLight: 66,
+        burnout: 52, burnoutCap: '🔴 Высокий риск выгорания', burnoutColor: 'hsl(var(--destructive))',
+        drowsy: 35, drowsyCap: '🟡 Лёгкая сонливость', drowsyColor: 'hsl(var(--warning))',
+        bayevsky: { done: true, in: 320, verdict: '🟡 Повышенная реактивность', color: 'hsl(var(--warning))', phases: [{label:'ПОКОЙ', in:105, icon:'🟢', cap:'норма'},{label:'STROOP', in:320, icon:'🟡', cap:'повышен.'},{label:'ХОДЬБА', in:420, icon:'🟡', cap:'повышен.'}] }
+      },
+      guest: {
+        bpm: 100,
+        ecgColor: 'hsl(var(--primary))',
+        stress: 50, stressLabel: 'Повышен', stressColor: 'hsl(var(--warning))',
+        imuLabel: 'Покой', imuColor: 'hsl(var(--success))',
+        recovery: null, recoveryCap: 'нет данных',
+        sleep: null, sleepCap: 'нет данных',
+        burnout: null, burnoutCap: 'нет данных',
+        drowsy: null, drowsyCap: 'нет данных',
+        bayevsky: { done: false }
+      }
+    };
+
+    function applyPersona(personaKey) {
+      const d = MOCK_DATA[personaKey] || MOCK_DATA.guest;
+      bpmBase = d.bpm;
+      document.getElementById('bpm-value').textContent = d.bpm;
+      document.getElementById('ecg-pattern').style.color = d.ecgColor;
+
+      document.getElementById('stress-value').textContent = d.stress;
+      const stressChip = document.getElementById('stress-chip');
+      stressChip.children[0].style.background = d.stressColor;
+      stressChip.children[1].textContent = d.stressLabel;
+
+      const imuChip = document.getElementById('imu-chip');
+      imuChip.children[0].style.background = d.imuColor;
+      imuChip.children[1].textContent = d.imuLabel;
+
+      /* Recovery / Burnout / Drowsy — числа + bars + captions; null = «нет данных» */
+      ['recovery', 'burnout', 'drowsy'].forEach(metric => {
+        const val = d[metric];
+        const valueEl = document.getElementById(`${metric}-value`);
+        const barEl = document.getElementById(`${metric}-bar`);
+        const capEl = document.getElementById(`${metric}-caption`);
+        if (val === null) {
+          valueEl.textContent = '—';
+          barEl.style.width = '0%';
+          capEl.innerHTML = `<span class="text-muted">${d[metric+'Cap']}</span>`;
+        } else {
+          valueEl.textContent = `${val}%`;
+          barEl.style.width = `${val}%`;
+          barEl.style.background = d[`${metric}Color`];
+          capEl.innerHTML = d[`${metric}Cap`].replace(/^(🟢|🟡|🔴)\s*/, '<span>$1</span><span class="ml-2">') + '</span>';
+        }
+      });
+
+      /* Sleep */
+      const sleepVal = document.getElementById('sleep-value');
+      const sleepCap = document.getElementById('sleep-caption');
+      if (d.sleep === null) {
+        sleepVal.textContent = '— ч — м';
+        sleepCap.innerHTML = `<span class="text-muted">${d.sleepCap}</span>`;
+        document.querySelectorAll('#sleep-gauge circle[pathLength]').forEach(c => c.style.opacity = '0.2');
+      } else {
+        sleepVal.innerHTML = d.sleep.replace(' ', '&nbsp;');
+        sleepCap.innerHTML = d.sleepCap.replace(/^(🟢|🟡|🔴)\s*/, '<span>$1</span><span class="ml-2">') + '</span>';
+        const gaugeCircles = document.querySelectorAll('#sleep-gauge circle[pathLength]');
+        gaugeCircles[0].setAttribute('stroke-dasharray', `${d.sleepDeep} 100`);
+        gaugeCircles[1].setAttribute('stroke-dasharray', `${d.sleepRem} 100`);
+        gaugeCircles[2].setAttribute('stroke-dasharray', `${d.sleepLight} 100`);
+        gaugeCircles.forEach(c => c.style.opacity = '1');
+      }
+
+      /* Bayevsky */
+      if (d.bayevsky.done) {
+        document.getElementById('bayevsky-empty').classList.add('hidden');
+        document.getElementById('bayevsky-done').classList.remove('hidden');
+        document.getElementById('bayevsky-summary-in').textContent = d.bayevsky.in;
+        const verdictEl = document.getElementById('bayevsky-verdict');
+        verdictEl.textContent = d.bayevsky.verdict;
+        verdictEl.style.color = d.bayevsky.color;
+      } else {
+        document.getElementById('bayevsky-empty').classList.remove('hidden');
+        document.getElementById('bayevsky-done').classList.add('hidden');
+      }
+    }
+
+    /* URL params parsing — §12 */
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialPersona = urlParams.get('id') || 'guest';
+    const initialState = urlParams.get('session') === 'active' ? 'drilldown' : 'empty';
+
     /* State machine — §11 */
     const STATES = ['empty', 'drilldown', 'phase-1', 'phase-2', 'phase-3', 'result', 'claim'];
     function setState(newState) {
       STATES.forEach(s => document.body.classList.remove(`state-${s}`));
       document.body.classList.add(`state-${newState}`);
       document.getElementById('state-indicator').textContent = newState;
-      document.querySelectorAll('.state-pill').forEach(p => {
+      /* Обновляем только state-pills (data-state), persona-pills не трогаем */
+      document.querySelectorAll('.state-pill[data-state]').forEach(p => {
         p.classList.toggle('active', p.dataset.state === newState);
       });
     }
 
-    /* Bind dev-bar pills — §10 */
-    document.querySelectorAll('.state-pill').forEach(p => {
+    /* Bind dev-bar state pills — §10 */
+    document.querySelectorAll('.state-pill[data-state]').forEach(p => {
       p.addEventListener('click', () => setState(p.dataset.state));
     });
 
@@ -421,6 +536,25 @@
     document.getElementById('back-to-wall').addEventListener('click', () => {
       window.location.href = 'kiosk-v2.html';
     });
+
+    /* Persona pills — §13 */
+    document.querySelectorAll('.persona-pill').forEach(p => {
+      p.addEventListener('click', () => {
+        document.querySelectorAll('.persona-pill').forEach(x => x.classList.remove('active'));
+        p.classList.add('active');
+        applyPersona(p.dataset.persona);
+      });
+    });
+
+    /* Mark initial persona active */
+    document.querySelector(`.persona-pill[data-persona="${initialPersona}"]`)?.classList.add('active');
+    if (initialPersona !== 'guest') {
+      document.querySelector('.persona-pill[data-persona="guest"]')?.classList.remove('active');
+    }
+
+    /* Initial render — после всех bindings */
+    applyPersona(initialPersona);
+    setState(initialState);
   </script>
 </body>
 </html>
