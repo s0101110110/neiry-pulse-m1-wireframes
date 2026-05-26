@@ -69,11 +69,40 @@
     /* Main content area height: stage 1080 - 64px topbar (dev-bar — снаружи stage) */
     .main-content { height: calc(1080px - 64px); }
 
-    /* Dev-bar */
-    .devbar-bg {
-      background: hsl(var(--card) / 0.8);
-      border-top: 1px solid hsl(var(--border));
-      backdrop-filter: blur(4px);
+    /* Dev-bar — floating pill по центру внизу (паттерн kiosk-v2).
+       НЕ полноширинная плашка — таблетка с backdrop-blur, парит над stage.
+       stage заполняет весь viewport, dev-bar НЕ вычитается из availH. */
+    #dev-bar {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: hsl(var(--card) / 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid hsl(var(--border));
+      border-radius: 9999px;
+      box-shadow: 0 8px 28px hsla(0, 0%, 0%, 0.5);
+    }
+    .devbar-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: hsl(var(--muted-foreground));
+      padding: 0 4px;
+      white-space: nowrap;
+    }
+    .devbar-sep {
+      width: 1px;
+      height: 16px;
+      background: hsl(var(--border));
+      margin: 0 2px;
     }
 
     /* Pulse accent color */
@@ -187,10 +216,15 @@
     /* Утилита foreground (для state-indicator) */
     .text-foreground { color: hsl(var(--foreground)); }
 
-    /* State pills — §10 */
+    /* State pills — §10 — компактные для floating dev-bar */
     .state-pill {
       background: hsl(var(--muted) / 0.5);
       color: hsl(var(--foreground));
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 9999px;
+      line-height: 1.3;
+      white-space: nowrap;
       transition: background 0.15s ease;
     }
     .state-pill:hover { background: hsl(var(--muted)); }
@@ -340,6 +374,11 @@
     .ble-toggle-btn {
       background: hsl(var(--muted) / 0.5);
       color: hsl(var(--foreground));
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 9999px;
+      line-height: 1.3;
+      white-space: nowrap;
       transition: background 0.15s ease;
     }
     .ble-toggle-btn:hover { background: hsl(var(--muted)); }
@@ -750,53 +789,46 @@
 
 </div><!-- /#kiosk-stage -->
 
-  <!-- Dev-bar — §10 — СНАРУЖИ stage, native viewport size -->
-  <footer id="dev-bar" class="h-20 fixed bottom-0 left-0 right-0 devbar-bg flex items-center gap-6 px-8 devbar-z">
-    <button id="back-to-wall" class="px-4 py-2 rounded-lg text-sm btn-ghost">← на стену</button>
-    <div class="flex items-center gap-3">
-      <span class="font-data text-xs uppercase tracking-wider text-muted">Сценарий</span>
-      <div class="flex items-center gap-2" id="state-pills">
-        <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="empty">Empty</button>
-        <button class="state-pill px-3 py-1.5 rounded-full text-sm active" data-state="drilldown">Drilldown</button>
-        <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="phase-1">Phase-1</button>
-        <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="phase-2">Phase-2</button>
-        <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="phase-3">Phase-3</button>
-        <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="result">Result</button>
-        <button class="state-pill px-3 py-1.5 rounded-full text-sm" data-state="claim">Claim</button>
-      </div>
+  <!-- Dev-bar — §10 — floating pill, СНАРУЖИ stage (паттерн kiosk-v2) -->
+  <nav id="dev-bar" aria-label="Переключатель сценариев демонстрации">
+    <span class="devbar-label">сценарий</span>
+    <div class="flex items-center gap-1" id="state-pills">
+      <button class="state-pill" data-state="empty">Empty</button>
+      <button class="state-pill active" data-state="drilldown">Drilldown</button>
+      <button class="state-pill" data-state="phase-1">Phase-1</button>
+      <button class="state-pill" data-state="phase-2">Phase-2</button>
+      <button class="state-pill" data-state="phase-3">Phase-3</button>
+      <button class="state-pill" data-state="result">Result</button>
+      <button class="state-pill" data-state="claim">Claim</button>
     </div>
-    <div class="flex items-center gap-3">
-      <span class="font-data text-xs uppercase tracking-wider text-muted">Persona</span>
-      <div class="flex items-center gap-2" id="persona-pills">
-        <button class="persona-pill state-pill px-3 py-1.5 rounded-full text-sm" data-persona="kostya">Костя</button>
-        <button class="persona-pill state-pill px-3 py-1.5 rounded-full text-sm" data-persona="alexey">Алексей</button>
-        <button class="persona-pill state-pill px-3 py-1.5 rounded-full text-sm active" data-persona="guest">Гость</button>
-      </div>
+    <span class="devbar-sep"></span>
+    <span class="devbar-label">persona</span>
+    <div class="flex items-center gap-1" id="persona-pills">
+      <button class="persona-pill state-pill" data-persona="kostya">Костя</button>
+      <button class="persona-pill state-pill" data-persona="alexey">Алексей</button>
+      <button class="persona-pill state-pill active" data-persona="guest">Гость</button>
     </div>
-    <button id="ble-toggle" class="px-3 py-1.5 rounded-full text-sm font-data uppercase tracking-wide ble-toggle-btn">
+    <span class="devbar-sep"></span>
+    <button id="ble-toggle" class="ble-toggle-btn">
       <span id="ble-toggle-label">BLE: connected</span>
     </button>
-    <div class="ml-auto font-data text-sm uppercase tracking-wider text-muted">
-      STATE: <span id="state-indicator" class="text-foreground">drilldown</span>
-    </div>
-  </footer>
+    <span id="state-indicator" hidden>drilldown</span>
+  </nav>
 
   <script>
     /* ============================================
        VIEWPORT FIT — масштабирование 1920×1080 stage под любой viewport.
        Работает на любом мониторе и при любом browser zoom (100%, 80%, 67%, 150%).
-       Dev-bar (80px) — fixed bottom, поэтому из доступной высоты вычитаем 80px,
-       чтобы stage не уходил под dev-bar на коротких экранах (MacBook 13").
+       Dev-bar = floating pill (паттерн kiosk-v2) — НЕ вычитается из availH,
+       парит поверх stage. Stage заполняет весь viewport.
        ============================================ */
     (function () {
       const stage = document.getElementById('kiosk-stage');
-      const devBarHeight = 80;
       function fitStage() {
         if (!stage) return;
-        const availH = window.innerHeight - devBarHeight;
         const scale = Math.min(
           window.innerWidth / 1920,
-          availH / 1080
+          window.innerHeight / 1080
         );
         stage.style.transform = `scale(${scale})`;
       }
@@ -1052,11 +1084,6 @@
     /* Bind dev-bar state pills — §10 */
     document.querySelectorAll('.state-pill[data-state]').forEach(p => {
       p.addEventListener('click', () => setState(p.dataset.state));
-    });
-
-    /* Back-to-wall — §10 */
-    document.getElementById('back-to-wall').addEventListener('click', () => {
-      window.location.href = 'kiosk-v2.html';
     });
 
     /* Persona pills — §13 */
