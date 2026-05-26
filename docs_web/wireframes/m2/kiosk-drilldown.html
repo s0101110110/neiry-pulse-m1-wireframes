@@ -112,6 +112,15 @@
     .widget-number { font-size: 56px; }
     .progress-track { background: hsl(var(--muted)); }
     .bar-success { background: hsl(var(--success)); }
+    /* Sleep gauge — §6.2 */
+    .sleep-value-size { font-size: 44px; }
+    .sleep-ring-bg { stroke: hsl(var(--muted) / 0.3); }
+    .sleep-ring-deep { stroke: hsl(var(--primary)); }
+    .sleep-ring-rem { stroke: hsl(var(--chart-2)); }
+    .sleep-ring-light { stroke: hsl(var(--chart-4)); }
+    .dot-deep { background: hsl(var(--primary)); }
+    .dot-rem { background: hsl(var(--chart-2)); }
+    .dot-light { background: hsl(var(--chart-4)); }
   </style>
 </head>
 <body class="state-drilldown min-h-screen overflow-hidden">
@@ -229,8 +238,33 @@
           </div>
         </div>
 
-        <!-- Sleep placeholder — Task 7 -->
-        <div id="sleep-card-placeholder" class="rounded-2xl p-6 card-bg widget-min"></div>
+        <!-- Sleep с концентрическими кольцами — §6.2 -->
+        <div class="rounded-2xl p-6 flex flex-col justify-between card-bg widget-min">
+          <div class="flex items-start justify-between">
+            <div class="font-data text-xs uppercase tracking-wider text-muted">Sleep</div>
+            <div class="font-hero tnum leading-none sleep-value-size" id="sleep-value">7ч&nbsp;12м</div>
+          </div>
+          <div class="flex items-center gap-6">
+            <svg width="140" height="140" viewBox="0 0 140 140" id="sleep-gauge">
+              <!-- Незаполненные кольца под каждым уровнем (фон) -->
+              <circle cx="70" cy="70" r="60" class="sleep-ring-bg" stroke-width="6" fill="none"/>
+              <circle cx="70" cy="70" r="48" class="sleep-ring-bg" stroke-width="6" fill="none"/>
+              <circle cx="70" cy="70" r="36" class="sleep-ring-bg" stroke-width="6" fill="none"/>
+              <!-- Заполненные дуги (pathLength=100 для точной математики %) -->
+              <circle cx="70" cy="70" r="60" class="sleep-ring-deep" stroke-width="6" fill="none" pathLength="100" stroke-dasharray="22 100" stroke-dashoffset="0" transform="rotate(-90 70 70)" stroke-linecap="round"/>
+              <circle cx="70" cy="70" r="48" class="sleep-ring-rem" stroke-width="6" fill="none" pathLength="100" stroke-dasharray="28 100" stroke-dashoffset="0" transform="rotate(-90 70 70)" stroke-linecap="round"/>
+              <circle cx="70" cy="70" r="36" class="sleep-ring-light" stroke-width="6" fill="none" pathLength="100" stroke-dasharray="50 100" stroke-dashoffset="0" transform="rotate(-90 70 70)" stroke-linecap="round"/>
+            </svg>
+            <div class="flex flex-col gap-2 text-xs font-data uppercase tracking-wide text-muted">
+              <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full dot-deep"></span>Deep 22%</div>
+              <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full dot-rem"></span>REM 28%</div>
+              <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full dot-light"></span>Light 50%</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 text-base" id="sleep-caption">
+            <span>🟢</span><span>Норма</span>
+          </div>
+        </div>
 
         <!-- Burnout — §6.3 -->
         <div class="rounded-2xl p-6 flex flex-col justify-between card-bg widget-min">
