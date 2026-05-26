@@ -372,6 +372,7 @@
       <!-- ECG plashka — §5.2 -->
       <div class="rounded-2xl p-4 relative overflow-hidden card-bg ecg-card">
         <div class="absolute top-2 left-4 font-data text-xs uppercase tracking-wider text-muted">ECG</div>
+        <div id="ecg-no-signal" class="absolute inset-0 hidden items-center justify-center font-data text-base uppercase tracking-[0.3em]" style="color: hsl(var(--muted-foreground)); letter-spacing: 0.3em;">— нет сигнала —</div>
         <svg class="w-full h-full" viewBox="0 0 884 108" preserveAspectRatio="none" id="ecg-svg">
           <g id="ecg-pattern" stroke="currentColor" stroke-width="2" fill="none" class="text-success">
             <!-- 2 sibling patterns для бесшовного scroll -->
@@ -573,7 +574,7 @@
           <div class="h-full rounded-full transition-all phase-progress-fill" id="phase-1-progress" style="width: 33%;"></div>
         </div>
       </div>
-      <!-- Phase-2 content -->
+      <!-- Phase-2 content — STROOP идёт на планшете гостя, на kiosk показываем waiting-плашку -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-2">
         <div class="flex items-center justify-between">
           <div class="font-data text-xs uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 2 из 3 · STROOP</div>
@@ -583,18 +584,14 @@
             <span class="phase-dot"></span>
           </div>
         </div>
-        <div class="flex flex-col items-center mt-4">
-          <div class="font-data text-xs uppercase tracking-wider mb-3 phase-label-muted">Выберите ЦВЕТ слова</div>
-          <div class="font-medium leading-none stroop-word">КРАСНЫЙ</div>
-          <div class="font-data tnum text-base mt-3 text-muted">00:42</div>
-        </div>
-        <div class="flex-1 flex items-end">
-          <div class="grid grid-cols-4 gap-4 w-full mb-6">
-            <button class="h-16 rounded-xl text-xl font-medium stroop-btn" data-color="red">КРАСНЫЙ</button>
-            <button class="h-16 rounded-xl text-xl font-medium stroop-btn" data-color="green">ЗЕЛЁНЫЙ</button>
-            <button class="h-16 rounded-xl text-xl font-medium stroop-btn" data-color="blue">СИНИЙ</button>
-            <button class="h-16 rounded-xl text-xl font-medium stroop-btn" data-color="yellow">ЖЁЛТЫЙ</button>
-          </div>
+        <div class="flex-1 flex flex-col items-center justify-center">
+          <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-8" style="color: hsl(var(--muted-foreground));">
+            <rect x="4" y="2" width="16" height="20" rx="2"/>
+            <line x1="12" y1="18" x2="12" y2="18"/>
+          </svg>
+          <div class="font-medium text-5xl mb-4 tracking-wide text-center">STROOP НА ПЛАНШЕТЕ</div>
+          <div class="text-xl text-center phase-label-muted max-w-md">Гость проходит цвето-словесный тест<br>на планшете рядом со стендом</div>
+          <div class="font-data tnum text-base mt-8 text-muted">осталось <span class="text-foreground">00:42</span></div>
         </div>
         <div class="h-2 rounded-full overflow-hidden progress-track">
           <div class="h-full rounded-full phase-progress-fill" style="width: 72%;"></div>
@@ -773,7 +770,7 @@
         sleep: '7ч 12м', sleepCap: '🟢 Норма', sleepDeep: 22, sleepRem: 28, sleepLight: 50,
         burnout: 12, burnoutCap: '🟢 Низкий риск', burnoutColor: 'hsl(var(--success))',
         drowsy: 18, drowsyCap: '🟢 Бодрость', drowsyColor: 'hsl(var(--success))',
-        bayevsky: { done: true, in: 145, verdict: '🟢 Реактивность нормальная', color: 'hsl(var(--success))', phases: [{label:'ПОКОЙ', in:64, icon:'🟢', cap:'норма'},{label:'STROOP', in:145, icon:'🟢', cap:'норма'},{label:'ХОДЬБА', in:230, icon:'🟡', cap:'повышен.'}] }
+        bayevsky: { done: true, in: 145, verdict: '🟢 Реактивность нормальная', color: 'hsl(var(--success))', phases: [{label:'ПОКОЙ', in:64, icon:'🟢', cap:'норма'},{label:'STROOP', in:145, icon:'🟢', cap:'норма'},{label:'НАГРУЗКА', in:230, icon:'🟡', cap:'повышен.'}] }
       },
       alexey: {
         bpm: 90,
@@ -784,7 +781,7 @@
         sleep: '5ч 40м', sleepCap: '🟡 Граница нормы', sleepDeep: 14, sleepRem: 20, sleepLight: 66,
         burnout: 52, burnoutCap: '🔴 Высокий риск выгорания', burnoutColor: 'hsl(var(--destructive))',
         drowsy: 35, drowsyCap: '🟡 Лёгкая сонливость', drowsyColor: 'hsl(var(--warning))',
-        bayevsky: { done: true, in: 320, verdict: '🟡 Повышенная реактивность', color: 'hsl(var(--warning))', phases: [{label:'ПОКОЙ', in:105, icon:'🟢', cap:'норма'},{label:'STROOP', in:320, icon:'🟡', cap:'повышен.'},{label:'ХОДЬБА', in:420, icon:'🟡', cap:'повышен.'}] }
+        bayevsky: { done: true, in: 320, verdict: '🟡 Повышенная реактивность', color: 'hsl(var(--warning))', phases: [{label:'ПОКОЙ', in:105, icon:'🟢', cap:'норма'},{label:'STROOP', in:320, icon:'🟡', cap:'повышен.'},{label:'НАГРУЗКА', in:420, icon:'🟡', cap:'повышен.'}] }
       },
       guest: {
         bpm: 100,
@@ -891,6 +888,11 @@
         }
         /* Дезактивируем activity-bars */
         document.querySelectorAll('.act-bar').forEach(b => { b.style.animationPlayState = 'paused'; b.style.opacity = '0.3'; });
+        /* ECG → нет сигнала */
+        const ecgSvg = document.getElementById('ecg-svg');
+        const ecgNoSignal = document.getElementById('ecg-no-signal');
+        if (ecgSvg) ecgSvg.style.opacity = '0';
+        if (ecgNoSignal) { ecgNoSignal.classList.remove('hidden'); ecgNoSignal.classList.add('flex'); }
         ['recovery', 'burnout', 'drowsy'].forEach(metric => {
           document.getElementById(`${metric}-value`).textContent = '—';
           document.getElementById(`${metric}-bar`).style.width = '0%';
@@ -907,6 +909,11 @@
         document.getElementById('btn-stop').classList.remove('btn-disabled');
         document.getElementById('btn-test').classList.remove('btn-disabled');
         document.querySelectorAll('.act-bar').forEach(b => { b.style.animationPlayState = 'running'; b.style.opacity = ''; });
+        /* ECG возврат */
+        const ecgSvg = document.getElementById('ecg-svg');
+        const ecgNoSignal = document.getElementById('ecg-no-signal');
+        if (ecgSvg) ecgSvg.style.opacity = '';
+        if (ecgNoSignal) { ecgNoSignal.classList.add('hidden'); ecgNoSignal.classList.remove('flex'); }
       }
     }
 
@@ -1024,16 +1031,21 @@
       const isDisconnected = document.body.classList.toggle('state-disconnected');
       document.getElementById('ble-toggle-label').textContent = isDisconnected ? 'BLE: потеря связи' : 'BLE: connected';
       const chip = document.getElementById('bpm-status-chip');
+      const ecgSvg = document.getElementById('ecg-svg');
+      const ecgNoSignal = document.getElementById('ecg-no-signal');
       if (isDisconnected) {
         chip.children[0].style.background = 'hsl(var(--warning))';
         chip.children[1].textContent = 'Потеря связи';
         bpmBase = parseInt(document.getElementById('bpm-value').textContent) || 82;
         window._bpmFrozen = true;
-        document.querySelectorAll('#ecg-pattern path').forEach(p => p.setAttribute('d', 'M 0 54 L 884 54'));
+        if (ecgSvg) ecgSvg.style.opacity = '0';
+        if (ecgNoSignal) { ecgNoSignal.classList.remove('hidden'); ecgNoSignal.classList.add('flex'); }
       } else {
         chip.children[0].style.background = 'hsl(var(--success))';
         chip.children[1].textContent = 'Подключен';
         window._bpmFrozen = false;
+        if (ecgSvg) ecgSvg.style.opacity = '';
+        if (ecgNoSignal) { ecgNoSignal.classList.add('hidden'); ecgNoSignal.classList.remove('flex'); }
       }
     });
 
