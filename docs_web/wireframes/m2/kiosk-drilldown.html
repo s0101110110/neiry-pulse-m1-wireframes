@@ -80,6 +80,13 @@
       animation: bpm-breathe 1s ease-in-out infinite;
       transform-origin: center;
     }
+
+    /* Stress + IMU круги — §5.3 */
+    .circle-box { width: 240px; height: 240px; }
+    .stress-number { font-size: 88px; }
+    .stress-ring { stroke: hsl(var(--border)); }
+    .imu-ring { stroke: hsl(var(--border)); }
+    .dot-warning { background: hsl(var(--warning)); }
   </style>
 </head>
 <body class="state-drilldown min-h-screen overflow-hidden">
@@ -125,6 +132,47 @@
         </svg>
       </div>
       <!-- /ECG plashka -->
+
+      <!-- Stress + IMU круги — §5.3 -->
+      <div class="grid grid-cols-2 gap-6">
+        <!-- Stress круг — без gauge-заливки, цвет светофора в чипе -->
+        <div class="rounded-2xl p-6 flex flex-col items-center justify-center card-bg">
+          <div class="relative circle-box">
+            <svg class="w-full h-full" viewBox="0 0 240 240">
+              <circle cx="120" cy="120" r="116" class="stress-ring" stroke-width="2" fill="none"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <div class="font-hero tnum leading-none stress-number" id="stress-value">41</div>
+              <div class="text-sm mt-2 text-muted">стресс</div>
+            </div>
+          </div>
+          <div class="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data text-sm uppercase chip-bg" id="stress-chip">
+            <span class="w-2 h-2 rounded-full dot-warning"></span>
+            <span>Повышен</span>
+          </div>
+        </div>
+
+        <!-- IMU круг — концентрические декоративные кольца -->
+        <div class="rounded-2xl p-6 flex flex-col items-center justify-center card-bg">
+          <div class="relative circle-box">
+            <svg class="w-full h-full" viewBox="0 0 240 240">
+              <circle cx="120" cy="120" r="116" class="imu-ring" stroke-width="1.5" fill="none" opacity="0.9"/>
+              <circle cx="120" cy="120" r="94" class="imu-ring" stroke-width="1" fill="none" opacity="0.7"/>
+              <circle cx="120" cy="120" r="72" class="imu-ring" stroke-width="1" fill="none" opacity="0.5"/>
+              <circle cx="120" cy="120" r="50" class="imu-ring" stroke-width="1" fill="none" opacity="0.3"/>
+              <circle cx="120" cy="120" r="28" class="imu-ring" stroke-width="1" fill="none" opacity="0.2"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="text-xl">IMU</div>
+            </div>
+          </div>
+          <div class="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data text-sm uppercase chip-bg" id="imu-chip">
+            <span class="w-2 h-2 rounded-full dot-success"></span>
+            <span>Покой</span>
+          </div>
+        </div>
+      </div>
+      <!-- /Stress + IMU -->
     </section>
     <section id="predictive-column" class="flex-1 flex flex-col gap-4">
       <!-- PREDICTIVE column (Task 6-8) -->
