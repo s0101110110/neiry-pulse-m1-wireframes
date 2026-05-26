@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1">
+  <title>Neiry Pulse · Kiosk Drilldown</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* shadcn dark theme — zinc/slate base */
+      --background: 240 10% 4%;
+      --foreground: 0 0% 98%;
+      --card: 240 6% 10%;
+      --card-foreground: 0 0% 98%;
+      --muted: 240 4% 16%;
+      --muted-foreground: 240 5% 65%;
+      --border: 240 4% 20%;
+      --primary: 333 76% 30%; /* wine #831843 */
+      --primary-foreground: 0 0% 100%;
+      --success: 151 100% 45%;
+      --warning: 42 100% 50%;
+      --destructive: 348 100% 54%;
+      --chart-2: 151 100% 45%;
+      --chart-4: 42 100% 50%;
+    }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-hero { font-family: 'Onest', sans-serif; font-weight: 700; letter-spacing: -0.02em; }
+    .font-data { font-family: 'Geist Mono', monospace; }
+    .tnum { font-variant-numeric: tabular-nums; }
+
+    /* Top-bar border */
+    .topbar-border { border-bottom: 1px solid hsl(var(--border)); }
+
+    /* Main content area height: 100vh - 64px topbar - 80px devbar */
+    .main-content { height: calc(100vh - 64px - 80px); }
+
+    /* Dev-bar */
+    .devbar-bg {
+      background: hsl(var(--card) / 0.8);
+      border-top: 1px solid hsl(var(--border));
+    }
+
+    /* Pulse accent color */
+    .text-primary { color: hsl(var(--primary)); }
+    .text-muted { color: hsl(var(--muted-foreground)); }
+  </style>
+</head>
+<body class="state-drilldown min-h-screen overflow-hidden">
+
+  <!-- Top-bar — §4 -->
+  <header class="h-16 px-8 flex items-center justify-between topbar-border">
+    <div class="flex items-center gap-3">
+      <span class="text-xl font-medium">neiry <span class="font-hero italic text-primary">Pulse</span></span>
+      <span class="text-muted">·</span>
+      <span class="font-data tnum text-sm text-muted" id="session-id-label">sess_7K2M9</span>
+    </div>
+    <div class="font-data tnum text-lg" id="session-timer">02:47</div>
+  </header>
+
+  <!-- Main layout — placeholder, заполнится в следующих задачах -->
+  <main class="px-8 py-8 flex gap-6 main-content">
+    <section id="live-column" class="flex-1 flex flex-col gap-6">
+      <!-- LIVE column (Task 2-5) -->
+    </section>
+    <section id="predictive-column" class="flex-1 flex flex-col gap-4">
+      <!-- PREDICTIVE column (Task 6-8) -->
+    </section>
+  </main>
+
+  <!-- Dev-bar — placeholder, заполнится в Task 9 -->
+  <footer id="dev-bar" class="h-20 fixed bottom-0 left-0 right-0 backdrop-blur-sm devbar-bg"></footer>
+
+  <script>
+    /* Session timer tick — §4 */
+    let sessionSeconds = 167; // 02:47 starting
+    setInterval(() => {
+      sessionSeconds++;
+      const m = String(Math.floor(sessionSeconds / 60)).padStart(2, '0');
+      const s = String(sessionSeconds % 60).padStart(2, '0');
+      document.getElementById('session-timer').textContent = `${m}:${s}`;
+    }, 1000);
+  </script>
+</body>
+</html>
