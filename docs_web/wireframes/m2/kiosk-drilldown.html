@@ -52,6 +52,25 @@
     /* Pulse accent color */
     .text-primary { color: hsl(var(--primary)); }
     .text-muted { color: hsl(var(--muted-foreground)); }
+
+    /* BPM hero — §5.1 */
+    .card-bg {
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+    }
+    .bpm-number { font-size: 160px; }
+    .chip-bg { background: hsl(var(--muted) / 0.5); }
+    .dot-success { background: hsl(var(--success)); }
+
+    /* BPM breathing animation */
+    @keyframes bpm-breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    #bpm-value {
+      animation: bpm-breathe 1s ease-in-out infinite;
+      transform-origin: center;
+    }
   </style>
 </head>
 <body class="state-drilldown min-h-screen overflow-hidden">
@@ -69,7 +88,21 @@
   <!-- Main layout — placeholder, заполнится в следующих задачах -->
   <main class="px-8 py-8 flex gap-6 main-content">
     <section id="live-column" class="flex-1 flex flex-col gap-6">
-      <!-- LIVE column (Task 2-5) -->
+      <!-- BPM hero — §5.1 -->
+      <div class="rounded-2xl p-8 flex flex-col items-center justify-center card-bg">
+        <div class="flex items-end gap-4">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" class="text-primary">
+            <path d="M12 21s-7-4.5-9.5-9C.5 8.5 3 4 7 4c2 0 3.5 1 5 3 1.5-2 3-3 5-3 4 0 6.5 4.5 4.5 8-2.5 4.5-9.5 9-9.5 9z"/>
+          </svg>
+          <div class="font-hero tnum leading-none bpm-number" id="bpm-value">82</div>
+          <div class="font-data text-xl pb-6 text-muted">BPM</div>
+        </div>
+        <div class="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data text-sm uppercase tracking-wide chip-bg" id="bpm-status-chip">
+          <span class="w-2 h-2 rounded-full dot-success"></span>
+          <span>Подключен</span>
+        </div>
+      </div>
+      <!-- /BPM hero -->
     </section>
     <section id="predictive-column" class="flex-1 flex flex-col gap-4">
       <!-- PREDICTIVE column (Task 6-8) -->
@@ -88,6 +121,16 @@
       const s = String(sessionSeconds % 60).padStart(2, '0');
       document.getElementById('session-timer').textContent = `${m}:${s}`;
     }, 1000);
+
+    /* Fake live BPM — sin-волна около базового значения — §5.1 */
+    let bpmBase = 82;
+    let bpmTick = 0;
+    setInterval(() => {
+      bpmTick++;
+      const variation = Math.sin(bpmTick / 3) * 2;
+      const value = Math.round(bpmBase + variation);
+      document.getElementById('bpm-value').textContent = value;
+    }, 800);
   </script>
 </body>
 </html>
