@@ -163,6 +163,28 @@
     body.state-claim #empty-banner { display: none; }
 
     body.state-empty #empty-banner { display: flex; }
+
+    /* Bayevsky modal overlay — §7.1 */
+    .bayevsky-modal-overlay {
+      z-index: 50;
+      background: hsl(var(--background) / 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .bayevsky-modal-panel {
+      width: 960px;
+      height: 680px;
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      padding: 32px;
+    }
+    .phase-content { display: none; }
+    body.state-phase-1 .phase-content[data-phase="phase-1"],
+    body.state-phase-2 .phase-content[data-phase="phase-2"],
+    body.state-phase-3 .phase-content[data-phase="phase-3"],
+    body.state-result .phase-content[data-phase="result"] {
+      display: flex;
+    }
   </style>
 </head>
 <body class="state-drilldown min-h-screen overflow-hidden">
@@ -361,6 +383,28 @@
     </section>
   </main>
 
+  <!-- Bayevsky modal overlay — §7 — visible при body.state-phase-1/2/3/result -->
+  <div id="bayevsky-modal" class="fixed inset-0 items-center justify-center bayevsky-modal-overlay">
+    <div class="rounded-2xl shadow-2xl relative bayevsky-modal-panel">
+      <!-- Phase-1 content — visible при body.state-phase-1 -->
+      <div class="phase-content w-full h-full flex flex-col" data-phase="phase-1">
+        <!-- заполнится в Task 12 -->
+      </div>
+      <!-- Phase-2 content -->
+      <div class="phase-content w-full h-full flex flex-col" data-phase="phase-2">
+        <!-- заполнится в Task 13 -->
+      </div>
+      <!-- Phase-3 content -->
+      <div class="phase-content w-full h-full flex flex-col" data-phase="phase-3">
+        <!-- заполнится в Task 12 (структура та же что Phase-1) -->
+      </div>
+      <!-- Result content -->
+      <div class="phase-content w-full h-full flex flex-col" data-phase="result">
+        <!-- заполнится в Task 14 -->
+      </div>
+    </div>
+  </div>
+
   <!-- Dev-bar — §10 -->
   <footer id="dev-bar" class="h-20 fixed bottom-0 left-0 right-0 devbar-bg flex items-center gap-6 px-8 devbar-z">
     <button id="back-to-wall" class="px-4 py-2 rounded-lg text-sm btn-ghost">← на стену</button>
@@ -551,6 +595,19 @@
     if (initialPersona !== 'guest') {
       document.querySelector('.persona-pill[data-persona="guest"]')?.classList.remove('active');
     }
+
+    /* Кнопка ТЕСТ — открывает phase-1 — §7.1 */
+    document.getElementById('btn-test').addEventListener('click', () => {
+      setState('phase-1');
+    });
+
+    /* Bayevsky card клик — открывает result-модалку (если тест пройден) — §7.1 */
+    document.getElementById('bayevsky-card').addEventListener('click', () => {
+      const persona = document.querySelector('.persona-pill.active')?.dataset.persona || 'guest';
+      if (MOCK_DATA[persona].bayevsky.done) {
+        setState('result');
+      }
+    });
 
     /* Initial render — после всех bindings */
     applyPersona(initialPersona);
