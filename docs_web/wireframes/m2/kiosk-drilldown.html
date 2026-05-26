@@ -121,6 +121,15 @@
     .dot-deep { background: hsl(var(--primary)); }
     .dot-rem { background: hsl(var(--chart-2)); }
     .dot-light { background: hsl(var(--chart-4)); }
+
+    /* Bayevsky card — §6.5 */
+    .bayevsky-card {
+      min-height: 200px;
+      transition: border-color 0.2s ease;
+    }
+    .bayevsky-card:hover {
+      border-color: hsl(var(--foreground));
+    }
   </style>
 </head>
 <body class="state-drilldown min-h-screen overflow-hidden">
@@ -298,6 +307,24 @@
           </div>
         </div>
       </div>
+
+      <!-- Bayevsky Results — §6.5 — два состояния empty/done в одном контейнере -->
+      <div class="rounded-2xl p-6 flex-1 flex flex-col items-center justify-center cursor-pointer card-bg bayevsky-card" id="bayevsky-card">
+        <!-- Empty state (до прохождения теста) -->
+        <div id="bayevsky-empty" class="text-center">
+          <div class="text-6xl mb-3">🧪</div>
+          <div class="font-medium text-2xl mb-2">ТЕСТ НЕ ПРОЙДЕН</div>
+          <div class="text-base text-muted">Запусти ниже ↓</div>
+        </div>
+
+        <!-- Done state (после прохождения) — скрыт по умолчанию -->
+        <div id="bayevsky-done" class="hidden text-center w-full">
+          <div class="font-data text-xs uppercase tracking-wider mb-3 text-muted">Bayevsky · ИН <span id="bayevsky-summary-in">145</span></div>
+          <div class="font-medium text-2xl mb-2 text-success" id="bayevsky-verdict">🟢 Реактивность нормальная</div>
+          <div class="text-sm text-muted">Клик для деталей →</div>
+        </div>
+      </div>
+      <!-- /Bayevsky Results -->
     </section>
   </main>
 
