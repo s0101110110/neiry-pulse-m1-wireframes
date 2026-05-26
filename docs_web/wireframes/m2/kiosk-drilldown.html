@@ -190,6 +190,22 @@
     .phase-label-muted { color: hsl(var(--muted-foreground)); }
     .phase-timer-size { font-size: 220px; }
     .phase-progress-fill { background: hsl(var(--primary)); }
+
+    /* Phase-2 Stroop — Task 13 */
+    .phase-timer-small { color: hsl(var(--foreground)); }
+    .stroop-word {
+      font-size: 120px;
+      color: hsl(var(--success));
+    }
+    .stroop-btn {
+      background: transparent;
+      border: 1px solid hsl(var(--border));
+      color: hsl(var(--foreground));
+      transition: border-color 0.15s ease;
+    }
+    .stroop-btn:hover {
+      border-color: hsl(var(--foreground));
+    }
   </style>
 </head>
 <body class="state-drilldown min-h-screen overflow-hidden">
@@ -405,7 +421,22 @@
       </div>
       <!-- Phase-2 content -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-2">
-        <!-- заполнится в Task 13 -->
+        <div class="flex items-center justify-between">
+          <div class="font-data text-sm uppercase tracking-wider phase-label-muted">Фаза 2 из 3</div>
+          <div class="font-data tnum text-2xl text-foreground">00:42</div>
+        </div>
+        <div class="flex-1 flex items-center justify-center">
+          <div class="font-medium leading-none stroop-word">КРАСНЫЙ</div>
+        </div>
+        <div class="grid grid-cols-4 gap-4 mb-6">
+          <button class="h-14 rounded-xl text-lg font-medium stroop-btn">КРАСНЫЙ</button>
+          <button class="h-14 rounded-xl text-lg font-medium stroop-btn">ЗЕЛЁНЫЙ</button>
+          <button class="h-14 rounded-xl text-lg font-medium stroop-btn">СИНИЙ</button>
+          <button class="h-14 rounded-xl text-lg font-medium stroop-btn">ЖЁЛТЫЙ</button>
+        </div>
+        <div class="h-2 rounded-full overflow-hidden progress-track">
+          <div class="h-full rounded-full phase-progress-fill" style="width: 72%;"></div>
+        </div>
       </div>
       <!-- Phase-3 content -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-3">
