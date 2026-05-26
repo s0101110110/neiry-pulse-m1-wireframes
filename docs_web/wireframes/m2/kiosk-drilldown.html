@@ -185,6 +185,11 @@
     body.state-result .phase-content[data-phase="result"] {
       display: flex;
     }
+
+    /* Phase content — Task 12 */
+    .phase-label-muted { color: hsl(var(--muted-foreground)); }
+    .phase-timer-size { font-size: 220px; }
+    .phase-progress-fill { background: hsl(var(--primary)); }
   </style>
 </head>
 <body class="state-drilldown min-h-screen overflow-hidden">
@@ -388,7 +393,15 @@
     <div class="rounded-2xl shadow-2xl relative bayevsky-modal-panel">
       <!-- Phase-1 content — visible при body.state-phase-1 -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-1">
-        <!-- заполнится в Task 12 -->
+        <div class="font-data text-sm uppercase tracking-wider phase-label-muted">Фаза 1 из 3</div>
+        <div class="flex-1 flex flex-col items-center justify-center">
+          <div class="font-hero tnum leading-none phase-timer-size" id="phase-1-timer">02:47</div>
+          <div class="font-medium text-5xl mt-4">ПОКОЙ</div>
+          <div class="text-xl mt-2 phase-label-muted">Стой неподвижно, дыши спокойно</div>
+        </div>
+        <div class="h-2 rounded-full overflow-hidden progress-track">
+          <div class="h-full rounded-full transition-all phase-progress-fill" id="phase-1-progress" style="width: 33%;"></div>
+        </div>
       </div>
       <!-- Phase-2 content -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-2">
@@ -396,7 +409,15 @@
       </div>
       <!-- Phase-3 content -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-3">
-        <!-- заполнится в Task 12 (структура та же что Phase-1) -->
+        <div class="font-data text-sm uppercase tracking-wider phase-label-muted">Фаза 3 из 3</div>
+        <div class="flex-1 flex flex-col items-center justify-center">
+          <div class="font-hero tnum leading-none phase-timer-size" id="phase-3-timer">00:54</div>
+          <div class="font-medium text-5xl mt-4">БЫСТРАЯ ХОДЬБА</div>
+          <div class="text-xl mt-2 text-center phase-label-muted">Быстро пройдитесь в течение 1 минуты,<br>чтобы поднять пульс</div>
+        </div>
+        <div class="h-2 rounded-full overflow-hidden progress-track">
+          <div class="h-full rounded-full transition-all phase-progress-fill" id="phase-3-progress" style="width: 46%;"></div>
+        </div>
       </div>
       <!-- Result content -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="result">
