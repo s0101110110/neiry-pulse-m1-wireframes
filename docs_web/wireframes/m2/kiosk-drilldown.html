@@ -10,22 +10,57 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* shadcn dark theme — zinc/slate base */
-      --background: 240 10% 4%;
+      /* SHADCN-STYLE SEMANTIC TOKENS (dark only — kiosk) — копия 1:1 из kiosk-v2.html */
+      --background: 240 10% 3.9%;
       --foreground: 0 0% 98%;
-      --card: 240 6% 10%;
+      --card: 240 10% 8.5%;             /* +2.5% lightness над background */
       --card-foreground: 0 0% 98%;
-      --muted: 240 4% 16%;
-      --muted-foreground: 240 5% 65%;
-      --border: 240 4% 20%;
-      --primary: 333 76% 30%; /* wine #831843 */
-      --primary-foreground: 0 0% 100%;
-      --success: 151 100% 45%;
-      --warning: 42 100% 50%;
-      --destructive: 348 100% 54%;
+      --primary: 336 76% 45%;           /* wine #831843 (lightened for dark) */
+      --primary-hover: 336 76% 52%;
+      --primary-foreground: 0 0% 98%;
+      --secondary: 240 3.7% 15.9%;
+      --secondary-foreground: 0 0% 98%;
+      --muted: 240 3.7% 15.9%;
+      --muted-foreground: 240 5% 64.9%;
+      --accent: 240 3.7% 15.9%;
+      --accent-foreground: 0 0% 98%;
+      --destructive: 0 84% 60%;
+      --destructive-foreground: 0 0% 100%;
+      --success: 151 60% 53%;
+      --warning: 38 92% 50%;
+      --border: 240 3.7% 15.9%;
+      --input: 240 3.7% 15.9%;
+      --ring: 336 76% 45%;
+      --radius: 0.75rem;
+
+      --chart-1: 217 91% 60%;
       --chart-2: 151 100% 45%;
+      --chart-3: 271 81% 56%;
       --chart-4: 42 100% 50%;
+      --chart-5: 173 80% 40%;
+
+      --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      --font-display: 'Onest', 'Space Grotesk', system-ui, sans-serif;
+      --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+      /* TYPE SCALE — единая шкала из 6 ступеней (kiosk-v2 1:1) */
+      --t-caption: 14px;   /* uppercase labels, device tags, легенда */
+      --t-body:    16px;   /* статусы, описания */
+      --t-lead:    20px;   /* CTA-микрокопия, BPM unit, заголовки секций */
+      --t-h2:      28px;   /* имена, Pulse wordmark, модалка-h3 */
+      --t-h1:      72px;   /* NSI digit, ИН Σ */
+      --t-display: 120px;  /* BPM hero digit */
+      --t-widget:  56px;   /* предиктивные % (Recovery/Burnout/Drowsy) — 7-я ступень для widget-grid */
     }
+
+    /* TYPE SCALE HELPER CLASSES */
+    .t-caption { font-size: var(--t-caption); line-height: 1.3; }
+    .t-body    { font-size: var(--t-body);    line-height: 1.45; }
+    .t-lead    { font-size: var(--t-lead);    line-height: 1.35; }
+    .t-h2      { font-size: var(--t-h2);      line-height: 1.15; }
+    .t-h1      { font-size: var(--t-h1);      line-height: 1; }
+    .t-display { font-size: var(--t-display); line-height: 1; }
+    .t-widget  { font-size: var(--t-widget);  line-height: 1; }
     html, body {
       margin: 0; padding: 0;
       width: 100vw; height: 100vh;
@@ -40,7 +75,7 @@
       align-items: center;
       justify-content: center;
     }
-    .font-hero { font-family: 'Onest', sans-serif; font-weight: 700; letter-spacing: -0.02em; }
+    .font-display { font-family: 'Onest', sans-serif; font-weight: 700; letter-spacing: -0.02em; }
     .font-data { font-family: 'Geist Mono', monospace; }
     .tnum { font-variant-numeric: tabular-nums; }
 
@@ -66,8 +101,9 @@
     /* Top-bar border */
     .topbar-border { border-bottom: 1px solid hsl(var(--border)); }
 
-    /* Main content area height: stage 1080 - 64px topbar (dev-bar — снаружи stage) */
-    .main-content { height: calc(1080px - 64px); }
+    /* Main — flex-1 min-h-0 overflow-hidden, высота вычисляется автоматически
+       (паттерн feedback_neiry_wireframes_ui §1). Header/empty-banner = shrink-0,
+       main растягивается на оставшуюся высоту stage. */
 
     /* Dev-bar — floating pill по центру внизу (паттерн kiosk-v2).
        НЕ полноширинная плашка — таблетка с backdrop-blur, парит над stage.
@@ -114,7 +150,7 @@
       background: hsl(var(--card));
       border: 1px solid hsl(var(--border));
     }
-    .bpm-number { font-size: 160px; }
+    .bpm-number { font-size: var(--t-display); line-height: 1; }
     .chip-bg { background: hsl(var(--muted) / 0.5); }
     .dot-success { background: hsl(var(--success)); }
 
@@ -139,7 +175,7 @@
 
     /* Stress + Activity круги — §5.3 */
     .circle-box { width: 240px; height: 240px; }
-    .stress-number { font-size: 96px; }
+    .stress-number { font-size: var(--t-h1); line-height: 1; }
     .stress-ring { stroke: hsl(var(--border)); }
     .imu-ring { stroke: hsl(var(--border)); }
     .dot-warning { background: hsl(var(--warning)); }
@@ -188,11 +224,11 @@
 
     /* Predictive widgets — §6 */
     .widget-min { min-height: 240px; }
-    .widget-number { font-size: 56px; }
+    .widget-number { font-size: var(--t-widget); line-height: 1; }
     .progress-track { background: hsl(var(--muted)); }
     .bar-success { background: hsl(var(--success)); }
     /* Sleep gauge — §6.2 */
-    .sleep-value-size { font-size: 44px; }
+    .sleep-value-size { font-size: var(--t-h2); line-height: 1.15; }
     .sleep-ring-bg { stroke: hsl(var(--muted) / 0.3); }
     .sleep-ring-deep { stroke: hsl(var(--primary)); }
     .sleep-ring-rem { stroke: hsl(var(--chart-2)); }
@@ -272,13 +308,14 @@
 
     /* Phase content — Task 12 */
     .phase-label-muted { color: hsl(var(--muted-foreground)); }
-    .phase-timer-size { font-size: 220px; }
+    .phase-timer-size { font-size: var(--t-display); line-height: 1; }
     .phase-progress-fill { background: hsl(var(--primary)); }
 
     /* Phase-2 Stroop — Task 13 */
     .phase-timer-small { color: hsl(var(--foreground)); }
     .stroop-word {
-      font-size: 144px;
+      font-size: var(--t-display);
+      line-height: 1;
       color: hsl(var(--success));
     }
     .stroop-btn {
@@ -333,14 +370,15 @@
     }
     .result-close-btn:hover { background: hsl(var(--muted)); }
 
-    .result-in-sum-size { font-size: 96px; }
+    .result-in-sum-size { font-size: var(--t-h1); line-height: 1; }
 
     .result-phase-card {
       background: hsl(var(--muted) / 0.3);
       border: 1px solid hsl(var(--border));
     }
     .result-phase-num {
-      font-size: 48px;
+      font-size: var(--t-h2);
+      line-height: 1.15;
     }
     .result-phase-num.is-success,
     .result-phase-cap.is-success { color: hsl(var(--success)); }
@@ -391,27 +429,34 @@
      ========================================= -->
 <div id="kiosk-stage">
 
-  <!-- Top-bar — §4 -->
-  <header class="h-16 px-8 flex items-center justify-between topbar-border">
+  <!-- Top-bar — §4 — h-[86px], SVG-логотип neiry + Pulse t-h2 (паттерн kiosk-v2) -->
+  <header class="shrink-0 h-[86px] px-10 border-b border-border bg-card/40 flex items-center justify-between gap-6">
+    <!-- Left: brand (Neiry SVG + Pulse) + session id -->
     <div class="flex items-center gap-3">
-      <span class="text-xl font-medium">neiry <span class="font-hero italic text-primary">Pulse</span></span>
-      <span class="text-muted">·</span>
-      <span class="font-data tnum text-sm text-muted" id="session-id-label">sess_7K2M9</span>
+      <div class="flex items-center gap-2.5">
+        <svg viewBox="0 0 733 280" class="h-7 w-auto text-foreground" aria-hidden="true">
+          <path fill="currentColor" fill-rule="evenodd" d="M364.3,0v45.5h53V0h-53ZM363.9,65.2v156.5h53.8V65.2h-53.8ZM530.9,64.3h14.2v49.6h-20.8c-9.5,0-16.3,2.2-20.6,6.7-4.2,4.4-6.3,11.6-6.3,21.4v79.7h-53.8V65.2h35.9l8.4,17.4c10.4-12.2,24.8-18.2,43.1-18.2l-.1-.1ZM675.1,65.2h57.9l-65.4,149.6c-10.8,24.3-22,41.3-33.6,50.7-11.6,9.6-27.3,14.5-47.2,14.5h-18.5v-46.4h14.7c10.2,0,17.5-1.6,22-4.9,4.4-3.3,8.5-10,12.2-20l-64.5-143.5h58.4l33,86.1,31-86.1h0ZM342.4,142c0,4.4-.4,9.2-1.2,14.2h-116.1c1.7,8.9,5.3,15.6,10.7,20.3,5.6,4.6,12.6,7,21.1,7s8.2-.6,11.9-1.7c3.7-1.2,6.8-2.8,9.6-4.9,2.9-2.3,5.2-5,7-8.1h53.5c-5.4,18-15.5,32.2-30.4,42.6-14.7,10.5-31.8,15.6-51.5,15.6s-44.6-7.9-60.8-23.8c-16-16.1-24-35.9-24-59.7s3.7-30.1,11-42.9c7.3-12.8,17.5-22.7,30.4-29.9s27.4-10.7,43.4-10.7,31.3,3.7,44.3,11c13.1,7.2,23.3,17,30.4,29.6,7.1,12.4,10.7,26.2,10.7,41.5h0v-.1ZM257.1,102.3c-7.7,0-14.3,2.1-19.7,6.4-5.2,4-9,10-11.3,17.7h63.4c-4.8-16.1-15.6-24-32.4-24v-.1ZM137.8,78.6c-10.8-12-25.3-18-43.4-18s-36.9,7-49.2,20.9l-7.5-16.3H0v156.5h53.8v-83.5c0-6.8,1-12.5,2.9-17.1,2.1-4.9,5.1-8.5,9-11,4-2.5,8.9-3.8,14.5-3.8,13.5,0,20.3,9.1,20.3,27.3v88.1h53.8v-95.4c0-19.9-5.5-35.9-16.5-47.8h0v.1Z"/>
+        </svg>
+        <span class="font-display text-primary tracking-tight t-h2">Pulse</span>
+      </div>
+      <span class="text-muted t-caption">·</span>
+      <span class="font-data tnum t-caption text-muted" id="session-id-label">sess_7K2M9</span>
     </div>
+    <!-- Right: live status + session timer -->
     <div class="flex items-center gap-6">
       <div class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full dot-success" style="animation: pulse 2s ease-in-out infinite;"></span>
-        <span class="font-data text-xs uppercase tracking-wider text-muted">Live</span>
+        <span class="w-2.5 h-2.5 rounded-full dot-success" style="animation: pulse 2s ease-in-out infinite;"></span>
+        <span class="font-data t-caption uppercase tracking-wider text-muted">Live</span>
       </div>
       <div class="flex items-baseline gap-2">
-        <span class="font-data text-xs uppercase tracking-wider text-muted">сессия</span>
-        <span class="font-data tnum text-xl" id="session-timer">02:47</span>
+        <span class="font-data t-caption uppercase tracking-wider text-muted">сессия</span>
+        <span class="font-data tnum t-lead" id="session-timer">02:47</span>
       </div>
     </div>
   </header>
 
   <!-- Empty state banner — §9.1 — visible при body.state-empty -->
-  <div id="empty-banner" class="h-12 items-center justify-center text-center empty-banner-bg">
+  <div id="empty-banner" class="shrink-0 h-12 items-center justify-center text-center empty-banner-bg">
     <span class="inline-flex items-center gap-3 font-medium text-base">
       <span class="w-2 h-2 rounded-full empty-banner-dot"></span>
       <span class="font-data uppercase tracking-wider text-sm">Ожидание сессии</span>
@@ -420,8 +465,8 @@
     </span>
   </div>
 
-  <!-- Main layout — placeholder, заполнится в следующих задачах -->
-  <main class="px-8 py-8 flex gap-6 main-content">
+  <!-- Main layout — flex-1 min-h-0 overflow-hidden автоматически растягивается на оставшуюся высоту stage -->
+  <main class="flex-1 min-h-0 px-10 py-6 flex gap-6 overflow-hidden">
     <section id="live-column" class="flex-1 flex flex-col gap-6">
       <!-- BPM hero — §5.1 -->
       <div class="rounded-2xl p-8 flex flex-col items-center justify-center card-bg relative">
@@ -434,7 +479,7 @@
           <svg width="56" height="56" viewBox="0 0 24 24" fill="currentColor" class="text-primary" style="margin-bottom: 28px;">
             <path d="M12 21s-7-4.5-9.5-9C.5 8.5 3 4 7 4c2 0 3.5 1 5 3 1.5-2 3-3 5-3 4 0 6.5 4.5 4.5 8-2.5 4.5-9.5 9-9.5 9z"/>
           </svg>
-          <div class="font-hero tnum leading-none bpm-number" id="bpm-value">82</div>
+          <div class="font-display tnum leading-none bpm-number" id="bpm-value">82</div>
           <div class="font-data text-2xl text-muted" style="margin-bottom: 18px;">BPM</div>
         </div>
       </div>
@@ -469,7 +514,7 @@
                     stroke-dasharray="100" stroke-dashoffset="68"/>
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center" style="padding-top: 4px;">
-              <div class="font-hero tnum leading-none stress-number" id="stress-value">32</div>
+              <div class="font-display tnum leading-none stress-number" id="stress-value">32</div>
               <div class="font-data text-xs uppercase tracking-wider mt-2 text-muted">Stress Index</div>
             </div>
           </div>
@@ -524,7 +569,7 @@
         <div class="rounded-2xl p-6 flex flex-col justify-between card-bg widget-min">
           <div class="flex items-start justify-between">
             <div class="font-data text-xs uppercase tracking-wider text-muted">Recovery</div>
-            <div class="font-hero tnum leading-none widget-number" id="recovery-value">78%</div>
+            <div class="font-display tnum leading-none widget-number" id="recovery-value">78%</div>
           </div>
           <div>
             <div class="h-3 rounded-full overflow-hidden progress-track">
@@ -540,7 +585,7 @@
         <div class="rounded-2xl p-6 flex flex-col justify-between card-bg widget-min">
           <div class="flex items-start justify-between">
             <div class="font-data text-xs uppercase tracking-wider text-muted">Sleep</div>
-            <div class="font-hero tnum leading-none sleep-value-size" id="sleep-value">7ч&nbsp;12м</div>
+            <div class="font-display tnum leading-none sleep-value-size" id="sleep-value">7ч&nbsp;12м</div>
           </div>
           <div class="flex items-center gap-6">
             <svg width="140" height="140" viewBox="0 0 140 140" id="sleep-gauge">
@@ -568,7 +613,7 @@
         <div class="rounded-2xl p-6 flex flex-col justify-between card-bg widget-min">
           <div class="flex items-start justify-between">
             <div class="font-data text-xs uppercase tracking-wider text-muted">Burnout</div>
-            <div class="font-hero tnum leading-none widget-number" id="burnout-value">12%</div>
+            <div class="font-display tnum leading-none widget-number" id="burnout-value">12%</div>
           </div>
           <div>
             <div class="h-3 rounded-full overflow-hidden progress-track">
@@ -584,7 +629,7 @@
         <div class="rounded-2xl p-6 flex flex-col justify-between card-bg widget-min">
           <div class="flex items-start justify-between">
             <div class="font-data text-xs uppercase tracking-wider text-muted">Drowsy</div>
-            <div class="font-hero tnum leading-none widget-number" id="drowsy-value">18%</div>
+            <div class="font-display tnum leading-none widget-number" id="drowsy-value">18%</div>
           </div>
           <div>
             <div class="h-3 rounded-full overflow-hidden progress-track">
@@ -612,7 +657,7 @@
           <div class="font-data text-xs uppercase tracking-wider mb-5 text-muted">Тест Баевского пройден</div>
           <div class="flex items-end justify-center gap-3 mb-4">
             <span class="font-data text-base uppercase tracking-wider text-muted" style="margin-bottom: 12px;">ИН</span>
-            <span class="font-hero tnum leading-none" id="bayevsky-summary-in" style="font-size: 96px; color: hsl(var(--success));">145</span>
+            <span class="font-display tnum leading-none t-h1" id="bayevsky-summary-in" style="color: hsl(var(--success));">145</span>
           </div>
           <div class="font-medium text-2xl mb-3" id="bayevsky-verdict" style="color: hsl(var(--success));">Реактивность нормальная</div>
           <div class="font-data text-xs uppercase tracking-wider text-muted">Открыть детали →</div>
@@ -640,7 +685,7 @@
         </div>
         <div class="flex-1 flex flex-col items-center justify-center">
           <div class="font-data text-xs uppercase tracking-wider mb-3 phase-label-muted">Осталось</div>
-          <div class="font-hero tnum leading-none phase-timer-size" id="phase-1-timer">02:47</div>
+          <div class="font-display tnum leading-none phase-timer-size" id="phase-1-timer">02:47</div>
           <div class="font-medium text-5xl mt-6 tracking-wide">ПОКОЙ</div>
           <div class="text-xl mt-3 phase-label-muted">Стой неподвижно, дыши спокойно</div>
         </div>
@@ -689,7 +734,7 @@
         </div>
         <div class="flex-1 flex flex-col items-center justify-center">
           <div class="font-data text-xs uppercase tracking-wider mb-3 phase-label-muted">Осталось</div>
-          <div class="font-hero tnum leading-none phase-timer-size" id="phase-3-timer">00:54</div>
+          <div class="font-display tnum leading-none phase-timer-size" id="phase-3-timer">00:54</div>
           <div class="font-medium text-5xl mt-6 tracking-wide">НАГРУЗКА</div>
           <div class="text-xl mt-3 text-center phase-label-muted">Быстро пройдитесь в течение 1 минуты,<br>чтобы поднять пульс</div>
         </div>
@@ -707,7 +752,7 @@
         <div class="mt-2 mb-6 flex items-center justify-center gap-10">
           <div class="text-center">
             <div class="font-data text-xs uppercase tracking-wider mb-2 phase-label-muted">Индекс напряжения Σ</div>
-            <div class="font-hero tnum leading-none result-in-sum-size" id="result-in-sum">145</div>
+            <div class="font-display tnum leading-none result-in-sum-size" id="result-in-sum">145</div>
           </div>
           <div class="h-24 w-px" style="background: hsl(var(--border));"></div>
           <div class="max-w-sm">
@@ -730,7 +775,7 @@
     <!-- Heading -->
     <div class="text-center">
       <div class="font-data text-xs uppercase tracking-wider mb-3 claim-session-id">Сессия завершена · <span class="tnum">sess_7K2M9</span></div>
-      <div class="font-hero text-5xl leading-none">Спасибо за участие</div>
+      <div class="font-display text-5xl leading-none">Спасибо за участие</div>
     </div>
     <!-- Placeholder QR (SVG pattern, без реальной генерации) -->
     <div class="p-8 rounded-3xl claim-qr-card shadow-2xl">
@@ -1025,7 +1070,7 @@
         return `
           <div class="rounded-xl p-5 flex flex-col items-center justify-center result-phase-card">
             <div class="font-data text-xs uppercase tracking-wider phase-label-muted mb-2">${p.label}</div>
-            <div class="font-hero tnum leading-none result-phase-num ${variant}">${p.in}</div>
+            <div class="font-display tnum leading-none result-phase-num ${variant}">${p.in}</div>
             <div class="text-sm uppercase tracking-wider mt-3 result-phase-cap ${variant}">${p.cap}</div>
           </div>
         `;
