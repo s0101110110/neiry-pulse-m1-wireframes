@@ -87,6 +87,25 @@
     .stress-ring { stroke: hsl(var(--border)); }
     .imu-ring { stroke: hsl(var(--border)); }
     .dot-warning { background: hsl(var(--warning)); }
+
+    /* Кнопки СТОП + ТЕСТ — §5.4 */
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid hsl(var(--border));
+      color: hsl(var(--foreground));
+      transition: border-color 0.2s ease;
+    }
+    .btn-ghost:hover {
+      border-color: hsl(var(--foreground));
+    }
+    .btn-primary {
+      background: #831843;
+      color: white;
+      transition: background 0.2s ease;
+    }
+    .btn-primary:hover {
+      background: #9a1d50;
+    }
   </style>
 </head>
 <body class="state-drilldown min-h-screen overflow-hidden">
@@ -173,6 +192,15 @@
         </div>
       </div>
       <!-- /Stress + IMU -->
+
+      <!-- Кнопки СТОП + ТЕСТ — §5.4 -->
+      <div class="grid grid-cols-2 gap-4">
+        <button id="btn-stop" class="h-16 rounded-xl font-medium text-lg btn-ghost">СТОП</button>
+        <button id="btn-test" class="h-16 rounded-xl font-medium text-lg flex items-center justify-center gap-2 btn-primary">
+          <span>▶</span><span>ТЕСТ</span>
+        </button>
+      </div>
+      <!-- /Кнопки -->
     </section>
     <section id="predictive-column" class="flex-1 flex flex-col gap-4">
       <!-- PREDICTIVE column (Task 6-8) -->
