@@ -466,10 +466,10 @@
   </div>
 
   <!-- Main layout — flex-1 min-h-0 overflow-hidden автоматически растягивается на оставшуюся высоту stage -->
-  <main class="flex-1 min-h-0 px-10 py-6 flex gap-6 overflow-hidden">
-    <section id="live-column" class="flex-1 flex flex-col gap-6">
+  <main class="flex-1 min-h-0 px-10 pt-6 pb-16 flex gap-6 overflow-hidden">
+    <section id="live-column" class="flex-1 min-h-0 flex flex-col gap-6">
       <!-- BPM hero — §5.1 -->
-      <div class="rounded-2xl p-8 flex flex-col items-center justify-center card-bg relative">
+      <div class="rounded-2xl p-8 flex flex-col items-center justify-center card-bg relative shrink-0">
         <!-- Status chip — top-right corner -->
         <div class="absolute top-4 right-4 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data t-caption uppercase chip-bg" id="bpm-status-chip">
           <span class="w-2 h-2 rounded-full dot-success"></span>
@@ -486,7 +486,7 @@
       <!-- /BPM hero -->
 
       <!-- ECG plashka — §5.2 -->
-      <div class="rounded-2xl p-4 relative overflow-hidden card-bg ecg-card">
+      <div class="rounded-2xl p-4 relative overflow-hidden card-bg ecg-card shrink-0">
         <div class="absolute top-2 left-4 font-data t-caption uppercase tracking-wider text-muted">ECG</div>
         <div id="ecg-no-signal" class="absolute inset-0 hidden items-center justify-center font-data t-body uppercase tracking-[0.3em]" style="color: hsl(var(--muted-foreground)); letter-spacing: 0.3em;">— нет сигнала —</div>
         <svg class="w-full h-full" viewBox="0 0 884 108" preserveAspectRatio="none" id="ecg-svg">
@@ -500,7 +500,7 @@
       <!-- /ECG plashka -->
 
       <!-- Stress + Activity круги — §5.3 -->
-      <div class="grid grid-cols-2 gap-6">
+      <div class="grid grid-cols-2 gap-6 flex-1 min-h-0">
         <!-- Stress круг — gauge-arc открыт снизу, цвет по зоне NSI -->
         <div class="rounded-2xl p-6 flex flex-col items-center justify-center card-bg">
           <div class="relative circle-box">
@@ -551,7 +551,7 @@
       <!-- /Stress + Activity -->
 
       <!-- Кнопки СТОП + ТЕСТ — §5.4 — иерархия: ТЕСТ доминирует -->
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid grid-cols-3 gap-4 shrink-0">
         <button id="btn-stop" class="h-16 rounded-xl font-medium t-body btn-ghost">СТОП</button>
         <button id="btn-test" class="col-span-2 h-16 rounded-xl font-medium t-lead flex items-center justify-center gap-3 btn-primary">
           <span class="t-lead leading-none">▶</span>
@@ -560,11 +560,11 @@
       </div>
       <!-- /Кнопки -->
     </section>
-    <section id="predictive-column" class="flex-1 flex flex-col gap-4">
+    <section id="predictive-column" class="flex-1 min-h-0 flex flex-col gap-4">
       <!-- PREDICTIVE column (Task 6-8) -->
 
       <!-- Predictive grid 2×2 — §6 -->
-      <div class="grid grid-cols-2 gap-4" id="predictive-grid-top">
+      <div class="grid grid-cols-2 gap-4 shrink-0" id="predictive-grid-top">
         <!-- Recovery — §6.1 -->
         <div class="rounded-2xl p-6 flex flex-col justify-between card-bg widget-min">
           <div class="flex items-start justify-between">
@@ -643,7 +643,7 @@
       </div>
 
       <!-- Bayevsky Results — §6.5 — два состояния empty/done в одном контейнере -->
-      <div class="rounded-2xl p-8 flex-1 flex flex-col items-center justify-center cursor-pointer card-bg bayevsky-card" id="bayevsky-card">
+      <div class="rounded-2xl p-8 flex-1 min-h-0 overflow-hidden flex flex-col items-center justify-center cursor-pointer card-bg bayevsky-card" id="bayevsky-card">
         <!-- Empty state (до прохождения теста) -->
         <div id="bayevsky-empty" class="text-center">
           <div class="font-data t-caption uppercase tracking-wider mb-4 text-muted">Тест Баевского</div>

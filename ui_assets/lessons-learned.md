@@ -56,3 +56,11 @@ _Читать перед началом каждой сессии._
 ## 2026-05-25 — Отступы и размеры кратны 4px
 Проблема: «на глаз» поставленные padding/margin (например, 18px, 22px) ломают визуальный ритм.
 Правило: все отступы и размеры — кратны 4px (Tailwind spacing scale: 4/8/12/16/20/24/32/40/48/64/80). Если нужно 22px — поставь 24px и проверь, не сломалось ли.
+
+## 2026-05-27 — Source-of-truth для kiosk-палитры = kiosk-v2.html (R5 lessons)
+Проблема: при создании drilldown-экрана в R1 я скопировал «похожую» shadcn-палитру вместо точной копии из kiosk-v2 — токены `--card`, `--primary`, `--success`, `--warning` разъехались по lightness/hue на 2-5 пунктов. По отдельности микро, вместе создают «прыжок» при переходе kiosk-v2 → drilldown на одной плазме.
+Правило: для всех kiosk-уровней (kiosk-v2, kiosk-drilldown, future m3/dashboard-corporate) единый источник правды = `docs_web/wireframes/m2/kiosk-v2.html`. Перед стартом kiosk-задачи копировать 1:1: блок `:root` (палитра + type-scale переменные `--t-*`) + helper-классы `.t-*` + header pattern `shrink-0 h-[86px] px-10` с SVG-логотипом neiry. НЕ переписывать «по памяти», НЕ адаптировать «чуть-чуть для своего экрана».
+
+## 2026-05-27 — main overflow в kiosk = flex-1 min-h-0, не height calc (R5 lessons)
+Проблема: в drilldown я задал `.main-content { height: calc(1080px - 64px) }` с magic-числом высоты header. При смене header на 86px main всё ещё рассчитывал высоту от 64px — empty-state Bayevsky плитка выходила за низ stage на 1512×945.
+Правило: внутри `#kiosk-stage` все секции используют flex-семантику: header/banner = `shrink-0`, main = `flex-1 min-h-0 overflow-hidden`. Никаких `height: calc(VIEWPORT - HEADER_HEIGHT)` — height пересчитается автоматически при смене размеров header. min-h-0 обязателен (без него flex-child игнорирует overflow children).
