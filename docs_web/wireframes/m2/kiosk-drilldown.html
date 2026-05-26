@@ -81,12 +81,35 @@
       transform-origin: center;
     }
 
-    /* Stress + IMU круги — §5.3 */
+    /* Stress + Activity круги — §5.3 */
     .circle-box { width: 240px; height: 240px; }
-    .stress-number { font-size: 88px; }
+    .stress-number { font-size: 96px; }
     .stress-ring { stroke: hsl(var(--border)); }
     .imu-ring { stroke: hsl(var(--border)); }
     .dot-warning { background: hsl(var(--warning)); }
+    .dot-destructive { background: hsl(var(--destructive)); }
+    #stress-arc {
+      transition: stroke 0.6s ease, stroke-dashoffset 0.9s ease-out;
+    }
+    /* Activity waveform */
+    @keyframes act-bar {
+      0%, 100% { transform: scaleY(0.3); }
+      50% { transform: scaleY(1); }
+    }
+    .act-bar {
+      width: 6px;
+      border-radius: 3px;
+      background: hsl(var(--muted-foreground));
+      transform-origin: center;
+      animation: act-bar 1.4s ease-in-out infinite;
+    }
+    .act-bar:nth-child(1) { height: 22px; animation-delay: 0.0s; }
+    .act-bar:nth-child(2) { height: 36px; animation-delay: 0.15s; }
+    .act-bar:nth-child(3) { height: 48px; animation-delay: 0.30s; }
+    .act-bar:nth-child(4) { height: 64px; animation-delay: 0.45s; }
+    .act-bar:nth-child(5) { height: 48px; animation-delay: 0.30s; }
+    .act-bar:nth-child(6) { height: 36px; animation-delay: 0.15s; }
+    .act-bar:nth-child(7) { height: 22px; animation-delay: 0.0s; }
 
     /* Кнопки СТОП + ТЕСТ — §5.4 */
     .btn-ghost {
@@ -151,18 +174,18 @@
 
     /* State machine — §11 */
     /* Эти элементы пока не существуют (Task 11+) — display: none по умолчанию */
-    #bayevsky-modal, #claim-screen, #empty-banner { display: none; }
+    #bayevsky-modal, #claim-screen, #empty-banner { display: none !important; }
 
     body.state-phase-1 #bayevsky-modal,
     body.state-phase-2 #bayevsky-modal,
     body.state-phase-3 #bayevsky-modal,
-    body.state-result #bayevsky-modal { display: flex; }
+    body.state-result #bayevsky-modal { display: flex !important; }
 
-    body.state-claim #claim-screen { display: flex; }
-    body.state-claim main,
-    body.state-claim #empty-banner { display: none; }
+    body.state-claim #claim-screen { display: flex !important; }
+    body.state-claim main { display: none !important; }
+    body.state-claim #empty-banner { display: none !important; }
 
-    body.state-empty #empty-banner { display: flex; }
+    body.state-empty #empty-banner { display: flex !important; }
 
     /* Bayevsky modal overlay — §7.1 */
     .bayevsky-modal-overlay {
@@ -178,12 +201,12 @@
       border: 1px solid hsl(var(--border));
       padding: 32px;
     }
-    .phase-content { display: none; }
+    .phase-content { display: none !important; }
     body.state-phase-1 .phase-content[data-phase="phase-1"],
     body.state-phase-2 .phase-content[data-phase="phase-2"],
     body.state-phase-3 .phase-content[data-phase="phase-3"],
     body.state-result .phase-content[data-phase="result"] {
-      display: flex;
+      display: flex !important;
     }
 
     /* Phase content — Task 12 */
@@ -194,18 +217,33 @@
     /* Phase-2 Stroop — Task 13 */
     .phase-timer-small { color: hsl(var(--foreground)); }
     .stroop-word {
-      font-size: 120px;
+      font-size: 144px;
       color: hsl(var(--success));
     }
     .stroop-btn {
-      background: transparent;
-      border: 1px solid hsl(var(--border));
-      color: hsl(var(--foreground));
-      transition: border-color 0.15s ease;
+      background: hsl(var(--card));
+      border: 2px solid hsl(var(--border));
+      transition: border-color 0.15s ease, transform 0.1s ease;
     }
     .stroop-btn:hover {
-      border-color: hsl(var(--foreground));
+      border-color: hsl(var(--foreground) / 0.5);
+      transform: translateY(-2px);
     }
+    .stroop-btn[data-color="red"]    { color: hsl(var(--destructive)); }
+    .stroop-btn[data-color="green"]  { color: hsl(var(--success)); }
+    .stroop-btn[data-color="blue"]   { color: #3b82f6; }
+    .stroop-btn[data-color="yellow"] { color: hsl(var(--warning)); }
+
+    /* Phase progress dots */
+    .phase-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: hsl(var(--border));
+      transition: background 0.3s ease, width 0.3s ease;
+    }
+    .phase-dot.active { background: hsl(var(--primary)); width: 32px; border-radius: 5px; }
+    .phase-dot.done { background: hsl(var(--success)); }
 
     /* Claim state — Task 15 §8 */
     .claim-screen-bg {
@@ -234,14 +272,14 @@
     }
     .result-close-btn:hover { background: hsl(var(--muted)); }
 
-    .result-in-sum-size { font-size: 120px; }
+    .result-in-sum-size { font-size: 96px; }
 
     .result-phase-card {
       background: hsl(var(--muted) / 0.3);
       border: 1px solid hsl(var(--border));
     }
     .result-phase-num {
-      font-size: 64px;
+      font-size: 48px;
     }
     .result-phase-num.is-success,
     .result-phase-cap.is-success { color: hsl(var(--success)); }
@@ -254,7 +292,11 @@
       50% { opacity: 0.4; }
     }
 
-    .empty-banner-bg { background: hsl(var(--muted)); }
+    .empty-banner-bg {
+      background: hsl(var(--warning) / 0.12);
+      border-bottom: 1px solid hsl(var(--warning) / 0.4);
+      color: hsl(var(--warning));
+    }
     .empty-banner-dot {
       background: hsl(var(--warning));
       animation: pulse 2s ease-in-out infinite;
@@ -285,14 +327,25 @@
       <span class="text-muted">·</span>
       <span class="font-data tnum text-sm text-muted" id="session-id-label">sess_7K2M9</span>
     </div>
-    <div class="font-data tnum text-lg" id="session-timer">02:47</div>
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full dot-success" style="animation: pulse 2s ease-in-out infinite;"></span>
+        <span class="font-data text-xs uppercase tracking-wider text-muted">Live</span>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <span class="font-data text-xs uppercase tracking-wider text-muted">сессия</span>
+        <span class="font-data tnum text-xl" id="session-timer">02:47</span>
+      </div>
+    </div>
   </header>
 
   <!-- Empty state banner — §9.1 — visible при body.state-empty -->
   <div id="empty-banner" class="h-12 items-center justify-center text-center empty-banner-bg">
-    <span class="inline-flex items-center gap-2 font-medium">
+    <span class="inline-flex items-center gap-3 font-medium text-base">
       <span class="w-2 h-2 rounded-full empty-banner-dot"></span>
-      Ожидание сессии · Калибруйте гостя через стену
+      <span class="font-data uppercase tracking-wider text-sm">Ожидание сессии</span>
+      <span class="opacity-60">·</span>
+      <span>Калибруйте гостя через стену</span>
     </span>
   </div>
 
@@ -300,17 +353,18 @@
   <main class="px-8 py-8 flex gap-6 main-content">
     <section id="live-column" class="flex-1 flex flex-col gap-6">
       <!-- BPM hero — §5.1 -->
-      <div class="rounded-2xl p-8 flex flex-col items-center justify-center card-bg">
-        <div class="flex items-baseline gap-4">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" class="text-primary">
+      <div class="rounded-2xl p-8 flex flex-col items-center justify-center card-bg relative">
+        <!-- Status chip — top-right corner -->
+        <div class="absolute top-4 right-4 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data text-xs uppercase chip-bg" id="bpm-status-chip">
+          <span class="w-2 h-2 rounded-full dot-success"></span>
+          <span>Подключен</span>
+        </div>
+        <div class="flex items-end gap-5">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="currentColor" class="text-primary" style="margin-bottom: 28px;">
             <path d="M12 21s-7-4.5-9.5-9C.5 8.5 3 4 7 4c2 0 3.5 1 5 3 1.5-2 3-3 5-3 4 0 6.5 4.5 4.5 8-2.5 4.5-9.5 9-9.5 9z"/>
           </svg>
           <div class="font-hero tnum leading-none bpm-number" id="bpm-value">82</div>
-          <div class="font-data text-2xl pb-6 text-muted">BPM</div>
-        </div>
-        <div class="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data text-sm uppercase chip-bg" id="bpm-status-chip">
-          <span class="w-2 h-2 rounded-full dot-success"></span>
-          <span>Подключен</span>
+          <div class="font-data text-2xl text-muted" style="margin-bottom: 18px;">BPM</div>
         </div>
       </div>
       <!-- /BPM hero -->
@@ -328,52 +382,63 @@
       </div>
       <!-- /ECG plashka -->
 
-      <!-- Stress + IMU круги — §5.3 -->
+      <!-- Stress + Activity круги — §5.3 -->
       <div class="grid grid-cols-2 gap-6">
-        <!-- Stress круг — без gauge-заливки, цвет светофора в чипе -->
+        <!-- Stress круг — gauge-arc открыт снизу, цвет по зоне NSI -->
         <div class="rounded-2xl p-6 flex flex-col items-center justify-center card-bg">
           <div class="relative circle-box">
-            <svg class="w-full h-full" viewBox="0 0 240 240">
-              <circle cx="120" cy="120" r="116" class="stress-ring" stroke-width="2" fill="none"/>
+            <svg class="w-full h-full" viewBox="0 0 240 240" fill="none">
+              <!-- bg arc -->
+              <path d="M 30 150 A 95 95 0 1 1 210 150" stroke="hsl(var(--border))" stroke-width="10"
+                    stroke-linecap="round" pathLength="100"/>
+              <!-- active arc -->
+              <path id="stress-arc" d="M 30 150 A 95 95 0 1 1 210 150" stroke="hsl(var(--success))"
+                    stroke-width="10" stroke-linecap="round" pathLength="100"
+                    stroke-dasharray="100" stroke-dashoffset="68"/>
             </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <div class="font-hero tnum leading-none stress-number" id="stress-value">41</div>
-              <div class="text-sm mt-2 text-muted">стресс</div>
+            <div class="absolute inset-0 flex flex-col items-center justify-center" style="padding-top: 4px;">
+              <div class="font-hero tnum leading-none stress-number" id="stress-value">32</div>
+              <div class="font-data text-xs uppercase tracking-wider mt-2 text-muted">Stress Index</div>
             </div>
           </div>
-          <div class="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data text-sm uppercase chip-bg" id="stress-chip">
-            <span class="w-2 h-2 rounded-full dot-warning"></span>
-            <span>Повышен</span>
+          <div class="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data text-sm uppercase chip-bg" id="stress-chip">
+            <span class="w-2 h-2 rounded-full dot-success"></span>
+            <span>Норма</span>
           </div>
         </div>
 
-        <!-- IMU круг — концентрические декоративные кольца -->
+        <!-- Activity (IMU) — waveform-индикатор движения -->
         <div class="rounded-2xl p-6 flex flex-col items-center justify-center card-bg">
-          <div class="relative circle-box">
-            <svg class="w-full h-full" viewBox="0 0 240 240">
-              <circle cx="120" cy="120" r="116" class="imu-ring" stroke-width="1.5" fill="none" opacity="0.9"/>
-              <circle cx="120" cy="120" r="94" class="imu-ring" stroke-width="1" fill="none" opacity="0.7"/>
-              <circle cx="120" cy="120" r="72" class="imu-ring" stroke-width="1" fill="none" opacity="0.5"/>
-              <circle cx="120" cy="120" r="50" class="imu-ring" stroke-width="1" fill="none" opacity="0.3"/>
-              <circle cx="120" cy="120" r="28" class="imu-ring" stroke-width="1" fill="none" opacity="0.2"/>
+          <div class="relative circle-box flex flex-col items-center justify-center">
+            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 240 240">
+              <circle cx="120" cy="120" r="106" stroke="hsl(var(--border))" stroke-width="1" fill="none" opacity="0.6"/>
+              <circle cx="120" cy="120" r="78" stroke="hsl(var(--border))" stroke-width="1" fill="none" opacity="0.3"/>
             </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-xl">IMU</div>
+            <div class="relative flex items-end gap-2 h-20" id="activity-bars">
+              <span class="act-bar"></span>
+              <span class="act-bar"></span>
+              <span class="act-bar"></span>
+              <span class="act-bar"></span>
+              <span class="act-bar"></span>
+              <span class="act-bar"></span>
+              <span class="act-bar"></span>
             </div>
+            <div class="font-data text-xs uppercase tracking-wider mt-4 text-muted">Активность</div>
           </div>
-          <div class="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data text-sm uppercase chip-bg" id="imu-chip">
+          <div class="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data text-sm uppercase chip-bg" id="imu-chip">
             <span class="w-2 h-2 rounded-full dot-success"></span>
             <span>Покой</span>
           </div>
         </div>
       </div>
-      <!-- /Stress + IMU -->
+      <!-- /Stress + Activity -->
 
-      <!-- Кнопки СТОП + ТЕСТ — §5.4 -->
-      <div class="grid grid-cols-2 gap-4">
-        <button id="btn-stop" class="h-16 rounded-xl font-medium text-lg btn-ghost">СТОП</button>
-        <button id="btn-test" class="h-16 rounded-xl font-medium text-lg flex items-center justify-center gap-2 btn-primary">
-          <span>▶</span><span>ТЕСТ</span>
+      <!-- Кнопки СТОП + ТЕСТ — §5.4 — иерархия: ТЕСТ доминирует -->
+      <div class="grid grid-cols-3 gap-4">
+        <button id="btn-stop" class="h-16 rounded-xl font-medium text-base btn-ghost">СТОП</button>
+        <button id="btn-test" class="col-span-2 h-16 rounded-xl font-medium text-xl flex items-center justify-center gap-3 btn-primary">
+          <span class="text-2xl leading-none">▶</span>
+          <span>ПРОЙТИ ТЕСТ БАЕВСКОГО</span>
         </button>
       </div>
       <!-- /Кнопки -->
@@ -461,19 +526,24 @@
       </div>
 
       <!-- Bayevsky Results — §6.5 — два состояния empty/done в одном контейнере -->
-      <div class="rounded-2xl p-6 flex-1 flex flex-col items-center justify-center cursor-pointer card-bg bayevsky-card" id="bayevsky-card">
+      <div class="rounded-2xl p-8 flex-1 flex flex-col items-center justify-center cursor-pointer card-bg bayevsky-card" id="bayevsky-card">
         <!-- Empty state (до прохождения теста) -->
         <div id="bayevsky-empty" class="text-center">
-          <div class="text-6xl mb-3">🧪</div>
-          <div class="font-medium text-2xl mb-2">ТЕСТ НЕ ПРОЙДЕН</div>
-          <div class="text-base text-muted">Запусти ниже ↓</div>
+          <div class="font-data text-xs uppercase tracking-wider mb-4 text-muted">Тест Баевского</div>
+          <div class="text-7xl mb-4 leading-none">🧪</div>
+          <div class="font-medium text-3xl mb-3">не пройден</div>
+          <div class="text-base text-muted max-w-sm mx-auto">Запустите кнопкой «Пройти тест Баевского»</div>
         </div>
 
         <!-- Done state (после прохождения) — скрыт по умолчанию -->
         <div id="bayevsky-done" class="hidden text-center w-full">
-          <div class="font-data text-xs uppercase tracking-wider mb-3 text-muted">Bayevsky · ИН <span id="bayevsky-summary-in">145</span></div>
-          <div class="font-medium text-2xl mb-2 text-success" id="bayevsky-verdict">🟢 Реактивность нормальная</div>
-          <div class="text-sm text-muted">Клик для деталей →</div>
+          <div class="font-data text-xs uppercase tracking-wider mb-5 text-muted">Тест Баевского пройден</div>
+          <div class="flex items-end justify-center gap-3 mb-4">
+            <span class="font-data text-base uppercase tracking-wider text-muted" style="margin-bottom: 12px;">ИН</span>
+            <span class="font-hero tnum leading-none" id="bayevsky-summary-in" style="font-size: 96px; color: hsl(var(--success));">145</span>
+          </div>
+          <div class="font-medium text-2xl mb-3" id="bayevsky-verdict" style="color: hsl(var(--success));">Реактивность нормальная</div>
+          <div class="font-data text-xs uppercase tracking-wider text-muted">Открыть детали →</div>
         </div>
       </div>
       <!-- /Bayevsky Results -->
@@ -485,11 +555,19 @@
     <div class="rounded-2xl shadow-2xl relative bayevsky-modal-panel">
       <!-- Phase-1 content — visible при body.state-phase-1 -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-1">
-        <div class="font-data text-sm uppercase tracking-wider phase-label-muted">Фаза 1 из 3</div>
+        <div class="flex items-center justify-between">
+          <div class="font-data text-xs uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 1 из 3</div>
+          <div class="flex items-center gap-2">
+            <span class="phase-dot active"></span>
+            <span class="phase-dot"></span>
+            <span class="phase-dot"></span>
+          </div>
+        </div>
         <div class="flex-1 flex flex-col items-center justify-center">
+          <div class="font-data text-xs uppercase tracking-wider mb-3 phase-label-muted">Осталось</div>
           <div class="font-hero tnum leading-none phase-timer-size" id="phase-1-timer">02:47</div>
-          <div class="font-medium text-5xl mt-4">ПОКОЙ</div>
-          <div class="text-xl mt-2 phase-label-muted">Стой неподвижно, дыши спокойно</div>
+          <div class="font-medium text-5xl mt-6 tracking-wide">ПОКОЙ</div>
+          <div class="text-xl mt-3 phase-label-muted">Стой неподвижно, дыши спокойно</div>
         </div>
         <div class="h-2 rounded-full overflow-hidden progress-track">
           <div class="h-full rounded-full transition-all phase-progress-fill" id="phase-1-progress" style="width: 33%;"></div>
@@ -498,17 +576,25 @@
       <!-- Phase-2 content -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-2">
         <div class="flex items-center justify-between">
-          <div class="font-data text-sm uppercase tracking-wider phase-label-muted">Фаза 2 из 3</div>
-          <div class="font-data tnum text-2xl text-foreground">00:42</div>
+          <div class="font-data text-xs uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 2 из 3 · STROOP</div>
+          <div class="flex items-center gap-2">
+            <span class="phase-dot done"></span>
+            <span class="phase-dot active"></span>
+            <span class="phase-dot"></span>
+          </div>
         </div>
-        <div class="flex-1 flex items-center justify-center">
+        <div class="flex flex-col items-center mt-4">
+          <div class="font-data text-xs uppercase tracking-wider mb-3 phase-label-muted">Выберите ЦВЕТ слова</div>
           <div class="font-medium leading-none stroop-word">КРАСНЫЙ</div>
+          <div class="font-data tnum text-base mt-3 text-muted">00:42</div>
         </div>
-        <div class="grid grid-cols-4 gap-4 mb-6">
-          <button class="h-14 rounded-xl text-lg font-medium stroop-btn">КРАСНЫЙ</button>
-          <button class="h-14 rounded-xl text-lg font-medium stroop-btn">ЗЕЛЁНЫЙ</button>
-          <button class="h-14 rounded-xl text-lg font-medium stroop-btn">СИНИЙ</button>
-          <button class="h-14 rounded-xl text-lg font-medium stroop-btn">ЖЁЛТЫЙ</button>
+        <div class="flex-1 flex items-end">
+          <div class="grid grid-cols-4 gap-4 w-full mb-6">
+            <button class="h-16 rounded-xl text-xl font-medium stroop-btn" data-color="red">КРАСНЫЙ</button>
+            <button class="h-16 rounded-xl text-xl font-medium stroop-btn" data-color="green">ЗЕЛЁНЫЙ</button>
+            <button class="h-16 rounded-xl text-xl font-medium stroop-btn" data-color="blue">СИНИЙ</button>
+            <button class="h-16 rounded-xl text-xl font-medium stroop-btn" data-color="yellow">ЖЁЛТЫЙ</button>
+          </div>
         </div>
         <div class="h-2 rounded-full overflow-hidden progress-track">
           <div class="h-full rounded-full phase-progress-fill" style="width: 72%;"></div>
@@ -516,45 +602,62 @@
       </div>
       <!-- Phase-3 content -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-3">
-        <div class="font-data text-sm uppercase tracking-wider phase-label-muted">Фаза 3 из 3</div>
+        <div class="flex items-center justify-between">
+          <div class="font-data text-xs uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 3 из 3</div>
+          <div class="flex items-center gap-2">
+            <span class="phase-dot done"></span>
+            <span class="phase-dot done"></span>
+            <span class="phase-dot active"></span>
+          </div>
+        </div>
         <div class="flex-1 flex flex-col items-center justify-center">
+          <div class="font-data text-xs uppercase tracking-wider mb-3 phase-label-muted">Осталось</div>
           <div class="font-hero tnum leading-none phase-timer-size" id="phase-3-timer">00:54</div>
-          <div class="font-medium text-5xl mt-4">БЫСТРАЯ ХОДЬБА</div>
-          <div class="text-xl mt-2 text-center phase-label-muted">Быстро пройдитесь в течение 1 минуты,<br>чтобы поднять пульс</div>
+          <div class="font-medium text-5xl mt-6 tracking-wide">НАГРУЗКА</div>
+          <div class="text-xl mt-3 text-center phase-label-muted">Быстро пройдитесь в течение 1 минуты,<br>чтобы поднять пульс</div>
         </div>
         <div class="h-2 rounded-full overflow-hidden progress-track">
           <div class="h-full rounded-full transition-all phase-progress-fill" id="phase-3-progress" style="width: 46%;"></div>
         </div>
       </div>
-      <!-- Result content -->
+      <!-- Result content — иерархия: hero (ИН+вердикт) сверху, фазы supporting, caption внизу -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="result">
-        <div class="flex items-center justify-between mb-4">
-          <div class="font-medium text-2xl">Результат теста Баевского</div>
-          <button id="result-close" class="w-10 h-10 rounded-full flex items-center justify-center text-xl result-close-btn">×</button>
+        <div class="flex items-center justify-between">
+          <div class="font-data text-xs uppercase tracking-wider phase-label-muted">Результат · Тест Баевского</div>
+          <button id="result-close" class="w-10 h-10 rounded-full flex items-center justify-center text-2xl result-close-btn">×</button>
         </div>
-        <div class="grid grid-cols-3 gap-6" id="result-phases">
+        <!-- Hero: ИН + вердикт -->
+        <div class="mt-2 mb-6 flex items-center justify-center gap-10">
+          <div class="text-center">
+            <div class="font-data text-xs uppercase tracking-wider mb-2 phase-label-muted">Индекс напряжения Σ</div>
+            <div class="font-hero tnum leading-none result-in-sum-size" id="result-in-sum">145</div>
+          </div>
+          <div class="h-24 w-px" style="background: hsl(var(--border));"></div>
+          <div class="max-w-sm">
+            <div class="font-data text-xs uppercase tracking-wider mb-2 phase-label-muted">Вердикт</div>
+            <div class="font-medium text-3xl leading-tight" id="result-verdict">Реактивность нормальная</div>
+            <div class="text-sm mt-3 text-muted" id="result-verdict-caption">Здоровая адаптация ВНС к нагрузкам</div>
+          </div>
+        </div>
+        <!-- Фазы (supporting) -->
+        <div class="font-data text-xs uppercase tracking-wider mb-3 phase-label-muted">Динамика по фазам</div>
+        <div class="grid grid-cols-3 gap-4 flex-1" id="result-phases">
           <!-- 3 плашки заполняются JS updateResult() -->
-        </div>
-        <div class="flex-1 flex flex-col items-center justify-center">
-          <div class="font-data text-sm uppercase tracking-wider mb-2 phase-label-muted">Индекс напряжения Σ</div>
-          <div class="font-hero tnum leading-none result-in-sum-size" id="result-in-sum">145</div>
-        </div>
-        <div class="text-center">
-          <div class="font-medium text-2xl uppercase" id="result-verdict">🟢 Реактивность нормальная</div>
-          <div class="text-base mt-2 text-foreground">Здоровая адаптация ВНС к нагрузкам</div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Claim state — §8 — visible при body.state-claim, скрывает main -->
-  <div id="claim-screen" class="fixed inset-0 flex-col items-center justify-center claim-screen-bg">
-    <div class="absolute top-8 left-0 right-0 text-center">
-      <span class="text-2xl font-medium">Сессия завершена · </span><span class="font-data tnum text-2xl claim-session-id">sess_7K2M9</span>
+  <div id="claim-screen" class="fixed inset-0 flex-col items-center justify-center gap-8 claim-screen-bg">
+    <!-- Heading -->
+    <div class="text-center">
+      <div class="font-data text-xs uppercase tracking-wider mb-3 claim-session-id">Сессия завершена · <span class="tnum">sess_7K2M9</span></div>
+      <div class="font-hero text-5xl leading-none">Спасибо за участие</div>
     </div>
     <!-- Placeholder QR (SVG pattern, без реальной генерации) -->
-    <div class="p-6 rounded-2xl claim-qr-card">
-      <svg width="400" height="400" viewBox="0 0 100 100" class="block">
+    <div class="p-8 rounded-3xl claim-qr-card shadow-2xl">
+      <svg width="440" height="440" viewBox="0 0 100 100" class="block">
         <rect x="0" y="0" width="100" height="100" fill="white"/>
         <g fill="black">
           <!-- Уголки-маркеры QR -->
@@ -601,10 +704,10 @@
         </g>
       </svg>
     </div>
-    <div class="mt-8 text-2xl text-center max-w-xl">
-      Гость, отсканируй чтобы получить<br>отчёт о сессии в Telegram
+    <div class="text-xl text-center max-w-xl">
+      Отсканируй камерой телефона — получи<br>отчёт о сессии в Telegram-бот
     </div>
-    <button id="claim-done" class="absolute bottom-8 right-8 px-12 py-4 rounded-xl font-medium text-lg claim-done-btn">Готово</button>
+    <button id="claim-done" class="px-16 py-4 rounded-xl font-medium text-lg claim-done-btn">Готово</button>
   </div>
 
   <!-- Dev-bar — §10 -->
@@ -706,6 +809,13 @@
       const stressChip = document.getElementById('stress-chip');
       stressChip.children[0].style.background = d.stressColor;
       stressChip.children[1].textContent = d.stressLabel;
+      /* Stress arc — заполнение по значению NSI (0..100), pathLength=100 */
+      const stressArc = document.getElementById('stress-arc');
+      if (stressArc) {
+        const filled = Math.max(0, Math.min(100, d.stress));
+        stressArc.setAttribute('stroke-dashoffset', 100 - filled);
+        stressArc.style.stroke = d.stressColor;
+      }
 
       const imuChip = document.getElementById('imu-chip');
       imuChip.children[0].style.background = d.imuColor;
@@ -750,9 +860,11 @@
       if (d.bayevsky.done) {
         document.getElementById('bayevsky-empty').classList.add('hidden');
         document.getElementById('bayevsky-done').classList.remove('hidden');
-        document.getElementById('bayevsky-summary-in').textContent = d.bayevsky.in;
+        const summaryEl = document.getElementById('bayevsky-summary-in');
+        summaryEl.textContent = d.bayevsky.in;
+        summaryEl.style.color = d.bayevsky.color;
         const verdictEl = document.getElementById('bayevsky-verdict');
-        verdictEl.textContent = d.bayevsky.verdict;
+        verdictEl.textContent = d.bayevsky.verdict.replace(/^(🟢|🟡|🔴)\s*/, '');
         verdictEl.style.color = d.bayevsky.color;
       } else {
         document.getElementById('bayevsky-empty').classList.remove('hidden');
@@ -763,6 +875,7 @@
       const isEmpty = document.body.classList.contains('state-empty');
 
       if (isEmpty) {
+        window._bpmFrozen = true;
         document.getElementById('bpm-value').textContent = '—';
         const bpmChipEmpty = document.getElementById('bpm-status-chip');
         bpmChipEmpty.children[0].style.background = 'hsl(var(--warning))';
@@ -770,6 +883,14 @@
         document.getElementById('stress-value').textContent = '—';
         stressChip.style.opacity = '0';
         imuChip.style.opacity = '0';
+        /* Обнуляем Stress arc — в empty нет данных */
+        const arcEmpty = document.getElementById('stress-arc');
+        if (arcEmpty) {
+          arcEmpty.setAttribute('stroke-dashoffset', 100);
+          arcEmpty.style.stroke = 'hsl(var(--muted-foreground) / 0.3)';
+        }
+        /* Дезактивируем activity-bars */
+        document.querySelectorAll('.act-bar').forEach(b => { b.style.animationPlayState = 'paused'; b.style.opacity = '0.3'; });
         ['recovery', 'burnout', 'drowsy'].forEach(metric => {
           document.getElementById(`${metric}-value`).textContent = '—';
           document.getElementById(`${metric}-bar`).style.width = '0%';
@@ -780,10 +901,12 @@
         document.getElementById('btn-stop').classList.add('btn-disabled');
         document.getElementById('btn-test').classList.add('btn-disabled');
       } else {
+        window._bpmFrozen = false;
         stressChip.style.opacity = '1';
         imuChip.style.opacity = '1';
         document.getElementById('btn-stop').classList.remove('btn-disabled');
         document.getElementById('btn-test').classList.remove('btn-disabled');
+        document.querySelectorAll('.act-bar').forEach(b => { b.style.animationPlayState = 'running'; b.style.opacity = ''; });
       }
     }
 
@@ -795,17 +918,16 @@
       phasesContainer.innerHTML = data.phases.map(p => {
         const variant = p.icon === '🟢' ? 'is-success' : 'is-warning';
         return `
-          <div class="rounded-xl p-4 flex flex-col items-center result-phase-card">
-            <div class="font-data text-xs uppercase tracking-wider phase-label-muted">${p.label}</div>
-            <div class="font-hero tnum leading-none my-2 result-phase-num ${variant}">${p.in}</div>
-            <div class="text-2xl">${p.icon}</div>
-            <div class="text-sm result-phase-cap ${variant}">${p.cap}</div>
+          <div class="rounded-xl p-5 flex flex-col items-center justify-center result-phase-card">
+            <div class="font-data text-xs uppercase tracking-wider phase-label-muted mb-2">${p.label}</div>
+            <div class="font-hero tnum leading-none result-phase-num ${variant}">${p.in}</div>
+            <div class="text-sm uppercase tracking-wider mt-3 result-phase-cap ${variant}">${p.cap}</div>
           </div>
         `;
       }).join('');
       document.getElementById('result-in-sum').textContent = data.in;
       document.getElementById('result-in-sum').style.color = data.color;
-      document.getElementById('result-verdict').textContent = data.verdict;
+      document.getElementById('result-verdict').textContent = data.verdict.replace(/^(🟢|🟡|🔴)\s*/, '');
       document.getElementById('result-verdict').style.color = data.color;
     }
 
@@ -832,7 +954,10 @@
     /* URL params parsing — §12 */
     const urlParams = new URLSearchParams(window.location.search);
     const initialPersona = urlParams.get('id') || 'guest';
-    const initialState = urlParams.get('session') === 'active' ? 'drilldown' : 'empty';
+    const urlState = urlParams.get('state');
+    const initialState = urlState && ['empty','drilldown','phase-1','phase-2','phase-3','result','claim'].includes(urlState)
+      ? urlState
+      : (urlParams.get('session') === 'active' ? 'drilldown' : 'empty');
 
     /* State machine — §11 */
     const STATES = ['empty', 'drilldown', 'phase-1', 'phase-2', 'phase-3', 'result', 'claim'];
