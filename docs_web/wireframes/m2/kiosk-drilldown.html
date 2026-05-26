@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1920, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neiry Pulse · Kiosk Drilldown</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,21 +26,48 @@
       --chart-2: 151 100% 45%;
       --chart-4: 42 100% 50%;
     }
+    html, body {
+      margin: 0; padding: 0;
+      width: 100vw; height: 100vh;
+      overflow: hidden;
+    }
     body {
       font-family: 'Space Grotesk', sans-serif;
       background: hsl(var(--background));
       color: hsl(var(--foreground));
       -webkit-font-smoothing: antialiased;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .font-hero { font-family: 'Onest', sans-serif; font-weight: 700; letter-spacing: -0.02em; }
     .font-data { font-family: 'Geist Mono', monospace; }
     .tnum { font-variant-numeric: tabular-nums; }
 
+    /* ============================================
+       KIOSK STAGE — фиксированный canvas 1920×1080,
+       масштабируется через transform: scale() под любой viewport.
+       Гарантирует корректный рендер на 13/15" MacBook, плазме 1920×1080,
+       UHD и при любом browser zoom (100%, 75%, 67% — всегда корректно).
+       Dev-bar — fixed bottom, в native size, поверх stage.
+       ============================================ */
+    #kiosk-stage {
+      width: 1920px;
+      height: 1080px;
+      flex-shrink: 0;
+      transform-origin: center center;
+      position: relative;
+      background: hsl(var(--background));
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
     /* Top-bar border */
     .topbar-border { border-bottom: 1px solid hsl(var(--border)); }
 
-    /* Main content area height: 100vh - 64px topbar - 80px devbar */
-    .main-content { height: calc(100vh - 64px - 80px); }
+    /* Main content area height: stage 1080 - 64px topbar (dev-bar — снаружи stage) */
+    .main-content { height: calc(1080px - 64px); }
 
     /* Dev-bar */
     .devbar-bg {
@@ -318,7 +345,12 @@
     .ble-toggle-btn:hover { background: hsl(var(--muted)); }
   </style>
 </head>
-<body class="state-drilldown min-h-screen overflow-hidden">
+<body class="state-drilldown">
+
+<!-- =========================================
+     KIOSK STAGE — fixed 1920×1080 canvas, JS-scaled to fit viewport
+     ========================================= -->
+<div id="kiosk-stage">
 
   <!-- Top-bar — §4 -->
   <header class="h-16 px-8 flex items-center justify-between topbar-border">
@@ -558,10 +590,13 @@
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-1">
         <div class="flex items-center justify-between">
           <div class="font-data text-xs uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 1 из 3</div>
-          <div class="flex items-center gap-2">
-            <span class="phase-dot active"></span>
-            <span class="phase-dot"></span>
-            <span class="phase-dot"></span>
+          <div class="flex items-center gap-5">
+            <div class="flex items-center gap-2">
+              <span class="phase-dot active"></span>
+              <span class="phase-dot"></span>
+              <span class="phase-dot"></span>
+            </div>
+            <button class="phase-cancel w-10 h-10 rounded-full flex items-center justify-center text-2xl result-close-btn" title="Прервать тест" aria-label="Прервать тест">×</button>
           </div>
         </div>
         <div class="flex-1 flex flex-col items-center justify-center">
@@ -578,10 +613,13 @@
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-2">
         <div class="flex items-center justify-between">
           <div class="font-data text-xs uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 2 из 3 · STROOP</div>
-          <div class="flex items-center gap-2">
-            <span class="phase-dot done"></span>
-            <span class="phase-dot active"></span>
-            <span class="phase-dot"></span>
+          <div class="flex items-center gap-5">
+            <div class="flex items-center gap-2">
+              <span class="phase-dot done"></span>
+              <span class="phase-dot active"></span>
+              <span class="phase-dot"></span>
+            </div>
+            <button class="phase-cancel w-10 h-10 rounded-full flex items-center justify-center text-2xl result-close-btn" title="Прервать тест" aria-label="Прервать тест">×</button>
           </div>
         </div>
         <div class="flex-1 flex flex-col items-center justify-center">
@@ -601,10 +639,13 @@
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-3">
         <div class="flex items-center justify-between">
           <div class="font-data text-xs uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 3 из 3</div>
-          <div class="flex items-center gap-2">
-            <span class="phase-dot done"></span>
-            <span class="phase-dot done"></span>
-            <span class="phase-dot active"></span>
+          <div class="flex items-center gap-5">
+            <div class="flex items-center gap-2">
+              <span class="phase-dot done"></span>
+              <span class="phase-dot done"></span>
+              <span class="phase-dot active"></span>
+            </div>
+            <button class="phase-cancel w-10 h-10 rounded-full flex items-center justify-center text-2xl result-close-btn" title="Прервать тест" aria-label="Прервать тест">×</button>
           </div>
         </div>
         <div class="flex-1 flex flex-col items-center justify-center">
@@ -707,7 +748,9 @@
     <button id="claim-done" class="px-16 py-4 rounded-xl font-medium text-lg claim-done-btn">Готово</button>
   </div>
 
-  <!-- Dev-bar — §10 -->
+</div><!-- /#kiosk-stage -->
+
+  <!-- Dev-bar — §10 — СНАРУЖИ stage, native viewport size -->
   <footer id="dev-bar" class="h-20 fixed bottom-0 left-0 right-0 devbar-bg flex items-center gap-6 px-8 devbar-z">
     <button id="back-to-wall" class="px-4 py-2 rounded-lg text-sm btn-ghost">← на стену</button>
     <div class="flex items-center gap-3">
@@ -739,6 +782,29 @@
   </footer>
 
   <script>
+    /* ============================================
+       VIEWPORT FIT — масштабирование 1920×1080 stage под любой viewport.
+       Работает на любом мониторе и при любом browser zoom (100%, 80%, 67%, 150%).
+       Dev-bar (80px) — fixed bottom, поэтому из доступной высоты вычитаем 80px,
+       чтобы stage не уходил под dev-bar на коротких экранах (MacBook 13").
+       ============================================ */
+    (function () {
+      const stage = document.getElementById('kiosk-stage');
+      const devBarHeight = 80;
+      function fitStage() {
+        if (!stage) return;
+        const availH = window.innerHeight - devBarHeight;
+        const scale = Math.min(
+          window.innerWidth / 1920,
+          availH / 1080
+        );
+        stage.style.transform = `scale(${scale})`;
+      }
+      fitStage();
+      window.addEventListener('resize', fitStage);
+      window.addEventListener('orientationchange', fitStage);
+    })();
+
     /* Session timer tick — §4 */
     let sessionSeconds = 167; // 02:47 starting
     setInterval(() => {
@@ -956,6 +1022,11 @@
         applyPersona(persona);
       }
       setState('drilldown');
+    });
+
+    /* Cancel-X в phase-1/2/3 — прерывает тест, возврат в drilldown без сохранения результата */
+    document.querySelectorAll('.phase-cancel').forEach(btn => {
+      btn.addEventListener('click', () => setState('drilldown'));
     });
 
     /* URL params parsing — §12 */
