@@ -247,6 +247,33 @@
     .result-phase-cap.is-success { color: hsl(var(--success)); }
     .result-phase-num.is-warning,
     .result-phase-cap.is-warning { color: hsl(var(--warning)); }
+
+    /* Task 16 — Empty state + BLE disconnect — §9 */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .empty-banner-bg { background: hsl(var(--muted)); }
+    .empty-banner-dot {
+      background: hsl(var(--warning));
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .skeleton-muted-text { color: hsl(var(--muted-foreground)); }
+
+    .btn-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .ble-toggle-btn {
+      background: hsl(var(--muted) / 0.5);
+      color: hsl(var(--foreground));
+      transition: background 0.15s ease;
+    }
+    .ble-toggle-btn:hover { background: hsl(var(--muted)); }
   </style>
 </head>
 <body class="state-drilldown min-h-screen overflow-hidden">
@@ -260,6 +287,14 @@
     </div>
     <div class="font-data tnum text-lg" id="session-timer">02:47</div>
   </header>
+
+  <!-- Empty state banner — §9.1 — visible при body.state-empty -->
+  <div id="empty-banner" class="h-12 items-center justify-center text-center empty-banner-bg">
+    <span class="inline-flex items-center gap-2 font-medium">
+      <span class="w-2 h-2 rounded-full empty-banner-dot"></span>
+      Ожидание сессии · Калибруйте гостя через стену
+    </span>
+  </div>
 
   <!-- Main layout — placeholder, заполнится в следующих задачах -->
   <main class="px-8 py-8 flex gap-6 main-content">
@@ -595,6 +630,9 @@
         <button class="persona-pill state-pill px-3 py-1.5 rounded-full text-sm active" data-persona="guest">Гость</button>
       </div>
     </div>
+    <button id="ble-toggle" class="px-3 py-1.5 rounded-full text-sm font-data uppercase tracking-wide ble-toggle-btn">
+      <span id="ble-toggle-label">BLE: connected</span>
+    </button>
     <div class="ml-auto font-data text-sm uppercase tracking-wider text-muted">
       STATE: <span id="state-indicator" class="text-foreground">drilldown</span>
     </div>
@@ -614,6 +652,7 @@
     let bpmBase = 82;
     let bpmTick = 0;
     setInterval(() => {
+      if (window._bpmFrozen) return;
       bpmTick++;
       const variation = Math.sin(bpmTick / 3) * 2;
       const value = Math.round(bpmBase + variation);
@@ -719,6 +758,33 @@
         document.getElementById('bayevsky-empty').classList.remove('hidden');
         document.getElementById('bayevsky-done').classList.add('hidden');
       }
+
+      /* Empty-state skeleton: если body.state-empty — затирать live-значения — Task 16 §9 */
+      const isEmpty = document.body.classList.contains('state-empty');
+
+      if (isEmpty) {
+        document.getElementById('bpm-value').textContent = '—';
+        const bpmChipEmpty = document.getElementById('bpm-status-chip');
+        bpmChipEmpty.children[0].style.background = 'hsl(var(--warning))';
+        bpmChipEmpty.children[1].textContent = 'Нет связи';
+        document.getElementById('stress-value').textContent = '—';
+        stressChip.style.opacity = '0';
+        imuChip.style.opacity = '0';
+        ['recovery', 'burnout', 'drowsy'].forEach(metric => {
+          document.getElementById(`${metric}-value`).textContent = '—';
+          document.getElementById(`${metric}-bar`).style.width = '0%';
+          document.getElementById(`${metric}-caption`).innerHTML = '<span class="skeleton-muted-text">нет данных</span>';
+        });
+        document.getElementById('sleep-value').textContent = '— ч — м';
+        document.querySelectorAll('#sleep-gauge circle[pathLength]').forEach(c => c.style.opacity = '0.2');
+        document.getElementById('btn-stop').classList.add('btn-disabled');
+        document.getElementById('btn-test').classList.add('btn-disabled');
+      } else {
+        stressChip.style.opacity = '1';
+        imuChip.style.opacity = '1';
+        document.getElementById('btn-stop').classList.remove('btn-disabled');
+        document.getElementById('btn-test').classList.remove('btn-disabled');
+      }
     }
 
     function updateResult() {
@@ -743,11 +809,13 @@
       document.getElementById('result-verdict').style.color = data.color;
     }
 
-    /* Запускать updateResult() при входе в state=result */
+    /* Запускать updateResult() при входе в state=result; переапплаить персону для skeleton — Task 16 */
     const _setState_original = setState;
     setState = function(newState) {
       _setState_original(newState);
       if (newState === 'result') updateResult();
+      const persona = document.querySelector('.persona-pill.active')?.dataset.persona || 'guest';
+      applyPersona(persona);
     };
 
     /* Close-X — возврат в drilldown с обновлённой Bayevsky-карточкой */
@@ -824,6 +892,24 @@
     /* Кнопка Готово в claim — redirect на стену — Task 15 */
     document.getElementById('claim-done').addEventListener('click', () => {
       window.location.href = 'kiosk-v2.html';
+    });
+
+    /* BLE toggle — sub-state «потеря связи» — Task 16 §9.3 */
+    document.getElementById('ble-toggle').addEventListener('click', () => {
+      const isDisconnected = document.body.classList.toggle('state-disconnected');
+      document.getElementById('ble-toggle-label').textContent = isDisconnected ? 'BLE: потеря связи' : 'BLE: connected';
+      const chip = document.getElementById('bpm-status-chip');
+      if (isDisconnected) {
+        chip.children[0].style.background = 'hsl(var(--warning))';
+        chip.children[1].textContent = 'Потеря связи';
+        bpmBase = parseInt(document.getElementById('bpm-value').textContent) || 82;
+        window._bpmFrozen = true;
+        document.querySelectorAll('#ecg-pattern path').forEach(p => p.setAttribute('d', 'M 0 54 L 884 54'));
+      } else {
+        chip.children[0].style.background = 'hsl(var(--success))';
+        chip.children[1].textContent = 'Подключен';
+        window._bpmFrozen = false;
+      }
     });
 
     /* Initial render — после всех bindings */
