@@ -62,6 +62,15 @@
     .chip-bg { background: hsl(var(--muted) / 0.5); }
     .dot-success { background: hsl(var(--success)); }
 
+    /* ECG plashka — §5.2 */
+    .ecg-card { height: 140px; }
+    .text-success { color: hsl(var(--success)); }
+    @keyframes ecg-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-884px); }
+    }
+    #ecg-pattern { animation: ecg-scroll 6s linear infinite; }
+
     /* BPM breathing animation */
     @keyframes bpm-breathe {
       0%, 100% { transform: scale(1); }
@@ -103,6 +112,19 @@
         </div>
       </div>
       <!-- /BPM hero -->
+
+      <!-- ECG plashka — §5.2 -->
+      <div class="rounded-2xl p-4 relative overflow-hidden card-bg ecg-card">
+        <div class="absolute top-2 left-4 font-data text-xs uppercase tracking-wider text-muted">ECG</div>
+        <svg class="w-full h-full" viewBox="0 0 884 108" preserveAspectRatio="none" id="ecg-svg">
+          <g id="ecg-pattern" stroke="currentColor" stroke-width="2" fill="none" class="text-success">
+            <!-- 2 sibling patterns для бесшовного scroll -->
+            <path id="ecg-path-1" d="M 0 54 L 50 54 L 60 50 L 65 54 L 70 30 L 75 80 L 80 54 L 90 54 L 100 48 L 110 54 L 160 54 L 170 50 L 175 54 L 180 30 L 185 80 L 190 54 L 200 54 L 210 48 L 220 54 L 270 54 L 280 50 L 285 54 L 290 30 L 295 80 L 300 54 L 310 54 L 320 48 L 330 54 L 380 54 L 390 50 L 395 54 L 400 30 L 405 80 L 410 54 L 420 54 L 430 48 L 440 54 L 490 54 L 500 50 L 505 54 L 510 30 L 515 80 L 520 54 L 530 54 L 540 48 L 550 54 L 600 54 L 610 50 L 615 54 L 620 30 L 625 80 L 630 54 L 640 54 L 650 48 L 660 54 L 710 54 L 720 50 L 725 54 L 730 30 L 735 80 L 740 54 L 750 54 L 760 48 L 770 54 L 820 54 L 830 50 L 835 54 L 840 30 L 845 80 L 850 54 L 860 54 L 870 48 L 884 54"/>
+            <path id="ecg-path-2" d="M 0 54 L 50 54 L 60 50 L 65 54 L 70 30 L 75 80 L 80 54 L 90 54 L 100 48 L 110 54 L 160 54 L 170 50 L 175 54 L 180 30 L 185 80 L 190 54 L 200 54 L 210 48 L 220 54 L 270 54 L 280 50 L 285 54 L 290 30 L 295 80 L 300 54 L 310 54 L 320 48 L 330 54 L 380 54 L 390 50 L 395 54 L 400 30 L 405 80 L 410 54 L 420 54 L 430 48 L 440 54 L 490 54 L 500 50 L 505 54 L 510 30 L 515 80 L 520 54 L 530 54 L 540 48 L 550 54 L 600 54 L 610 50 L 615 54 L 620 30 L 625 80 L 630 54 L 640 54 L 650 48 L 660 54 L 710 54 L 720 50 L 725 54 L 730 30 L 735 80 L 740 54 L 750 54 L 760 48 L 770 54 L 820 54 L 830 50 L 835 54 L 840 30 L 845 80 L 850 54 L 860 54 L 870 48 L 884 54" transform="translate(884, 0)"/>
+          </g>
+        </svg>
+      </div>
+      <!-- /ECG plashka -->
     </section>
     <section id="predictive-column" class="flex-1 flex flex-col gap-4">
       <!-- PREDICTIVE column (Task 6-8) -->
