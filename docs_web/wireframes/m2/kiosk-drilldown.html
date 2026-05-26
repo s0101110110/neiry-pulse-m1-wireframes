@@ -457,9 +457,9 @@
 
   <!-- Empty state banner — §9.1 — visible при body.state-empty -->
   <div id="empty-banner" class="shrink-0 h-12 items-center justify-center text-center empty-banner-bg">
-    <span class="inline-flex items-center gap-3 font-medium text-base">
+    <span class="inline-flex items-center gap-3 font-medium t-body">
       <span class="w-2 h-2 rounded-full empty-banner-dot"></span>
-      <span class="font-data uppercase tracking-wider text-sm">Ожидание сессии</span>
+      <span class="font-data uppercase tracking-wider t-caption">Ожидание сессии</span>
       <span class="opacity-60">·</span>
       <span>Калибруйте гостя через стену</span>
     </span>
@@ -471,7 +471,7 @@
       <!-- BPM hero — §5.1 -->
       <div class="rounded-2xl p-8 flex flex-col items-center justify-center card-bg relative">
         <!-- Status chip — top-right corner -->
-        <div class="absolute top-4 right-4 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data text-xs uppercase chip-bg" id="bpm-status-chip">
+        <div class="absolute top-4 right-4 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data t-caption uppercase chip-bg" id="bpm-status-chip">
           <span class="w-2 h-2 rounded-full dot-success"></span>
           <span>Подключен</span>
         </div>
@@ -480,15 +480,15 @@
             <path d="M12 21s-7-4.5-9.5-9C.5 8.5 3 4 7 4c2 0 3.5 1 5 3 1.5-2 3-3 5-3 4 0 6.5 4.5 4.5 8-2.5 4.5-9.5 9-9.5 9z"/>
           </svg>
           <div class="font-display tnum leading-none bpm-number" id="bpm-value">82</div>
-          <div class="font-data text-2xl text-muted" style="margin-bottom: 18px;">BPM</div>
+          <div class="font-data t-lead text-muted" style="margin-bottom: 18px;">BPM</div>
         </div>
       </div>
       <!-- /BPM hero -->
 
       <!-- ECG plashka — §5.2 -->
       <div class="rounded-2xl p-4 relative overflow-hidden card-bg ecg-card">
-        <div class="absolute top-2 left-4 font-data text-xs uppercase tracking-wider text-muted">ECG</div>
-        <div id="ecg-no-signal" class="absolute inset-0 hidden items-center justify-center font-data text-base uppercase tracking-[0.3em]" style="color: hsl(var(--muted-foreground)); letter-spacing: 0.3em;">— нет сигнала —</div>
+        <div class="absolute top-2 left-4 font-data t-caption uppercase tracking-wider text-muted">ECG</div>
+        <div id="ecg-no-signal" class="absolute inset-0 hidden items-center justify-center font-data t-body uppercase tracking-[0.3em]" style="color: hsl(var(--muted-foreground)); letter-spacing: 0.3em;">— нет сигнала —</div>
         <svg class="w-full h-full" viewBox="0 0 884 108" preserveAspectRatio="none" id="ecg-svg">
           <g id="ecg-pattern" stroke="currentColor" stroke-width="2" fill="none" class="text-success">
             <!-- 2 sibling patterns для бесшовного scroll -->
@@ -515,10 +515,10 @@
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center" style="padding-top: 4px;">
               <div class="font-display tnum leading-none stress-number" id="stress-value">32</div>
-              <div class="font-data text-xs uppercase tracking-wider mt-2 text-muted">Stress Index</div>
+              <div class="font-data t-caption uppercase tracking-wider mt-2 text-muted">Stress Index</div>
             </div>
           </div>
-          <div class="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data text-sm uppercase chip-bg" id="stress-chip">
+          <div class="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data t-caption uppercase chip-bg" id="stress-chip">
             <span class="w-2 h-2 rounded-full dot-success"></span>
             <span>Норма</span>
           </div>
@@ -540,9 +540,9 @@
               <span class="act-bar"></span>
               <span class="act-bar"></span>
             </div>
-            <div class="font-data text-xs uppercase tracking-wider mt-4 text-muted">Активность</div>
+            <div class="font-data t-caption uppercase tracking-wider mt-4 text-muted">Активность</div>
           </div>
-          <div class="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data text-sm uppercase chip-bg" id="imu-chip">
+          <div class="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full font-data t-caption uppercase chip-bg" id="imu-chip">
             <span class="w-2 h-2 rounded-full dot-success"></span>
             <span>Покой</span>
           </div>
@@ -552,9 +552,9 @@
 
       <!-- Кнопки СТОП + ТЕСТ — §5.4 — иерархия: ТЕСТ доминирует -->
       <div class="grid grid-cols-3 gap-4">
-        <button id="btn-stop" class="h-16 rounded-xl font-medium text-base btn-ghost">СТОП</button>
-        <button id="btn-test" class="col-span-2 h-16 rounded-xl font-medium text-xl flex items-center justify-center gap-3 btn-primary">
-          <span class="text-2xl leading-none">▶</span>
+        <button id="btn-stop" class="h-16 rounded-xl font-medium t-body btn-ghost">СТОП</button>
+        <button id="btn-test" class="col-span-2 h-16 rounded-xl font-medium t-lead flex items-center justify-center gap-3 btn-primary">
+          <span class="t-lead leading-none">▶</span>
           <span>ПРОЙТИ ТЕСТ БАЕВСКОГО</span>
         </button>
       </div>
@@ -568,14 +568,14 @@
         <!-- Recovery — §6.1 -->
         <div class="rounded-2xl p-6 flex flex-col justify-between card-bg widget-min">
           <div class="flex items-start justify-between">
-            <div class="font-data text-xs uppercase tracking-wider text-muted">Recovery</div>
+            <div class="font-data t-caption uppercase tracking-wider text-muted">Recovery</div>
             <div class="font-display tnum leading-none widget-number" id="recovery-value">78%</div>
           </div>
           <div>
             <div class="h-3 rounded-full overflow-hidden progress-track">
               <div class="h-full rounded-full bar-success" id="recovery-bar" style="width: 78%;"></div>
             </div>
-            <div class="mt-4 flex items-center gap-2 text-base" id="recovery-caption">
+            <div class="mt-4 flex items-center gap-2 t-body" id="recovery-caption">
               <span>🟢</span><span>Хорошее восстановление</span>
             </div>
           </div>
@@ -584,7 +584,7 @@
         <!-- Sleep с концентрическими кольцами — §6.2 -->
         <div class="rounded-2xl p-6 flex flex-col justify-between card-bg widget-min">
           <div class="flex items-start justify-between">
-            <div class="font-data text-xs uppercase tracking-wider text-muted">Sleep</div>
+            <div class="font-data t-caption uppercase tracking-wider text-muted">Sleep</div>
             <div class="font-display tnum leading-none sleep-value-size" id="sleep-value">7ч&nbsp;12м</div>
           </div>
           <div class="flex items-center gap-6">
@@ -598,13 +598,13 @@
               <circle cx="70" cy="70" r="48" class="sleep-ring-rem" stroke-width="6" fill="none" pathLength="100" stroke-dasharray="28 100" stroke-dashoffset="0" transform="rotate(-90 70 70)" stroke-linecap="round"/>
               <circle cx="70" cy="70" r="36" class="sleep-ring-light" stroke-width="6" fill="none" pathLength="100" stroke-dasharray="50 100" stroke-dashoffset="0" transform="rotate(-90 70 70)" stroke-linecap="round"/>
             </svg>
-            <div class="flex flex-col gap-2 text-xs font-data uppercase tracking-wide text-muted">
+            <div class="flex flex-col gap-2 t-caption font-data uppercase tracking-wide text-muted">
               <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full dot-deep"></span>Deep 22%</div>
               <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full dot-rem"></span>REM 28%</div>
               <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full dot-light"></span>Light 50%</div>
             </div>
           </div>
-          <div class="flex items-center gap-2 text-base" id="sleep-caption">
+          <div class="flex items-center gap-2 t-body" id="sleep-caption">
             <span>🟢</span><span>Норма</span>
           </div>
         </div>
@@ -612,14 +612,14 @@
         <!-- Burnout — §6.3 -->
         <div class="rounded-2xl p-6 flex flex-col justify-between card-bg widget-min">
           <div class="flex items-start justify-between">
-            <div class="font-data text-xs uppercase tracking-wider text-muted">Burnout</div>
+            <div class="font-data t-caption uppercase tracking-wider text-muted">Burnout</div>
             <div class="font-display tnum leading-none widget-number" id="burnout-value">12%</div>
           </div>
           <div>
             <div class="h-3 rounded-full overflow-hidden progress-track">
               <div class="h-full rounded-full bar-success" id="burnout-bar" style="width: 12%;"></div>
             </div>
-            <div class="mt-4 flex items-center gap-2 text-base" id="burnout-caption">
+            <div class="mt-4 flex items-center gap-2 t-body" id="burnout-caption">
               <span>🟢</span><span>Низкий риск</span>
             </div>
           </div>
@@ -628,14 +628,14 @@
         <!-- Drowsy — §6.4 -->
         <div class="rounded-2xl p-6 flex flex-col justify-between card-bg widget-min">
           <div class="flex items-start justify-between">
-            <div class="font-data text-xs uppercase tracking-wider text-muted">Drowsy</div>
+            <div class="font-data t-caption uppercase tracking-wider text-muted">Drowsy</div>
             <div class="font-display tnum leading-none widget-number" id="drowsy-value">18%</div>
           </div>
           <div>
             <div class="h-3 rounded-full overflow-hidden progress-track">
               <div class="h-full rounded-full bar-success" id="drowsy-bar" style="width: 18%;"></div>
             </div>
-            <div class="mt-4 flex items-center gap-2 text-base" id="drowsy-caption">
+            <div class="mt-4 flex items-center gap-2 t-body" id="drowsy-caption">
               <span>🟢</span><span>Бодрость</span>
             </div>
           </div>
@@ -646,21 +646,21 @@
       <div class="rounded-2xl p-8 flex-1 flex flex-col items-center justify-center cursor-pointer card-bg bayevsky-card" id="bayevsky-card">
         <!-- Empty state (до прохождения теста) -->
         <div id="bayevsky-empty" class="text-center">
-          <div class="font-data text-xs uppercase tracking-wider mb-4 text-muted">Тест Баевского</div>
-          <div class="text-7xl mb-4 leading-none">🧪</div>
-          <div class="font-medium text-3xl mb-3">не пройден</div>
-          <div class="text-base text-muted max-w-sm mx-auto">Запустите кнопкой «Пройти тест Баевского»</div>
+          <div class="font-data t-caption uppercase tracking-wider mb-4 text-muted">Тест Баевского</div>
+          <div class="t-h1 mb-4 leading-none">🧪</div>
+          <div class="font-medium t-h2 mb-3">не пройден</div>
+          <div class="t-body text-muted max-w-sm mx-auto">Запустите кнопкой «Пройти тест Баевского»</div>
         </div>
 
         <!-- Done state (после прохождения) — скрыт по умолчанию -->
         <div id="bayevsky-done" class="hidden text-center w-full">
-          <div class="font-data text-xs uppercase tracking-wider mb-5 text-muted">Тест Баевского пройден</div>
+          <div class="font-data t-caption uppercase tracking-wider mb-5 text-muted">Тест Баевского пройден</div>
           <div class="flex items-end justify-center gap-3 mb-4">
-            <span class="font-data text-base uppercase tracking-wider text-muted" style="margin-bottom: 12px;">ИН</span>
+            <span class="font-data t-body uppercase tracking-wider text-muted" style="margin-bottom: 12px;">ИН</span>
             <span class="font-display tnum leading-none t-h1" id="bayevsky-summary-in" style="color: hsl(var(--success));">145</span>
           </div>
-          <div class="font-medium text-2xl mb-3" id="bayevsky-verdict" style="color: hsl(var(--success));">Реактивность нормальная</div>
-          <div class="font-data text-xs uppercase tracking-wider text-muted">Открыть детали →</div>
+          <div class="font-medium t-lead mb-3" id="bayevsky-verdict" style="color: hsl(var(--success));">Реактивность нормальная</div>
+          <div class="font-data t-caption uppercase tracking-wider text-muted">Открыть детали →</div>
         </div>
       </div>
       <!-- /Bayevsky Results -->
@@ -673,21 +673,21 @@
       <!-- Phase-1 content — visible при body.state-phase-1 -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-1">
         <div class="flex items-center justify-between">
-          <div class="font-data text-xs uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 1 из 3</div>
+          <div class="font-data t-caption uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 1 из 3</div>
           <div class="flex items-center gap-5">
             <div class="flex items-center gap-2">
               <span class="phase-dot active"></span>
               <span class="phase-dot"></span>
               <span class="phase-dot"></span>
             </div>
-            <button class="phase-cancel w-10 h-10 rounded-full flex items-center justify-center text-2xl result-close-btn" title="Прервать тест" aria-label="Прервать тест">×</button>
+            <button class="phase-cancel w-10 h-10 rounded-full flex items-center justify-center t-lead result-close-btn" title="Прервать тест" aria-label="Прервать тест">×</button>
           </div>
         </div>
         <div class="flex-1 flex flex-col items-center justify-center">
-          <div class="font-data text-xs uppercase tracking-wider mb-3 phase-label-muted">Осталось</div>
+          <div class="font-data t-caption uppercase tracking-wider mb-3 phase-label-muted">Осталось</div>
           <div class="font-display tnum leading-none phase-timer-size" id="phase-1-timer">02:47</div>
-          <div class="font-medium text-5xl mt-6 tracking-wide">ПОКОЙ</div>
-          <div class="text-xl mt-3 phase-label-muted">Стой неподвижно, дыши спокойно</div>
+          <div class="font-medium t-h2 mt-6 tracking-wide">ПОКОЙ</div>
+          <div class="t-lead mt-3 phase-label-muted">Стой неподвижно, дыши спокойно</div>
         </div>
         <div class="h-2 rounded-full overflow-hidden progress-track">
           <div class="h-full rounded-full transition-all phase-progress-fill" id="phase-1-progress" style="width: 33%;"></div>
@@ -696,14 +696,14 @@
       <!-- Phase-2 content — STROOP идёт на планшете гостя, на kiosk показываем waiting-плашку -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-2">
         <div class="flex items-center justify-between">
-          <div class="font-data text-xs uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 2 из 3 · STROOP</div>
+          <div class="font-data t-caption uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 2 из 3 · STROOP</div>
           <div class="flex items-center gap-5">
             <div class="flex items-center gap-2">
               <span class="phase-dot done"></span>
               <span class="phase-dot active"></span>
               <span class="phase-dot"></span>
             </div>
-            <button class="phase-cancel w-10 h-10 rounded-full flex items-center justify-center text-2xl result-close-btn" title="Прервать тест" aria-label="Прервать тест">×</button>
+            <button class="phase-cancel w-10 h-10 rounded-full flex items-center justify-center t-lead result-close-btn" title="Прервать тест" aria-label="Прервать тест">×</button>
           </div>
         </div>
         <div class="flex-1 flex flex-col items-center justify-center">
@@ -711,9 +711,9 @@
             <rect x="4" y="2" width="16" height="20" rx="2"/>
             <line x1="12" y1="18" x2="12" y2="18"/>
           </svg>
-          <div class="font-medium text-5xl mb-4 tracking-wide text-center">STROOP НА ПЛАНШЕТЕ</div>
-          <div class="text-xl text-center phase-label-muted max-w-md">Гость проходит цвето-словесный тест<br>на планшете рядом со стендом</div>
-          <div class="font-data tnum text-base mt-8 text-muted">осталось <span class="text-foreground">00:42</span></div>
+          <div class="font-medium t-h2 mb-4 tracking-wide text-center">STROOP НА ПЛАНШЕТЕ</div>
+          <div class="t-lead text-center phase-label-muted max-w-md">Гость проходит цвето-словесный тест<br>на планшете рядом со стендом</div>
+          <div class="font-data tnum t-body mt-8 text-muted">осталось <span class="text-foreground">00:42</span></div>
         </div>
         <div class="h-2 rounded-full overflow-hidden progress-track">
           <div class="h-full rounded-full phase-progress-fill" style="width: 72%;"></div>
@@ -722,21 +722,21 @@
       <!-- Phase-3 content -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="phase-3">
         <div class="flex items-center justify-between">
-          <div class="font-data text-xs uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 3 из 3</div>
+          <div class="font-data t-caption uppercase tracking-wider phase-label-muted">Тест Баевского · Фаза 3 из 3</div>
           <div class="flex items-center gap-5">
             <div class="flex items-center gap-2">
               <span class="phase-dot done"></span>
               <span class="phase-dot done"></span>
               <span class="phase-dot active"></span>
             </div>
-            <button class="phase-cancel w-10 h-10 rounded-full flex items-center justify-center text-2xl result-close-btn" title="Прервать тест" aria-label="Прервать тест">×</button>
+            <button class="phase-cancel w-10 h-10 rounded-full flex items-center justify-center t-lead result-close-btn" title="Прервать тест" aria-label="Прервать тест">×</button>
           </div>
         </div>
         <div class="flex-1 flex flex-col items-center justify-center">
-          <div class="font-data text-xs uppercase tracking-wider mb-3 phase-label-muted">Осталось</div>
+          <div class="font-data t-caption uppercase tracking-wider mb-3 phase-label-muted">Осталось</div>
           <div class="font-display tnum leading-none phase-timer-size" id="phase-3-timer">00:54</div>
-          <div class="font-medium text-5xl mt-6 tracking-wide">НАГРУЗКА</div>
-          <div class="text-xl mt-3 text-center phase-label-muted">Быстро пройдитесь в течение 1 минуты,<br>чтобы поднять пульс</div>
+          <div class="font-medium t-h2 mt-6 tracking-wide">НАГРУЗКА</div>
+          <div class="t-lead mt-3 text-center phase-label-muted">Быстро пройдитесь в течение 1 минуты,<br>чтобы поднять пульс</div>
         </div>
         <div class="h-2 rounded-full overflow-hidden progress-track">
           <div class="h-full rounded-full transition-all phase-progress-fill" id="phase-3-progress" style="width: 46%;"></div>
@@ -745,24 +745,24 @@
       <!-- Result content — иерархия: hero (ИН+вердикт) сверху, фазы supporting, caption внизу -->
       <div class="phase-content w-full h-full flex flex-col" data-phase="result">
         <div class="flex items-center justify-between">
-          <div class="font-data text-xs uppercase tracking-wider phase-label-muted">Результат · Тест Баевского</div>
-          <button id="result-close" class="w-10 h-10 rounded-full flex items-center justify-center text-2xl result-close-btn">×</button>
+          <div class="font-data t-caption uppercase tracking-wider phase-label-muted">Результат · Тест Баевского</div>
+          <button id="result-close" class="w-10 h-10 rounded-full flex items-center justify-center t-lead result-close-btn">×</button>
         </div>
         <!-- Hero: ИН + вердикт -->
         <div class="mt-2 mb-6 flex items-center justify-center gap-10">
           <div class="text-center">
-            <div class="font-data text-xs uppercase tracking-wider mb-2 phase-label-muted">Индекс напряжения Σ</div>
+            <div class="font-data t-caption uppercase tracking-wider mb-2 phase-label-muted">Индекс напряжения Σ</div>
             <div class="font-display tnum leading-none result-in-sum-size" id="result-in-sum">145</div>
           </div>
           <div class="h-24 w-px" style="background: hsl(var(--border));"></div>
           <div class="max-w-sm">
-            <div class="font-data text-xs uppercase tracking-wider mb-2 phase-label-muted">Вердикт</div>
-            <div class="font-medium text-3xl leading-tight" id="result-verdict">Реактивность нормальная</div>
-            <div class="text-sm mt-3 text-muted" id="result-verdict-caption">Здоровая адаптация ВНС к нагрузкам</div>
+            <div class="font-data t-caption uppercase tracking-wider mb-2 phase-label-muted">Вердикт</div>
+            <div class="font-medium t-h2 leading-tight" id="result-verdict">Реактивность нормальная</div>
+            <div class="t-caption mt-3 text-muted" id="result-verdict-caption">Здоровая адаптация ВНС к нагрузкам</div>
           </div>
         </div>
         <!-- Фазы (supporting) -->
-        <div class="font-data text-xs uppercase tracking-wider mb-3 phase-label-muted">Динамика по фазам</div>
+        <div class="font-data t-caption uppercase tracking-wider mb-3 phase-label-muted">Динамика по фазам</div>
         <div class="grid grid-cols-3 gap-4 flex-1" id="result-phases">
           <!-- 3 плашки заполняются JS updateResult() -->
         </div>
@@ -774,8 +774,8 @@
   <div id="claim-screen" class="fixed inset-0 flex-col items-center justify-center gap-8 claim-screen-bg">
     <!-- Heading -->
     <div class="text-center">
-      <div class="font-data text-xs uppercase tracking-wider mb-3 claim-session-id">Сессия завершена · <span class="tnum">sess_7K2M9</span></div>
-      <div class="font-display text-5xl leading-none">Спасибо за участие</div>
+      <div class="font-data t-caption uppercase tracking-wider mb-3 claim-session-id">Сессия завершена · <span class="tnum">sess_7K2M9</span></div>
+      <div class="font-display t-h1 leading-none">Спасибо за участие</div>
     </div>
     <!-- Placeholder QR (SVG pattern, без реальной генерации) -->
     <div class="p-8 rounded-3xl claim-qr-card shadow-2xl">
@@ -826,10 +826,10 @@
         </g>
       </svg>
     </div>
-    <div class="text-xl text-center max-w-xl">
+    <div class="t-lead text-center max-w-xl">
       Отсканируй камерой телефона — получи<br>отчёт о сессии в Telegram-бот
     </div>
-    <button id="claim-done" class="px-16 py-4 rounded-xl font-medium text-lg claim-done-btn">Готово</button>
+    <button id="claim-done" class="px-16 py-4 rounded-xl font-medium t-body claim-done-btn">Готово</button>
   </div>
 
 </div><!-- /#kiosk-stage -->
@@ -1069,9 +1069,9 @@
         const variant = p.icon === '🟢' ? 'is-success' : 'is-warning';
         return `
           <div class="rounded-xl p-5 flex flex-col items-center justify-center result-phase-card">
-            <div class="font-data text-xs uppercase tracking-wider phase-label-muted mb-2">${p.label}</div>
+            <div class="font-data t-caption uppercase tracking-wider phase-label-muted mb-2">${p.label}</div>
             <div class="font-display tnum leading-none result-phase-num ${variant}">${p.in}</div>
-            <div class="text-sm uppercase tracking-wider mt-3 result-phase-cap ${variant}">${p.cap}</div>
+            <div class="t-caption uppercase tracking-wider mt-3 result-phase-cap ${variant}">${p.cap}</div>
           </div>
         `;
       }).join('');
