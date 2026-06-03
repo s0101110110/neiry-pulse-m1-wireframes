@@ -228,6 +228,97 @@
 
   /* Swatch */
   .swatch { width: 100%; height: 56px; border-radius: 6px; border: 1px solid hsl(var(--border)); }
+
+  /* ============================================
+     KIOSK-SPECIFIC компоненты — используются в kiosk-v2.html и kiosk-drilldown.html.
+     ============================================ */
+
+  /* Kiosk badge — большой uppercase pill с dot, для статусов биометрии */
+  .kiosk-badge {
+    display: inline-flex; align-items: center;
+    padding: 6px 14px;
+    font-size: 14px; font-weight: 600;
+    border-radius: 9999px;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    white-space: nowrap;
+    font-family: var(--font-sans);
+  }
+  .kiosk-badge .dot {
+    width: 7px; height: 7px;
+    border-radius: 9999px;
+    margin-right: 8px;
+    display: inline-block;
+    background: currentColor;
+    opacity: 0.95;
+  }
+  .status-norm     { background: hsl(var(--success) / 0.18);     color: hsl(var(--success)); }
+  .status-elevated { background: hsl(var(--warning) / 0.18);     color: hsl(var(--warning)); }
+  .status-high     { background: hsl(var(--destructive) / 0.18); color: hsl(var(--destructive)); }
+  .status-idle     { background: hsl(var(--muted));              color: hsl(var(--muted-foreground)); }
+
+  /* IMU activity waveform — 9 columns, 4 статуса (rest/light/motion/off) */
+  @keyframes act-bar {
+    0%, 100% { transform: scaleY(0.3); }
+    50%      { transform: scaleY(1); }
+  }
+  .act-bar {
+    width: 6px;
+    border-radius: 3px;
+    background: hsl(var(--muted-foreground));
+    transform-origin: center;
+    animation: act-bar 1.4s ease-in-out infinite;
+  }
+  .act-bar:nth-child(1) { height: 22px; animation-delay: 0.00s; }
+  .act-bar:nth-child(2) { height: 36px; animation-delay: 0.10s; }
+  .act-bar:nth-child(3) { height: 48px; animation-delay: 0.20s; }
+  .act-bar:nth-child(4) { height: 60px; animation-delay: 0.30s; }
+  .act-bar:nth-child(5) { height: 68px; animation-delay: 0.40s; }
+  .act-bar:nth-child(6) { height: 60px; animation-delay: 0.30s; }
+  .act-bar:nth-child(7) { height: 48px; animation-delay: 0.20s; }
+  .act-bar:nth-child(8) { height: 36px; animation-delay: 0.10s; }
+  .act-bar:nth-child(9) { height: 22px; animation-delay: 0.00s; }
+
+  .imu-card.imu-rest .act-bar {
+    animation-play-state: paused;
+    transform: scaleY(0.35);
+    background: hsl(var(--success));
+    opacity: 0.75;
+  }
+  .imu-card.imu-light .act-bar {
+    animation-duration: 1.6s;
+    background: hsl(var(--muted-foreground));
+    opacity: 0.7;
+  }
+  .imu-card.imu-light .act-bar:nth-child(2),
+  .imu-card.imu-light .act-bar:nth-child(4),
+  .imu-card.imu-light .act-bar:nth-child(5),
+  .imu-card.imu-light .act-bar:nth-child(6),
+  .imu-card.imu-light .act-bar:nth-child(8) {
+    background: hsl(var(--warning));
+    opacity: 1;
+  }
+  .imu-card.imu-motion .act-bar {
+    animation-duration: 0.9s;
+    background: hsl(var(--destructive)) !important;
+    opacity: 1;
+  }
+  .imu-card.imu-off .act-bar {
+    animation-play-state: paused;
+    transform: scaleY(0.18);
+    background: hsl(var(--muted-foreground));
+    opacity: 0.3;
+  }
+
+  /* Test hint — caption под disabled-кнопкой "Тест Баевского" */
+  .test-hint {
+    min-height: 18px;
+    font-size: 14px;
+    color: hsl(var(--muted-foreground));
+    text-align: center;
+    line-height: 1.3;
+  }
+  .test-hint.hint-blocked { color: hsl(var(--warning)); }
 </style>
 </head>
 <body class="min-h-screen">
@@ -288,6 +379,9 @@
         <a href="#rmssd" class="nav-link pl-3 text-xs">· RMSSD</a>
         <a href="#rr-spark" class="nav-link pl-3 text-xs">· R-R sparkline</a>
         <a href="#heartbeat" class="nav-link pl-3 text-xs">· Heartbeat</a>
+        <a href="#kiosk-badge" class="nav-link pl-3 text-xs">· Kiosk badge</a>
+        <a href="#imu-activity" class="nav-link pl-3 text-xs">· IMU / Activity</a>
+        <a href="#test-hint" class="nav-link pl-3 text-xs">· Test hint</a>
         <a href="#tremor" class="nav-link font-semibold mt-3">4. Tremor / Дашборд</a>
         <a href="#kpi" class="nav-link pl-3 text-xs">· KPI-card</a>
         <a href="#barlist" class="nav-link pl-3 text-xs">· BarList</a>
@@ -1123,6 +1217,148 @@
 .animate-heart { animation: heart-pulse 0.75s ease-in-out infinite; }</code></pre>
           </div>
         </div>
+      </article>
+
+      <!-- 3.7 KIOSK BADGE — большой статус-бэйдж для биометрии (kiosk-v2 + drilldown) -->
+      <article id="kiosk-badge" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">3.7 Kiosk badge — статус биометрии</h3>
+        <p class="text-sm text-muted-foreground">Используется на kiosk-плазме (плотность отображения с расстояния 1.5–3 м). Состоит из dot (7×7) + uppercase-лейбла (14px). Фон — 18% opacity цвета зоны, текст — solid цвет зоны.</p>
+        <div class="bg-card border border-border rounded-lg p-6 flex flex-wrap items-center gap-4">
+          <span class="kiosk-badge status-norm"><span class="dot"></span>НОРМА</span>
+          <span class="kiosk-badge status-elevated"><span class="dot"></span>ПОВЫШЕН</span>
+          <span class="kiosk-badge status-high"><span class="dot"></span>ВЫСОКИЙ</span>
+          <span class="kiosk-badge status-idle"><span class="dot"></span>НЕ НАДЕТ</span>
+        </div>
+        <div class="bg-card border border-border rounded-lg p-4">
+          <p class="text-xs text-muted-foreground font-data mb-2">Зоны (для NSI / Стресса):</p>
+          <p class="text-xs text-foreground font-data">🟢 0–39 НОРМА · 🟡 40–59 ПОВЫШЕН · 🔴 60–100 ВЫСОКИЙ</p>
+          <p class="text-xs text-foreground font-data mt-1">⚪ status-idle — нет данных / датчик не надет / empty-state</p>
+        </div>
+        <pre class="code-block"><code>&lt;span class="kiosk-badge status-norm"&gt;&lt;span class="dot"&gt;&lt;/span&gt;НОРМА&lt;/span&gt;
+&lt;span class="kiosk-badge status-elevated"&gt;&lt;span class="dot"&gt;&lt;/span&gt;ПОВЫШЕН&lt;/span&gt;
+&lt;span class="kiosk-badge status-high"&gt;&lt;span class="dot"&gt;&lt;/span&gt;ВЫСОКИЙ&lt;/span&gt;
+&lt;span class="kiosk-badge status-idle"&gt;&lt;span class="dot"&gt;&lt;/span&gt;НЕ НАДЕТ&lt;/span&gt;</code></pre>
+      </article>
+
+      <!-- 3.8 IMU / ACTIVITY waveform — 4 статуса -->
+      <article id="imu-activity" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">3.8 IMU / Activity — waveform 4 статуса</h3>
+        <p class="text-sm text-muted-foreground">Виджет движения по данным IMU браслета. 9 столбиков (волна 22→68→22 px). 4 статуса переключаются классом <code class="font-data text-primary">.imu-*</code> на контейнере. Привязан к разрешению на тест Баевского (только в <code class="font-data">rest</code> кнопка теста доступна).</p>
+        <div class="bg-card border border-border rounded-lg p-6 grid grid-cols-4 gap-4">
+
+          <div class="imu-card imu-rest flex flex-col items-center gap-3 p-4 rounded-lg" style="background: hsl(var(--card));">
+            <div class="relative w-40 h-40">
+              <svg class="absolute inset-0 w-full h-full" viewBox="0 0 180 180">
+                <circle cx="90" cy="90" r="72" stroke="hsl(var(--border))" stroke-width="1" fill="none" opacity="0.6"/>
+                <circle cx="90" cy="90" r="52" stroke="hsl(var(--border))" stroke-width="1" fill="none" opacity="0.3"/>
+              </svg>
+              <div class="absolute left-1/2 -translate-x-1/2 flex items-end gap-1.5 h-20" style="top:34px">
+                <span class="act-bar"></span><span class="act-bar"></span><span class="act-bar"></span>
+                <span class="act-bar"></span><span class="act-bar"></span><span class="act-bar"></span>
+                <span class="act-bar"></span><span class="act-bar"></span><span class="act-bar"></span>
+              </div>
+              <div class="absolute left-1/2 -translate-x-1/2" style="bottom:16px">
+                <span class="kiosk-badge status-norm"><span class="dot"></span>ПОКОЙ</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-muted-foreground font-data text-center">rest · тест разрешён</p>
+          </div>
+
+          <div class="imu-card imu-light flex flex-col items-center gap-3 p-4 rounded-lg" style="background: hsl(var(--card));">
+            <div class="relative w-40 h-40">
+              <svg class="absolute inset-0 w-full h-full" viewBox="0 0 180 180">
+                <circle cx="90" cy="90" r="72" stroke="hsl(var(--border))" stroke-width="1" fill="none" opacity="0.6"/>
+                <circle cx="90" cy="90" r="52" stroke="hsl(var(--border))" stroke-width="1" fill="none" opacity="0.3"/>
+              </svg>
+              <div class="absolute left-1/2 -translate-x-1/2 flex items-end gap-1.5 h-20" style="top:34px">
+                <span class="act-bar"></span><span class="act-bar"></span><span class="act-bar"></span>
+                <span class="act-bar"></span><span class="act-bar"></span><span class="act-bar"></span>
+                <span class="act-bar"></span><span class="act-bar"></span><span class="act-bar"></span>
+              </div>
+              <div class="absolute left-1/2 -translate-x-1/2" style="bottom:16px">
+                <span class="kiosk-badge status-elevated"><span class="dot"></span>ЛЁГКАЯ</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-muted-foreground font-data text-center">light · тест блокирован</p>
+          </div>
+
+          <div class="imu-card imu-motion flex flex-col items-center gap-3 p-4 rounded-lg" style="background: hsl(var(--card));">
+            <div class="relative w-40 h-40">
+              <svg class="absolute inset-0 w-full h-full" viewBox="0 0 180 180">
+                <circle cx="90" cy="90" r="72" stroke="hsl(var(--border))" stroke-width="1" fill="none" opacity="0.6"/>
+                <circle cx="90" cy="90" r="52" stroke="hsl(var(--border))" stroke-width="1" fill="none" opacity="0.3"/>
+              </svg>
+              <div class="absolute left-1/2 -translate-x-1/2 flex items-end gap-1.5 h-20" style="top:34px">
+                <span class="act-bar"></span><span class="act-bar"></span><span class="act-bar"></span>
+                <span class="act-bar"></span><span class="act-bar"></span><span class="act-bar"></span>
+                <span class="act-bar"></span><span class="act-bar"></span><span class="act-bar"></span>
+              </div>
+              <div class="absolute left-1/2 -translate-x-1/2" style="bottom:16px">
+                <span class="kiosk-badge status-high"><span class="dot"></span>ДВИЖЕНИЕ</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-muted-foreground font-data text-center">motion · тест блокирован</p>
+          </div>
+
+          <div class="imu-card imu-off flex flex-col items-center gap-3 p-4 rounded-lg" style="background: hsl(var(--card));">
+            <div class="relative w-40 h-40">
+              <svg class="absolute inset-0 w-full h-full" viewBox="0 0 180 180">
+                <circle cx="90" cy="90" r="72" stroke="hsl(var(--border))" stroke-width="1" fill="none" opacity="0.6"/>
+                <circle cx="90" cy="90" r="52" stroke="hsl(var(--border))" stroke-width="1" fill="none" opacity="0.3"/>
+              </svg>
+              <div class="absolute left-1/2 -translate-x-1/2 flex items-end gap-1.5 h-20" style="top:34px">
+                <span class="act-bar"></span><span class="act-bar"></span><span class="act-bar"></span>
+                <span class="act-bar"></span><span class="act-bar"></span><span class="act-bar"></span>
+                <span class="act-bar"></span><span class="act-bar"></span><span class="act-bar"></span>
+              </div>
+              <div class="absolute left-1/2 -translate-x-1/2" style="bottom:16px">
+                <span class="kiosk-badge status-idle"><span class="dot"></span>НЕ НАДЕТ</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-muted-foreground font-data text-center">off · тест блокирован</p>
+          </div>
+
+        </div>
+        <pre class="code-block"><code>&lt;div class="imu-card imu-rest"&gt;          &lt;!-- imu-rest | imu-light | imu-motion | imu-off --&gt;
+  &lt;!-- waveform: 9 .act-bar (волна 22→68→22 px), привязка цвета и темпа к классу --&gt;
+  &lt;div class="flex items-end gap-2 h-20"&gt;
+    &lt;span class="act-bar"&gt;&lt;/span&gt; &lt;!-- ×9 --&gt;
+  &lt;/div&gt;
+  &lt;span class="kiosk-badge status-norm"&gt;&lt;span class="dot"&gt;&lt;/span&gt;ПОКОЙ&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+        <div class="bg-card border border-border rounded-lg p-4 text-xs font-data text-foreground space-y-1">
+          <p><span class="text-primary">rest</span> · столбики паузят на 35% высоты, success-цвет — браслет неподвижен → <span class="text-chart-2">тест доступен</span></p>
+          <p><span class="text-primary">light</span> · медленная волна (1.6s), 5 столбиков warning, 4 muted — лёгкая активность → <span class="text-chart-4">тест блокирован</span></p>
+          <p><span class="text-primary">motion</span> · быстрая волна (0.9s), все destructive — пользователь движется → <span class="text-destructive">тест блокирован</span></p>
+          <p><span class="text-primary">off</span> · столбики паузят на 18%, opacity 0.3 — браслет не надет → <span class="text-destructive">тест блокирован</span></p>
+        </div>
+      </article>
+
+      <!-- 3.9 TEST HINT — caption под disabled-кнопкой -->
+      <article id="test-hint" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">3.9 Test hint — подсказка под кнопкой</h3>
+        <p class="text-sm text-muted-foreground">Тонкая строка пояснения под disabled-кнопкой «Тест Баевского». В обычном состоянии — muted, при блокировке — warning. Минимальная высота 18 px (чтобы layout не «прыгал» при пустом тексте).</p>
+        <div class="bg-card border border-border rounded-lg p-6 space-y-4">
+          <div class="grid grid-cols-3 gap-x-4 gap-y-2 max-w-md">
+            <button class="h-14 rounded-xl text-sm font-medium border border-border bg-secondary text-secondary-foreground">СТОП</button>
+            <button class="col-span-2 h-14 rounded-xl text-sm font-medium bg-primary text-primary-foreground">▶ ПРОЙТИ ТЕСТ БАЕВСКОГО</button>
+            <div></div>
+            <div class="test-hint col-span-2">Готов к тесту</div>
+          </div>
+          <hr class="border-border">
+          <div class="grid grid-cols-3 gap-x-4 gap-y-2 max-w-md">
+            <button class="h-14 rounded-xl text-sm font-medium border border-border bg-secondary text-secondary-foreground">СТОП</button>
+            <button disabled class="col-span-2 h-14 rounded-xl text-sm font-medium bg-primary/40 text-primary-foreground/60 cursor-not-allowed">▶ ПРОЙТИ ТЕСТ БАЕВСКОГО</button>
+            <div></div>
+            <div class="test-hint hint-blocked col-span-2">Замрите для теста (нужен покой)</div>
+          </div>
+        </div>
+        <pre class="code-block"><code>&lt;!-- enabled --&gt;
+&lt;div class="test-hint"&gt;Готов к тесту&lt;/div&gt;
+
+&lt;!-- disabled (light / motion / off) --&gt;
+&lt;div class="test-hint hint-blocked"&gt;Замрите для теста (нужен покой)&lt;/div&gt;
+&lt;div class="test-hint hint-blocked"&gt;Наденьте браслет для теста&lt;/div&gt;</code></pre>
       </article>
     </section>
 
