@@ -1,105 +1,70 @@
 # BRIEF — UX/UI Дизайнер
 
 ## Статус
-🔴 Активное задание от PM от 2026-05-25 (предыдущий брифинг 2026-05-24 — закрыт, скоуп заменён)
+🔴 **Активное задание от PM от 2026-06-03 — BRIEF #1 из M2 Handover-пакета.**
 
-## Задача — M2 UI Restyle: UI Kit + 4 базовых экрана
+R6/R8 drilldown уже запушены в main (cf0f1f1) — этот скоуп закрыт.
 
-Полный рестайл дизайн-системы Neiry Pulse под выставку Startup Village (28-29.05.2026). Готовим **визуально полные HTML-мокапы**, которые потом Кирилл соберёт на React 1:1.
+---
 
-### Скоуп (порядок исполнения)
+## Задача: создать `wireframes/m2/mobile-main.html`
 
-1. 🔴 **UI Kit** (`docs_web/wireframes/m2/ui-kit.html`) — живой styleguide: токены + базовые компоненты + био-виджеты + Tremor-стиль для дашборда
-2. 🔴 **Kiosk v2** (`docs_web/wireframes/m2/kiosk-v2.html`) — рестайл плазмы: 2 анкера + 1 гость, 4 состояния
-3. 🔴 **Drill-down карточка гостя** (`docs_web/wireframes/m2/kiosk-drilldown.html`) — карточка + 3 фазы Bayevsky test + экран результата
-4. 🟡 **Дашборд корпоратов** (`docs_web/wireframes/m3/dashboard-corporate.html`) — Neiry Unite v5: 4 KPI + 3 таба (Спорт/Офис/Драйверы) + drill-down side-panel
-5. 🟢 **Mobile pairing рестайл** (in-place edit `docs_web/wireframes/m1/mobile-*.html`) — переключить на новый UI Kit + почистить дев-жаргон HRV
+Минимальный рестайл из `wireframes/m1/mobile-home.html` под выставочный пакет M2.
 
-## Срок
-**До 2026-05-26 вечера** (чтобы на стыковке 27.05 wireframes уже были в репо).
+### Что нужно сделать
+1. Скопировать `docs_web/wireframes/m1/mobile-home.html` → `docs_web/wireframes/m2/mobile-main.html`
+2. Добавить блок **«Сегодня»**:
+   - **BPM live** (большое число tabular-nums + точка-индикатор статуса)
+   - **HRV today** (RMSSD, мс, маленькое число + точка)
+   - **Шаги** (круговой прогресс или bar, число / 10 000)
+3. Добавить **sparkline истории 24ч** под BPM (inline SVG, ~80px высота, neutral foreground, без заливки)
+4. Привести типографику и палитру к **UI Kit M2** (`docs_web/wireframes/m2/ui-kit.html`):
+   - Шрифт: тот, что выбран в UI Kit (Manrope или то, что уже стоит)
+   - Применить t-* helper-классы (если в файле они уже есть после R5)
+   - Семантические токены через CSS-переменные, не хардкод hex (кроме wine `#831843`)
+   - **Tabular-nums** на BPM/HRV/шагах: `font-variant-numeric: tabular-nums`
+5. Убрать devbar если есть (это финальный мокап, не state-switcher)
 
-## Эстетика — финал PM 25.05.2026
+### Эстетика — те же правила, что R8
+- Clinical, без похабщины: нет ярким заливкам, эмодзи, градиентам, glow, неону
+- Цвет статуса — только в **маленьких индикаторах** (точка 8×8, полоска 4px слева, подчёркивание числа)
+- Значение метрики — нейтральный foreground, цвет только на пограничной семантике
+- Подписи статусов: «Норма / Снижена / Низкая» — subdued, без капса и !
 
-### Стек React-имплементации (для понимания целевой компонентной модели)
-- **Foundation:** shadcn/ui (Radix Primitives + Tailwind) — base-компоненты
-- **Дашборд:** Tremor — KPI strip, sparklines, BarList
-- **Кастом:** биометрические виджеты на shadcn-базе (BPM-card, NSI-gauge, status-pill)
-- **Точечно:** Aceternity для 1-2 wow-эффектов на kiosk (НЕ применять на дашборде)
+### Что показать
+- Применённый UI Kit (типографика, цвета, токены)
+- Tabular-nums на цифрах (BPM, HRV, шаги выровнены по колонкам)
+- Sparkline истории 24ч (плоский, без декора)
 
-### Палитра — shadcn-defaults (zinc/slate) + Neiry wine accent
-Использовать semantic CSS-переменные shadcn, **НЕ хардкодить hex** (кроме wine):
-- `--background` / `--foreground` / `--card` / `--card-foreground`
-- `--muted` / `--muted-foreground` / `--border` / `--input` / `--ring`
-- `--popover` / `--secondary` / `--destructive`
-- `--primary` = **#831843** (wine, Neiry brand accent)
+### Приёмка PM
+- Открывается в Chrome mobile viewport (375×812)
+- Видны: BPM live, HRV today, шаги, sparkline 24ч
+- Нет devbar
+- Tabular-nums применены
+- Скриншот PM в чат **до** push
 
-### Темы
-- **Тёмная** — для kiosk на плазме 42" (далёкая дистанция, высокий контраст, крупная типографика)
-- **Светлая** — для админ-ноута (drill-down, dashboard корпоратов)
-- Обе темы — варианты zinc/slate
+### Срок
+до конца дня **2026-06-03**
 
-### Семантика статусов
-- success / норма → `--chart-2` (зелёный)
-- warning / каскад → `--chart-4` (амбра)
-- danger / звоночек → `--destructive` (красный)
+### Способ работы
+1. Создать файл, заскриншотить, отправить PM в чат **ДО коммита**
+2. Дождаться «принято» от PM
+3. Закоммитить (русское сообщение: «Добавил mobile-main.html: live BPM + HRV + шаги + sparkline 24ч»)
+4. Push после OK PM
 
-### Типографика
-- **Manrope** — основной UI sans-serif
-- **Fraunces** — brand-italic («Pulse», hero-числовые)
-- **JetBrains Mono** — для данных (BPM, NSI, цифры, временные метки)
-
-### Референсы — визуальная школа
-- **Linear / Vercel / shadcn-defaults** — baseline всех экранов: плотная типографика, дисциплина spacing, hover-states, минимум декора, отличная читаемость
-- **Hume Band** (humehealth.com/pages/hume-band) — для био-визуализаций (NSI-gauge, BPM-card, recovery-индикаторы): премиум-clinic-вайб
-
-НЕ референсы: Whoop (спортивный), Oura (мягкие), Apple Health (декоративные градиенты).
-
-## Куда сохранять результаты
-
-| Артефакт | Путь |
-|---|---|
-| UI Kit | `docs_web/wireframes/m2/ui-kit.html` |
-| Kiosk v2 | `docs_web/wireframes/m2/kiosk-v2.html` |
-| Drill-down + Bayevsky | `docs_web/wireframes/m2/kiosk-drilldown.html` |
-| Dashboard корпоратов | `docs_web/wireframes/m3/dashboard-corporate.html` (создать папку m3/) |
-| Mobile рестайл | in-place edit `docs_web/wireframes/m1/mobile-*.html` |
-
-## Способ исполнения
-
-Запускаешься субагентом по плану `docs_web/docs/superpowers/plans/2026-05-25-m2-ui-restyle.md`. Каждая задача из плана = отдельный запуск. Между задачами PM делает чекпоинт.
+---
 
 ## Технические правила (НЕ нарушать)
+- ✅ HTML5 + Tailwind CDN, inline SVG для sparkline
+- ✅ Семантические CSS-переменные (не хардкод hex кроме wine)
+- ❌ React/Vue/JS-фреймворки
+- ❌ Inline-стили
+- ❌ Эмодзи в UI, градиенты, glow, неон, яркие заливки карточек
 
-- ✅ HTML5 + Tailwind CSS (CDN), inline SVG для графиков и иконок
-- ✅ Семантические токены через CSS-переменные (не хардкод hex)
-- ✅ Адаптивность 1280 / 1440 / 1920
-- ❌ React / Vue / любой JS-фреймворк — это вайрфреймы (RED в claude.md)
-- ❌ Inline-стили (`<div style="...">`)
-- ❌ Внешние JS-зависимости кроме Tailwind CDN и Google Fonts
-- ✅ Простой vanilla JS только для state-switcher (dev-bar переключение состояний) и fake live BPM анимации
+## NDA-safe
+В UI запрещено: VITRO/VANTA/VIGOR, M1/M2/M3, имена B2B-клиентов.
 
-## Критические напоминания (NDA-safe)
+## После выполнения
+Доложить PM: DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED.
 
-В UI **запрещено** упоминать:
-- VITRO / VANTA / VIGOR (внутренний нейминг устройств)
-- M1 / M2 / M3 (внутренние milestone)
-- Сбер / Райффайзенбанк / Газпром (B2B-клиенты)
-
-Использовать: `Neiry.Pulse #1`, `Neiry Stress / Calmness Score`, без B2B-привязок в виджетах.
-
-## После каждой задачи
-
-1. Открыть результат в Chrome, проверить состояния
-2. Закоммитить с русскоязычным сообщением вида «Добавил UI Kit M2: ...»
-3. Git push (GitPages деплоится 1-2 мин)
-4. Доложить PM в формате DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED
-5. PM делает чекпоинт перед следующей задачей
-
-## Главные документы (читать перед стартом)
-
-- **План:** `docs_web/docs/superpowers/plans/2026-05-25-m2-ui-restyle.md` — пошаговый план с layouts
-- **Эстетика (память):** `~/.claude/projects/-Users-solomono-Desktop-NOW---------NEIRY/memory/project_neiry_ui_aesthetic.md`
-- **Стек (память):** `~/.claude/projects/-Users-solomono-Desktop-NOW---------NEIRY/memory/project_neiry_ui_stack.md`
-- **Состояние проекта:** `knowledge-base/PROJECT_STATE.md`
-- **Текущий kiosk (для эстетической преемственности):** `docs_web/wireframes/m2/kiosk.html`
-- **Exhibition flow (для понимания сценария):** `docs_web/wireframes/m2/exhibition-flow.html`
+**BRIEF #2 (рестайл `neiry_pulse_v5.html` под дашборд корпоратов)** придёт после acceptance этого BRIEF.
