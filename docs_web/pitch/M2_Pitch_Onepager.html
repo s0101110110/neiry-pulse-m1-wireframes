@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Neiry Pulse — One-pager</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #0a0a0a;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --card: #fafafa;
+    --primary: #831843;
+    --accent: #0f766e;
+  }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  .num { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+  .t-display { font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
+  .t-h1 { font-size: 18px; line-height: 1.2; font-weight: 600; letter-spacing: -0.01em; }
+  .t-h2 { font-size: 13px; line-height: 1.3; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .t-body { font-size: 13px; line-height: 1.5; }
+  .t-caption { font-size: 11px; line-height: 1.4; color: var(--muted); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
+  .kpi-num { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  @page { size: A4 portrait; margin: 0; }
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; page-break-after: always; }
+  }
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 14mm 14mm 12mm 14mm;
+    margin: 24px auto;
+    background: white;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 10mm;
+  }
+  .accent-bar { width: 4px; background: var(--primary); border-radius: 2px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Header -->
+  <header class="flex items-end justify-between border-b pb-4" style="border-color: var(--border);">
+    <div>
+      <div class="t-caption">Neiry Pulse · биометрия команды</div>
+      <h1 class="t-display mt-1">Состояние команды — в одном числе</h1>
+    </div>
+    <div class="text-right">
+      <div class="t-caption">2026 · Investor one-pager</div>
+      <div class="t-caption num">v0.1 · 2026-06-04</div>
+    </div>
+  </header>
+
+  <!-- Problem -->
+  <section class="flex gap-4">
+    <div class="accent-bar"></div>
+    <div class="flex-1">
+      <h2 class="t-h2">Проблема</h2>
+      <p class="t-body mt-2" style="max-width: 60ch;">
+        Компании не видят, что команда выгорает — до тех пор, пока человек не уходит,
+        не уходит на больничный или не теряет в производительности. HR-чек-ины,
+        опросники и Slack-боты дают subjective-сигнал с задержкой в недели.
+      </p>
+      <p class="t-body mt-2" style="max-width: 60ch;">
+        Стресс, восстановление и активность — это <strong>измеримая физиология</strong>.
+        Носимые трекеры есть, но данные разрозненны, без корпоративного среза, без actionable-связки.
+      </p>
+    </div>
+  </section>
+
+  <!-- Solution -->
+  <section class="flex gap-4">
+    <div class="accent-bar"></div>
+    <div class="flex-1">
+      <h2 class="t-h2">Решение</h2>
+      <p class="t-body mt-2" style="max-width: 60ch;">
+        Браслет Neiry + дашборд для руководителя + Telegram-отчёт сотруднику.
+        Один индикатор — <strong>Neiry Stress Index</strong> — собирает HRV, BPM, шаги
+        и активность в шкалу 0-100. Видно: кто восстановился, кто на грани, кому надо отдохнуть.
+      </p>
+      <div class="grid grid-cols-3 gap-3 mt-4">
+        <div class="card p-3">
+          <div class="t-h2">Браслет</div>
+          <p class="t-caption mt-1">Veepoo SDK, R-R интервалы, шаги, BPM-live</p>
+        </div>
+        <div class="card p-3">
+          <div class="t-h2">Дашборд</div>
+          <p class="t-caption mt-1">3 режима: офис · спорт · водители</p>
+        </div>
+        <div class="card p-3">
+          <div class="t-h2">TG-отчёт</div>
+          <p class="t-caption mt-1">Баевский ИН + персональный вердикт</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Traction -->
+  <section class="flex gap-4">
+    <div class="accent-bar"></div>
+    <div class="flex-1">
+      <h2 class="t-h2">Тракшен</h2>
+      <div class="grid grid-cols-4 gap-3 mt-3">
+        <div class="card p-3">
+          <div class="kpi-num num">28-29.05</div>
+          <div class="t-caption mt-1">Startup Village 2026 — публичный показ</div>
+        </div>
+        <div class="card p-3">
+          <div class="kpi-num num">3</div>
+          <div class="t-caption mt-1">B2B-пилота в переговорах (офис, спорт-клуб, лог.)</div>
+        </div>
+        <div class="card p-3">
+          <div class="kpi-num num">5</div>
+          <div class="t-caption mt-1">вертикалей: офис, спорт, водители, лиги, выставки</div>
+        </div>
+        <div class="card p-3">
+          <div class="kpi-num num">Q3-26</div>
+          <div class="t-caption mt-1">первый платный контракт (план)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ask -->
+  <section class="flex gap-4 mt-auto">
+    <div class="accent-bar"></div>
+    <div class="flex-1">
+      <h2 class="t-h2">Что нужно</h2>
+      <div class="grid grid-cols-2 gap-4 mt-3">
+        <div>
+          <p class="t-body">
+            Партнёрство с компаниями, которым важна забота о команде:
+            <strong>офисы 50-500 человек</strong>, спортивные клубы, логистика.
+          </p>
+        </div>
+        <div>
+          <p class="t-body">
+            Пилот 3 месяца, 10-30 браслетов, наша интеграция и поддержка —
+            ваша обратная связь и кейс.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="flex justify-between items-center text-xs border-t pt-3" style="border-color: var(--border); color: var(--muted);">
+    <div>Neiry Pulse · 2026</div>
+    <div class="num">c.dvugroshev@gmail.com</div>
+  </footer>
+
+</div>
+
+</body>
+</html>
