@@ -31,7 +31,7 @@
 
 ## 2. Workstream split (параллельные треки)
 
-### Трек PM (эта сессия, ~5-6 часов)
+### Трек PM (эта сессия, ~5-6 часов) — порядок приоритетов
 
 1. **HRV + Steps spec** (~1ч) — `docs_web/specs/metrics-hrv-steps-m2.md`
    - Формулы: RMSSD, SDNN из R-R Veepoo SDK; Steps через `readDailyStepByDay`
@@ -39,20 +39,20 @@
    - Пороги: HRV зоны (low/normal/high), Steps daily target
    - Визуализация: где живёт в dashboard и mobile
 
-2. **Demo_Script_M2_Athlete.md** (~2ч) — `docs_web/demo/`
-   - Структура: цель / персона / сценарий (3-5 мин) / wow-моменты / fallback
-   - Сборка из: `milestones/m2.md`, `briefs/2026-05-24-A5-pitch-thesis-v0.1.md`, фактов прогона
-
-3. **M2_Pitch_Onepager.html** (~1ч) — `docs_web/pitch/`
-   - Одноэкранник для инвесторов, готов для печати в PDF
-   - На базе ui-kit.html токенов: problem / solution / traction / ask
-
-4. **UX-test post-mortem** (~1.5ч) — `docs_web/reports/ux-test-m2-athlete.md`
+2. **UX-test post-mortem** (~1.5ч) — `docs_web/reports/ux-test-m2-athlete.md`
    - **Блокер:** требует фактуры стенда от PM (фото/видео/заметки)
    - Структура: что показывали / что зашло / что косячило / устранено on-the-fly / TODO для M3
 
-5. **Engineering Handover index** (~30 мин) — `docs_web/handover/M2_Engineering_Handover.md`
+3. **Engineering Handover index** (~30 мин) — `docs_web/handover/M2_Engineering_Handover.md`
    - Список 7 артефактов + GitPages URL + acceptance-критерии + контакт PM
+
+4. **M2_Pitch_Onepager.html** (~1ч, **предпоследний приоритет**) — `docs_web/pitch/`
+   - Одноэкранник для инвесторов, готов для печати в PDF
+   - На базе ui-kit.html токенов: problem / solution / traction / ask
+
+5. **Demo_Script_M2_Athlete.md** (~2ч, **последний приоритет**) — `docs_web/demo/`
+   - Структура: цель / персона / сценарий (3-5 мин) / wow-моменты / fallback
+   - Сборка из: `milestones/m2.md`, `briefs/2026-05-24-A5-pitch-thesis-v0.1.md`, фактов прогона
 
 ### Трек UX/UI агент (отдельная сессия, 2 BRIEF-итерации)
 
@@ -61,15 +61,30 @@
 2. Создать `wireframes/m2/mobile-main.html` — взять `m1/mobile-home.html`, добавить live-график BPM + history sparkline (24ч), причесать под UI Kit M2 (Manrope/JetBrains/wine accent)
 3. Скриншоты + DONE PM
 
-**BRIEF #2 (после acceptance #1):**
-1. Анализ `INBOX/external/neiry_pulse_v5.html`
-2. Создать `wireframes/m3/dashboard-corporate.html` — рестайл v5 под нашу DS:
-   - Inter → Manrope + JetBrains Mono для данных
-   - Teal #0F766E → wine #831843 акцент
-   - Свои CSS-vars → semantic shadcn-токены (--background, --primary, --muted...)
-   - Линеаризация по Linear/Vercel discipline
-   - Сохранить 3-mode logic (CORP/SPORT/SAFETY) и Chart.js
-3. Скриншоты + DONE PM
+**BRIEF #2 (после acceptance #1) — рестайл `neiry_pulse_v5.html`:**
+
+**P0 (обязательно):**
+1. Шрифт: агент выбирает современный бесплатный UI-шрифт 2026 (рамки: бесплатно для коммерции, кириллица, хороший number-set с моноширинным режимом). Skill `emil-design-eng` в помощь.
+2. Свести типографику к **6 ступеням** (вместо ~12 размеров px в файле сейчас) — t-display / t-h1 / t-h2 / t-body / t-caption / t-micro.
+3. **Tabular-nums** на всех числовых полях (BPM, метрики, шаги, HRV) — `font-feature-settings: 'tnum'` или CSS `font-variant-numeric: tabular-nums`. Цифры одной ширины, колонки не «прыгают».
+4. Палитра: teal #0F766E → wine #831843 (primary). Свои CSS-vars → semantic shadcn-токены (--background, --primary, --muted, --card, --border).
+5. **SAFETY mode — добавить данные** (5 водителей/операторов с метриками fatigue/reaction/microsleep). Сейчас таб пустой.
+6. Сохранить: 3-mode logic (CORP/SPORT/SAFETY), Chart.js, sidebar навигацию, drill-down side-panel.
+
+**P1 (если время):**
+- Расшифровка метрик в UI: «re» → «Восстановление», «st» → «Стресс», единицы (мс, шагов/день, %).
+- NSI-семантика **clinical, без похабщины**:
+  - НЕТ ярким заливкам фона карточек (никаких #ECFDF5/#FFFBEB/#FEF2F2)
+  - НЕТ эмодзи, градиентам, glow, неону
+  - Цвет статуса — только в маленьких индикаторах (точка 8×8, полоска 4px слева, подчёркивание числа)
+  - Значение — нейтральным foreground, цвет только на пограничной семантике
+  - Палитра приглушённая, clinical (Linear/Hume Band), не насыщенная Material
+  - Текст «Норма / Повышен / Высокий» — ровным subdued, без капса и !
+
+**P2 (отложить в M3):**
+- Архетипы (3 типа на mode), синхронизация персонажей с kiosk, sparkline в drill-down, structural cleanup (.blink/backdrop-filter/inline-styles).
+
+7. Скриншоты + DONE PM
 
 ---
 
