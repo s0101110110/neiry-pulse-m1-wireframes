@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Startup Village 2026 — Post-Mortem · Neiry Pulse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@1,14..144,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0b0e; --surface:#15151a; --surface-2:#1d1d24; --border:#2a2a33;
+  --fg:#ececf1; --muted-fg:#9a9aae; --eyebrow:#6f6f82;
+  --accent:#a01a4f; --accent-bg:rgba(160,26,79,.14);
+  --ok:#34d399; --warn:#f59e0b; --danger:#ef4444; --info:#60a5fa;
+  --font-sans:'Manrope',system-ui,sans-serif;
+  --font-display:'Fraunces',Georgia,serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--fg);font-family:var(--font-sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--info);text-decoration:none;border-bottom:1px dotted var(--border)}
+a:hover{color:var(--fg);border-bottom-color:var(--info)}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--surface-2);padding:1px 6px;border-radius:4px;color:var(--fg)}
+strong{font-weight:700;color:var(--fg)}
+em{font-style:italic;font-family:var(--font-display);color:var(--fg)}
+
+.wrap{max-width:1080px;margin:0 auto;padding:48px 32px}
+
+/* HEADER */
+.hero{padding-bottom:40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero h1{font-family:var(--font-display);font-style:italic;font-weight:600;font-size:56px;line-height:1.05;letter-spacing:-.02em;margin-bottom:12px}
+.hero .subtitle{color:var(--muted-fg);font-size:20px;margin-bottom:32px}
+.meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.meta-cell{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px}
+.meta-cell .label{font-size:11px;color:var(--eyebrow);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.meta-cell .value{font-size:14px;color:var(--fg);font-weight:500}
+
+/* KPI strip */
+.kpi-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:40px 0}
+.kpi-card{padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:10px}
+.kpi-card .num{font-family:var(--font-mono);font-size:48px;font-weight:600;line-height:1;color:var(--accent);margin-bottom:8px}
+.kpi-card .lbl{color:var(--muted-fg);font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+.kpi-card .breakdown{margin-top:12px;font-size:12px;color:var(--muted-fg);font-family:var(--font-mono)}
+.kpi-card .breakdown span{color:var(--fg)}
+
+/* TOC */
+.toc{display:flex;gap:20px;flex-wrap:wrap;padding:20px 24px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:48px;font-size:13px}
+.toc a{color:var(--muted-fg);border:none}
+.toc a:hover{color:var(--fg)}
+
+/* SECTION */
+section{margin-bottom:72px}
+.section-eyebrow{font-family:var(--font-mono);font-size:12px;color:var(--eyebrow);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+h2{font-family:var(--font-display);font-style:italic;font-weight:600;font-size:36px;letter-spacing:-.015em;margin-bottom:8px;line-height:1.15}
+h3{font-size:17px;font-weight:700;margin:32px 0 12px;letter-spacing:.01em}
+h4{font-size:14px;font-weight:600;color:var(--muted-fg);text-transform:uppercase;letter-spacing:.08em;margin:24px 0 12px}
+.lead{color:var(--muted-fg);font-size:16px;margin-bottom:32px;max-width:780px}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--eyebrow);font-weight:600;background:var(--surface)}
+td code{font-size:.9em}
+
+/* CALLOUT */
+.callout{padding:18px 22px;background:var(--surface);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;margin:20px 0}
+.callout.warn{border-left-color:var(--warn)}
+.callout.danger{border-left-color:var(--danger)}
+.callout.ok{border-left-color:var(--ok)}
+.callout p{margin:6px 0}
+.callout .who{font-size:12px;color:var(--muted-fg);font-family:var(--font-mono)}
+
+/* LIST */
+.action-list{list-style:none;padding:0}
+.action-list li{padding:10px 0 10px 28px;position:relative;border-bottom:1px solid var(--border);font-size:14px}
+.action-list li:last-child{border-bottom:none}
+.action-list li:before{position:absolute;left:0;top:10px;font-family:var(--font-mono);font-size:14px;font-weight:600}
+.action-list li.done:before{content:'✓';color:var(--ok)}
+.action-list li.wip:before{content:'●';color:var(--warn)}
+.action-list li.vendor:before{content:'◇';color:var(--info)}
+.action-list .tag{display:inline-block;font-size:11px;font-family:var(--font-mono);color:var(--muted-fg);margin-left:8px;padding:1px 7px;border:1px solid var(--border);border-radius:4px}
+
+/* PILLS */
+.pill{display:inline-block;font-size:11px;font-family:var(--font-mono);padding:3px 9px;border-radius:99px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+.pill.done{background:rgba(52,211,153,.15);color:var(--ok)}
+.pill.wip{background:rgba(245,158,11,.15);color:var(--warn)}
+.pill.vendor{background:rgba(96,165,250,.15);color:var(--info)}
+.pill.fail{background:rgba(239,68,68,.15);color:var(--danger)}
+
+/* FOOTER */
+footer{margin-top:80px;padding-top:32px;border-top:1px solid var(--border);font-size:13px;color:var(--muted-fg)}
+footer p{margin:4px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="section-eyebrow">Post-mortem · Внутренний</div>
+  <h1>Startup Village 2026</h1>
+  <p class="subtitle">Что зашло, что нет, что чиним к M3</p>
+  <div class="meta-grid">
+    <div class="meta-cell"><div class="label">Даты стенда</div><div class="value">28–29.05.2026</div></div>
+    <div class="meta-cell"><div class="label">На стенде</div><div class="value">Алексей · Александр · Костя</div></div>
+    <div class="meta-cell"><div class="label">Команда</div><div class="value">Никита · Костя · Алексей · Кирилл · Паша · Илья</div></div>
+    <div class="meta-cell"><div class="label">Версия</div><div class="value">v0.1 · 04.06.2026</div></div>
+  </div>
+</header>
+
+<div class="kpi-strip">
+  <div class="kpi-card">
+    <div class="num">12</div>
+    <div class="lbl">Тех. инцидентов на стенде</div>
+    <div class="breakdown">BLE × <span>3</span> · Сеть × <span>4</span> · UI × <span>3</span> · Cloud × <span>2</span></div>
+  </div>
+  <div class="kpi-card">
+    <div class="num">18</div>
+    <div class="lbl">Action items M3</div>
+    <div class="breakdown"><span>12</span> done · <span>2</span> wip · <span>4</span> vendor</div>
+  </div>
+  <div class="kpi-card">
+    <div class="num">5</div>
+    <div class="lbl">Ключевых провалов</div>
+    <div class="breakdown"><span>3</span> продуктовых · <span>2</span> процессных</div>
+  </div>
+</div>
+
+<nav class="toc">
+  <a href="#incidents">§1 Инциденты</a>
+  <a href="#actions">§2 Action items M3</a>
+  <a href="#failures">§3 Что не зашло</a>
+  <a href="#sources">§4 Источники</a>
+</nav>
+
+<!-- §1 INCIDENTS -->
+<section id="incidents">
+  <div class="section-eyebrow">§1 · Хронология стенда</div>
+  <h2>Технические инциденты</h2>
+  <p class="lead">12 заметных сбоев за два дня. Большинство сходится в 3 первопричины: <strong>нестабильная Wi-Fi-сеть стенда</strong>, <strong>BLE-стек VITRO</strong> (известный bug поставщика — see §2 vendor) и <strong>отсутствие release-checklist</strong> (старая APK на демо-устройстве).</p>
+
+  <h3>Топ-факапы</h3>
+
+  <div class="callout danger">
+    <p><strong>BLE: три браслета одновременно не парятся.</strong> Подключение получалось «раза с 10-го» через строго последовательное парирование пар «телефон+браслет». Root cause подтверждён поставщиком 03.06: <em>«Two phones switch the connection because the Bluetooth connection is not manually disconnected»</em> (Vigor bug 1).</p>
+    <p class="who">28.05 16:01 · Костя «три браслета одновременно не парятся» · 22:09 Алексей разбор</p>
+  </div>
+
+  <div class="callout danger">
+    <p><strong>Wi-Fi congestion: телеметрия теряется.</strong> На пике посещаемости запросы из mobile app пропадали, данные не доходили до бэка. PM 14:04: <em>«Не уходят данные на бэк. Нужно правда делать реинжиниринг»</em>. Кирилл подтвердил: <em>«запросы из-за количества людей в сети теряются»</em>. Offline-буфера / retry-логики у клиента нет.</p>
+    <p class="who">28.05 13:38–16:11 · Костя × Кирилл</p>
+  </div>
+
+  <div class="callout warn">
+    <p><strong>Android foreground service: в коде, не в APK.</strong> PM требовал «пульс на закрытом экране», Кирилл «я сделал», но на устройстве Алексея сборка была старая. Классический release-checklist fail.</p>
+    <p class="who">28.05 14:35–14:59 · Костя × Кирилл</p>
+  </div>
+
+  <div class="callout warn">
+    <p><strong>Yandex Cloud упал, personas статика недоступна.</strong> Второй день стенда: «нет иконки у героя» (Никита 10:35) → «вообще всё сломалось» (Алексей 10:37). Кирилл уточнил, что упала статика хостинга, не бэк. Fallback-площадки нет.</p>
+    <p class="who">29.05 10:35–10:39 · повтор 02.06 14:43</p>
+  </div>
+
+  <div class="callout">
+    <p><strong>NSI = 0 на якоре Алексея.</strong> Метрика стресса показывала ноль на демо-якоре. Технически объяснимо: пульс 80 при низкой baseline → формула давала 0. Но визуально читалось как «сломано». Формула в changelog Кирилла исправлена (28.05 → 02.06): инверсия знака, теперь корректно растёт со стрессом.</p>
+    <p class="who">28.05 13:38 · Костя</p>
+  </div>
+
+  <h3>Полная хронология</h3>
+  <table>
+    <thead><tr><th>Время</th><th>Симптом</th><th>Кто</th><th>Причина / статус</th></tr></thead>
+    <tbody>
+      <tr><td>28.05 09:47</td><td>ФСО задержка пропуска</td><td>Алексей</td><td>организационное</td></tr>
+      <tr><td>28.05 13:23</td><td>«С перебоями, но работает»</td><td>Алексей</td><td>Wi-Fi congestion</td></tr>
+      <tr><td>28.05 13:36</td><td>App «отваливается и выдаёт ошибки»</td><td>Костя</td><td>сетевые потери</td></tr>
+      <tr><td>28.05 13:38</td><td>NSI = 0 на якоре «Алексей»</td><td>Костя</td><td>формула инвертирована · <span class="pill done">fix</span></td></tr>
+      <tr><td>28.05 14:04</td><td>Данные не уходят на бэк</td><td>Костя</td><td>нет offline-буфера</td></tr>
+      <tr><td>28.05 14:35</td><td>Пульс не идёт на закрытом экране</td><td>Костя</td><td>foreground service не в APK · <span class="pill done">fix</span></td></tr>
+      <tr><td>28.05 16:01</td><td>Три браслета одновременно не парятся</td><td>Костя</td><td>Vigor FW bug 1 · <span class="pill vendor">vendor</span></td></tr>
+      <tr><td>28.05 22:09</td><td>Скан BLE захватывает «Valdus» и др.</td><td>Алексей</td><td>фильтр BLE-имени · <span class="pill done">VITRO-only</span></td></tr>
+      <tr><td>28.05 22:21</td><td>Рассинхрон состояний слотов в дашборде</td><td>Алексей</td><td>3-слотовая схема · <span class="pill done">staff/guest</span></td></tr>
+      <tr><td>29.05 10:35</td><td>«Нет иконки у героя»</td><td>Никита</td><td>Yandex Cloud / статика</td></tr>
+      <tr><td>29.05 10:37</td><td>«Вообще всё сломалось и остановилось»</td><td>Алексей</td><td>статика personas down</td></tr>
+      <tr><td>02.06 14:43</td><td>Повтор: personas недоступна</td><td>Алексей</td><td>деградация ЯО, fallback нет</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §2 ACTIONS -->
+<section id="actions">
+  <div class="section-eyebrow">§2 · Чиним и усиливаем</div>
+  <h2>Action items M3</h2>
+  <p class="lead">18 задач: <span class="pill done">12 done</span> <span class="pill wip">2 в работе</span> <span class="pill vendor">4 vendor</span>. «Done» закрыты Кириллом и Пашей за 28.05 → 03.06, консолидация v1+v2 kiosk-фронта подтверждена визуальной проверкой production-домена 04.06.</p>
+
+  <h4>✓ Уже сделано</h4>
+  <ul class="action-list">
+    <li class="done"><strong>NSI-формула исправлена.</strong> Метрика стресса теперь корректно растёт при росте пульса — больше не показывает 0 на демо-якоре. <span class="tag">app/domain/hrv.py</span></li>
+    <li class="done"><strong>IMU-пороги пересобраны (28/72 + гистерезис).</strong> Алгоритм перестал «прыгать» между rest / light / active — статус активности теперь стабильный, не дёргается на каждом микро-движении. <span class="tag">imu_metrics.py</span></li>
+    <li class="done"><strong>Слоты упрощены до staff + guest.</strong> Вместо трёх фиксированных слотов (Костя/Алексей/Гость) — один штатный + гость. Дашборд и mobile app говорят на одном языке. <span class="tag">TeamSlotDashboard</span></li>
+    <li class="done"><strong>Сегментация сессии при переподключении.</strong> Если браслет отвалился и переподключился — baseline для метрик берётся с нового сегмента, а не с начала сессии. Лечит «зачем у меня стресс 80, я же спокоен». <span class="tag">pulse_session_service</span></li>
+    <li class="done"><strong>Stale guest cleanup.</strong> Сессии без свежей телеметрии (браслет ушёл / гость снял) автоматически закрываются — слот гостя освобождается для следующего посетителя без ручной интервенции оператора.</li>
+    <li class="done"><strong>Android foreground service.</strong> Пульс продолжает идти на бэк, когда экран mobile app выключен или приложение свёрнуто. Лечит главный факап стенда «пульс пропадает при выключенном экране».</li>
+    <li class="done"><strong>BLE-фильтр VITRO-only + расширенный handshake (8 с).</strong> Скан больше не подтягивает чужие BLE-устройства (Valdus и пр.), а handshake выдерживает медленные ответы браслета — подключение надёжнее.</li>
+    <li class="done"><strong>Bayevsky: poll R-R каждые 2 секунды.</strong> Mobile app не ждёт молча, пока браслет выгрузит интервалы — пингует статус и тянет данные сразу, как они готовы. Тест Баевского быстрее завершается. <span class="tag">GET /v1/sessions/{id}/rr-status</span></li>
+    <li class="done"><strong>5 стресс-аватаров на kiosk.</strong> Zen / Samurai / Cheetah / Berserk / Volcano по результату Баевского — заменили технический «ИН 187» на образный «Гепард». <span class="tag">assets/levels</span></li>
+    <li class="done"><strong>Консолидация kiosk-фронта.</strong> Раньше было 2 параллельных версии (v1 и v2-personas) — выбрали v2 и убрали v1. Один источник правды, две прод-ссылки: <a href="https://pulse.neiry-bci.com/personas/" target="_blank">/personas/</a> (плазма) и <a href="https://pulse.neiry-bci.com/kiosk/" target="_blank">/kiosk/</a> (drill-down).</li>
+    <li class="done"><strong>PDF-отчёт с интерпретацией аватаров и рекомендациями.</strong> Гость получает в TG не только число ИН и ярлык «Гепард», но и описание состояния + конкретные советы — закрывает критику Никиты «нет смысла оценки». <span class="tag">Паша · TG-бот</span></li>
+    <li class="done"><strong>Adaptive layout для kiosk-планшета.</strong> Карточка drill-down корректно отображается на экранах планшета, а не только на 1920×1080 — стенд перестаёт быть привязан к большой плазме. <span class="tag">Кирилл · 03.06</span></li>
+  </ul>
+
+  <h4>● В работе</h4>
+  <ul class="action-list">
+    <li class="wip"><strong>«Сон» в MVP.</strong> Цифры качества сна (Deep / REM / Light) сейчас выглядят некорректно — нужно разобраться, проблема на стороне SDK браслета или mobile app. Никита настаивает включить Сон в MVP — без него V2-фичи (Recovery, Burnout) не работают полноценно. <span class="tag">Костя · 29.05</span></li>
+    <li class="wip"><strong>Дизайн mobile app для App Store / Google Play и B2C.</strong> Сейчас у нас инженерный UI, годный для команды и демо, но не для розничного покупателя. Нужен полный дизайн под публикацию в сторах и B2C-продажи (онбординг, экраны метрик, тариф, профиль). <span class="tag">Костя · 29.05</span></li>
+  </ul>
+
+  <h4>◇ На поставщике / vendor</h4>
+  <ul class="action-list">
+    <li class="vendor"><strong>Vigor IMU Raw 50 Hz, 6 осей.</strong> Сейчас браслет отдаёт уже обработанный статус активности — для собственных алгоритмов (Activity, gestures, sleep-stages) нужен сырой поток акселерометра. Поставщик готов сделать за допразработку. <span class="tag">письмо 03.06</span></li>
+    <li class="vendor"><strong>Vigor PPG Raw 50 Hz.</strong> То же самое для оптического сенсора пульса — без сырого PPG мы не можем считать свой HRV-фильтр, SpO₂ и аритмии. Поставщик готов за допразработку. <span class="tag">письмо 03.06</span></li>
+    <li class="vendor"><strong>Vigor Bug 1: explicit BLE disconnect.</strong> Браслет не отключает предыдущий телефон при подключении к новому — отсюда главный факап стенда «три браслета одновременно не парятся». Поставщик подтвердил баг, ждём fix в прошивке.</li>
+    <li class="vendor"><strong>Vigor Bug 3: erase pairing data on shutdown.</strong> Браслет сохраняет данные сопряжения после выключения, поэтому неочевидно, в каком он состоянии при включении — отсюда жалоба «нет никакой индикации, включён или нет». Ждём fix.</li>
+  </ul>
+</section>
+
+<!-- §3 FAILURES -->
+<section id="failures">
+  <div class="section-eyebrow">§3 · Уроки</div>
+  <h2>Что не зашло</h2>
+  <p class="lead">5 точек, где мы откровенно недодали. 3 продуктовых (интерпретация, спрос, hardware) и 2 процессных (release-checklist, status-page).</p>
+
+  <h4>Продуктовые</h4>
+  <div class="callout warn">
+    <p><strong>5-аватарная метафора без интерпретации не считывается.</strong> Никита 28.05 22:40: <em>«Нет описания смысла оценки. Что значит гепард, что с твоей нервной системой сейчас, какие рекомендации»</em>. Гость видит ярлык «Гепард», но не понимает, хорошо это или плохо и что с этим делать.</p>
+    <p class="who">Лечение: PDF-отчёт с расширенной интерпретацией → в работе</p>
+  </div>
+
+  <div class="callout warn">
+    <p><strong>Спрос B2B разошёлся с продуктом.</strong> Костя 28.05 13:32 после питча: <em>«Хотят чтобы браслет бил током водителей. Плавание тоже хотят себе»</em>. Stress-management через мягкие нотификации vs запрос на punishment + waterproof — мы продаём не то, что просят.</p>
+    <p class="who">Action: переоценить ICP для Беговой Лиги / транспортных компаний на M3 brainstorm</p>
+  </div>
+
+  <div class="callout warn">
+    <p><strong>Молчание B2B post-Village.</strong> С 30.05 по 03.06 в рабочем чате — ни одного письма / лида / обратной связи от посетителей стенда. Косвенный сигнал, что воронка скромная или follow-up не выстроен.</p>
+    <p class="who">Action: организовать ретро по лидам с Алексеем (B2B Lead)</p>
+  </div>
+
+  <h4>Процессные</h4>
+  <div class="callout danger">
+    <p><strong>Нет release-checklist перед стендом.</strong> Костя 28.05 14:40 «Алексей обновлял, да», Кирилл 14:59 «сомнительно». На прод-устройстве у демо-якоря — старая APK, фича foreground-service в коде, но не в сборке.</p>
+    <p class="who">Action: версионирование APK + ручная сверка commit-hash на устройствах за день до демо</p>
+  </div>
+
+  <div class="callout danger">
+    <p><strong>Нет status-page и fallback-хостинга.</strong> Yandex Cloud положил статику personas на втором дне стенда. У команды нет ни мониторинга uptime, ни запасной площадки для статики (CDN / S3-зеркало).</p>
+    <p class="who">Action: настроить простейший uptime-monitor + Cloudflare-зеркало для статики на M3</p>
+  </div>
+</section>
+
+<!-- §4 SOURCES -->
+<section id="sources">
+  <div class="section-eyebrow">§4 · Методология</div>
+  <h2>Источники</h2>
+  <ul class="action-list" style="margin-top:16px">
+    <li class="done">Telegram-чат «Neiry PULSE — браслеты» — 176 сообщений, 26.05–03.06 (команда)</li>
+    <li class="done">Telegram-чат «PM × Кирилл × Паша» — 64 сообщения, 27.05–29.05 (разработка + TG-бот)</li>
+    <li class="done">Changelog Кирилла <code>changelog-2026-05-28.md</code> — 16 backend + 1 mobile, 28.05→02.06</li>
+    <li class="done">Production-снэпшот <a href="https://pulse.neiry-bci.com/personas/" target="_blank">pulse.neiry-bci.com/personas/</a> и kiosk-drilldown, проверено 04.06</li>
+  </ul>
+  <p class="lead" style="margin-top:24px">Голосовых в экспортах не было. Бинарные артефакты (скриншоты ошибок, video.mp4) в отчёт не вошли — описаны через текстовый контекст. Чат команды молчит с 30.05 по 03.06 — все post-mortem обсуждения, видимо, прошли голосом на созвонах 31.05 и 01.06.</p>
+</section>
+
+<footer>
+  <p>Startup Village 2026 — Post-Mortem · v0.1 · 04.06.2026</p>
+  <p>Документ внутренний. Цитаты из чатов команды — для рабочего разбора, не для внешнего распространения.</p>
+</footer>
+
+</div>
+</body>
+</html>
