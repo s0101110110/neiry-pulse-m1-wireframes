@@ -425,6 +425,96 @@
     font-size: 12.5px; color: var(--muted);
   }
 
+  /* === R&D view === */
+  .rd-intro {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 18px; max-width: 720px;
+  }
+  .rd-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .rd-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative; overflow: hidden;
+  }
+  .rd-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--border-bright);
+  }
+  .rd-card.open::before     { background: var(--yellow); }
+  .rd-card.in-research::before { background: var(--blue); }
+  .rd-card.answered::before { background: var(--green); }
+  .rd-card-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  .rd-card-title { font-size: 14px; font-weight: 700; line-height: 1.3; }
+  .rd-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted); flex-shrink: 0;
+  }
+  .rd-status::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+  }
+  .rd-card.open .rd-status     { color: var(--yellow); }
+  .rd-card.in-research .rd-status { color: var(--blue); }
+  .rd-card.answered .rd-status { color: var(--green); }
+  .rd-row { display: flex; gap: 6px; font-size: 12px; line-height: 1.5; }
+  .rd-row .rd-label {
+    color: var(--label); flex-shrink: 0; font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+    min-width: 64px; padding-top: 3px;
+  }
+  .rd-row .rd-value { color: var(--text); }
+  .rd-row code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; background: var(--surface-2);
+    padding: 1px 5px; border-radius: 3px; color: var(--accent-bright);
+  }
+  .rd-block-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--label); margin-top: 4px;
+  }
+  .rd-questions { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  .rd-questions li {
+    font-size: 12px; padding-left: 12px; position: relative; color: var(--text);
+    line-height: 1.5;
+  }
+  .rd-questions li::before {
+    content: '·'; position: absolute; left: 4px; color: var(--accent-bright);
+    font-weight: 700;
+  }
+  .rd-tasks { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .rd-tasks li {
+    font-size: 12px; display: flex; align-items: flex-start; gap: 8px;
+    padding: 7px 9px; background: var(--surface-2); border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .rd-tasks li input[type="checkbox"] {
+    accent-color: var(--accent); margin-top: 2px; flex-shrink: 0; cursor: pointer;
+  }
+  .rd-tasks li.done { opacity: 0.5; background: var(--done); }
+  .rd-tasks li.done .rd-task-text { text-decoration: line-through; }
+  .rd-task-text { flex: 1; line-height: 1.4; }
+  .rd-owner {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--muted); flex-shrink: 0;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .rd-source {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    border-top: 1px solid var(--border); padding-top: 8px; margin-top: auto;
+  }
+
   /* === Footer === */
   .footer {
     margin-top: 48px; padding-top: 20px;
@@ -450,10 +540,12 @@
   @media (max-width: 1200px) {
     .calendar { grid-template-columns: repeat(3, 1fr); }
     .owners-grid, .questions-grid { grid-template-columns: 1fr; }
+    .rd-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 768px) {
     .hero { grid-template-columns: repeat(2, 1fr); }
     .calendar { grid-template-columns: 1fr; }
+    .rd-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -503,6 +595,7 @@
     <button class="tab" data-tab="owners">👥 По исполнителям <span class="kbd">2</span></button>
     <button class="tab" data-tab="questions">❓ Вопросы <span class="tab-count">10</span> <span class="kbd">3</span></button>
     <button class="tab" data-tab="artifacts">📎 Артефакты <span class="kbd">4</span></button>
+    <button class="tab" data-tab="rd">🔬 R&amp;D <span class="kbd">5</span></button>
   </div>
 
   <!-- VIEW: CALENDAR -->
@@ -1414,6 +1507,154 @@
     </div>
   </div>
 
+  <!-- VIEW: R&D -->
+  <div class="view" data-view="rd">
+    <div class="rd-intro">
+      Открытый бэклог исследований. Направления, по которым ведём работу post-Village. Owner'ов назначает PM, карточки наполнены R&amp;D-агентом по брифу от 2026-06-04.
+    </div>
+    <div class="rd-grid">
+
+      <!-- Card 1 -->
+      <div class="rd-card open">
+        <div class="rd-card-head">
+          <div class="rd-card-title">🧮 Композитный Stress Index</div>
+          <div class="rd-status">open</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Единый индикатор стресса нужен плазме, дашборду корпоратов и B2C-app — без него тяжело продавать Recovery/Burnout.</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">На плазме NSI Fast = <code>clamp(2×(BPM−baseline),0..100)</code> — только сердечный ритм. Баевский ИН живёт отдельно в TG. Композитной метрики нет.</span></div>
+        <div class="rd-block-label">Открытые вопросы</div>
+        <ul class="rd-questions">
+          <li>Нужна ли третья гибридная метрика, или достаточно показывать NSI Fast + Bayevsky Slow раздельно?</li>
+          <li>Какие веса/нормализация у композитов конкурентов (Polar, Garmin Body Battery, Whoop Strain, Oura)?</li>
+          <li>Как валидировать композит — по самооценке или кортизолу/HRV-baseline?</li>
+        </ul>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd1-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Сравнительная таблица композитов: формула, входы, окно усреднения, нормализация для 4 конкурентов</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd1-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Прототип <code>0.6×NSI + 0.4×norm(Bayevsky)</code> на исторических данных Village</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd1-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">Решение PM: одна метрика или две — зафиксировать в <code>metrics/stress-index.md</code></span><span class="rd-owner">—</span></li>
+        </ul>
+        <div class="rd-source">⤴ metrics/hrv.md · MEMORY stress_index · upd 2026-06-04</div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="rd-card open">
+        <div class="rd-card-head">
+          <div class="rd-card-title">📡 Vigor IMU/PPG Raw — 50 Hz × 6 осей</div>
+          <div class="rd-status">open</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Сырой поток открывает слой фич (сон, каденс, fall-detection, чистка PPG) без замены железа — рычаг V2.</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">Сейчас браслет отдаёт обработанный статус (rest/light/active, int8). Поставщик готов отдать raw IMU + raw PPG 50 Hz за допразработку (письмо 03.06).</span></div>
+        <div class="rd-block-label">Открытые вопросы</div>
+        <ul class="rd-questions">
+          <li>Что достаём из 50 Hz × 6 осей: каденс, actigraphy-сон, fall-detection, motion-artifact PPG — что приоритетнее?</li>
+          <li>Storage: 1 юзер × 24 ч × 6 осей × 50 Hz × 2 B ≈ 20.7 МБ/день — терпимо ли для 1000+ юзеров?</li>
+          <li>Что отдаёт raw PPG — световой сигнал или beat-to-beat? Хватит ли для своего HRV/SpO₂/аритмий?</li>
+        </ul>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd2-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Запросить sample raw IMU + raw PPG (10 минут записи) у поставщика</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd2-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Посчитать storage и трафик BLE для 50 Hz × 6 осей, сверить с пропускной способностью</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd2-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">Литобзор: actigraphy (Cole-Kripke, Sadeh) + motion-artifact removal для PPG</span><span class="rd-owner">—</span></li>
+        </ul>
+        <div class="rd-source">⤴ post-village-2026-05 (vendor) · changelog 2026-05-28 · upd 2026-06-04</div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="rd-card open">
+        <div class="rd-card-head">
+          <div class="rd-card-title">🌙 «Сон» в MVP</div>
+          <div class="rd-status">open</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Без корректного сна не работают Recovery и Burnout — блокер для линейки Health/Sport.</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">На M2 цифры Deep/REM/Light выглядели некорректно. Root cause не определён: SDK мусор или mobile-обвязка не подняла. Узнали только 28.05.</span></div>
+        <div class="rd-block-label">Открытые вопросы</div>
+        <ul class="rd-questions">
+          <li>Что возвращает <code>getSleepReport</code> (структура, единицы, периоды) и какие алгоритмы стейджинга?</li>
+          <li>Где сломалась проверка — фичи не было в acceptance M2, или «проверили» без эталона?</li>
+          <li>К M3 (25.06): чиним SDK-вызов или собираем свой actigraphy поверх raw IMU (см. карточку 2)?</li>
+        </ul>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd3-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Прочитать SDK-doc вендора раздел Sleep — выписать API, формат, алгоритмы</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd3-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Снять 1 ночь записи на 2-3 сотрудниках, сравнить с Oura/Whoop или субъективом</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd3-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">Решение PM: SDK-fix vs свой алгоритм — зафиксировать к M3</span><span class="rd-owner">—</span></li>
+        </ul>
+        <div class="rd-source">⤴ post-village-2026-05 (WIP) · upd 2026-06-04</div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="rd-card in-research">
+        <div class="rd-card-head">
+          <div class="rd-card-title">🎯 ICP / segment после Village</div>
+          <div class="rd-status">in-research</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Все решения (mobile scope, дашборд, прайс, упаковка) зависят от реального покупателя — после Village есть полевые данные.</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">До Village гипотезы: фитнес-клубы / HR / водители / B2C-энтузиасты. После 28-29.05 надо понять, кто подходил, оставлял лиды и был готов платить.</span></div>
+        <div class="rd-block-label">Открытые вопросы</div>
+        <ul class="rd-questions">
+          <li>Какой сегмент дал &gt;50% качественных лидов на стенде?</li>
+          <li>Совпадает ли «кто подходил» с «кто оставил контакт» с «кто платит» — где обрывается воронка?</li>
+          <li>Какие возражения повторялись — сигнал недозревшего продукта или непопадания в ICP?</li>
+        </ul>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd4-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Структурировать лиды Village: сегмент, роль, интерес, готовность платить, next step</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd4-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Интервью с Алексеем и перформерами — собрать 3-5 паттернов</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd4-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">ICP v2 (1 основной + 1 запасной) → <code>brainstorms/2026-06-XX-icp-v2.md</code></span><span class="rd-owner">—</span></li>
+        </ul>
+        <div class="rd-source">⤴ лиды Village · наблюдения Алексея · PROJECT_STATE · upd 2026-06-04</div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="rd-card open">
+        <div class="rd-card-head">
+          <div class="rd-card-title">🔒 Privacy / consent для V2 + B2C</div>
+          <div class="rd-status">open</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Без consent и privacy policy = отказ App Store review; работа с биометрией без 152-ФЗ = юридический риск.</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">Сейчас приложение на закрытых корпоративных Android'ах — privacy полу-формальная. V2 идёт в публичные сторы и B2C.</span></div>
+        <div class="rd-block-label">Открытые вопросы</div>
+        <ul class="rd-questions">
+          <li>Что считается «биометрическими ПД» по 152-ФЗ (HRV, R-R, ЭКГ?) — нужно ли согласие и регистрация ИСПДн?</li>
+          <li>Какой объём GDPR-обязательств триггерится при продаже в EU (DPA, право на удаление, DPO)?</li>
+          <li>Какой медицинский дисклеймер нужен, чтобы не попасть под регуляцию медизделий?</li>
+        </ul>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd5-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Privacy policy 3 бенчмарков (Whoop, Oura, Polar) — что декларируют, как формулируют дисклеймер</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd5-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Список обязательных экранов onboarding: consent биометрия, privacy, age gate (16+/18+), дисклеймер</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd5-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">Оценка юриста: шаблон или с нуля + смета</span><span class="rd-owner">—</span></li>
+        </ul>
+        <div class="rd-source">⤴ MEMORY ios_post_m2 · post-village WIP · upd 2026-06-04</div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="rd-card open">
+        <div class="rd-card-head">
+          <div class="rd-card-title">📱 Mobile B2C — feature scope</div>
+          <div class="rd-status">open</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Первый публичный релиз mobile-app определяет first-impression B2C и проходит ли продукт review App Store (строгая health-политика).</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">Сейчас mobile — инженерный UI: pairing, BLE, синк HRV, foreground. Под B2C не годится. Никита настаивает на полном дизайне под сторы.</span></div>
+        <div class="rd-block-label">Открытые вопросы</div>
+        <ul class="rd-questions">
+          <li>Минимум: pairing + sync + базовая статистика — или нужен self-serve дашборд внутри app?</li>
+          <li>Что критично для App Store review health-приложений: HealthKit, дисклеймеры, обоснование сбора данных?</li>
+          <li>Что у Hume Band / Whoop / Oura / Polar Flow / Garmin Connect в day-1 onboarding?</li>
+        </ul>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd6-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Скриншот-аудит onboarding 5 бенчмарков — выписать обязательные экраны</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd6-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Прочитать App Store Review Guidelines § 1.4 + § 5.1.1 — выписать требования</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd6-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">MVP-scope mobile B2C (must / nice / out) — передать UX/UI в бриф</span><span class="rd-owner">—</span></li>
+        </ul>
+        <div class="rd-source">⤴ post-village (Никита) · MEMORY ios_post_m2 · upd 2026-06-04</div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <div class="footer">
     <div>Neiry · PM Dashboard · v1.0 · 2026-05-22</div>
@@ -1480,13 +1721,14 @@
   // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    const map = { '1': 'calendar', '2': 'owners', '3': 'questions', '4': 'artifacts' };
+    const map = { '1': 'calendar', '2': 'owners', '3': 'questions', '4': 'artifacts', '5': 'rd' };
     if (map[e.key]) switchTab(map[e.key]);
   });
 
   // === Tasks (localStorage) ===
   const STORAGE_PREFIX = 'neiry-pm-task-';
   const Q_PREFIX = 'neiry-pm-q-';
+  const RD_PREFIX = 'neiry-pm-rd-';
 
   function loadTasks() {
     document.querySelectorAll('.task').forEach(task => {
@@ -1550,6 +1792,25 @@
     });
   });
 
+  function loadRD() {
+    document.querySelectorAll('.rd-tasks li').forEach(li => {
+      const id = li.dataset.rdTask;
+      const cb = li.querySelector('.rd-check');
+      if (!id || !cb) return;
+      const saved = localStorage.getItem(RD_PREFIX + id) === '1';
+      cb.checked = saved;
+      li.classList.toggle('done', saved);
+    });
+  }
+  document.querySelectorAll('.rd-tasks .rd-check').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      const li = e.target.closest('li');
+      const id = li.dataset.rdTask;
+      if (id) localStorage.setItem(RD_PREFIX + id, e.target.checked ? '1' : '0');
+      li.classList.toggle('done', e.target.checked);
+    });
+  });
+
   document.querySelectorAll('.q-resolve-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1566,15 +1827,17 @@
   document.getElementById('reset-btn').addEventListener('click', () => {
     if (!confirm('Сбросить все галочки и resolved-вопросы?')) return;
     Object.keys(localStorage)
-      .filter(k => k.startsWith(STORAGE_PREFIX) || k.startsWith(Q_PREFIX))
+      .filter(k => k.startsWith(STORAGE_PREFIX) || k.startsWith(Q_PREFIX) || k.startsWith(RD_PREFIX))
       .forEach(k => localStorage.removeItem(k));
     loadTasks();
     loadQuestions();
+    loadRD();
   });
 
   // === Init ===
   loadTasks();
   loadQuestions();
+  loadRD();
 </script>
 
 </body>

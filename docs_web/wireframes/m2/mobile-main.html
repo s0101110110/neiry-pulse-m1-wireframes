@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Главная · Neiry Pulse</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+  /* ============================================
+     SHADCN-STYLE TOKENS (синхронизировано с m2/ui-kit.html)
+     ============================================ */
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --primary: 336 76% 33%;           /* wine #831843 — НЕ менять */
+    --primary-foreground: 0 0% 98%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --border: 240 5.9% 90%;
+    --destructive: 348 100% 54%;
+    --success: 151 100% 45%;
+    --warning: 42 100% 50%;
+  }
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 6%;
+    --card-foreground: 0 0% 98%;
+    --primary: 336 76% 45%;
+    --primary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --border: 240 3.7% 15.9%;
+    --destructive: 348 100% 54%;
+    --success: 151 100% 45%;
+    --warning: 42 100% 50%;
+  }
+
+  :root {
+    --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --font-display: 'Onest', 'Space Grotesk', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+  }
+
+  body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  .font-display { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.04em; }
+  .font-data    { font-family: var(--font-mono); }
+
+  /* Tabular-nums везде, где число — данные */
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* Токены → утилиты */
+  .bg-background     { background-color: hsl(var(--background)); }
+  .bg-card           { background-color: hsl(var(--card)); }
+  .bg-muted          { background-color: hsl(var(--muted)); }
+  .bg-primary        { background-color: hsl(var(--primary)); }
+  .text-foreground   { color: hsl(var(--foreground)); }
+  .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+  .text-primary      { color: hsl(var(--primary)); }
+  .text-primary-foreground { color: hsl(var(--primary-foreground)); }
+  .border-border     { border-color: hsl(var(--border)); }
+  .stroke-muted-foreground { stroke: hsl(var(--muted-foreground)); }
+
+  /* Status dot — единственное место с семантическим цветом */
+  .dot { width: 8px; height: 8px; border-radius: 9999px; display: inline-block; }
+  .dot-success     { background: hsl(var(--success)); }
+  .dot-warning     { background: hsl(var(--warning)); }
+  .dot-destructive { background: hsl(var(--destructive)); }
+  .dot-muted       { background: hsl(var(--muted-foreground)); }
+
+  /* Тонкая полоска слева у карточки — статусный акцент */
+  .stripe-success     { box-shadow: inset 3px 0 0 hsl(var(--success)); }
+  .stripe-warning     { box-shadow: inset 3px 0 0 hsl(var(--warning)); }
+  .stripe-destructive { box-shadow: inset 3px 0 0 hsl(var(--destructive)); }
+
+  /* Phone frame outer bg */
+  .stage { background: hsl(240 6% 8%); }
+</style>
+</head>
+<body class="min-h-screen stage flex items-center justify-center p-8">
+
+  <!-- Phone frame 390×844 -->
+  <div class="relative rounded-[3rem] border-[6px] border-border shadow-2xl w-[390px] h-[844px] overflow-hidden">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-7 bg-border rounded-b-2xl z-10"></div>
+
+    <div class="w-full h-full bg-background flex flex-col pt-14 pb-8">
+
+      <!-- Status bar -->
+      <header class="px-6 mt-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="dot dot-success"></span>
+          <span class="font-data text-foreground text-[11px] tnum">Браслет · подключён</span>
+        </div>
+        <span class="font-data text-muted-foreground text-[11px] tnum">14:32</span>
+      </header>
+
+      <!-- Tabs -->
+      <nav class="px-6 mt-5 flex border-b border-border">
+        <button class="flex-1 pb-3 text-[13px] font-medium text-foreground border-b-2 border-primary -mb-px">Сегодня</button>
+        <a href="mobile-hrv-form.html" class="flex-1 pb-3 text-[13px] font-medium text-muted-foreground text-center hover:text-foreground transition-colors">HRV</a>
+        <a href="mobile-settings.html" class="flex-1 pb-3 text-[13px] font-medium text-muted-foreground text-center hover:text-foreground transition-colors">Профиль</a>
+      </nav>
+
+      <!-- Content -->
+      <main class="flex-1 flex flex-col px-6 pt-5 overflow-y-auto">
+
+        <!-- Сегодня · header -->
+        <div class="flex items-baseline justify-between mb-3">
+          <h2 class="font-display text-foreground text-lg">Сегодня</h2>
+          <span class="font-data text-muted-foreground text-[10px] uppercase tracking-widest">04.06 · ЧТ</span>
+        </div>
+
+        <!-- BPM live · hero card -->
+        <section class="bg-card border border-border rounded-2xl p-5 stripe-success">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-muted-foreground text-[11px] uppercase tracking-widest">BPM · live</span>
+            <div class="flex items-center gap-1.5">
+              <span class="dot dot-success"></span>
+              <span class="font-data text-muted-foreground text-[11px] tnum">норма</span>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="font-display text-foreground text-[64px] leading-none tnum">78</span>
+            <span class="font-data text-muted-foreground text-sm tnum">уд/мин</span>
+          </div>
+
+          <!-- Sparkline 24h -->
+          <div class="mt-3">
+            <svg viewBox="0 0 320 80" preserveAspectRatio="none" width="100%" height="80" aria-label="История BPM за 24 часа">
+              <!-- baseline grid (very subtle) -->
+              <line x1="0" y1="40" x2="320" y2="40" stroke="hsl(var(--border))" stroke-width="1" stroke-dasharray="2 4"/>
+              <!-- 24h polyline, без заливки, neutral -->
+              <polyline
+                fill="none"
+                stroke="hsl(var(--muted-foreground))"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                points="0,52 12,50 24,48 36,46 48,44 60,45 72,42 84,40 96,42 108,38 120,36 132,34 144,38 156,42 168,46 180,44 192,40 204,36 216,32 228,30 240,34 252,38 264,42 276,40 288,36 300,34 312,32 320,30"
+              />
+              <!-- current point -->
+              <circle cx="320" cy="30" r="2.5" fill="hsl(var(--foreground))"/>
+            </svg>
+            <div class="flex items-center justify-between mt-1">
+              <span class="font-data text-muted-foreground text-[10px] tnum">00:00</span>
+              <span class="font-data text-muted-foreground text-[10px] tnum">24 ч</span>
+              <span class="font-data text-muted-foreground text-[10px] tnum">сейчас</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- HRV + Шаги row -->
+        <div class="grid grid-cols-2 gap-3 mt-3">
+
+          <!-- HRV today -->
+          <section class="bg-card border border-border rounded-2xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-muted-foreground text-[10px] uppercase tracking-widest">HRV · сегодня</span>
+              <span class="dot dot-success"></span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span class="font-display text-foreground text-[32px] leading-none tnum">48</span>
+              <span class="font-data text-muted-foreground text-xs tnum">мс</span>
+            </div>
+            <p class="text-muted-foreground text-[11px] mt-2">RMSSD · норма</p>
+          </section>
+
+          <!-- Шаги -->
+          <section class="bg-card border border-border rounded-2xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-muted-foreground text-[10px] uppercase tracking-widest">Шаги</span>
+              <span class="font-data text-muted-foreground text-[10px] tnum">62 %</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <!-- Ring progress -->
+              <svg width="44" height="44" viewBox="0 0 44 44" class="-rotate-90 shrink-0" aria-label="Прогресс шагов">
+                <circle cx="22" cy="22" r="18" fill="none" stroke="hsl(var(--muted))" stroke-width="3"/>
+                <circle cx="22" cy="22" r="18" fill="none"
+                        stroke="hsl(var(--foreground))" stroke-width="3" stroke-linecap="round"
+                        stroke-dasharray="113.1" stroke-dashoffset="42.98"/>
+              </svg>
+              <div class="min-w-0">
+                <div class="font-display text-foreground text-[22px] leading-none tnum">6 240</div>
+                <div class="font-data text-muted-foreground text-[10px] tnum mt-1">/ 10 000</div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Sync block (compact, бывшая нижняя кнопка) -->
+        <div class="mt-auto pt-5">
+          <button class="w-full bg-primary text-primary-foreground text-[13px] font-medium rounded-xl py-3.5 hover:opacity-90 transition-opacity">
+            Синхронизировать
+          </button>
+          <div class="mt-2.5 flex items-center gap-2 justify-center">
+            <span class="dot dot-muted"></span>
+            <span class="font-data text-muted-foreground text-[11px] tnum">последняя синхр. 14:30</span>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+</body>
+</html>
