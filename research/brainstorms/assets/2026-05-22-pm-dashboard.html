@@ -1461,9 +1461,6 @@
     </div>
   </div>
 
-</div>
-
-
   <!-- VIEW: DONE -->
   <div class="view" data-view="done">
     <div class="flat-list-header">
@@ -1727,6 +1724,8 @@
     </div>
   </div>
 
+</div>
+
   <script>
   // === Time & countdown ===
   function updateClock() {
@@ -1846,8 +1845,8 @@
     const qCancelled = document.querySelectorAll('.question-card.cancelled').length;
     const qTotal = document.querySelectorAll('.question-card').length;
     const qOpen = qTotal - qResolved - qDeferred - qCancelled;
-    document.getElementById('questions-open').textContent = qOpen;
-    document.querySelector('[data-tab="questions"] .tab-count').textContent = qOpen;
+    const qoEl = document.getElementById('questions-open'); if (qoEl) qoEl.textContent = qOpen;
+    const qTab = document.querySelector('[data-tab="questions"] .tab-count'); if (qTab) qTab.textContent = qOpen;
   }
 
   document.querySelectorAll('.task-check').forEach(cb => {
