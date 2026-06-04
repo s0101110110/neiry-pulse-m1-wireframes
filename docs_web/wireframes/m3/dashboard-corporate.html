@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neiry Pulse · Dashboard (Corporate)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Geist (Vercel, OFL, 2024) — clinical UI font c кириллицей и tabular-nums -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* ============================================================
+   SHADCN-STYLE SEMANTIC TOKENS (синхрон с m2/ui-kit.html, light)
+   ============================================================ */
+:root{
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+  --primary: 336 76% 33%;          /* wine #831843 — НЕ менять */
+  --primary-hover: 336 76% 28%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --success: 142 64% 38%;
+  --warning: 32 92% 44%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: 336 76% 33%;
+  --radius: 0.5rem;
+
+  /* Чёрно-белые тона для семантики через прозрачность (clinical mute) */
+  --tint-success: 142 64% 38%;
+  --tint-warning: 32 92% 44%;
+  --tint-destructive: 0 72% 51%;
+
+  /* Font tokens */
+  --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+  /* Type scale — 6 ступеней (BRIEF #2 P0.2) */
+  --t-display: 28px;
+  --t-h1: 22px;
+  --t-h2: 15px;
+  --t-body: 13px;
+  --t-caption: 11px;
+  --t-micro: 9px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:var(--font-sans);background:hsl(var(--background));color:hsl(var(--foreground));font-feature-settings:'cv11','ss01';-webkit-font-smoothing:antialiased}
+body{display:flex;min-height:100vh;font-size:var(--t-body)}
+
+/* === Tabular numerics на всех цифрах (BRIEF P0.3) === */
+.tnum,.mv,.metric-value,.emcv,.rv,.bcr,.row-meta .v{font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1}
+
+/* === Type scale helpers === */
+.t-display{font-size:var(--t-display);font-weight:600;letter-spacing:-0.025em;line-height:1.1}
+.t-h1{font-size:var(--t-h1);font-weight:600;letter-spacing:-0.02em;line-height:1.2}
+.t-h2{font-size:var(--t-h2);font-weight:600;letter-spacing:-0.01em;line-height:1.3}
+.t-body{font-size:var(--t-body);font-weight:400;line-height:1.5}
+.t-caption{font-size:var(--t-caption);font-weight:500;line-height:1.4;color:hsl(var(--muted-foreground))}
+.t-micro{font-size:var(--t-micro);font-weight:600;line-height:1.3;text-transform:uppercase;letter-spacing:0.08em;color:hsl(var(--muted-foreground))}
+
+/* === Sidebar === */
+.sb{width:220px;background:hsl(var(--card));border-right:1px solid hsl(var(--border));padding:20px 12px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;flex-shrink:0}
+.logo{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:4px 12px;margin-bottom:28px}
+.logo img{width:120px;filter:contrast(1.2)}
+.logo-p{font-size:var(--t-micro);font-weight:600;color:hsl(var(--primary));letter-spacing:0.16em;text-transform:uppercase}
+.nl{font-size:var(--t-micro);color:hsl(var(--muted-foreground));text-transform:uppercase;letter-spacing:0.12em;padding:0 12px;margin-bottom:8px;font-weight:600}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;margin-bottom:2px;cursor:pointer;font-size:var(--t-body);color:hsl(var(--muted-foreground));transition:background .15s,color .15s}
+.ni:hover{background:hsl(var(--accent));color:hsl(var(--foreground))}
+.ni.ac{background:hsl(var(--accent));color:hsl(var(--foreground));font-weight:600}
+.ni svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ss{border-top:1px solid hsl(var(--border));margin:16px 0;padding-top:16px}
+.cb{display:flex;gap:4px;padding:0 8px}
+.cbtn{flex:1;padding:7px 0;border-radius:6px;border:1px solid hsl(var(--border));cursor:pointer;font-size:var(--t-caption);font-weight:600;background:hsl(var(--card));color:hsl(var(--muted-foreground));font-family:inherit;transition:all .15s}
+.cbtn.ac{background:hsl(var(--foreground));color:hsl(var(--background));border-color:hsl(var(--foreground))}
+.sf{margin-top:auto;padding:12px;border-top:1px solid hsl(var(--border));display:flex;align-items:center;gap:10px}
+.sf-av{width:30px;height:30px;border-radius:8px;background:hsl(var(--muted));display:flex;align-items:center;justify-content:center;font-size:var(--t-caption);font-weight:700;color:hsl(var(--foreground))}
+.sf-n{font-size:var(--t-body);font-weight:600}
+.sf-r{font-size:var(--t-micro);color:hsl(var(--muted-foreground));text-transform:none;letter-spacing:0}
+
+/* === Main === */
+.mn{flex:1;padding:28px 36px;max-width:1180px;overflow-y:auto}
+
+/* === Mode switcher === */
+.mode-sw{display:flex;background:hsl(var(--muted));border-radius:10px;padding:4px;gap:2px;margin-bottom:24px;border:1px solid hsl(var(--border))}
+.mode-btn{flex:1;padding:9px 0;border-radius:7px;border:none;cursor:pointer;font-size:var(--t-caption);font-weight:600;font-family:inherit;background:transparent;color:hsl(var(--muted-foreground));transition:all .18s;display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:0.04em}
+.mode-btn.ac{background:hsl(var(--card));color:hsl(var(--foreground));box-shadow:0 1px 2px rgba(0,0,0,.06),0 1px 1px rgba(0,0,0,.04)}
+.mode-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* === Header === */
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;gap:16px}
+.hsub{font-size:var(--t-body);color:hsl(var(--muted-foreground));margin-top:4px}
+.dbg{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;background:hsl(var(--card));border:1px solid hsl(var(--border));font-size:var(--t-caption);color:hsl(var(--muted-foreground));white-space:nowrap}
+
+/* === Metric cards === */
+.mr{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
+.mc{background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:12px;padding:16px 18px;position:relative;cursor:default;transition:border-color .2s,box-shadow .2s}
+.mc:hover{border-color:hsl(var(--muted-foreground)/0.4)}
+.mc.pr{border-color:hsl(var(--primary)/0.35)}
+.mc.pr .ml{color:hsl(var(--primary));font-weight:600}
+.pb{position:absolute;top:10px;right:10px;font-size:var(--t-micro);padding:2px 7px;border-radius:4px;background:hsl(var(--primary));color:hsl(var(--primary-foreground));font-weight:600;letter-spacing:0.08em}
+.mt{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;min-height:18px}
+.mtr{display:flex;align-items:center;gap:3px;font-size:var(--t-micro);font-weight:600;text-transform:none;letter-spacing:0}
+.mv{font-size:var(--t-display);font-weight:600;line-height:1;letter-spacing:-0.025em;color:hsl(var(--foreground))}
+.mv .unit{font-size:var(--t-body);font-weight:400;color:hsl(var(--muted-foreground));margin-left:3px;letter-spacing:0}
+.ml{font-size:var(--t-caption);color:hsl(var(--muted-foreground));margin-top:6px;font-weight:500}
+.ma{margin-top:10px;font-size:var(--t-micro);font-weight:600;text-transform:none;letter-spacing:0;color:hsl(var(--muted-foreground));display:flex;align-items:center;gap:6px}
+.ma .dot{width:6px;height:6px;border-radius:9999px;display:inline-block;flex-shrink:0}
+
+/* Status dot colours — единственное место с семантическим цветом */
+.dot-g{background:hsl(var(--success))}
+.dot-a{background:hsl(var(--warning))}
+.dot-r{background:hsl(var(--destructive))}
+.text-g{color:hsl(var(--success))}
+.text-a{color:hsl(var(--warning))}
+.text-r{color:hsl(var(--destructive))}
+.text-up{color:hsl(var(--success))}
+.text-dn{color:hsl(var(--destructive))}
+
+/* Tooltip */
+.tp{position:relative}
+.tb{display:none;position:absolute;left:0;top:calc(100% + 8px);width:300px;background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:10px;padding:12px 14px;box-shadow:0 8px 24px rgba(0,0,0,.08);z-index:30;font-size:var(--t-caption);line-height:1.5;color:hsl(var(--muted-foreground))}
+.tb .tt{font-size:var(--t-body);font-weight:600;color:hsl(var(--foreground));margin-bottom:4px}
+.tb .tf{background:hsl(var(--muted));border:1px solid hsl(var(--border));border-radius:6px;padding:6px 8px;margin-top:8px;font-family:var(--font-mono);font-size:var(--t-micro);color:hsl(var(--foreground));text-transform:none;letter-spacing:0;font-weight:400}
+.mc:hover .tb{display:block}
+
+/* === Charts === */
+.cr{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.cc{background:hsl(var(--card));border-radius:12px;padding:18px;border:1px solid hsl(var(--border))}
+.ct{font-size:var(--t-h2);font-weight:600;margin-bottom:4px;letter-spacing:-0.01em}
+.cst{font-size:var(--t-caption);color:hsl(var(--muted-foreground));margin-bottom:12px}
+.cw{height:200px;position:relative}
+.cl{display:flex;gap:14px;justify-content:center;margin-top:8px;font-size:var(--t-caption);color:hsl(var(--muted-foreground))}
+.ld{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:middle}
+
+/* === Table === */
+.tc{background:hsl(var(--card));border-radius:12px;border:1px solid hsl(var(--border));margin-bottom:24px;overflow:hidden}
+.th{padding:14px 18px;border-bottom:1px solid hsl(var(--border));display:flex;justify-content:space-between;align-items:center}
+.tht{font-size:var(--t-h2);font-weight:600;letter-spacing:-0.01em}
+.th-meta{font-size:var(--t-caption);color:hsl(var(--muted-foreground));display:flex;align-items:center;gap:10px}
+.th-meta .dot{width:8px;height:8px;border-radius:9999px}
+
+.er{display:flex;align-items:center;gap:14px;padding:11px 18px;border-bottom:1px solid hsl(var(--border));cursor:pointer;transition:background .12s;position:relative}
+.er:hover{background:hsl(var(--accent))}
+.er:last-child{border-bottom:none}
+.er.alert{box-shadow:inset 3px 0 0 hsl(var(--destructive))}
+.ea{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:var(--t-caption);font-weight:700;flex-shrink:0;background:hsl(var(--muted));color:hsl(var(--foreground));border:1px solid hsl(var(--border))}
+.ei{flex:1;min-width:0}
+.en{font-size:var(--t-body);font-weight:600;display:flex;align-items:center;gap:6px}
+.erl{font-size:var(--t-caption);color:hsl(var(--muted-foreground));margin-top:1px}
+.row-tag{font-size:var(--t-micro);padding:2px 6px;border-radius:4px;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-weight:600;text-transform:none;letter-spacing:0.02em}
+.row-tag.warn{background:hsl(var(--destructive)/0.08);color:hsl(var(--destructive))}
+.em{display:flex;gap:14px;align-items:center}
+.emc{text-align:center;min-width:50px}
+.emcl{font-size:var(--t-micro);color:hsl(var(--muted-foreground));margin-bottom:3px;font-weight:600;letter-spacing:0.04em}
+.emcv{font-size:var(--t-body);font-weight:600;color:hsl(var(--foreground));font-variant-numeric:tabular-nums}
+.emcv.is-r{color:hsl(var(--destructive))}
+.emcv.is-a{color:hsl(var(--warning))}
+.emcv.is-g{color:hsl(var(--success))}
+
+/* Six-month tiny bars */
+.sh{display:flex;gap:2px;margin-top:5px;width:140px}
+.shc{height:5px;flex:1;border-radius:1.5px;background:hsl(var(--muted))}
+.shc.g{background:hsl(var(--success)/0.55)}
+.shc.a{background:hsl(var(--warning)/0.55)}
+.shc.r{background:hsl(var(--destructive)/0.65)}
+
+/* Ring (donut indicator) */
+.rv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* === Alerts (Insights) === */
+.ar{display:flex;gap:12px;padding:14px 18px;border-bottom:1px solid hsl(var(--border));align-items:flex-start}
+.ar:last-child{border-bottom:none}
+.ab_l{width:3px;border-radius:2px;flex-shrink:0;align-self:stretch}
+.ab_l.g{background:hsl(var(--success))}
+.ab_l.a{background:hsl(var(--warning))}
+.ab_l.r{background:hsl(var(--destructive))}
+.ab_l.m{background:hsl(var(--muted-foreground))}
+.abg{font-size:var(--t-micro);padding:2px 8px;border-radius:4px;font-weight:600;text-transform:none;letter-spacing:0.04em;display:inline-block;background:hsl(var(--muted));color:hsl(var(--muted-foreground))}
+.arh{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.arn{font-size:var(--t-body);font-weight:600}
+.art{font-size:var(--t-body);color:hsl(var(--foreground));line-height:1.5;margin-bottom:6px}
+.arc{font-size:var(--t-caption);color:hsl(var(--muted-foreground));background:hsl(var(--muted));padding:8px 12px;border-radius:7px;line-height:1.5;border:1px solid hsl(var(--border))}
+.bcr{font-size:var(--t-micro);padding:2px 7px;border-radius:4px;background:hsl(var(--destructive)/0.1);color:hsl(var(--destructive));font-weight:600;display:inline-block;text-transform:none;letter-spacing:0.04em}
+
+/* === Drill-down panel === */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.15);z-index:40;display:none}
+.ov.op{display:block}
+.pn{position:fixed;top:0;right:-580px;bottom:0;width:540px;background:hsl(var(--card));border-left:1px solid hsl(var(--border));z-index:50;overflow-y:auto;box-shadow:-8px 0 32px rgba(0,0,0,.08);transition:right .28s cubic-bezier(.4,0,.2,1)}
+.pn.op{right:0}
+.pi{padding:24px}
+.pc{position:absolute;top:16px;right:16px;background:hsl(var(--muted));border:1px solid hsl(var(--border));border-radius:7px;cursor:pointer;padding:5px;color:hsl(var(--muted-foreground));display:flex}
+.pc:hover{background:hsl(var(--accent));color:hsl(var(--foreground))}
+.pc svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+.p-head{display:flex;gap:14px;align-items:center;margin-bottom:18px}
+.p-ava{width:48px;height:48px;border-radius:11px;background:hsl(var(--muted));border:1px solid hsl(var(--border));display:flex;align-items:center;justify-content:center;font-size:var(--t-h2);font-weight:700;color:hsl(var(--foreground))}
+.p-name{font-size:var(--t-h1);font-weight:600;letter-spacing:-0.015em;display:flex;align-items:center;gap:8px}
+.p-role{font-size:var(--t-caption);color:hsl(var(--muted-foreground));margin-top:2px}
+
+.p-rings{display:flex;justify-content:space-between;margin-bottom:16px;background:hsl(var(--muted));border-radius:11px;padding:14px;border:1px solid hsl(var(--border));gap:8px}
+.p-rings .ringbox{text-align:center;flex:1}
+.p-rings .ringbox-l{font-size:var(--t-micro);color:hsl(var(--muted-foreground));margin-top:5px;font-weight:600;text-transform:none;letter-spacing:0.04em}
+
+.p-section-t{font-size:var(--t-body);font-weight:600;margin-bottom:8px;letter-spacing:-0.005em}
+.p-chart{height:130px;background:hsl(var(--muted));border-radius:10px;padding:12px;border:1px solid hsl(var(--border))}
+
+.p-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.p-mc{background:hsl(var(--muted));border:1px solid hsl(var(--border));border-radius:9px;padding:10px;text-align:center}
+.p-mc-l{font-size:var(--t-micro);color:hsl(var(--muted-foreground));margin-bottom:3px;font-weight:600;letter-spacing:0.04em;text-transform:none}
+.p-mc-v{font-size:var(--t-h1);font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;color:hsl(var(--foreground))}
+.p-mc-v.is-r{color:hsl(var(--destructive))}
+.p-mc-v.is-a{color:hsl(var(--warning))}
+.p-mc-v.is-g{color:hsl(var(--success))}
+.p-mc-u{font-size:var(--t-caption);font-weight:400;color:hsl(var(--muted-foreground));margin-left:2px;letter-spacing:0}
+
+.p-callout{border:1px solid hsl(var(--border));border-radius:10px;padding:14px;background:hsl(var(--card))}
+.p-callout.warn{border-left:3px solid hsl(var(--destructive))}
+.p-callout.caution{border-left:3px solid hsl(var(--warning))}
+.p-callout.ok{border-left:3px solid hsl(var(--success))}
+.p-callout-t{font-size:var(--t-body);font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.p-callout-b{font-size:var(--t-caption);color:hsl(var(--muted-foreground));line-height:1.5}
+.p-callout-rec{font-size:var(--t-caption);color:hsl(var(--muted-foreground));background:hsl(var(--muted));padding:8px 12px;border-radius:7px;margin-top:8px;border:1px solid hsl(var(--border));line-height:1.5}
+.axt{color:hsl(var(--primary));font-weight:600}
+
+/* SAFETY alert banner — clinical */
+.safety-alert{background:hsl(var(--card));border:1px solid hsl(var(--destructive)/0.4);border-left:3px solid hsl(var(--destructive));border-radius:10px;padding:14px 18px;margin-bottom:16px}
+.safety-alert .sa-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.safety-alert .sa-dot{width:8px;height:8px;border-radius:9999px;background:hsl(var(--destructive))}
+.safety-alert .sa-t{font-size:var(--t-body);font-weight:600;color:hsl(var(--destructive))}
+.safety-alert .sa-b{font-size:var(--t-caption);color:hsl(var(--muted-foreground));line-height:1.5}
+.safety-alert .sa-r{font-size:var(--t-caption);color:hsl(var(--foreground));margin-top:6px;font-weight:500}
+
+/* Dev pill */
+.dev-pill{position:fixed;bottom:12px;left:12px;background:hsl(var(--foreground));color:hsl(var(--background));font-family:var(--font-mono);font-size:10px;padding:4px 8px;border-radius:5px;opacity:.55;z-index:60;letter-spacing:0.04em}
+
+@media(max-width:980px){
+  .sb{display:none}
+  .mn{padding:16px}
+  .cr{grid-template-columns:1fr}
+  .pn{width:100%;right:-100%}
+}
+</style>
+</head>
+<body>
+
+<nav class="sb">
+  <div class="logo">
+    <span style="font-family:var(--font-sans);font-weight:700;font-size:18px;letter-spacing:-0.025em;color:hsl(var(--foreground))">neiry</span>
+    <span class="logo-p">Pulse</span>
+  </div>
+  <div class="nl">Платформа</div>
+  <div class="ni ac"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Обзор</div>
+  <div class="ni"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Участники</div>
+  <div class="ni"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Аналитика</div>
+  <div class="ni"><svg viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/></svg>Сравнение</div>
+  <div class="ni"><svg viewBox="0 0 24 24"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>Инсайты</div>
+  <div class="ss">
+    <div class="nl">Организация</div>
+    <div class="cb">
+      <button class="cbtn ac" onclick="this.classList.add('ac');this.nextElementSibling.classList.remove('ac')">А</button>
+      <button class="cbtn" onclick="this.classList.add('ac');this.previousElementSibling.classList.remove('ac')">Б</button>
+    </div>
+  </div>
+  <div class="sf">
+    <div class="sf-av">HR</div>
+    <div>
+      <div class="sf-n">HR Manager</div>
+      <div class="sf-r">Neiry Pulse</div>
+    </div>
+  </div>
+</nav>
+
+<div class="mn">
+  <div class="mode-sw">
+    <button class="mode-btn ac" onclick="setMode('corp',this)"><svg viewBox="0 0 24 24"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/></svg>CORP</button>
+    <button class="mode-btn" onclick="setMode('sport',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>SPORT</button>
+    <button class="mode-btn" onclick="setMode('safety',this)"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>SAFETY</button>
+  </div>
+  <div id="mainContent"></div>
+</div>
+
+<div class="ov" id="overlay" onclick="closePanel()"></div>
+<div class="pn" id="panel"><div class="pi" id="panelContent"></div></div>
+
+<div class="dev-pill">m3 / dashboard-corporate · wireframe</div>
+
+<script>
+/* ═══ DATA ═══ */
+const EC=[
+  {id:1,n:"Алексей Михайлов",i:"АМ",r:"Менеджер проектов",re:28,st:78,sl:5.1,bu:73,act:32,sed:9.2,amin:42,stp:3200,hrv:32,rhr:82,ill:68,bt:[45,52,65,73,70,73]},
+  {id:2,n:"Мария Кузнецова",i:"МК",r:"UX-дизайнер",re:82,st:31,sl:7.8,bu:22,act:74,sed:5.8,amin:135,stp:9400,hrv:58,rhr:62,ill:0,bt:[18,20,25,22,20,22]},
+  {id:3,n:"Дмитрий Соколов",i:"ДС",r:"Бизнес-аналитик",re:45,st:65,sl:6.0,bu:58,act:48,sed:7.8,amin:68,stp:5100,hrv:38,rhr:74,ill:0,bt:[30,38,48,55,60,58]},
+  {id:4,n:"Елена Волкова",i:"ЕВ",r:"HR-специалист",re:71,st:42,sl:7.2,bu:35,act:65,sed:6.2,amin:110,stp:7800,hrv:51,rhr:66,ill:0,bt:[25,28,35,38,35,35]},
+  {id:5,n:"Иван Петров",i:"ИП",r:"Тимлид разработки",re:33,st:71,sl:5.5,bu:67,act:38,sed:8.5,amin:55,stp:4100,hrv:35,rhr:79,ill:35,bt:[35,45,58,68,72,67]},
+  {id:6,n:"Ольга Давыдова",i:"ОД",r:"Маркетолог",re:58,st:55,sl:6.8,bu:48,act:55,sed:7.0,amin:85,stp:6200,hrv:44,rhr:71,ill:0,bt:[28,32,42,50,52,48]},
+  {id:7,n:"Сергей Лебедев",i:"СЛ",r:"Финансовый аналитик",re:76,st:38,sl:7.5,bu:28,act:70,sed:6.0,amin:125,stp:8700,hrv:55,rhr:63,ill:0,bt:[22,20,25,30,28,28]},
+  {id:8,n:"Анна Романова",i:"АР",r:"Продуктовый менеджер",re:62,st:49,sl:6.5,bu:41,act:58,sed:6.8,amin:92,stp:6900,hrv:46,rhr:69,ill:0,bt:[25,30,38,42,45,41]},
+  {id:9,n:"Павел Новиков",i:"ПН",r:"DevOps-инженер",re:51,st:60,sl:6.2,bu:52,act:44,sed:8.0,amin:72,stp:5500,hrv:40,rhr:73,ill:0,bt:[32,38,45,52,55,52]},
+  {id:10,n:"Наталья Григорьева",i:"НГ",r:"Копирайтер",re:88,st:25,sl:8.1,bu:18,act:78,sed:5.2,amin:148,stp:10200,hrv:62,rhr:58,ill:0,bt:[15,12,18,20,18,18]},
+];
+const ES=[
+  {id:1,n:"Артём Козлов",i:"АК",r:"Нападающий",re:75,rec:78,strain:16.2,load:82,amin:320,hrv:55,rhr:58,vo2:52},
+  {id:2,n:"Даниил Морозов",i:"ДМ",r:"Полузащитник",re:68,rec:65,strain:17.8,load:91,amin:345,hrv:48,rhr:62,vo2:54},
+  {id:3,n:"Кирилл Волков",i:"КВ",r:"Защитник",re:82,rec:85,strain:14.5,load:72,amin:290,hrv:60,rhr:56,vo2:51},
+  {id:4,n:"Максим Лебедев",i:"МЛ",r:"Вратарь",re:90,rec:92,strain:10.2,load:55,amin:210,hrv:65,rhr:52,vo2:48},
+  {id:5,n:"Николай Смирнов",i:"НС",r:"Полузащитник",re:42,rec:38,strain:18.5,load:95,amin:380,hrv:35,rhr:72,vo2:55},
+  {id:6,n:"Роман Иванов",i:"РИ",r:"Нападающий",re:58,rec:55,strain:17.0,load:88,amin:335,hrv:42,rhr:66,vo2:53},
+];
+/* SAFETY: 5 операторов с fatigue / reaction / microsleep (BRIEF P0.5) */
+const EF=[
+  {id:1,n:"Сергей Орлов",       i:"СО",r:"Водитель-дальнобойщик", fatigue:85, react:420, micro:4, sl:4.2, hrv:28, rhr:86, shift:18, alert:1},
+  {id:2,n:"Геннадий Попов",     i:"ГП",r:"Оператор крана",        fatigue:78, react:380, micro:3, sl:4.8, hrv:30, rhr:82, shift:25, alert:1},
+  {id:3,n:"Павел Жуков",        i:"ПЖ",r:"Пилот погрузчика",      fatigue:60, react:320, micro:1, sl:5.5, hrv:38, rhr:74, shift:42, alert:0},
+  {id:4,n:"Андрей Фёдоров",     i:"АФ",r:"Машинист поезда",       fatigue:52, react:295, micro:0, sl:6.0, hrv:40, rhr:72, shift:55, alert:0},
+  {id:5,n:"Михаил Козин",       i:"МК",r:"Диспетчер АЭС",         fatigue:22, react:240, micro:0, sl:7.8, hrv:55, rhr:60, shift:85, alert:0},
+];
+const W=[{d:"Пн 12",re:65,st:45},{d:"Вт 13",re:61,st:50},{d:"Ср 14",re:58,st:54},{d:"Чт 15",re:54,st:58},{d:"Пт 16",re:52,st:61},{d:"Сб 17",re:63,st:42},{d:"Вс 18",re:68,st:38}];
+const BU6=[{m:"Окт",lo:6,md:3,hi:1},{m:"Ноя",lo:5,md:4,hi:1},{m:"Дек",lo:4,md:4,hi:2},{m:"Янв",lo:4,md:3,hi:3},{m:"Фев",lo:3,md:4,hi:3},{m:"Мар",lo:5,md:3,hi:2}];
+
+/* ═══ HELPERS ═══ */
+const z=(v,inv)=>{const x=inv?100-v:v;return x>=67?"g":x>=34?"a":"r"};
+/* zone → семантическое имя статуса (subdued, без капса, без !) */
+const zLabel={
+  re:{g:"Хорошая форма",a:"Ниже нормы",r:"Критическое"},
+  st:{g:"Низкий",a:"Умеренный",r:"Высокий"},
+  sl:{g:"Достаточный",a:"Дефицит",r:"Критический"},
+  act:{g:"Активный",a:"Умеренный",r:"Малоподвижный"},
+  bu:{g:"Низкий риск",a:"Умеренный",r:"Высокий"},
+  rec:{g:"Восстановлен",a:"Умеренно",r:"Не восстановлен"},
+  strain:{g:"Лёгкая",a:"Высокая",r:"Максимальная"},
+  fatigue:{g:"В норме",a:"Повышенная",r:"Критическая"},
+  react:{g:"Норма",a:"Замедленная",r:"Опасная"},
+  micro:{g:"Нет",a:"Эпизоды",r:"Частые"},
+  shift:{g:"Готов",a:"Условно",r:"Не допущен"}
+};
+const avg=(a,k)=>Math.round(a.reduce((s,e)=>s+e[k],0)/a.length*10)/10;
+const assess=(k,v)=>{
+  const inv=["st","bu","strain","fatigue","micro"].includes(k);
+  let zn;
+  if(k==="react"){zn=v<=280?"g":v<=380?"a":"r"}
+  else if(k==="micro"){zn=v===0?"g":v<=2?"a":"r"}
+  else zn=z(v,inv);
+  return{t:zLabel[k]?.[zn]||"—",z:zn};
+};
+
+/* Donut ring — clinical (тонкая обводка) */
+function ring(v,sz,zn,mx=100){
+  const r=(sz-4)/2,ci=2*Math.PI*r;
+  const stroke=zn==="g"?"hsl(var(--success))":zn==="a"?"hsl(var(--warning))":zn==="r"?"hsl(var(--destructive))":"hsl(var(--muted-foreground))";
+  return`<div style="position:relative;width:${sz}px;height:${sz}px">
+    <svg width="${sz}" height="${sz}" style="transform:rotate(-90deg)">
+      <circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="hsl(var(--border))" stroke-width="2.5"/>
+      <circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${stroke}" stroke-width="2.5" stroke-dasharray="${ci}" stroke-dashoffset="${ci*(1-Math.min(v/mx,1))}" stroke-linecap="round"/>
+    </svg>
+    <div class="rv" style="font-size:${sz>46?'15px':'12px'};color:hsl(var(--foreground))">${v}</div>
+  </div>`;
+}
+
+/* Chart.js defaults — clinical, monochrome grid */
+const cD={
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false}},
+  scales:{
+    x:{grid:{display:false},ticks:{font:{size:10,family:'Geist'},color:'hsl(240 5% 50%)'},border:{display:false}},
+    y:{grid:{color:'hsl(240 6% 92%)'},ticks:{font:{size:10,family:'Geist'},color:'hsl(240 5% 50%)'},border:{display:false}}
+  }
+};
+
+/* ═══ METRIC CARD ═══ */
+function mCard(k,v,label,trend,inv,pr,unit,tip){
+  const a=assess(k,v);
+  const bad=inv?trend>0:trend<0;
+  const trendClass=bad?"text-dn":"text-up";
+  const ti=trend>0?'↑':'↓';
+  const trendStr=trend===0?'':`<span class="mtr ${trendClass}">${ti} ${Math.abs(trend)}%</span>`;
+  return`<div class="mc tp${pr?' pr':''}">
+    ${pr?'<span class="pb">Сводная</span>':''}
+    <div class="mt">${trendStr || '<span></span>'}</div>
+    <div class="mv">${v}${unit?`<span class="unit">${unit}</span>`:''}</div>
+    <div class="ml">${label}</div>
+    <div class="ma"><span class="dot dot-${a.z}"></span><span>${a.t}</span></div>
+    ${tip?`<div class="tb"><div class="tt">${tip.t}</div><div>${tip.d}</div><div class="tf">${tip.f}</div></div>`:''}
+  </div>`;
+}
+
+/* ═══ CORP ═══ */
+function renderCorp(){
+  const vs={re:Math.round(avg(EC,"re")),st:Math.round(avg(EC,"st")),sl:avg(EC,"sl"),act:Math.round(avg(EC,"act")),bu:Math.round(avg(EC,"bu"))};
+  let h=`<div class="hdr">
+    <div>
+      <h1 class="t-h1">Корпоративный мониторинг</h1>
+      <div class="hsub">ООО «Альфа Технологии» · 10 сотрудников · 6 месяцев</div>
+    </div>
+    <div class="dbg">Окт 2025 – Мар 2026</div>
+  </div>`;
+
+  h+=`<div class="mr">
+    ${mCard("re",vs.re,"Готовность (Readiness)",-8,0,1,"",{t:"Readiness — индекс готовности",d:"HRV + сон + покоящийся пульс.",f:"HRV×0.40 + Сон×0.35 + RHR×0.25"})}
+    ${mCard("st",vs.st,"Стресс (Stress Index)",12,1,0,"",{t:"Stress Index — индекс стресса",d:"Среднее стресса 9–18 ч.",f:"mean(stress, 9–18 ч)"})}
+    ${mCard("sl",vs.sl,"Сон (Sleep Quality)",-3,0,0,"ч",{t:"Sleep Quality — качество сна",d:"Длительность + фазы + эффективность.",f:"Длит×0.40 + Фазы×0.35 + Эфф×0.25"})}
+    ${mCard("act",vs.act,"Активность (Activity Score)",-5,0,0,"",{t:"Activity Score — активность",d:"Зоны ЧСС, шаги, sedentary time.",f:"Σ(zone×weight)/max×100"})}
+    ${mCard("bu",vs.bu,"Выгорание (Burnout Risk)",15,1,0,"",{t:"Burnout Risk — риск выгорания",d:"Физиология 60% + анкеты 40%.",f:"(100−Readiness)×.35 + Stress×.40 + (100−Sleep)×.25"})}
+  </div>`;
+
+  h+=`<div class="cr">
+    <div class="cc">
+      <div class="ct">Готовность и стресс — неделя</div>
+      <div class="cst">Готовность падает к пятнице, восстанавливается к выходным</div>
+      <div class="cw"><canvas id="ch1"></canvas></div>
+      <div class="cl">
+        <span><span class="ld" style="background:hsl(var(--success))"></span>Готовность</span>
+        <span><span class="ld" style="background:hsl(var(--destructive))"></span>Стресс</span>
+      </div>
+    </div>
+    <div class="cc">
+      <div class="ct">Выгорание — 6 месяцев</div>
+      <div class="cst">Распределение сотрудников по зонам риска</div>
+      <div class="cw"><canvas id="ch2"></canvas></div>
+      <div class="cl">
+        <span><span class="ld" style="background:hsl(var(--success))"></span>Низкий</span>
+        <span><span class="ld" style="background:hsl(var(--warning))"></span>Умеренный</span>
+        <span><span class="ld" style="background:hsl(var(--destructive))"></span>Высокий</span>
+      </div>
+    </div>
+  </div>`;
+
+  const sorted=[...EC].sort((a,b)=>a.re-b.re);
+  const rc=EC.filter(e=>z(e.re)==="r").length;
+  const illC=EC.filter(e=>e.ill>=50).length;
+  h+=`<div class="tc">
+    <div class="th">
+      <div class="tht">Команда</div>
+      <div class="th-meta">
+        <span class="dot dot-r"></span><span><span style="color:hsl(var(--destructive));font-weight:600">${rc}</span> в красной зоне</span>
+        <span style="opacity:.4">·</span>
+        <span>${illC} с маркерами заболевания</span>
+      </div>
+    </div>`;
+
+  h+=sorted.map(e=>{
+    const zn=z(e.re);
+    const illTag=e.ill>=50?` <span class="row-tag warn">Заболевание · ${e.ill}</span>`:'';
+    const bars=e.bt.map(v=>{const cz=v>60?'r':v>30?'a':'g';return`<div class="shc ${cz}" title="${v}"></div>`}).join('');
+    return`<div class="er" onclick="openCorpProfile(${e.id})">
+      <div class="ea">${e.i}</div>
+      <div class="ei">
+        <div class="en">${e.n}${illTag}</div>
+        <div class="erl">${e.r}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+          <div class="sh">${bars}</div>
+          <span class="t-micro" style="text-transform:none;letter-spacing:0;font-weight:500">Окт→Мар</span>
+        </div>
+      </div>
+      <div class="em">
+        <div class="emc"><div class="emcl">Готовн.</div><div class="emcv is-${z(e.re)}">${e.re}</div></div>
+        <div class="emc"><div class="emcl">Стресс</div><div class="emcv is-${z(e.st,1)}">${e.st}</div></div>
+        <div class="emc"><div class="emcl">Сон</div><div class="emcv">${e.sl}<span class="p-mc-u">ч</span></div></div>
+        <div class="emc"><div class="emcl">Актив.</div><div class="emcv is-${z(e.act)}">${e.act}</div></div>
+        <div class="emc"><div class="emcl">Выгор.</div><div class="emcv is-${z(e.bu,1)}">${e.bu}</div></div>
+        <div style="width:36px;height:36px;flex-shrink:0">${ring(e.re,36,zn)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  h+=`</div>`;
+
+  const alerts=[
+    {s:"r",n:"Алексей Михайлов",t:"Физиологические маркеры указывают на возможное начало заболевания: RHR ↑8 уд/мин, HRV ↓15 мс, температура ↑0.6 °C. Illness Score 68.",rc:"Рекомендуем удалённую работу и мониторинг. Возможно ОРВИ за 2–5 дней до симптомов.",lab:"Заболевание"},
+    {s:"r",n:"Иван Петров",t:"Риск выгорания 67. Сон менее 6 ч четыре ночи из семи.",rc:"Исключить задачи после 20:00. Рассмотреть Neiry tVNS для восстановления.",lab:"Критический"},
+    {s:"a",n:"Команда",t:"Пик стресса 14:00–15:30 у 6 из 10 сотрудников. Совпадает с блоком совещаний.",rc:"Рассмотреть no-meeting time в этом окне.",lab:"Умеренный"},
+    {s:"m",n:"Тренд",t:"Доля сотрудников с высоким выгоранием снизилась с пика 30% (янв–фев) до 20% (мар).",rc:"Продолжить мониторинг. Рассмотреть wellbeing-программу для удержания тренда.",lab:"Информация"},
+  ];
+  h+=`<div class="tc">
+    <div class="th">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="tht">Инсайты</div>
+        <span class="bcr">${alerts.filter(a=>a.s==="r").length} критических</span>
+      </div>
+    </div>`;
+  h+=alerts.map(a=>`<div class="ar">
+    <div class="ab_l ${a.s}"></div>
+    <div style="flex:1">
+      <div class="arh"><span class="abg">${a.lab}</span><span class="arn">${a.n}</span></div>
+      <div class="art">${a.t}</div>
+      <div class="arc">${a.rc}</div>
+    </div>
+  </div>`).join('');
+  h+=`</div>`;
+
+  document.getElementById("mainContent").innerHTML=h;
+
+  new Chart(document.getElementById("ch1"),{
+    type:'line',
+    data:{labels:W.map(w=>w.d),datasets:[
+      {label:'Готовность',data:W.map(w=>w.re),borderColor:'hsl(142 64% 38%)',backgroundColor:'hsla(142,64%,38%,.07)',fill:true,tension:.3,pointBackgroundColor:'#fff',pointBorderColor:'hsl(142 64% 38%)',pointBorderWidth:1.5,pointRadius:3,borderWidth:1.8},
+      {label:'Стресс',data:W.map(w=>w.st),borderColor:'hsl(0 72% 51%)',backgroundColor:'hsla(0,72%,51%,.05)',fill:true,tension:.3,pointBackgroundColor:'#fff',pointBorderColor:'hsl(0 72% 51%)',pointBorderWidth:1.5,pointRadius:3,borderWidth:1.8}
+    ]},
+    options:{...cD,scales:{...cD.scales,y:{...cD.scales.y,min:0,max:100}}}
+  });
+  new Chart(document.getElementById("ch2"),{
+    type:'bar',
+    data:{labels:BU6.map(b=>b.m),datasets:[
+      {label:'Низкий',data:BU6.map(b=>b.lo),backgroundColor:'hsl(142 64% 38% / 0.7)'},
+      {label:'Умеренный',data:BU6.map(b=>b.md),backgroundColor:'hsl(32 92% 44% / 0.7)'},
+      {label:'Высокий',data:BU6.map(b=>b.hi),backgroundColor:'hsl(0 72% 51% / 0.75)',borderRadius:{topLeft:3,topRight:3}}
+    ]},
+    options:{...cD,scales:{...cD.scales,x:{...cD.scales.x,stacked:true},y:{...cD.scales.y,stacked:true,max:10}}}
+  });
+}
+
+/* ═══ SPORT ═══ */
+function renderSport(){
+  const vs={re:Math.round(avg(ES,"re")),rec:Math.round(avg(ES,"rec")),strain:Math.round(avg(ES,"strain")*10)/10,load:Math.round(avg(ES,"load"))};
+  let h=`<div class="hdr">
+    <div>
+      <h1 class="t-h1">Спортивный мониторинг</h1>
+      <div class="hsub">ФК «Авангард» · 6 игроков · предсезонная подготовка</div>
+    </div>
+    <div class="dbg">Март 2026</div>
+  </div>`;
+  h+=`<div class="mr">
+    ${mCard("re",vs.re,"Готовность (Readiness)",-3,0,1,"",{t:"Readiness — готовность к тренировке",d:"HRV + сон + RHR. Ниже 34 — нельзя интенсивно.",f:"HRV×0.40 + Сон×0.35 + RHR×0.25"})}
+    ${mCard("rec",vs.rec,"Восстановление (Recovery)",5,0,0,"",{t:"Recovery Score",d:"Насколько организм восстановился.",f:"Аналог WHOOP Recovery"})}
+    ${mCard("strain",vs.strain,"Нагрузка (Strain)",8,1,0," /21",{t:"Strain Score",d:"Кумулятивная нагрузка, шкала Borg 0–21.",f:"Σ(HR_zone × time × weight)"})}
+    ${mCard("re",vs.load,"Тренировочная нагрузка",12,1,0,"",{t:"Training Load",d:"Накопленная нагрузка за 7 дней.",f:"Σ(Strain за 7 дней)"})}
+  </div>`;
+
+  h+=`<div class="tc">
+    <div class="th">
+      <div class="tht">Состав</div>
+      <div class="th-meta"><span class="dot dot-r"></span><span>${ES.filter(e=>z(e.rec)==="r").length} не восстановлены</span></div>
+    </div>`;
+  h+=ES.sort((a,b)=>a.rec-b.rec).map(e=>{
+    const zn=z(e.rec);
+    return`<div class="er" onclick="openSportProfile(${e.id})">
+      <div class="ea">${e.i}</div>
+      <div class="ei"><div class="en">${e.n}</div><div class="erl">${e.r}</div></div>
+      <div class="em">
+        <div class="emc"><div class="emcl">Готовн.</div><div class="emcv is-${z(e.re)}">${e.re}</div></div>
+        <div class="emc"><div class="emcl">Восст.</div><div class="emcv is-${z(e.rec)}">${e.rec}</div></div>
+        <div class="emc"><div class="emcl">Нагрузка</div><div class="emcv is-${z(e.strain,1)}">${e.strain}</div></div>
+        <div class="emc"><div class="emcl">Актив. мин</div><div class="emcv">${e.amin}</div></div>
+        <div class="emc"><div class="emcl">HRV</div><div class="emcv">${e.hrv}</div></div>
+        <div style="width:36px;height:36px;flex-shrink:0">${ring(e.rec,36,zn)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  h+=`</div>`;
+
+  h+=`<div class="tc">
+    <div class="th"><div class="tht">Инсайты</div></div>
+    <div class="ar"><div class="ab_l r"></div><div style="flex:1">
+      <div class="arh"><span class="abg">Критический</span><span class="arn">Николай Смирнов</span></div>
+      <div class="art">Recovery 38, Strain 18.5 — перетренированность. HRV 35 мс, снижение на 22% за неделю. Риск травмы.</div>
+      <div class="arc">Снизить интенсивность до восстановления Recovery ≥ 67. <span class="axt">Neiry Headband</span> для мониторинга когнитивной усталости.</div>
+    </div></div>
+    <div class="ar"><div class="ab_l a"></div><div style="flex:1">
+      <div class="arh"><span class="abg">Умеренный</span><span class="arn">Даниил Морозов</span></div>
+      <div class="art">Training Load 91 — верхняя граница. Recovery 65, тренд нисходящий.</div>
+      <div class="arc">Лёгкая тренировка завтра. Мониторинг HRV утром.</div>
+    </div></div>
+  </div>`;
+
+  document.getElementById("mainContent").innerHTML=h;
+}
+
+/* ═══ SAFETY ═══ */
+function renderSafety(){
+  const vs={fatigue:Math.round(avg(EF,"fatigue")),react:Math.round(avg(EF,"react")),micro:Math.round(avg(EF,"micro")*10)/10,shift:Math.round(avg(EF,"shift"))};
+  const alertCount=EF.filter(e=>e.alert).length;
+  let h=`<div class="hdr">
+    <div>
+      <h1 class="t-h1">Промышленная безопасность</h1>
+      <div class="hsub">ОАО «ТрансЛогистик» · 5 операторов · мониторинг смены</div>
+    </div>
+    <div class="dbg">Текущая смена · 04 июн 2026</div>
+  </div>`;
+
+  if(alertCount>0){
+    h+=`<div class="safety-alert">
+      <div class="sa-head">
+        <span class="sa-dot"></span>
+        <span class="sa-t">${alertCount} оператора с критическим риском засыпания</span>
+      </div>
+      <div class="sa-b">${EF.filter(e=>e.alert).map(e=>`${e.n} (${e.r}) — fatigue ${e.fatigue}, реакция ${e.react} мс, сон ${e.sl} ч`).join(' · ')}</div>
+      <div class="sa-r">Рекомендация: замена оператора, перерыв минимум 30 минут.</div>
+    </div>`;
+  }
+
+  h+=`<div class="mr">
+    ${mCard("fatigue",vs.fatigue,"Утомляемость (Fatigue)",0,1,1,"",{t:"Fatigue Risk — утомляемость",d:"Накопленная нагрузка, дефицит сна 3д, текущий HRV.",f:"SleepDebt×0.40 + HRV_drop×0.35 + WorkHours×0.25"})}
+    ${mCard("react",vs.react,"Время реакции",0,1,0," мс",{t:"Reaction Time Estimate",d:"Косвенная оценка через HRV и восстановление. Норма ≤ 280 мс.",f:"baseline × (1 + Drowsiness×0.5)"})}
+    ${mCard("micro",vs.micro,"Микросны (за смену)",0,1,0,"",{t:"Microsleep Events",d:"Эпизоды засыпания 1–10 с, детектируются по HRV и движению.",f:"Σ(HRV_drop > σ + immobility > 8 s)"})}
+    ${mCard("shift",vs.shift,"Готовность к смене (Shift Fitness)",0,0,0,"",{t:"Shift Fitness — допуск к смене",d:"Ниже 30 — не допускается без разрешения руководителя.",f:"Readiness×0.40 + (100−Fatigue)×0.35 + Sleep×0.25"})}
+  </div>`;
+
+  h+=`<div class="tc">
+    <div class="th">
+      <div class="tht">Операторы на смене</div>
+      <div class="th-meta"><span class="dot dot-r"></span><span><span style="color:hsl(var(--destructive));font-weight:600">${alertCount}</span> с алертом</span></div>
+    </div>`;
+  h+=EF.sort((a,b)=>b.fatigue-a.fatigue).map(e=>{
+    const zn=z(e.shift);
+    const isAlert=e.alert;
+    return`<div class="er ${isAlert?'alert':''}" onclick="openSafetyProfile(${e.id})">
+      <div class="ea">${e.i}</div>
+      <div class="ei">
+        <div class="en">${e.n}${isAlert?' <span class="row-tag warn">Алерт</span>':''}</div>
+        <div class="erl">${e.r} · Сон: ${e.sl} ч</div>
+      </div>
+      <div class="em">
+        <div class="emc"><div class="emcl">Утомл.</div><div class="emcv is-${assess('fatigue',e.fatigue).z}">${e.fatigue}</div></div>
+        <div class="emc"><div class="emcl">Реакция</div><div class="emcv is-${assess('react',e.react).z}">${e.react}<span class="p-mc-u">мс</span></div></div>
+        <div class="emc"><div class="emcl">Микросны</div><div class="emcv is-${assess('micro',e.micro).z}">${e.micro}</div></div>
+        <div class="emc"><div class="emcl">К смене</div><div class="emcv is-${z(e.shift)}">${e.shift}</div></div>
+        <div class="emc"><div class="emcl">HRV</div><div class="emcv">${e.hrv}</div></div>
+        <div style="width:36px;height:36px;flex-shrink:0">${ring(e.shift,36,zn)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  h+=`</div>`;
+
+  document.getElementById("mainContent").innerHTML=h;
+}
+
+/* ═══ DRILL-DOWNS ═══ */
+function openCorpProfile(id){
+  const e=EC.find(x=>x.id===id);if(!e)return;
+  const zn=z(e.re);
+  const stD=e.bt.map((v,i)=>({t:["Окт","Ноя","Дек","Янв","Фев","Мар"][i],v}));
+  let h=`<button class="pc" onclick="closePanel()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <div class="p-head">
+    <div class="p-ava">${e.i}</div>
+    <div>
+      <div class="p-name">${e.n}</div>
+      <div class="p-role">${e.r}</div>
+    </div>
+  </div>
+  <div class="p-rings">
+    ${[{v:e.re,l:"Готовность",inv:0},{v:e.st,l:"Стресс",inv:1},{v:e.act,l:"Активность",inv:0},{v:e.bu,l:"Выгорание",inv:1}].map(g=>{
+      const gz=z(g.v,g.inv);
+      return`<div class="ringbox">${ring(g.v,48,gz)}<div class="ringbox-l">${g.l}</div></div>`;
+    }).join('')}
+  </div>`;
+
+  if(e.ill>=50){
+    h+=`<div class="p-callout warn" style="margin-bottom:14px">
+      <div class="p-callout-t"><span class="dot dot-r"></span>Раннее обнаружение заболевания · Score ${e.ill}</div>
+      <div class="p-callout-b">RHR повышен, HRV снижен, температура ↑. Рекомендуем удалённую работу.</div>
+    </div>`;
+  }
+
+  h+=`<div style="margin-bottom:16px">
+    <div class="p-section-t">Тренд выгорания за 6 месяцев</div>
+    <div class="p-chart"><canvas id="pSt"></canvas></div>
+  </div>`;
+
+  const cells=[
+    {l:"Покоящийся пульс",v:e.rhr,u:"уд/мин",c:e.rhr>75?"r":e.rhr>68?"a":"g"},
+    {l:"HRV (RMSSD)",v:e.hrv,u:"мс",c:e.hrv>45?"g":e.hrv>35?"a":"r"},
+    {l:"Шаги",v:(e.stp/1000).toFixed(1),u:"тыс",c:""},
+    {l:"Малоподвижность",v:e.sed,u:"ч",c:e.sed>8?"r":e.sed>6.5?"a":"g"},
+    {l:"Активные минуты",v:e.amin,u:"/150",c:e.amin>=120?"g":e.amin>=75?"a":"r"},
+    {l:"Активность",v:e.act,u:"",c:z(e.act)},
+  ];
+  h+=`<div class="p-grid">${cells.map(m=>`<div class="p-mc"><div class="p-mc-l">${m.l}</div><div class="p-mc-v ${m.c?'is-'+m.c:''}">${m.v}<span class="p-mc-u">${m.u}</span></div></div>`).join('')}</div>`;
+
+  if(e.bu>55){
+    h+=`<div class="p-callout warn">
+      <div class="p-callout-t"><span class="dot dot-r"></span>Повышенный риск выгорания · BI ${e.bu}</div>
+      <div class="p-callout-b">HRV снижается, RHR повышен (${e.rhr} уд/мин).${e.st>65?' Стресс высокий.':''}</div>
+      <div class="p-callout-rec">Рекомендуем <span class="axt">Neiry Headband</span> + <span class="axt">Neiry tVNS</span>.</div>
+    </div>`;
+  }
+
+  document.getElementById("panelContent").innerHTML=h;
+  document.getElementById("overlay").classList.add("op");
+  document.getElementById("panel").classList.add("op");
+
+  setTimeout(()=>{
+    const ctx=document.getElementById("pSt");
+    if(!ctx) return;
+    const vals=stD.map(d=>d.v);
+    const pointCol=v=>v>60?'hsl(0 72% 51%)':v>30?'hsl(32 92% 44%)':'hsl(142 64% 38%)';
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:stD.map(d=>d.t),datasets:[{
+        data:vals,
+        borderColor:'hsl(240 5% 50%)',
+        backgroundColor:'transparent',
+        fill:false,tension:.3,
+        pointBackgroundColor:vals.map(pointCol),
+        pointBorderColor:vals.map(pointCol),
+        pointRadius:4,pointBorderWidth:2,
+        borderWidth:1.5
+      }]},
+      options:{...cD,plugins:{legend:{display:false}},scales:{...cD.scales,y:{...cD.scales.y,min:0,max:100}}}
+    });
+  },80);
+}
+
+function openSportProfile(id){
+  const e=ES.find(x=>x.id===id);if(!e)return;
+  const zn=z(e.rec);
+  const wkStrain=[14.2,16.8,15.5,17.0,18.5,13.2,11.0].map((v,i)=>({d:["Пн","Вт","Ср","Чт","Пт","Сб","Вс"][i],v:Math.round(v*(e.strain/15.5)*10)/10}));
+  const wkRec=[72,65,68,60,55,70,78].map((v,i)=>({d:["Пн","Вт","Ср","Чт","Пт","Сб","Вс"][i],v:Math.round(v*(e.rec/68))}));
+  let h=`<button class="pc" onclick="closePanel()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <div class="p-head">
+    <div class="p-ava">${e.i}</div>
+    <div>
+      <div class="p-name">${e.n}</div>
+      <div class="p-role">${e.r} · ФК «Авангард»</div>
+    </div>
+  </div>
+  <div class="p-rings">
+    ${[{v:e.re,l:"Готовность",inv:0},{v:e.rec,l:"Восстановл.",inv:0},{v:Math.round(e.strain),l:"Нагрузка",inv:1},{v:e.load,l:"Трен. нагр.",inv:1}].map(g=>{
+      const gz=z(g.v,g.inv);
+      return`<div class="ringbox">${ring(g.v,48,gz)}<div class="ringbox-l">${g.l}</div></div>`;
+    }).join('')}
+  </div>
+  <div style="margin-bottom:16px">
+    <div class="p-section-t">Нагрузка (Strain) за неделю</div>
+    <div class="p-chart"><canvas id="pSportStrain"></canvas></div>
+  </div>
+  <div style="margin-bottom:16px">
+    <div class="p-section-t">Восстановление (Recovery) за неделю</div>
+    <div class="p-chart"><canvas id="pSportRec"></canvas></div>
+  </div>`;
+
+  const cells=[
+    {l:"Покоящийся пульс",v:e.rhr,u:"уд/мин",c:e.rhr>70?"r":e.rhr>62?"a":"g"},
+    {l:"HRV (RMSSD)",v:e.hrv,u:"мс",c:e.hrv>50?"g":e.hrv>38?"a":"r"},
+    {l:"Активные минуты",v:e.amin,u:"мин",c:""},
+    {l:"VO₂ max (оценка)",v:e.vo2,u:"мл/кг/мин",c:e.vo2>52?"g":e.vo2>48?"a":"r"},
+    {l:"Strain (сегодня)",v:e.strain,u:"/21",c:e.strain>17?"r":e.strain>14?"a":"g"},
+    {l:"Training Load",v:e.load,u:"%",c:e.load>90?"r":e.load>75?"a":"g"},
+  ];
+  h+=`<div class="p-grid">${cells.map(m=>`<div class="p-mc"><div class="p-mc-l">${m.l}</div><div class="p-mc-v ${m.c?'is-'+m.c:''}">${m.v}<span class="p-mc-u">${m.u}</span></div></div>`).join('')}</div>`;
+
+  if(e.rec<40){
+    h+=`<div class="p-callout warn">
+      <div class="p-callout-t"><span class="dot dot-r"></span>Перетренированность</div>
+      <div class="p-callout-b">Recovery ${e.rec}, Strain ${e.strain}. HRV снижен.</div>
+      <div class="p-callout-rec">Лёгкая нагрузка до Recovery ≥ 67. <span class="axt">Neiry Headband</span> для когнитивного мониторинга.</div>
+    </div>`;
+  } else if(e.rec<67){
+    h+=`<div class="p-callout caution">
+      <div class="p-callout-t"><span class="dot dot-a"></span>Умеренное восстановление</div>
+      <div class="p-callout-b">Recovery ${e.rec}. Средняя интенсивность допустима, мониторинг HRV утром.</div>
+    </div>`;
+  } else {
+    h+=`<div class="p-callout ok">
+      <div class="p-callout-t"><span class="dot dot-g"></span>Полностью восстановлен</div>
+      <div class="p-callout-b">Recovery ${e.rec}. Готов к высокоинтенсивной тренировке.</div>
+    </div>`;
+  }
+
+  document.getElementById("panelContent").innerHTML=h;
+  document.getElementById("overlay").classList.add("op");
+  document.getElementById("panel").classList.add("op");
+
+  setTimeout(()=>{
+    const c1=document.getElementById("pSportStrain");
+    if(c1) new Chart(c1,{
+      type:'bar',
+      data:{labels:wkStrain.map(d=>d.d),datasets:[{
+        data:wkStrain.map(d=>d.v),
+        backgroundColor:wkStrain.map(d=>d.v>17?'hsl(0 72% 51% / 0.75)':d.v>14?'hsl(32 92% 44% / 0.75)':'hsl(142 64% 38% / 0.7)'),
+        borderRadius:3
+      }]},
+      options:{...cD,plugins:{legend:{display:false}},scales:{...cD.scales,y:{...cD.scales.y,max:21}}}
+    });
+    const c2=document.getElementById("pSportRec");
+    if(c2) new Chart(c2,{
+      type:'line',
+      data:{labels:wkRec.map(d=>d.d),datasets:[{
+        data:wkRec.map(d=>d.v),
+        borderColor:'hsl(142 64% 38%)',
+        backgroundColor:'hsla(142,64%,38%,.08)',
+        fill:true,tension:.3,
+        pointBackgroundColor:'#fff',pointBorderColor:'hsl(142 64% 38%)',pointBorderWidth:1.5,pointRadius:3,borderWidth:1.8
+      }]},
+      options:{...cD,plugins:{legend:{display:false}},scales:{...cD.scales,y:{...cD.scales.y,min:0,max:100}}}
+    });
+  },80);
+}
+
+function openSafetyProfile(id){
+  const e=EF.find(x=>x.id===id);if(!e)return;
+  const zn=z(e.shift);
+  const isAlert=e.alert;
+  const shiftHrs=Array.from({length:8},(_,i)=>({t:`${6+i}:00`,f:Math.round(e.fatigue*(0.5+i*0.07)+(Math.random()-0.3)*8),r:Math.round(e.react*(0.7+i*0.05)+(Math.random()-0.3)*20)}));
+  let h=`<button class="pc" onclick="closePanel()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <div class="p-head">
+    <div class="p-ava">${e.i}</div>
+    <div>
+      <div class="p-name">${e.n}${isAlert?' <span class="row-tag warn">Алерт</span>':''}</div>
+      <div class="p-role">${e.r} · Сон прошлой ночью: ${e.sl} ч</div>
+    </div>
+  </div>`;
+
+  if(isAlert){
+    h+=`<div class="safety-alert" style="margin-bottom:16px">
+      <div class="sa-head"><span class="sa-dot"></span><span class="sa-t">Критический риск засыпания</span></div>
+      <div class="sa-b">Утомляемость ${e.fatigue}, реакция ${e.react} мс, микросны ${e.micro}. Сон: ${e.sl} ч (дефицит ${(7.5-e.sl).toFixed(1)} ч).</div>
+      <div class="sa-r">Немедленная замена оператора, перерыв минимум 30 минут.</div>
+    </div>`;
+  }
+
+  h+=`<div class="p-rings">
+    ${[{v:e.fatigue,l:"Утомляемость",inv:1,k:"fatigue"},{v:e.react,l:"Реакция, мс",inv:1,k:"react"},{v:e.micro,l:"Микросны",inv:1,k:"micro"},{v:e.shift,l:"К смене",inv:0,k:"shift"}].map(g=>{
+      const a=assess(g.k,g.v);
+      return`<div class="ringbox">${ring(g.k==="react"?Math.min(100,Math.round(g.v/5)):g.v,48,a.z,g.k==="micro"?5:100)}<div class="ringbox-l">${g.l}</div></div>`;
+    }).join('')}
+  </div>
+
+  <div style="margin-bottom:16px">
+    <div class="p-section-t">Динамика смены: утомляемость и реакция</div>
+    <div class="p-chart" style="height:140px"><canvas id="pSafetyChart"></canvas></div>
+    <div class="cl" style="margin-top:6px">
+      <span><span class="ld" style="background:hsl(0 72% 51%)"></span>Утомляемость</span>
+      <span><span class="ld" style="background:hsl(32 92% 44%)"></span>Реакция (мс)</span>
+    </div>
+  </div>`;
+
+  const cells=[
+    {l:"Сон прошлой ночью",v:e.sl,u:"ч",c:e.sl>=7?"g":e.sl>=6?"a":"r"},
+    {l:"Покоящийся пульс",v:e.rhr,u:"уд/мин",c:e.rhr>78?"r":e.rhr>68?"a":"g"},
+    {l:"HRV (RMSSD)",v:e.hrv,u:"мс",c:e.hrv>45?"g":e.hrv>35?"a":"r"},
+    {l:"Дефицит сна",v:(7.5-e.sl).toFixed(1),u:"ч",c:7.5-e.sl>2?"r":7.5-e.sl>1?"a":"g"},
+    {l:"Реакция",v:e.react,u:"мс",c:assess('react',e.react).z},
+    {l:"К смене",v:e.shift,u:"",c:z(e.shift)},
+  ];
+  h+=`<div class="p-grid">${cells.map(m=>`<div class="p-mc"><div class="p-mc-l">${m.l}</div><div class="p-mc-v ${m.c?'is-'+m.c:''}">${m.v}<span class="p-mc-u">${m.u}</span></div></div>`).join('')}</div>`;
+
+  if(!isAlert && e.fatigue>40){
+    h+=`<div class="p-callout caution">
+      <div class="p-callout-t"><span class="dot dot-a"></span>Повышенная утомляемость — наблюдение</div>
+      <div class="p-callout-b">Рекомендуем перерыв 15 минут в ближайший час. Мониторинг продолжается.</div>
+    </div>`;
+  } else if(!isAlert){
+    h+=`<div class="p-callout ok">
+      <div class="p-callout-t"><span class="dot dot-g"></span>Состояние в норме</div>
+      <div class="p-callout-b">Все показатели в допустимых пределах. Оператор допущен к смене.</div>
+    </div>`;
+  }
+
+  document.getElementById("panelContent").innerHTML=h;
+  document.getElementById("overlay").classList.add("op");
+  document.getElementById("panel").classList.add("op");
+
+  setTimeout(()=>{
+    const ctx=document.getElementById("pSafetyChart");
+    if(!ctx) return;
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:shiftHrs.map(d=>d.t),datasets:[
+        {label:'Утомляемость',data:shiftHrs.map(d=>Math.min(d.f,100)),borderColor:'hsl(0 72% 51%)',backgroundColor:'hsla(0,72%,51%,.06)',fill:true,tension:.3,pointRadius:3,pointBackgroundColor:'#fff',pointBorderColor:'hsl(0 72% 51%)',pointBorderWidth:1.5,borderWidth:1.8,yAxisID:'y'},
+        {label:'Реакция',data:shiftHrs.map(d=>d.r),borderColor:'hsl(32 92% 44%)',backgroundColor:'transparent',fill:false,tension:.3,pointRadius:3,pointBackgroundColor:'#fff',pointBorderColor:'hsl(32 92% 44%)',pointBorderWidth:1.5,borderWidth:1.8,yAxisID:'y1'}
+      ]},
+      options:{
+        ...cD,
+        plugins:{legend:{display:false}},
+        scales:{
+          x:cD.scales.x,
+          y:{...cD.scales.y,min:0,max:100,position:'left'},
+          y1:{...cD.scales.y,min:200,max:500,position:'right',grid:{display:false}}
+        }
+      }
+    });
+  },80);
+}
+
+function closePanel(){
+  document.getElementById("overlay").classList.remove("op");
+  document.getElementById("panel").classList.remove("op");
+}
+
+/* ═══ MODE SWITCHER ═══ */
+function setMode(mode,btn){
+  document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("ac"));
+  btn.classList.add("ac");
+  Chart.helpers.each(Chart.instances,(c)=>{c.destroy()});
+  closePanel();
+  if(mode==="corp") renderCorp();
+  else if(mode==="sport") renderSport();
+  else renderSafety();
+}
+
+/* ═══ INIT ═══ */
+renderCorp();
+</script>
+</body>
+</html>
