@@ -687,6 +687,308 @@
     border-color: var(--red); color: var(--red);
   }
 
+  /* === Pilot tracker === */
+  .pilot-tracker {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    margin-bottom: 18px;
+  }
+  .pilot-card {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, rgba(131,24,67,0.18), var(--surface-2));
+    border: 1px solid var(--accent);
+    border-left: 3px solid var(--accent-bright);
+    border-radius: 8px;
+  }
+  .pilot-icon {
+    font-size: 22px; flex-shrink: 0;
+    width: 38px; height: 38px;
+    background: var(--bg); border: 1px solid var(--border-bright);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pilot-label {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .pilot-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* === Stand-up === */
+  .standup {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--yellow);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+  }
+  .standup-header {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .standup-header .standup-title {
+    font-size: 13px; color: var(--text); font-weight: 700;
+    letter-spacing: 0;
+    font-family: 'Manrope', sans-serif;
+    text-transform: none;
+  }
+  .standup-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
+  .standup-cell {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .standup-cell label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--accent-bright);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+  .standup-cell textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    padding: 8px 10px;
+    resize: vertical;
+    min-height: 50px;
+    transition: border-color 0.15s;
+  }
+  .standup-cell textarea:focus {
+    outline: none; border-color: var(--accent-bright);
+  }
+  .standup-cell textarea::placeholder { color: var(--label); font-style: italic; }
+
+  /* === Week mini progress-bar === */
+  .week-progress {
+    height: 3px; background: var(--border); border-radius: 2px;
+    margin-top: 6px; overflow: hidden;
+  }
+  .week-progress-fill {
+    height: 100%; background: var(--green); border-radius: 2px;
+    width: 0%; transition: width 0.4s ease;
+  }
+
+  /* === Owner workload === */
+  .owner-workload {
+    margin-top: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .owner-workload h3 {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    margin-bottom: 10px;
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .owner-workload h3 .sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label); font-weight: 400;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .workload-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  .workload-table th, .workload-table td {
+    padding: 8px 10px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .workload-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  .workload-table td.num {
+    font-family: 'JetBrains Mono', monospace;
+    text-align: right;
+  }
+  .workload-table tr:last-child td { border-bottom: none; }
+
+  /* === Task dependencies === */
+  .dep-blocks, .dep-blocked {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--label);
+    margin-top: 5px;
+    letter-spacing: 0.04em;
+  }
+  .dep-blocks { color: rgba(248,113,113,0.7); }
+  .dep-blocked { color: rgba(251,191,36,0.7); }
+
+  /* === Combined M3·W1 tag === */
+  .tag-m3w1, .tag-m3w2, .tag-m3w3, .tag-m3w4 {
+    color: #f0abfc;
+    border-color: rgba(240,171,252,0.35);
+    background: rgba(240,171,252,0.08);
+  }
+
+  /* === Acceptance view === */
+  .acceptance-hero {
+    background: linear-gradient(135deg, rgba(131,24,67,0.22), var(--surface));
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 22px;
+  }
+  .acceptance-hero .ac-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--accent-bright);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .acceptance-hero .ac-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px; font-weight: 700; color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .acceptance-hero .ac-value .unit {
+    font-size: 16px; color: var(--muted); margin-left: 6px;
+  }
+  .acceptance-hero .progress-bar { margin-top: 16px; height: 6px; }
+  .acceptance-list { display: flex; flex-direction: column; gap: 10px; }
+  .ac-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ac-item:hover { background: var(--surface-2); }
+  .ac-item.done { border-left-color: var(--green); opacity: 0.75; }
+  .ac-item.done .ac-text { text-decoration: line-through; color: var(--muted); }
+  .ac-check {
+    appearance: none;
+    width: 20px; height: 20px; min-width: 20px;
+    border: 1.5px solid var(--border-bright); border-radius: 5px;
+    background: transparent; cursor: pointer; margin-top: 1px;
+    transition: all 0.15s;
+  }
+  .ac-check:hover { border-color: var(--accent-bright); }
+  .ac-check:checked { background: var(--green); border-color: var(--green); }
+  .ac-check:checked::after {
+    content: '✓'; display: block; text-align: center;
+    color: #0a0a0a; font-size: 13px; font-weight: 900; line-height: 17px;
+  }
+  .ac-body { flex: 1; }
+  .ac-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--accent-bright);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .ac-text { font-size: 13.5px; line-height: 1.5; color: var(--text); }
+  .ac-related {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  /* === Risks view === */
+  .risks-summary {
+    margin-bottom: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .risks-summary table {
+    width: 100%; border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  .risks-summary th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .risks-summary td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .risks-summary tr:last-child td { border-bottom: none; }
+  .risks-summary .r-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; color: var(--accent-bright);
+  }
+  .risks-summary .r-status-open    { color: var(--yellow); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .risks-summary .r-status-mit     { color: var(--blue); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .risks-summary .r-status-closed  { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+  .risks-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+  }
+  .risk-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .risk-card.crit { border-left-color: var(--red); }
+  .risk-card.high { border-left-color: var(--yellow); }
+  .risk-card.med  { border-left-color: var(--green); }
+  .risk-card.low  { border-left-color: var(--label); }
+  .risk-card.closed { opacity: 0.55; }
+  .risk-head {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .risk-title {
+    font-size: 13.5px; font-weight: 700; line-height: 1.3; color: var(--text);
+  }
+  .risk-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--accent-bright); font-weight: 700;
+    flex-shrink: 0;
+  }
+  .risk-meta {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+  }
+  .risk-meta span {
+    padding: 2px 6px; border-radius: 3px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .risk-row { font-size: 12px; line-height: 1.5; margin-bottom: 6px; color: var(--text); }
+  .risk-row .lab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-right: 4px;
+  }
+  .risk-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--accent-bright);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin: 22px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--border);
+  }
+
   /* === Responsive === */
   @media (max-width: 1200px) {
     .calendar { grid-template-columns: repeat(3, 1fr); }
@@ -730,8 +1032,8 @@
     </div>
     <div class="hero-card">
       <div class="label">R&amp;D · открытых дорожек</div>
-      <div class="value mono"><span>6</span><span class="unit">/ 6</span></div>
-      <div class="caption">См. вкладку 🔬 R&amp;D</div>
+      <div class="value mono"><span id="rd-open-count">4</span><span class="unit">/ <span id="rd-total-count">6</span></span></div>
+      <div class="caption"><span id="rd-inprog-count">2</span> в работе · <span id="rd-closed-count">0</span> закрыто · 🔬 R&amp;D</div>
     </div>
     <div class="hero-card">
       <div class="label">Текущий этап</div>
@@ -747,19 +1049,64 @@
     <button class="tab" data-tab="questions">❓ Вопросы <span class="tab-count">0</span> <span class="kbd">3</span></button>
     <button class="tab" data-tab="rd">🔬 R&amp;D <span class="kbd">4</span></button>
     <button class="tab" data-tab="artifacts">📎 Артефакты <span class="kbd">5</span></button>
-    <button class="tab" data-tab="done">✅ Готово <span class="tab-count" id="done-count">0</span> <span class="kbd">6</span></button>
+    <button class="tab" data-tab="acceptance">🎯 Acceptance <span class="tab-count" id="ac-count">0/10</span> <span class="kbd">6</span></button>
+    <button class="tab" data-tab="risks">⚠ Риски <span class="tab-count" id="risks-count">0</span> <span class="kbd">7</span></button>
+    <button class="tab" data-tab="done">✅ Готово <span class="tab-count" id="done-count">0</span> <span class="kbd">8</span></button>
   </div>
 
   <!-- VIEW: CALENDAR -->
   <div class="view active" data-view="calendar">
+
+    <!-- Pilot-readiness tracker -->
+    <div class="pilot-tracker">
+      <div class="pilot-card">
+        <div class="pilot-icon">🏃</div>
+        <div>
+          <div class="pilot-label">Спорт-пилот · Лига</div>
+          <div class="pilot-status">не назначен · owner Никита · deadline W2</div>
+        </div>
+      </div>
+      <div class="pilot-card">
+        <div class="pilot-icon">🏢</div>
+        <div>
+          <div class="pilot-label">Корп-пилот · Office + Safety</div>
+          <div class="pilot-status">не назначен · owner Никита · deadline W3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Today's stand-up -->
+    <div class="standup">
+      <div class="standup-header">
+        <span style="font-size:14px;">📌</span>
+        <span class="standup-title">Сегодня · стендап</span>
+        <span id="standup-date">--</span>
+      </div>
+      <div class="standup-grid">
+        <div class="standup-cell">
+          <label>Вчера</label>
+          <textarea id="standup-yesterday" placeholder="Что сделано вчера…"></textarea>
+        </div>
+        <div class="standup-cell">
+          <label>Сегодня</label>
+          <textarea id="standup-today" placeholder="План на сегодня…"></textarea>
+        </div>
+        <div class="standup-cell">
+          <label>Blockers</label>
+          <textarea id="standup-blockers" placeholder="Заблокированы чем-либо? Кто разбирает?"></textarea>
+        </div>
+      </div>
+    </div>
+
     <div class="calendar" style="grid-template-columns: repeat(4, 1fr);">
 
       <!-- W1 · текущая -->
-      <div class="day-col today" style="min-height: 540px;">
+      <div class="day-col today" style="min-height: 540px;" data-week="w1">
         <div class="day-header">
-          <div>
+          <div style="flex:1;">
             <div class="day-date">W1</div>
             <div class="day-name">2-8 июня · Core</div>
+            <div class="week-progress"><div class="week-progress-fill" data-week-fill="w1"></div></div>
           </div>
         </div>
         <div class="day-badge today">Сейчас</div>
@@ -770,6 +1117,7 @@
               <div style="flex:1;">
                 <div class="task-text">Mode enum в auth (Sport / Corporate) + экран выбора при регистрации</div>
                 <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocks">⛓ блокирует: w2-1, w3-1</span>
               </div>
             </div>
           </div>
@@ -779,6 +1127,7 @@
               <div style="flex:1;">
                 <div class="task-text">Root cause «сон» — SDK Veepoo vs actigraphy fallback (R&amp;D-3)</div>
                 <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocks">⛓ блокирует: w3-3</span>
               </div>
             </div>
           </div>
@@ -797,6 +1146,7 @@
               <div style="flex:1;">
                 <div class="task-text">Privacy / consent bench (Whoop, Oura, Polar) → требования onboarding (R&amp;D-5)</div>
                 <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+                <span class="dep-blocks">⛓ блокирует: w2-7</span>
               </div>
             </div>
           </div>
@@ -806,6 +1156,27 @@
               <div style="flex:1;">
                 <div class="task-text">Запросить sample raw IMU/PPG у Vigor — 10 мин записи (R&amp;D-2)</div>
                 <div class="task-owners"><span class="owner-badge nikita">Никита</span></div>
+                <span class="dep-blocks">⛓ блокирует: w3-2</span>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w1-6">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Backend infra: DNS + SSL + деплой league.neiry.ru и dashboard.neiry.ru (нужно к W2)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocks">⛓ блокирует: w2-2, w3-3</span>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w1-7">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Push-инфра: FCM проект + ключи + тестовое устройство (для W4 push)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocks">⛓ блокирует: w4-1</span>
               </div>
             </div>
           </div>
@@ -813,11 +1184,12 @@
       </div>
 
       <!-- W2 -->
-      <div class="day-col" style="min-height: 540px;">
+      <div class="day-col" style="min-height: 540px;" data-week="w2">
         <div class="day-header">
-          <div>
+          <div style="flex:1;">
             <div class="day-date">W2</div>
             <div class="day-name">9-15 июня · Sport</div>
+            <div class="week-progress"><div class="week-progress-fill" data-week-fill="w2"></div></div>
           </div>
         </div>
         <div class="day-badge upcoming">Sport Mode + Лига</div>
@@ -828,6 +1200,7 @@
               <div style="flex:1;">
                 <div class="task-text">Sport Mode mobile: тренировки, GPS, типы активности, пульсовые зоны</div>
                 <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocked">⏸ ждёт: w1-1</span>
               </div>
             </div>
           </div>
@@ -837,6 +1210,7 @@
               <div style="flex:1;">
                 <div class="task-text">Дизайн дашборда Лиги на league.neiry.ru (отдельный поддомен + бренд)</div>
                 <div class="task-owners"><span class="owner-badge ux">UX</span></div>
+                <span class="dep-blocked">⏸ ждёт: w1-6</span>
               </div>
             </div>
           </div>
@@ -867,15 +1241,47 @@
               </div>
             </div>
           </div>
+          <div class="task" data-task="m3-w2-6">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">iOS Bridge для китайского SDK (на M2 отказались, в M3 делаем — PRD §2.2)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocks">⛓ блокирует: w3-6</span>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w2-7a">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Privacy/Consent — дизайн экранов onboarding (по итогам W1 bench)</div>
+                <div class="task-owners"><span class="owner-badge ux">UX</span></div>
+                <span class="dep-blocked">⏸ ждёт: w1-4</span>
+                <span class="dep-blocks">⛓ блокирует: w2-7b</span>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w2-7b">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Privacy/Consent — реализация в коде mobile-app</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocked">⏸ ждёт: w2-7a</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- W3 -->
-      <div class="day-col" style="min-height: 540px;">
+      <div class="day-col" style="min-height: 540px;" data-week="w3">
         <div class="day-header">
-          <div>
+          <div style="flex:1;">
             <div class="day-date">W3</div>
             <div class="day-name">16-22 июня · Corporate</div>
+            <div class="week-progress"><div class="week-progress-fill" data-week-fill="w3"></div></div>
           </div>
         </div>
         <div class="day-badge upcoming">Corporate + Safety + Sleep</div>
@@ -886,6 +1292,7 @@
               <div style="flex:1;">
                 <div class="task-text">Corporate Mode mobile: ввод роли (office / водитель / машинист / диспетчер)</div>
                 <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocked">⏸ ждёт: w1-1</span>
               </div>
             </div>
           </div>
@@ -895,6 +1302,7 @@
               <div style="flex:1;">
                 <div class="task-text">Детектор сонливости (safety-роли) + алерт-движок</div>
                 <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocked">⏸ ждёт: w1-5</span> · <span class="dep-blocks">⛓ блокирует: w4-1</span>
               </div>
             </div>
           </div>
@@ -904,6 +1312,7 @@
               <div style="flex:1;">
                 <div class="task-text">Дашборд dashboard.neiry.ru — role-based фильтр (office vs safety), sleep-блок для office</div>
                 <div class="task-owners"><span class="owner-badge ux">UX</span></div>
+                <span class="dep-blocked">⏸ ждёт: w1-2, w1-6</span>
               </div>
             </div>
           </div>
@@ -911,7 +1320,7 @@
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text">Ревизия dashboard-corporate.html: убрать 3-табную модель, перенести на role-фильтр</div>
+                <div class="task-text">Переделать dashboard-corporate под 2-пресетную архитектуру (role-based фильтр office/safety, без 3 табов)</div>
                 <div class="task-owners"><span class="owner-badge ux">UX</span></div>
               </div>
             </div>
@@ -925,15 +1334,36 @@
               </div>
             </div>
           </div>
+          <div class="task" data-task="m3-w3-6">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">iOS-билд для App Store (второй билд того же приложения)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocked">⏸ ждёт: w2-6</span> · <span class="dep-blocks">⛓ блокирует: w3-7</span>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-7">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Подготовка Store-публикации: аккаунты разработчиков, метаданные, скриншоты, privacy policy (Google Play + App Store)</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+                <span class="dep-blocked">⏸ ждёт: w3-6</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- W4 -->
-      <div class="day-col event" style="min-height: 540px;">
+      <div class="day-col event" style="min-height: 540px;" data-week="w4">
         <div class="day-header">
-          <div>
+          <div style="flex:1;">
             <div class="day-date">W4</div>
             <div class="day-name">23-25 июня · Release</div>
+            <div class="week-progress"><div class="week-progress-fill" data-week-fill="w4"></div></div>
           </div>
         </div>
         <div class="day-badge event">🚀 M3 Final MVP</div>
@@ -944,6 +1374,7 @@
               <div style="flex:1;">
                 <div class="task-text">Push-уведомления: alerts safety + reminders sport</div>
                 <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocked">⏸ ждёт: w1-7, w3-2</span>
               </div>
             </div>
           </div>
@@ -965,11 +1396,29 @@
               </div>
             </div>
           </div>
-          <div class="task" data-task="m3-w4-4">
+          <div class="task" data-task="m3-w4-4a">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text">Демо-ролики 2-3 шт. + финальные питч-материалы под каждый сегмент</div>
+                <div class="task-text">Демо: сценарии под каждый сегмент (Лига / Корпорат office / Корпорат safety)</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w4-4b">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Демо: раскадровка и подготовка визуала</div>
+                <div class="task-owners"><span class="owner-badge ux">UX</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w4-4c">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Демо: монтаж 2-3 финальных роликов</div>
                 <div class="task-owners"><span class="owner-badge pm">PM</span></div>
               </div>
             </div>
@@ -987,6 +1436,22 @@
       </div>
 
     </div>
+
+    <!-- Owner workload view -->
+    <div class="owner-workload">
+      <h3>👥 Owner workload <span class="sub">пересчёт по чек-боксам календаря</span></h3>
+      <table class="workload-table">
+        <thead>
+          <tr><th>Owner</th><th class="num">Open</th><th class="num">Done</th><th class="num">Total</th></tr>
+        </thead>
+        <tbody id="workload-tbody">
+          <tr><td>Кирилл</td><td class="num" data-wl="kirill-open">0</td><td class="num" data-wl="kirill-done">0</td><td class="num" data-wl="kirill-total">0</td></tr>
+          <tr><td>PM</td><td class="num" data-wl="pm-open">0</td><td class="num" data-wl="pm-done">0</td><td class="num" data-wl="pm-total">0</td></tr>
+          <tr><td>UX</td><td class="num" data-wl="ux-open">0</td><td class="num" data-wl="ux-done">0</td><td class="num" data-wl="ux-total">0</td></tr>
+          <tr><td>Никита</td><td class="num" data-wl="nikita-open">0</td><td class="num" data-wl="nikita-done">0</td><td class="num" data-wl="nikita-total">0</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- VIEW: OPEN -->
@@ -1001,140 +1466,196 @@
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Mode enum в auth (Sport / Corporate) + экран выбора при регистрации</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w1">W1</span><span class="tag tag-backend">Backend</span><span class="tag tag-mobile">Mobile</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w1">M3 · W1</span><span class="tag tag-backend">Backend</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w1-2">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Root cause «сон» — SDK Veepoo vs actigraphy fallback (R&D-3)</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w1">W1</span><span class="tag tag-backend">Backend</span><span class="tag tag-sdk">SDK</span><span class="tag tag-rd">R&D</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w1">M3 · W1</span><span class="tag tag-sdk">SDK</span><span class="tag tag-rd">R&D</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w1-3">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">ICP v2 — структурировать лиды Village (R&D-4)</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w1">W1</span><span class="tag tag-strategy">Strategy</span><span class="tag tag-rd">R&D</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w1">M3 · W1</span><span class="tag tag-rd">R&D</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w1-4">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Privacy / consent bench (Whoop, Oura, Polar) → требования onboarding (R&D-5)</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w1">W1</span><span class="tag tag-strategy">Strategy</span><span class="tag tag-rd">R&D</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w1">M3 · W1</span><span class="tag tag-rd">R&D</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w1-5">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Запросить sample raw IMU/PPG у Vigor — 10 мин записи (R&D-2)</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w1">W1</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-rd">R&D</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w1">M3 · W1</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-rd">R&D</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w1-6">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Backend infra: DNS + SSL + деплой league.neiry.ru и dashboard.neiry.ru</div>
+          <div class="flat-tags"><span class="tag tag-m3w1">M3 · W1</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w1-7">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Push-инфра: FCM проект + ключи + тестовое устройство</div>
+          <div class="flat-tags"><span class="tag tag-m3w1">M3 · W1</span><span class="tag tag-backend">Backend</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w2-1">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Sport Mode mobile: тренировки, GPS, типы активности, пульсовые зоны</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w2">W2</span><span class="tag tag-mobile">Mobile</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w2">M3 · W2</span><span class="tag tag-mobile">Mobile</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w2-2">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Дизайн дашборда Лиги на league.neiry.ru (поддомен + отдельный бренд)</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w2">W2</span><span class="tag tag-ux">UX/UI</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w2">M3 · W2</span><span class="tag tag-ux">UX/UI</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w2-3">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Спецификация League Fitness Score (формула + входы)</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w2">W2</span><span class="tag tag-strategy">Strategy</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w2">M3 · W2</span><span class="tag tag-strategy">Strategy</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w2-4">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Демо-данные для лиги (мок-сезон, 10–15 спортсменов)</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w2">W2</span><span class="tag tag-backend">Backend</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w2">M3 · W2</span><span class="tag tag-backend">Backend</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w2-5">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Передача браслетов в спорт-пилот (координация с Никитой)</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w2">W2</span><span class="tag tag-logistics">Логистика</span><span class="tag tag-hardware">Hardware</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w2">M3 · W2</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w2-6">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">iOS Bridge для китайского SDK (на M2 отказались — теперь делаем)</div>
+          <div class="flat-tags"><span class="tag tag-m3w2">M3 · W2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-sdk">SDK</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w2-7">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Privacy/Consent UX в mobile onboarding (consent-экраны по итогам W1 bench)</div>
+          <div class="flat-tags"><span class="tag tag-m3w2">M3 · W2</span><span class="tag tag-ux">UX/UI</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w3-1">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Corporate Mode mobile: ввод роли (office / водитель / машинист / диспетчер)</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w3">W3</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-backend">Backend</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w3">M3 · W3</span><span class="tag tag-mobile">Mobile</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w3-2">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Детектор сонливости (safety-роли) + алерт-движок</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w3">W3</span><span class="tag tag-backend">Backend</span><span class="tag tag-sdk">SDK</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w3">M3 · W3</span><span class="tag tag-backend">Backend</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w3-3">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Дашборд dashboard.neiry.ru — role-based фильтр (office vs safety), sleep-блок</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w3">W3</span><span class="tag tag-ux">UX/UI</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w3">M3 · W3</span><span class="tag tag-ux">UX/UI</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w3-4">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
-          <div class="flat-text">Ревизия dashboard-corporate.html: убрать 3-табную модель, перейти на role-фильтр</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w3">W3</span><span class="tag tag-ux">UX/UI</span></div>
+          <div class="flat-text">Переделать dashboard-corporate под 2-пресетную архитектуру (role-based фильтр office/safety, без 3 табов)</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">M3 · W3</span><span class="tag tag-ux">UX/UI</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w3-5">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Передача браслетов в корп-пилот, регламент ношения</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w3">W3</span><span class="tag tag-logistics">Логистика</span><span class="tag tag-hardware">Hardware</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w3">M3 · W3</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w3-6">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">iOS-билд для App Store (второй билд того же приложения)</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">M3 · W3</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w3-7">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Подготовка Store-публикации: аккаунты, метаданные, скриншоты, privacy policy (Google Play + App Store)</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">M3 · W3</span><span class="tag tag-strategy">Strategy</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w4-1">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Push-уведомления: alerts safety + reminders sport</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w4">W4</span><span class="tag tag-backend">Backend</span><span class="tag tag-mobile">Mobile</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w4">M3 · W4</span><span class="tag tag-backend">Backend</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w4-2">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Финальное QA на 2 пресетах + парк браслетов</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w4">W4</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-backend">Backend</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w4">M3 · W4</span><span class="tag tag-hardware">Hardware</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w4-3">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Демо-аккаунты под каждый пресет (Лига + Корпорат office + Корпорат safety)</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w4">W4</span><span class="tag tag-strategy">Strategy</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w4">M3 · W4</span><span class="tag tag-strategy">Strategy</span></div>
         </div>
       </div>
-      <div class="flat-task" data-flat="o-w4-4">
+      <div class="flat-task" data-flat="o-w4-4a">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
-          <div class="flat-text">Демо-ролики 2–3 шт. + финальные питч-материалы под каждый сегмент</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w4">W4</span><span class="tag tag-strategy">Strategy</span></div>
+          <div class="flat-text">Демо: сценарии под каждый сегмент (Лига / Корпорат office / Корпорат safety)</div>
+          <div class="flat-tags"><span class="tag tag-m3w4">M3 · W4</span><span class="tag tag-strategy">Strategy</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w4-4b">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Демо: раскадровка и подготовка визуала</div>
+          <div class="flat-tags"><span class="tag tag-m3w4">M3 · W4</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w4-4c">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Демо: монтаж 2-3 финальных роликов</div>
+          <div class="flat-tags"><span class="tag tag-m3w4">M3 · W4</span><span class="tag tag-strategy">Strategy</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-w4-5">
         <input type="checkbox" class="flat-check">
         <div class="flat-body">
           <div class="flat-text">Acceptance review с Никитой: проходим ли все criteria из PRD M3</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w4">W4</span><span class="tag tag-strategy">Strategy</span></div>
+          <div class="flat-tags"><span class="tag tag-m3w4">M3 · W4</span><span class="tag tag-strategy">Strategy</span></div>
         </div>
       </div>
       <div class="flat-task" data-flat="o-ext-1" data-locked="1">
@@ -1142,20 +1663,6 @@
         <div class="flat-body">
           <div class="flat-text">Celery: 4 типа event-алертов (Sleep / Illness / Burnout / Recovery)</div>
           <div class="flat-tags"><span class="tag tag-postm3">Post-M3</span><span class="tag tag-backend">Backend</span><span class="tag tag-sdk">SDK</span><span class="tag tag-waiting">Ждёт фидбэка</span></div>
-        </div>
-      </div>
-      <div class="flat-task" data-flat="o-ext-2">
-        <input type="checkbox" class="flat-check">
-        <div class="flat-body">
-          <div class="flat-text">Backend под league.neiry.ru + dashboard.neiry.ru с role-фильтром (продолжение M2-стека)</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-backend">Backend</span></div>
-        </div>
-      </div>
-      <div class="flat-task" data-flat="o-ios-1" data-locked="1">
-        <input type="checkbox" class="flat-check" disabled>
-        <div class="flat-body">
-          <div class="flat-text">iOS Bridge для M3 — выбор пути (нативный iOS app vs SDK-мост)</div>
-          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-strategy">Strategy</span><span class="tag tag-waiting">Ждёт фидбэка</span></div>
         </div>
       </div>
     </div>
@@ -1166,7 +1673,7 @@
     <div class="questions-grid">
 
       <div class="question-card resolved" data-q="q1">
-        <div class="question-num mono">Q1 / 10</div>
+        <div class="question-num mono">Q1 / 14</div>
         <div class="question-text">Костюм перформера: пиджак vs джинсы+рубашка (визуальный код «офис»)</div>
         <div class="question-meta">
           <span class="q-category logistics">Логистика</span>
@@ -1176,7 +1683,7 @@
       </div>
 
       <div class="question-card resolved" data-q="q2">
-        <div class="question-num mono">Q2 / 10</div>
+        <div class="question-num mono">Q2 / 14</div>
         <div class="question-text">2 или 3 одновременных гостя на плазме — финальное число от Кирилла</div>
         <div class="question-meta">
           <span class="q-category tech">Tech</span>
@@ -1186,7 +1693,7 @@
       </div>
 
       <div class="question-card resolved" data-q="q3">
-        <div class="question-num mono">Q3 / 10</div>
+        <div class="question-num mono">Q3 / 14</div>
         <div class="question-text">HBandSDK: 3 BLE-connection с одного телефона — поддерживает или нет?</div>
         <div class="question-meta">
           <span class="q-category tech">Tech</span>
@@ -1196,7 +1703,7 @@
       </div>
 
       <div class="question-card resolved" data-q="q4">
-        <div class="question-num mono">Q4 / 10</div>
+        <div class="question-num mono">Q4 / 14</div>
         <div class="question-text">Конкретные модели 3 Android-телефонов и минимальная Android-версия</div>
         <div class="question-meta">
           <span class="q-category logistics">Логистика</span>
@@ -1206,7 +1713,7 @@
       </div>
 
       <div class="question-card resolved" data-q="q5">
-        <div class="question-num mono">Q5 / 10</div>
+        <div class="question-num mono">Q5 / 14</div>
         <div class="question-text">SIM / Wi-Fi на стенде Startup Village</div>
         <div class="question-meta">
           <span class="q-category logistics">Логистика</span>
@@ -1215,18 +1722,18 @@
         <div class="question-resolution"><span class="res-label">Resolved</span>Wi-Fi на стенде работал. Проблема была не в сети, а в BLE: количество посторонних Bluetooth-устройств вокруг сбивало качество связи. 3 браслета стабильно держать не получилось.</div>
       </div>
 
-      <div class="question-card deferred" data-q="q6">
-        <div class="question-num mono">Q6 / 10</div>
-        <div class="question-text">iOS Bridge для M3</div>
+      <div class="question-card resolved" data-q="q6">
+        <div class="question-num mono">Q6 / 14</div>
+        <div class="question-text">iOS Bridge для китайского SDK — кто делает и когда?</div>
         <div class="question-meta">
           <span class="q-category tech">Tech</span>
-          <button class="q-resolve-btn">Deferred</button>
+          <button class="q-resolve-btn">Resolved</button>
         </div>
-        <div class="question-resolution"><span class="res-label">Deferred</span>Отложено до M3.</div>
+        <div class="question-resolution"><span class="res-label">Resolved</span>Кирилл делает в M3 W2 (PRD M3 §2.2). На M2 отказались — сейчас навёрстываем для one-codebase подхода: одно приложение → 2 билда (Google Play + App Store).</div>
       </div>
 
       <div class="question-card cancelled" data-q="q7">
-        <div class="question-num mono">Q7 / 10</div>
+        <div class="question-num mono">Q7 / 14</div>
         <div class="question-text">Если RMSSD у якоря критика 24.05 — план Б по замене?</div>
         <div class="question-meta">
           <span class="q-category fallback">Fallback</span>
@@ -1236,7 +1743,7 @@
       </div>
 
       <div class="question-card deferred" data-q="q8">
-        <div class="question-num mono">Q8 / 10</div>
+        <div class="question-num mono">Q8 / 14</div>
         <div class="question-text">Согласие на сбор биометрии — когда добавим в приложение?</div>
         <div class="question-meta">
           <span class="q-category strategy">Стратегия</span>
@@ -1246,7 +1753,7 @@
       </div>
 
       <div class="question-card deferred" data-q="q9">
-        <div class="question-num mono">Q9 / 10</div>
+        <div class="question-num mono">Q9 / 14</div>
         <div class="question-text">Neiry Headband / tVNS roadmap — когда готовы для drill-down рекомендаций?</div>
         <div class="question-meta">
           <span class="q-category strategy">Стратегия</span>
@@ -1256,13 +1763,49 @@
       </div>
 
       <div class="question-card resolved" data-q="q10">
-        <div class="question-num mono">Q10 / 10</div>
+        <div class="question-num mono">Q10 / 14</div>
         <div class="question-text">KPI strip Neiry Unite на пустой команде (нет данных) — onboarding UX?</div>
         <div class="question-meta">
           <span class="q-category strategy">Стратегия</span>
           <button class="q-resolve-btn">Resolved</button>
         </div>
         <div class="question-resolution"><span class="res-label">Resolved</span>Вариант (б): onboarding-туториал «раздай браслеты → подключи через app → первые данные через 24 ч». Применяется к обоим пресетам (Лига и Корпорат). Привязка — acceptance criteria M3 W4 «демо-аккаунты».</div>
+      </div>
+
+      <div class="question-card" data-q="q11">
+        <div class="question-num mono">Q11 / 14</div>
+        <div class="question-text">Логистика браслетов для 2 пилотов: сколько штук, у кого они сейчас, закупаем новые или используем парк со стенда?</div>
+        <div class="question-meta">
+          <span class="q-category logistics">Логистика</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q12">
+        <div class="question-num mono">Q12 / 14</div>
+        <div class="question-text">Backend infra: где хостим league.neiry.ru и dashboard.neiry.ru? Кто заводит DNS и SSL-сертификаты?</div>
+        <div class="question-meta">
+          <span class="q-category tech">Tech</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q13">
+        <div class="question-num mono">Q13 / 14</div>
+        <div class="question-text">Sport Mode валидация: кто и как валидирует точность GPS с телефона (vs GPS-часы) и формулы пульсовых зон (возраст-зависимы, нужен эталон)?</div>
+        <div class="question-meta">
+          <span class="q-category tech">Tech</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q14">
+        <div class="question-num mono">Q14 / 14</div>
+        <div class="question-text">Демо-ролики M3: кто пишет сценарии (PM?), кто монтирует (внешний подрядчик?), какой инструмент / стиль / тайминг?</div>
+        <div class="question-meta">
+          <span class="q-category strategy">Стратегия</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
       </div>
 
     </div>
@@ -1339,6 +1882,12 @@
           <div class="artifact-title">rd-backlog-cards</div>
           <div class="artifact-desc">R&amp;D-бэклог: 6 карточек (Stress Index · IMU/PPG raw · Сон · ICP · Privacy · Mobile B2C)</div>
           <span class="artifact-author rd">R&amp;D</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/risks/RISKS.html">
+          <div class="artifact-icon">⚠</div>
+          <div class="artifact-title">risks-unified</div>
+          <div class="artifact-desc">Risks Unified · реестр рисков M3 — мигрировано из M2 + новые M3-риски</div>
+          <span class="artifact-author pm">PM</span>
         </a>
       </div>
     </div>
@@ -1426,12 +1975,237 @@
 
   </div>
 
+  <!-- VIEW: ACCEPTANCE -->
+  <div class="view" data-view="acceptance">
+    <div class="acceptance-hero">
+      <div class="ac-label">Acceptance M3 · PRD §4</div>
+      <div class="ac-value mono"><span id="ac-passed">0</span><span class="unit">/ 10 пройдено</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="ac-progress" style="width:0%"></div></div>
+    </div>
+    <div class="acceptance-list" id="ac-list">
+      <div class="ac-item" data-ac="ac1">
+        <input type="checkbox" class="ac-check">
+        <div class="ac-body">
+          <div class="ac-num">AC-1</div>
+          <div class="ac-text">Mobile-app позволяет зарегистрироваться в одном из 2 Mode (Sport / Corporate)</div>
+          <div class="ac-related">связано: m3-w1-1, m3-w2-1, m3-w3-1</div>
+        </div>
+      </div>
+      <div class="ac-item" data-ac="ac2">
+        <input type="checkbox" class="ac-check">
+        <div class="ac-body">
+          <div class="ac-num">AC-2</div>
+          <div class="ac-text">Sport-юзер видит на mobile свои тренировки, GPS-трек, пульсовые зоны</div>
+          <div class="ac-related">связано: m3-w2-1, m3-w2-3</div>
+        </div>
+      </div>
+      <div class="ac-item" data-ac="ac3">
+        <input type="checkbox" class="ac-check">
+        <div class="ac-body">
+          <div class="ac-num">AC-3</div>
+          <div class="ac-text">Corporate-юзер видит свой стресс, recovery, burnout; safety-роль дополнительно видит алерты сонливости</div>
+          <div class="ac-related">связано: m3-w3-1, m3-w3-2, m3-w3-3</div>
+        </div>
+      </div>
+      <div class="ac-item" data-ac="ac4">
+        <input type="checkbox" class="ac-check">
+        <div class="ac-body">
+          <div class="ac-num">AC-4</div>
+          <div class="ac-text">Сон отдаёт корректные значения Deep / REM / Light (исправление M2-фейла)</div>
+          <div class="ac-related">связано: m3-w1-2</div>
+        </div>
+      </div>
+      <div class="ac-item" data-ac="ac5">
+        <input type="checkbox" class="ac-check">
+        <div class="ac-body">
+          <div class="ac-num">AC-5</div>
+          <div class="ac-text">league.neiry.ru поднят, показывает рейтинг + список + графики хотя бы для одного пилота</div>
+          <div class="ac-related">связано: m3-w1-6, m3-w2-2, m3-w2-4</div>
+        </div>
+      </div>
+      <div class="ac-item" data-ac="ac6">
+        <input type="checkbox" class="ac-check">
+        <div class="ac-body">
+          <div class="ac-num">AC-6</div>
+          <div class="ac-text">dashboard.neiry.ru показывает корп-команду с role-фильтром (office/safety)</div>
+          <div class="ac-related">связано: m3-w1-6, m3-w3-3, m3-w3-4</div>
+        </div>
+      </div>
+      <div class="ac-item" data-ac="ac7">
+        <input type="checkbox" class="ac-check">
+        <div class="ac-body">
+          <div class="ac-num">AC-7</div>
+          <div class="ac-text">Push-алерт сонливости приходит на телефон safety-юзера при триггере</div>
+          <div class="ac-related">связано: m3-w1-7, m3-w3-2, m3-w4-1</div>
+        </div>
+      </div>
+      <div class="ac-item" data-ac="ac8">
+        <input type="checkbox" class="ac-check">
+        <div class="ac-body">
+          <div class="ac-num">AC-8</div>
+          <div class="ac-text">Под каждый пресет есть демо-аккаунт + 2-3 ролика</div>
+          <div class="ac-related">связано: m3-w4-3, m3-w4-4a, m3-w4-4b, m3-w4-4c</div>
+        </div>
+      </div>
+      <div class="ac-item" data-ac="ac9">
+        <input type="checkbox" class="ac-check">
+        <div class="ac-body">
+          <div class="ac-num">AC-9</div>
+          <div class="ac-text">Минимум 1 пилот в каждом сегменте получил браслеты и активно использует</div>
+          <div class="ac-related">связано: m3-w2-5, m3-w3-5</div>
+        </div>
+      </div>
+      <div class="ac-item" data-ac="ac10">
+        <input type="checkbox" class="ac-check">
+        <div class="ac-body">
+          <div class="ac-num">AC-10</div>
+          <div class="ac-text">Mobile-app опубликован в Google Play и App Store (или прошёл review и доступен для распространения)</div>
+          <div class="ac-related">связано: m3-w2-6, m3-w3-6, m3-w3-7</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW: RISKS -->
+  <div class="view" data-view="risks">
+    <div class="risks-summary">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Sev</th><th>Категория</th><th>Название</th><th>Статус</th><th>Owner</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="r-id">R-001</td><td>🟡</td><td>Технические</td><td>Сон не починим к W3</td><td class="r-status-open">open</td><td>Кирилл</td></tr>
+          <tr><td class="r-id">R-002</td><td>🟡</td><td>Поставщики</td><td>Vigor не отдаст raw IMU/PPG вовремя</td><td class="r-status-open">open</td><td>Никита</td></tr>
+          <tr><td class="r-id">R-003</td><td>🟡</td><td>Технические</td><td>Push на Android не успевает к W4</td><td class="r-status-mit">in-mitigation</td><td>Кирилл</td></tr>
+          <tr><td class="r-id">R-004</td><td>🔴</td><td>Бизнес</td><td>Лига-пилот не выходит на связь</td><td class="r-status-open">open</td><td>Никита</td></tr>
+          <tr><td class="r-id">R-005</td><td>🟡</td><td>Юр</td><td>iOS App Store review</td><td class="r-status-open">open</td><td>PM</td></tr>
+          <tr><td class="r-id">R-006</td><td>🟡</td><td>Технические / Юр</td><td>Privacy/consent — биометрия по 152-ФЗ</td><td class="r-status-open">open</td><td>PM</td></tr>
+          <tr><td class="r-id">R-007</td><td>🟢</td><td>Поставщики</td><td>Задержка VANTA / Vigor / Veepoo</td><td class="r-status-mit">in-mitigation</td><td>Никита</td></tr>
+          <tr><td class="r-id">R-101</td><td>⚪</td><td>Логистические</td><td>Логистика Android-телефонов (1:1 pairing)</td><td class="r-status-closed">closed (M2)</td><td>Кирилл</td></tr>
+          <tr><td class="r-id">R-102</td><td>⚪</td><td>Технические</td><td>Калибровка NSI 12 сек</td><td class="r-status-closed">closed (M2)</td><td>PM</td></tr>
+          <tr><td class="r-id">R-103</td><td>⚪</td><td>Технические</td><td>Сравнение с Whoop / Oura / Apple Watch</td><td class="r-status-closed">closed (M2)</td><td>PM</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="risk-section-title">🔴🟡 Открытые риски M3</div>
+
+    <div class="risks-grid">
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 Сон не починим к W3</div><div class="risk-id">R-001</div></div>
+        <div class="risk-meta"><span>Технические</span><span>M3</span><span>open</span><span>Кирилл</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Root cause M2-фейла Deep/REM/Light не определён. SDK Veepoo может оказаться сломанным, fallback на actigraphy требует raw IMU от Vigor.</div>
+        <div class="risk-row"><span class="lab">Проявление:</span>На M3 acceptance review AC-4 не проходит, сон отдаёт мусорные значения как на M2.</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>R&amp;D-3 + sample от Vigor (W1). Решение SDK-fix vs actigraphy — к концу W1.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Показываем только grade «Достаточный/Недостаточный» из IMU-actigraphy, без Deep/REM/Light.</div>
+        <div class="risk-row"><span class="lab">Источник:</span>PRD M3 §6 · R&amp;D-3</div>
+      </div>
+
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 Vigor не отдаст raw IMU/PPG вовремя</div><div class="risk-id">R-002</div></div>
+        <div class="risk-meta"><span>Поставщики</span><span>M3</span><span>open</span><span>Никита</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Поставщик обещал raw 50 Hz × 6 осей за допразработку (письмо 03.06). Может затянуть, что блокирует actigraphy-сон и детектор сонливости.</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>Запрос sample 10 мин (m3-w1-5) на W1, чёткий дедлайн W2.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Оставляем существующую int8-логику, сонливость считаем на BPM-derivatives.</div>
+        <div class="risk-row"><span class="lab">Источник:</span>PRD M3 §6 · R&amp;D-2</div>
+      </div>
+
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 Push на Android не успевает к W4</div><div class="risk-id">R-003</div></div>
+        <div class="risk-meta"><span>Технические</span><span>M3 · W4</span><span>in-mitigation</span><span>Кирилл</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>FCM проект + ключи + интеграция в mobile + backend-инфра алертов. 4 разные подзадачи, риск не успеть к 25.06.</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>m3-w1-7 (FCM в W1 заранее), m3-w3-2 (алерт-движок в W3).</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>В первой итерации M3 — только in-app алерты; push на пост-M3.</div>
+        <div class="risk-row"><span class="lab">Источник:</span>PRD M3 §6</div>
+      </div>
+
+      <div class="risk-card crit">
+        <div class="risk-head"><div class="risk-title">🔴 Лига-пилот не выходит на связь</div><div class="risk-id">R-004</div></div>
+        <div class="risk-meta"><span>Бизнес</span><span>M3 · W2</span><span>open</span><span>Никита</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Спорт-пилот не подтверждён, без реального пилота AC-5 и AC-9 проваливаются.</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>Координация с Никитой к W2, m3-w2-5.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Демо-сезон с мок-данными, реального пилота переносим на post-M3.</div>
+        <div class="risk-row"><span class="lab">Источник:</span>PRD M3 §6</div>
+      </div>
+
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 iOS App Store review</div><div class="risk-id">R-005</div></div>
+        <div class="risk-meta"><span>Юр / Compliance</span><span>M3 · W3-W4</span><span>open</span><span>PM</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Health-приложения Apple ревьюят жёстко (§ 1.4, § 5.1.1). Можно получить reject на дисклеймерах или сборе данных без обоснования.</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>R&amp;D-6 audit · m3-w3-7 заранее готовим политику + privacy + screenshots.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>На M3 acceptance считаем «прошёл review» как успех (без обязательной публикации в день релиза).</div>
+        <div class="risk-row"><span class="lab">Источник:</span>R&amp;D-6 · PRD §2.2</div>
+      </div>
+
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 Privacy/consent — биометрия по 152-ФЗ</div><div class="risk-id">R-006</div></div>
+        <div class="risk-meta"><span>Технические / Юр</span><span>M3 · W2</span><span>open</span><span>PM</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>HRV / R-R / PPG могут трактоваться как биометрические ПД. Нужна регистрация ИСПДн, явное согласие, дисклеймер «не медизделие».</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>m3-w1-4 (bench Whoop/Oura/Polar) · m3-w2-7a/b (UX дизайн + Кирилл реализация consent) · оценка юриста (R&amp;D-5).</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>На M3 в корп-сегменте работаем на корпоративных Android — формальные NDA + бумажный consent.</div>
+        <div class="risk-row"><span class="lab">Источник:</span>R&amp;D-5</div>
+      </div>
+
+      <div class="risk-card med">
+        <div class="risk-head"><div class="risk-title">🟢 Задержка VANTA / Vigor / Veepoo</div><div class="risk-id">R-007</div></div>
+        <div class="risk-meta"><span>Поставщики</span><span>post-M3</span><span>in-mitigation</span><span>Никита</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Поставщики могут задержать обновления API, raw-доступы, новое железо (VANTA Health-линейка).</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>Регулярная синхронизация Никиты с вендорами.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Health-линейка явно out-of-scope M3 (PRD §5) — не блокирует релиз.</div>
+        <div class="risk-row"><span class="lab">Источник:</span>RISKS_TEMPLATE.md (R-003)</div>
+      </div>
+    </div>
+
+    <div class="risk-section-title">⚪ Closed (M2)</div>
+
+    <div class="risks-grid">
+      <div class="risk-card closed low">
+        <div class="risk-head"><div class="risk-title">⚪ R-101 · Логистика Android-телефонов (1:1 pairing)</div><div class="risk-id">closed</div></div>
+        <div class="risk-meta"><span>Логистические</span><span>M2</span><span>closed</span></div>
+        <div class="risk-row"><span class="lab">Итог:</span>На Village стабильно держали 2 браслета. Правило «1 браслет = 1 телефон» соблюдено. После M2 на M3 — лиго-пилот и корп-пилот будут юзать свои телефоны.</div>
+      </div>
+      <div class="risk-card closed low">
+        <div class="risk-head"><div class="risk-title">⚪ R-102 · Калибровка NSI 12 сек</div><div class="risk-id">closed</div></div>
+        <div class="risk-meta"><span>Технические</span><span>M2</span><span>closed</span></div>
+        <div class="risk-row"><span class="lab">Итог:</span>NSI как метрика плазмы на M3 не нужен — фокус на mobile + дашборды.</div>
+      </div>
+      <div class="risk-card closed low">
+        <div class="risk-head"><div class="risk-title">⚪ R-103 · Сравнение с Whoop / Oura / Apple Watch</div><div class="risk-id">closed</div></div>
+        <div class="risk-meta"><span>Бизнес</span><span>M2</span><span>closed</span></div>
+        <div class="risk-row"><span class="lab">Итог:</span>Скрипт ответа отработан. Для M3 USP перешёл на 2 пресета (Лига + Корпорат safety) — другая ниша от B2C-конкурентов.</div>
+      </div>
+    </div>
+  </div>
+
   <!-- VIEW: R&D -->
   <div class="view" data-view="rd">
     <div class="rd-intro">
-      Открытый бэклог исследований. Направления, по которым ведём работу post-Village. Owner'ов назначает PM, карточки наполнены R&amp;D-агентом по брифу от 2026-06-04.
+      Открытый бэклог исследований. Owner'ов назначает PM.
     </div>
     <div class="rd-grid">
+
+      <!-- Card 4 — in-research, поднята наверх по приоритету -->
+      <div class="rd-card in-research">
+        <div class="rd-card-head">
+          <div class="rd-card-title">🎯 ICP / segment после Village</div>
+          <div class="rd-status">in-research</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Все решения (mobile scope, дашборд, прайс, упаковка) зависят от реального покупателя — после Village есть полевые данные.</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">До Village гипотезы: фитнес-клубы / HR / водители / B2C-энтузиасты. После 28-29.05 надо понять, кто подходил, оставлял лиды и был готов платить.</span></div>
+        <div class="rd-block-label">Открытые вопросы</div>
+        <ul class="rd-questions">
+          <li>Какой сегмент дал &gt;50% качественных лидов на стенде?</li>
+          <li>Совпадает ли «кто подходил» с «кто оставил контакт» с «кто платит» — где обрывается воронка?</li>
+          <li>Какие возражения повторялись — сигнал недозревшего продукта или непопадания в ICP?</li>
+        </ul>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd4-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Структурировать лиды Village: сегмент, роль, интерес, готовность платить, next step</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd4-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Интервью с Алексеем и перформерами — собрать 3-5 паттернов</span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd4-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">ICP v2 (1 основной + 1 запасной) → <code>brainstorms/2026-06-XX-icp-v2.md</code></span><span class="rd-owner">—</span></li>
+        </ul>
+        <div class="rd-source">⤴ лиды Village · наблюдения Алексея · PROJECT_STATE · upd 2026-06-04</div>
+      </div>
 
       <!-- Card 1 -->
       <div class="rd-card open">
@@ -1439,11 +2213,11 @@
           <div class="rd-card-title">🧮 Композитный Stress Index</div>
           <div class="rd-status">open</div>
         </div>
-        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Единый индикатор стресса нужен плазме, дашборду корпоратов и B2C-app — без него тяжело продавать Recovery/Burnout.</span></div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Единый индикатор стресса нужен дашборду корпоратов и B2C-app — без него тяжело продавать Recovery/Burnout.</span></div>
         <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">На плазме NSI Fast = <code>clamp(2×(BPM−baseline),0..100)</code> — только сердечный ритм. Баевский ИН живёт отдельно в TG. Композитной метрики нет.</span></div>
         <div class="rd-block-label">Открытые вопросы</div>
         <ul class="rd-questions">
-          <li>Нужна ли третья гибридная метрика, или достаточно показывать NSI Fast + Bayevsky Slow раздельно?</li>
+          <li>Какая будет гибридная метрика стресса?</li>
           <li>Какие веса/нормализация у композитов конкурентов (Polar, Garmin Body Battery, Whoop Strain, Oura)?</li>
           <li>Как валидировать композит — по самооценке или кортизолу/HRV-baseline?</li>
         </ul>
@@ -1451,7 +2225,7 @@
         <ul class="rd-tasks">
           <li data-rd-task="rd1-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Сравнительная таблица композитов: формула, входы, окно усреднения, нормализация для 4 конкурентов</span><span class="rd-owner">—</span></li>
           <li data-rd-task="rd1-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Прототип <code>0.6×NSI + 0.4×norm(Bayevsky)</code> на исторических данных Village</span><span class="rd-owner">—</span></li>
-          <li data-rd-task="rd1-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">Решение PM: одна метрика или две — зафиксировать в <code>metrics/stress-index.md</code></span><span class="rd-owner">—</span></li>
+          <li data-rd-task="rd1-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">После исследования решение PM: какая будет метрика стресса или будет ли их две — зафиксировать в <code>metrics/stress-index.md</code></span><span class="rd-owner">—</span></li>
         </ul>
         <div class="rd-source">⤴ metrics/hrv.md · MEMORY stress_index · upd 2026-06-04</div>
       </div>
@@ -1502,29 +2276,6 @@
         <div class="rd-source">⤴ post-village-2026-05 (WIP) · upd 2026-06-04</div>
       </div>
 
-      <!-- Card 4 -->
-      <div class="rd-card in-research">
-        <div class="rd-card-head">
-          <div class="rd-card-title">🎯 ICP / segment после Village</div>
-          <div class="rd-status">in-research</div>
-        </div>
-        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Все решения (mobile scope, дашборд, прайс, упаковка) зависят от реального покупателя — после Village есть полевые данные.</span></div>
-        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">До Village гипотезы: фитнес-клубы / HR / водители / B2C-энтузиасты. После 28-29.05 надо понять, кто подходил, оставлял лиды и был готов платить.</span></div>
-        <div class="rd-block-label">Открытые вопросы</div>
-        <ul class="rd-questions">
-          <li>Какой сегмент дал &gt;50% качественных лидов на стенде?</li>
-          <li>Совпадает ли «кто подходил» с «кто оставил контакт» с «кто платит» — где обрывается воронка?</li>
-          <li>Какие возражения повторялись — сигнал недозревшего продукта или непопадания в ICP?</li>
-        </ul>
-        <div class="rd-block-label">Задачи</div>
-        <ul class="rd-tasks">
-          <li data-rd-task="rd4-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Структурировать лиды Village: сегмент, роль, интерес, готовность платить, next step</span><span class="rd-owner">—</span></li>
-          <li data-rd-task="rd4-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Интервью с Алексеем и перформерами — собрать 3-5 паттернов</span><span class="rd-owner">—</span></li>
-          <li data-rd-task="rd4-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">ICP v2 (1 основной + 1 запасной) → <code>brainstorms/2026-06-XX-icp-v2.md</code></span><span class="rd-owner">—</span></li>
-        </ul>
-        <div class="rd-source">⤴ лиды Village · наблюдения Алексея · PROJECT_STATE · upd 2026-06-04</div>
-      </div>
-
       <!-- Card 5 -->
       <div class="rd-card open">
         <div class="rd-card-head">
@@ -1558,7 +2309,7 @@
         <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">Сейчас mobile — инженерный UI: pairing, BLE, синк HRV, foreground. Под B2C не годится. Никита настаивает на полном дизайне под сторы.</span></div>
         <div class="rd-block-label">Открытые вопросы</div>
         <ul class="rd-questions">
-          <li>Минимум: pairing + sync + базовая статистика — или нужен self-serve дашборд внутри app?</li>
+          <li>Минимум: pairing + sync + базовая статистика</li>
           <li>Что критично для App Store review health-приложений: HealthKit, дисклеймеры, обоснование сбора данных?</li>
           <li>Что у Hume Band / Whoop / Oura / Polar Flow / Garmin Connect в day-1 onboarding?</li>
         </ul>
@@ -1872,20 +2623,29 @@
     const month = now.getMonth() + 1;
     if (month < 6) {
       stageEl.textContent = 'Pre-M3'; stageDesc.textContent = 'Post-Village · подготовка к старту M3';
+      stageEl.style.color = '';
     } else if (month === 6 && day <= 8) {
       stageEl.textContent = 'W1 · Core';
       stageDesc.textContent = '2-8 июня · Mode enum · сон · ICP v2 · privacy bench';
     } else if (month === 6 && day <= 15) {
       stageEl.textContent = 'W2 · Sport';
-      stageDesc.textContent = '9-15 июня · Sport Mode mobile · дашборд Лиги · league.neiry.ru';
+      stageDesc.textContent = '9-15 июня · Sport Mode · Лига · iOS Bridge';
     } else if (month === 6 && day <= 22) {
       stageEl.textContent = 'W3 · Corporate';
-      stageDesc.textContent = '16-22 июня · Corporate Mode · safety-роли · dashboard.neiry.ru';
+      stageDesc.textContent = '16-22 июня · Corporate Mode · Safety · Sleep · iOS-билд';
     } else if (month === 6 && day <= 25) {
       stageEl.textContent = 'W4 · Release';
-      stageDesc.textContent = '23-25 июня · Push · QA · demo accounts · ролики';
+      stageDesc.textContent = '23-25 июня · Push · QA · Store-публикация · Acceptance';
     } else {
-      stageEl.textContent = 'Post-M3'; stageDesc.textContent = 'Готов к показу клиентам · App Store / Google Play';
+      stageEl.textContent = '✅ M3 завершён';
+      stageEl.style.color = 'var(--green)';
+      stageDesc.textContent = 'Готов к показу клиентам · App Store / Google Play';
+    }
+
+    // Standup date label
+    const sdLab = document.getElementById('standup-date');
+    if (sdLab) {
+      sdLab.textContent = `${now.getDate()} ${months[now.getMonth()]}`;
     }
   }
   updateClock();
@@ -1903,7 +2663,7 @@
   // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    const map = { '1': 'calendar', '2': 'open', '3': 'questions', '4': 'rd', '5': 'artifacts', '6': 'done' };
+    const map = { '1': 'calendar', '2': 'open', '3': 'questions', '4': 'rd', '5': 'artifacts', '6': 'acceptance', '7': 'risks', '8': 'done' };
     if (map[e.key]) switchTab(map[e.key]);
   });
 
@@ -1968,6 +2728,59 @@
     const qOpen = qTotal - qResolved - qDeferred - qCancelled;
     const qoEl = document.getElementById('questions-open'); if (qoEl) qoEl.textContent = qOpen;
     const qTab = document.querySelector('[data-tab="questions"] .tab-count'); if (qTab) qTab.textContent = qOpen;
+    updateWeekProgress();
+    updateWorkload();
+  }
+
+  function updateWeekProgress() {
+    ['w1','w2','w3','w4'].forEach(w => {
+      const col = document.querySelector(`.day-col[data-week="${w}"]`);
+      if (!col) return;
+      const total = col.querySelectorAll('.task').length;
+      const done = col.querySelectorAll('.task.done').length;
+      const pct = total ? (done / total * 100) : 0;
+      const fill = document.querySelector(`[data-week-fill="${w}"]`);
+      if (fill) fill.style.width = pct + '%';
+    });
+  }
+
+  function updateWorkload() {
+    const owners = { kirill: {open:0,done:0}, pm: {open:0,done:0}, ux: {open:0,done:0}, nikita: {open:0,done:0} };
+    document.querySelectorAll('.calendar .task').forEach(t => {
+      const isDone = t.classList.contains('done');
+      t.querySelectorAll('.owner-badge').forEach(b => {
+        // классы owner-badge pm/kirill/ux/nikita/uxui
+        let key = null;
+        if (b.classList.contains('kirill')) key = 'kirill';
+        else if (b.classList.contains('pm')) key = 'pm';
+        else if (b.classList.contains('ux') || b.classList.contains('uxui')) key = 'ux';
+        else if (b.classList.contains('nikita')) key = 'nikita';
+        if (key && owners[key]) {
+          if (isDone) owners[key].done++; else owners[key].open++;
+        }
+      });
+    });
+    Object.keys(owners).forEach(k => {
+      const o = owners[k];
+      const total = o.open + o.done;
+      const eOpen = document.querySelector(`[data-wl="${k}-open"]`);
+      const eDone = document.querySelector(`[data-wl="${k}-done"]`);
+      const eTotal = document.querySelector(`[data-wl="${k}-total"]`);
+      if (eOpen) eOpen.textContent = o.open;
+      if (eDone) eDone.textContent = o.done;
+      if (eTotal) eTotal.textContent = total;
+    });
+  }
+
+  function updateRDCounts() {
+    const all = document.querySelectorAll('.rd-card');
+    const open = document.querySelectorAll('.rd-card.open').length;
+    const inProg = document.querySelectorAll('.rd-card.in-research').length;
+    const closed = document.querySelectorAll('.rd-card.answered').length;
+    const elO = document.getElementById('rd-open-count'); if (elO) elO.textContent = open;
+    const elT = document.getElementById('rd-total-count'); if (elT) elT.textContent = all.length;
+    const elP = document.getElementById('rd-inprog-count'); if (elP) elP.textContent = inProg;
+    const elC = document.getElementById('rd-closed-count'); if (elC) elC.textContent = closed;
   }
 
   document.querySelectorAll('.task-check').forEach(cb => {
@@ -2089,11 +2902,80 @@
     });
   });
 
+  // === Acceptance ===
+  const AC_PREFIX = 'neiry-pm-ac-';
+  function loadAcceptance() {
+    document.querySelectorAll('.ac-item').forEach(item => {
+      const id = item.dataset.ac;
+      const cb = item.querySelector('.ac-check');
+      if (!id || !cb) return;
+      const saved = localStorage.getItem(AC_PREFIX + id) === '1';
+      cb.checked = saved;
+      item.classList.toggle('done', saved);
+    });
+    updateAcceptanceCounts();
+  }
+  function updateAcceptanceCounts() {
+    const total = document.querySelectorAll('.ac-item').length;
+    const done = document.querySelectorAll('.ac-item.done').length;
+    const pct = total ? (done / total * 100) : 0;
+    const passEl = document.getElementById('ac-passed'); if (passEl) passEl.textContent = done;
+    const prog = document.getElementById('ac-progress'); if (prog) prog.style.width = pct + '%';
+    const tab = document.getElementById('ac-count'); if (tab) tab.textContent = done + '/' + total;
+  }
+  document.querySelectorAll('.ac-check').forEach(cb => {
+    cb.addEventListener('change', e => {
+      const item = e.target.closest('.ac-item');
+      const id = item.dataset.ac;
+      const isDone = e.target.checked;
+      if (id) localStorage.setItem(AC_PREFIX + id, isDone ? '1' : '0');
+      item.classList.toggle('done', isDone);
+      updateAcceptanceCounts();
+    });
+  });
+  document.querySelectorAll('.ac-item').forEach(item => {
+    item.addEventListener('click', e => {
+      if (e.target.tagName === 'INPUT') return;
+      const cb = item.querySelector('.ac-check');
+      if (cb) { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
+    });
+  });
+
+  // === Standup (localStorage per-day) ===
+  function standupKey(field) {
+    const now = new Date();
+    const ds = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+    return 'neiry-pm-standup-' + ds + '-' + field;
+  }
+  function loadStandup() {
+    ['yesterday', 'today', 'blockers'].forEach(f => {
+      const ta = document.getElementById('standup-' + f);
+      if (!ta) return;
+      const saved = localStorage.getItem(standupKey(f));
+      if (saved !== null) ta.value = saved;
+      ta.addEventListener('input', () => {
+        localStorage.setItem(standupKey(f), ta.value);
+      });
+    });
+  }
+
+  // === Risks count (статичный — количество open строк) ===
+  function updateRisksCount() {
+    const openRows = document.querySelectorAll('.risks-summary .r-status-open').length;
+    const mit = document.querySelectorAll('.risks-summary .r-status-mit').length;
+    const el = document.getElementById('risks-count');
+    if (el) el.textContent = (openRows + mit);
+  }
+
   // === Init ===
   loadTasks();
   loadFlat();
   loadQuestions();
   loadRD();
+  loadAcceptance();
+  loadStandup();
+  updateRDCounts();
+  updateRisksCount();
 </script>
 
 </body>
