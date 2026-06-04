@@ -690,8 +690,8 @@
       <div class="caption">Final MVP · 25.06.2026</div>
     </div>
     <div class="hero-card">
-      <div class="label">Задач закрыто</div>
-      <div class="value mono"><span id="tasks-done">0</span><span class="unit">/ <span id="tasks-total">0</span></span></div>
+      <div class="label">Задач открыто</div>
+      <div class="value mono"><span id="tasks-open">0</span><span class="unit">/ <span id="tasks-total">0</span></span></div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width: 0%"></div></div>
     </div>
     <div class="hero-card">
@@ -1929,11 +1929,11 @@
     const dc = document.getElementById('done-count'); if (dc) dc.textContent = done;
     const ocd = document.getElementById('open-count-detail'); if (ocd) ocd.textContent = open + ' / ' + total;
     const dcd = document.getElementById('done-count-detail'); if (dcd) dcd.textContent = done + ' / ' + total;
-    // Update hero stat «Задач закрыто»
-    const td = document.getElementById('tasks-done'); if (td) td.textContent = done;
+    // Update hero stat «Задач открыто» (трекаем работу in-progress)
+    const to = document.getElementById('tasks-open'); if (to) to.textContent = open;
     const tt = document.getElementById('tasks-total'); if (tt) tt.textContent = total;
     const pf = document.getElementById('progress-fill');
-    if (pf) pf.style.width = (total ? (done / total * 100) : 0) + '%';
+    if (pf) pf.style.width = (total ? (open / total * 100) : 0) + '%';
   }
   function loadFlat() {
     document.querySelectorAll('.flat-task').forEach(t => {
