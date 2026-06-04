@@ -424,6 +424,87 @@
   .question-card.deferred .res-label { color: var(--yellow); }
   .question-card.cancelled .res-label { color: var(--muted); }
 
+  /* === Flat task list (Open / Done) === */
+  .flat-list { display: flex; flex-direction: column; gap: 8px; }
+  .flat-list-header {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .flat-list-header h2 {
+    font-size: 18px; font-weight: 600; margin: 0;
+    color: var(--text);
+  }
+  .flat-list-header .count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--muted);
+  }
+  .flat-list-header .legend {
+    margin-left: auto; font-size: 11px; color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .flat-task {
+    display: flex; gap: 12px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .flat-task:hover { background: var(--surface-2); border-left-color: var(--accent-bright); }
+  .flat-task.done { border-left-color: var(--green); opacity: 0.75; }
+  .flat-task.done .flat-text { text-decoration: line-through; color: var(--muted); }
+  .flat-task[data-locked="1"] { border-left-color: var(--yellow); cursor: not-allowed; opacity: 0.85; }
+  .flat-task[data-locked="1"]:hover { background: var(--surface); }
+  .flat-check {
+    appearance: none;
+    width: 18px; height: 18px; min-width: 18px;
+    border: 1.5px solid var(--border-bright);
+    border-radius: 4px; cursor: pointer;
+    transition: all 0.15s; margin-top: 1px;
+    background: transparent;
+  }
+  .flat-check:hover { border-color: var(--accent-bright); }
+  .flat-check:checked {
+    background: var(--green); border-color: var(--green);
+  }
+  .flat-check:checked::after {
+    content: '✓'; display: block; text-align: center;
+    color: #0b0a08; font-size: 12px; font-weight: 800; line-height: 15px;
+  }
+  .flat-check:disabled { cursor: not-allowed; opacity: 0.6; }
+  .flat-body { flex: 1; min-width: 0; }
+  .flat-text { font-size: 13.5px; line-height: 1.45; color: var(--text); margin-bottom: 6px; }
+  .flat-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px; padding: 2px 6px;
+    border-radius: 3px; letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 600;
+    border: 1px solid transparent;
+  }
+  /* Stage tags */
+  .tag-m2 { color: #94a3b8; border-color: rgba(148,163,184,0.35); background: rgba(148,163,184,0.08); }
+  .tag-m3 { color: #f0abfc; border-color: rgba(240,171,252,0.35); background: rgba(240,171,252,0.08); }
+  .tag-postm3 { color: #d4d4d8; border-color: rgba(212,212,216,0.35); background: rgba(212,212,216,0.08); }
+  /* Week tags */
+  .tag-w1, .tag-w2, .tag-w3, .tag-w4 { color: #fbbf24; border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.08); }
+  /* Stream tags */
+  .tag-backend { color: #60a5fa; border-color: rgba(96,165,250,0.35); background: rgba(96,165,250,0.08); }
+  .tag-mobile { color: #34d399; border-color: rgba(52,211,153,0.35); background: rgba(52,211,153,0.08); }
+  .tag-ux { color: #c084fc; border-color: rgba(192,132,252,0.35); background: rgba(192,132,252,0.08); }
+  .tag-strategy { color: #fb923c; border-color: rgba(251,146,60,0.35); background: rgba(251,146,60,0.08); }
+  .tag-logistics { color: #facc15; border-color: rgba(250,204,21,0.35); background: rgba(250,204,21,0.08); }
+  .tag-rd { color: #2dd4bf; border-color: rgba(45,212,191,0.35); background: rgba(45,212,191,0.08); }
+  .tag-hardware { color: #f87171; border-color: rgba(248,113,113,0.35); background: rgba(248,113,113,0.08); }
+  .tag-sdk { color: #a78bfa; border-color: rgba(167,139,250,0.35); background: rgba(167,139,250,0.08); }
+  /* Special */
+  .tag-oos { color: #71717a; border-color: rgba(113,113,122,0.45); background: rgba(113,113,122,0.12); text-decoration: line-through; }
+  .tag-waiting { color: #fde047; border-color: rgba(253,224,71,0.45); background: rgba(253,224,71,0.12); }
+  .tag-default { color: var(--muted); border-color: var(--border); }
+
   /* === Artifacts view === */
   .artifacts-list {
     background: var(--surface);
@@ -628,10 +709,11 @@
   <!-- TABS -->
   <div class="tabs">
     <button class="tab active" data-tab="calendar">📅 Календарь <span class="kbd">1</span></button>
-    <button class="tab" data-tab="owners">👥 По исполнителям <span class="kbd">2</span></button>
-    <button class="tab" data-tab="questions">❓ Вопросы <span class="tab-count">10</span> <span class="kbd">3</span></button>
-    <button class="tab" data-tab="artifacts">📎 Артефакты <span class="kbd">4</span></button>
-    <button class="tab" data-tab="rd">🔬 R&amp;D <span class="kbd">5</span></button>
+    <button class="tab" data-tab="open">📋 Открыто <span class="tab-count" id="open-count">0</span> <span class="kbd">2</span></button>
+    <button class="tab" data-tab="questions">❓ Вопросы <span class="tab-count">0</span> <span class="kbd">3</span></button>
+    <button class="tab" data-tab="rd">🔬 R&amp;D <span class="kbd">4</span></button>
+    <button class="tab" data-tab="artifacts">📎 Артефакты <span class="kbd">5</span></button>
+    <button class="tab" data-tab="done">✅ Готово <span class="tab-count" id="done-count">0</span> <span class="kbd">6</span></button>
   </div>
 
   <!-- VIEW: CALENDAR -->
@@ -873,334 +955,175 @@
     </div>
   </div>
 
-  <!-- VIEW: OWNERS -->
-  <div class="view" data-view="owners">
-    <div class="owners-grid">
-
-      <!-- PM -->
-      <div class="owner-lane">
-        <h2><span class="icon">👔</span> Константин · PM</h2>
-        <div class="role">Раздать и закрыть открытые вопросы</div>
-
-        <div class="owner-section">
-          <h3>Сегодня (25.05, пн)</h3>
-          <div class="task done" data-task="pm-today-1">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Объединённый риск-документ для Никиты (M2-specific) — отправить до вечера</div>
-            </div>
-          </div>
-          <div class="task done" data-task="pm-today-2">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Flow выставки + блок-схема сценария гостя / питча</div>
-            </div>
-          </div>
-          <div class="task done" data-task="pm-today-3">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Бриф UX/UI на редизайн стенда + дашборда корпоратов (React kit выбран)</div>
-            </div>
-          </div>
-          <div class="task done" data-task="pm-today-4">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Скоординировать паринг 3 Android'ов с браслетами (команда исполняет)</div>
-            </div>
-          </div>
-          <div class="task done" data-task="pm-today-5">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Подтвердить анкерам: браслеты на ночь 25→26, не снимать до 29.05</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="owner-section">
-          <h3>Логистика M2 (до 28.05)</h3>
-          <div class="task done" data-task="pm2">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Аренда беговой дорожки (~10-20 тыс ₽) — 26.05</div>
-            </div>
-          </div>
-          <div class="task done" data-task="pm3">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">2 актёра-перформера посменно</div>
-            </div>
-          </div>
-          <div class="task done" data-task="pm4">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Найти готовое приложение «Тест Струпа»</div>
-            </div>
-          </div>
-          <div class="task done" data-task="pm5">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">2-3 запасных браслета для ротации, дезинфекция</div>
-            </div>
-          </div>
-          <div class="task done" data-task="pm6">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Wi-Fi/4G на стенде Startup Village</div>
-            </div>
-          </div>
-          <div class="task done" data-task="pm7">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">План Б: замена якоря если RMSSD в красной зоне</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="owner-section">
-          <h3>Стратегические (post-Village)</h3>
-          <div class="task done" data-task="pm8">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Privacy / consent для Neiry Unite — сессия с юристом</div>
-            </div>
-          </div>
-          <div class="task done" data-task="pm9">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Роадмап Neiry Headband / tVNS</div>
-            </div>
-          </div>
-          <div class="task done" data-task="pm10">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Группы / Сравнение / Инсайты — отдельный брейншторм</div>
-            </div>
-          </div>
-          <div class="task done" data-task="pm11">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Решить нужны ли блоки B-C-D-E из BRIEF до/после Village</div>
-            </div>
-          </div>
+  <!-- VIEW: OPEN -->
+  <div class="view" data-view="open">
+    <div class="flat-list-header">
+      <h2>Открытые задачи</h2>
+      <span class="count" id="open-count-detail">0 / 0</span>
+      <span class="legend">клик по галочке → переезд в «Готово»</span>
+    </div>
+    <div class="flat-list" id="open-list">
+      <div class="flat-task" data-flat="o-w1-1">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Mode enum в auth (Sport / Corporate) + экран выбора при регистрации</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w1">W1</span><span class="tag tag-backend">Backend</span><span class="tag tag-mobile">Mobile</span></div>
         </div>
       </div>
-
-      <!-- KIRILL -->
-      <div class="owner-lane">
-        <h2><span class="icon">⚙️</span> Кирилл · Backend + Mobile</h2>
-        <div class="role">Endpoints · APK · RMSSD · M3 алерты</div>
-
-        <div class="owner-section">
-          <h3>Сегодня (25.05, пн) — 3 backend-задачи</h3>
-          <div class="task done" data-task="k1">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Утилита: двухступенчатый фильтр R-R (медиана 20% → перцентиль 5/95) + расчёт ИН Баевского</div>
-            </div>
-          </div>
-          <div class="task done" data-task="k2">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text"><span class="mono">POST /admin/seed-rr</span> (RMSSD/SDNN + ИН с фильтром) — готов к ночному sync анкеров</div>
-            </div>
-          </div>
-          <div class="task done" data-task="k3">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Заглушки 3 эндпоинтов drill-down Баевского (<span class="mono">/start · /next-phase · /result</span>)</div>
-            </div>
-          </div>
-          <div class="task done" data-task="k3b">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Быть на связи в первой половине — техподдержка команды на паринге</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="owner-section">
-          <h3>Завтра (26.05, вт) — финализация</h3>
-          <div class="task done" data-task="k4">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Полная логика drill-down Баевского (3 фазы: baseline / Stroop / treadmill)</div>
-            </div>
-          </div>
-          <div class="task done" data-task="k5">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">NSI на бэке (формула <span class="mono">100 − (BPM − Baseline) × 2</span>, clamp 0..100, ↑ = ↑ стресс) + цветовые зоны 🟢 0–39 / 🟡 40–59 / 🔴 60–100</div>
-            </div>
-          </div>
-          <div class="task done" data-task="k5b">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Smoke-test вечером 26.05 — сквозной прогон браслет → backend → плазма</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="owner-section">
-          <h3>Mobile pairing + handoff на плазму (бриф A1 §3.3, добавлено 25.05)</h3>
-          <div class="task done" data-task="k6">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Экран mobile name_input — input «Как тебя зовут?» → POST имени гостя как <span class="mono">participant.display_name</span> (скип для анкеров)</div>
-            </div>
-          </div>
-          <div class="task done" data-task="k7">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Session state machine: <span class="mono">pairing → name_input → calibrating → active → ended</span></div>
-            </div>
-          </div>
-          <div class="task done" data-task="k8">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Калибровка 12 сек (расширение до 16 при недостатке семплов) + текст «Чуть дольше, ловим baseline»</div>
-            </div>
-          </div>
-          <div class="task done" data-task="k9">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">BLE lifecycle: heartbeat 2 сек · lost timeout 5 сек (окно не обнуляется) · hard disconnect 30 сек</div>
-            </div>
-          </div>
-          <div class="task done" data-task="k10">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">WebSocket-схема: 11 событий backend→plasma + 2 команды plasma→backend</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="owner-section">
-          <h3>M3 (после выставки)</h3>
-          <div class="task" data-task="k7">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div class="task-text">Celery: 4 типа event-алертов (Sleep / Illness / Burnout / Recovery) · <span style="color: var(--yellow); font-weight: 600;">⏳ ждёт фидбэка Кирилла — сохранять в M3 или резать scope?</span></div>
-            </div>
-          </div>
-          <div class="task" data-task="k8">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div class="task-text">Backend под <span class="mono">league.neiry.ru</span> + <span class="mono">dashboard.neiry.ru</span> с role-фильтром (Office / Safety) — продолжение M2-стека, переименовано из «Neiry Unite v4»</div>
-            </div>
-          </div>
+      <div class="flat-task" data-flat="o-w1-2">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Root cause «сон» — SDK Veepoo vs actigraphy fallback (R&D-3)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w1">W1</span><span class="tag tag-backend">Backend</span><span class="tag tag-sdk">SDK</span><span class="tag tag-rd">R&D</span></div>
         </div>
       </div>
-
-      <!-- UX/UI -->
-      <div class="owner-lane">
-        <h2><span class="icon">🎨</span> UX/UI Designer</h2>
-        <div class="role">Mobile полировка · Kiosk · Neiry Unite</div>
-
-        <div class="owner-section">
-          <h3>Mobile UI (жаргон → язык пользователя)</h3>
-          <div class="task done" data-task="u1">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text"><span class="mono">mobile-hrv-sync</span>: убрать <span class="mono">readOriginData</span>, «пакет 50 из 158»</div>
-            </div>
-          </div>
-          <div class="task done" data-task="u2">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text"><span class="mono">mobile-hrv-result</span>: <b>RMSSD-блок наверху</b> над графиком + светофор</div>
-            </div>
-          </div>
-          <div class="task done" data-task="u3">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">«2230 HRV · RR/resRates: 169 знач.» → человеческий язык</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="owner-section">
-          <h3>Kiosk / плазма M2</h3>
-          <div class="task done" data-task="u4">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">L4-прототип → <span class="mono">m2/kiosk.html</span> (шкала + модули)</div>
-            </div>
-          </div>
-          <div class="task done" data-task="u5">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">5-й модуль HRV ночной (RMSSD + светофор + caption)</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="owner-section">
-          <h3>Neiry Unite v4 <span style="color: #888; font-size: 12px; font-weight: 400;">(out-of-scope: макет устарел после решения «2 пресета»)</span></h3>
-          <div class="task" data-task="u6" style="opacity: 0.5;">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div class="task-text" style="text-decoration: line-through;">Убрать Activity из KPI strip (5 → 4 cards)</div>
-            </div>
-          </div>
-          <div class="task" data-task="u7" style="opacity: 0.5;">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div class="task-text" style="text-decoration: line-through;">Activity остаётся в drill-down side-panel</div>
-            </div>
-          </div>
+      <div class="flat-task" data-flat="o-w1-3">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">ICP v2 — структурировать лиды Village (R&D-4)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w1">W1</span><span class="tag tag-strategy">Strategy</span><span class="tag tag-rd">R&D</span></div>
         </div>
       </div>
-
-      <!-- ALEXEY -->
-      <div class="owner-lane">
-        <h2><span class="icon">🏃</span> Алексей · Илья · Перформер</h2>
-        <div class="role">Якоря HRV · 3 ночи мониторинга</div>
-
-        <div class="owner-section">
-          <h3>Сегодня (25.05, пн, вечер)</h3>
-          <div class="task done" data-task="a1">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Спарить браслеты с Android-телефонами по фиксированной схеме (1↔1)</div>
-            </div>
-          </div>
-          <div class="task done" data-task="a2">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Зарядить браслеты и телефоны до 100%</div>
-            </div>
-          </div>
-          <div class="task done" data-task="a3">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text"><b>Надеть браслеты, не снимать до 29.05 (4 ночи: 25→29)</b></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="owner-section">
-          <h3>Ежедневно (26–28.05)</h3>
-          <div class="task done" data-task="a4">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div class="task-text">Утром: sync через dev-UI, проверка чтения данных</div>
-            </div>
-          </div>
-          <div class="task" data-task="a5" style="opacity: 0.5;">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div class="task-text" style="text-decoration: line-through;">Записывать когда снимали (душ) — для понимания gaps · <span style="color: #888; text-decoration: none;">out-of-scope</span></div>
-            </div>
-          </div>
-          <div class="task" data-task="a6" style="opacity: 0.5;">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div class="task-text" style="text-decoration: line-through;">Илья: использует Android от команды · <span style="color: #888; text-decoration: none;">out-of-scope</span></div>
-            </div>
-          </div>
+      <div class="flat-task" data-flat="o-w1-4">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Privacy / consent bench (Whoop, Oura, Polar) → требования onboarding (R&D-5)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w1">W1</span><span class="tag tag-strategy">Strategy</span><span class="tag tag-rd">R&D</span></div>
         </div>
       </div>
-
+      <div class="flat-task" data-flat="o-w1-5">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Запросить sample raw IMU/PPG у Vigor — 10 мин записи (R&D-2)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w1">W1</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-rd">R&D</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w2-1">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Sport Mode mobile: тренировки, GPS, типы активности, пульсовые зоны</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w2">W2</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w2-2">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Дизайн дашборда Лиги на league.neiry.ru (поддомен + отдельный бренд)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w2">W2</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w2-3">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Спецификация League Fitness Score (формула + входы)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w2">W2</span><span class="tag tag-strategy">Strategy</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w2-4">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Демо-данные для лиги (мок-сезон, 10–15 спортсменов)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w2">W2</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w2-5">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Передача браслетов в спорт-пилот (координация с Никитой)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w2">W2</span><span class="tag tag-logistics">Логистика</span><span class="tag tag-hardware">Hardware</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w3-1">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Corporate Mode mobile: ввод роли (office / водитель / машинист / диспетчер)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w3">W3</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w3-2">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Детектор сонливости (safety-роли) + алерт-движок</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w3">W3</span><span class="tag tag-backend">Backend</span><span class="tag tag-sdk">SDK</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w3-3">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Дашборд dashboard.neiry.ru — role-based фильтр (office vs safety), sleep-блок</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w3">W3</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w3-4">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Ревизия dashboard-corporate.html: убрать 3-табную модель, перейти на role-фильтр</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w3">W3</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w3-5">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Передача браслетов в корп-пилот, регламент ношения</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w3">W3</span><span class="tag tag-logistics">Логистика</span><span class="tag tag-hardware">Hardware</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w4-1">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Push-уведомления: alerts safety + reminders sport</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w4">W4</span><span class="tag tag-backend">Backend</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w4-2">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Финальное QA на 2 пресетах + парк браслетов</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w4">W4</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w4-3">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Демо-аккаунты под каждый пресет (Лига + Корпорат office + Корпорат safety)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w4">W4</span><span class="tag tag-strategy">Strategy</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w4-4">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Демо-ролики 2–3 шт. + финальные питч-материалы под каждый сегмент</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w4">W4</span><span class="tag tag-strategy">Strategy</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-w4-5">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Acceptance review с Никитой: проходим ли все criteria из PRD M3</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-w4">W4</span><span class="tag tag-strategy">Strategy</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-ext-1" data-locked="1">
+        <input type="checkbox" class="flat-check" disabled>
+        <div class="flat-body">
+          <div class="flat-text">Celery: 4 типа event-алертов (Sleep / Illness / Burnout / Recovery)</div>
+          <div class="flat-tags"><span class="tag tag-postm3">Post-M3</span><span class="tag tag-backend">Backend</span><span class="tag tag-sdk">SDK</span><span class="tag tag-waiting">Ждёт фидбэка</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-ext-2">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Backend под league.neiry.ru + dashboard.neiry.ru с role-фильтром (продолжение M2-стека)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-ios-1" data-locked="1">
+        <input type="checkbox" class="flat-check" disabled>
+        <div class="flat-body">
+          <div class="flat-text">iOS Bridge для M3 — выбор пути (нативный iOS app vs SDK-мост)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-strategy">Strategy</span><span class="tag tag-waiting">Ждёт фидбэка</span></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1540,7 +1463,271 @@
 
 </div>
 
-<script>
+
+  <!-- VIEW: DONE -->
+  <div class="view" data-view="done">
+    <div class="flat-list-header">
+      <h2>Выполненные задачи</h2>
+      <span class="count" id="done-count-detail">0 / 0</span>
+      <span class="legend">ретроспектива M2 · клик по галочке → возврат в «Открыто»</span>
+    </div>
+    <div class="flat-list" id="done-list">
+      <div class="flat-task done" data-flat="d-pm-1">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Объединённый риск-документ для Никиты (M2-specific)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-strategy">Strategy</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-2">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Flow выставки + блок-схема сценария гостя / питча</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-strategy">Strategy</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-3">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Бриф UX/UI на редизайн стенда + дашборда корпоратов (React kit выбран)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-4">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Скоординировать паринг 3 Android'ов с браслетами</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span><span class="tag tag-hardware">Hardware</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-5">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Подтвердить анкерам: браслеты на ночь 25→26, не снимать до 29.05</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-6">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Аренда беговой дорожки (~10–20 тыс ₽)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-7">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">2 актёра-перформера посменно</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-8">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Найти готовое приложение «Тест Струпа»</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-9">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">2–3 запасных браслета для ротации, дезинфекция</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span><span class="tag tag-hardware">Hardware</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-10">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Wi-Fi/4G на стенде Startup Village</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-11">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">План Б: замена якоря если RMSSD в красной зоне</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span><span class="tag tag-strategy">Strategy</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-1">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Утилита: двухступенчатый фильтр R-R (медиана 20% → перцентиль 5/95) + ИН Баевского</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-2">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">POST /admin/seed-rr (RMSSD/SDNN + ИН с фильтром)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-3">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Заглушки 3 эндпоинтов drill-down Баевского (/start · /next-phase · /result)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-4">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Техподдержка команды на паринге (быть на связи в первой половине)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-5">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Полная логика drill-down Баевского (3 фазы: baseline / Stroop / treadmill)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-6">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">NSI на бэке (формула 100 − (BPM − Baseline) × 2, clamp 0..100) + цветовые зоны</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-7">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Smoke-test 26.05 — сквозной прогон браслет → backend → плазма</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span><span class="tag tag-hardware">Hardware</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-mob-1">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Экран mobile name_input — input «Как тебя зовут?» → POST participant.display_name</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-mob-2">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Session state machine: pairing → name_input → calibrating → active → ended</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-sdk">SDK</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-mob-3">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Калибровка 12 сек (расширение до 16 при недостатке семплов)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-sdk">SDK</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-mob-4">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">BLE lifecycle: heartbeat 2с · lost timeout 5с · hard disconnect 30с</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-sdk">SDK</span><span class="tag tag-hardware">Hardware</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-mob-5">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">WebSocket-схема: 11 событий backend→plasma + 2 команды plasma→backend</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-ux-1">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">mobile-hrv-sync: убрать readOriginData, «пакет 50 из 158»</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-ux-2">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">mobile-hrv-result: RMSSD-блок наверху над графиком + светофор</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-ux-3">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">«2230 HRV · RR/resRates: 169 знач.» → человеческий язык</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-ux-4">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">L4-прототип → m2/kiosk.html (шкала + модули)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-ux-5">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">5-й модуль HRV ночной (RMSSD + светофор + caption)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-al-1">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Спарить браслеты с Android-телефонами по фиксированной схеме (1↔1)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-al-2">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Зарядить браслеты и телефоны до 100%</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-al-3">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Надеть браслеты, не снимать до 29.05 (4 ночи: 25→29)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-al-4">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Утром: sync через dev-UI, проверка чтения данных</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-hardware">Hardware</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-oos-1" data-locked="1">
+        <input type="checkbox" class="flat-check" checked disabled>
+        <div class="flat-body">
+          <div class="flat-text">Записывать когда снимали браслет (душ) — для понимания gaps</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-oos">Out-of-scope</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-oos-2" data-locked="1">
+        <input type="checkbox" class="flat-check" checked disabled>
+        <div class="flat-body">
+          <div class="flat-text">Илья: использует Android от команды (iOS bridge снят со скоупа M2)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-oos">Out-of-scope</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-oos-3" data-locked="1">
+        <input type="checkbox" class="flat-check" checked disabled>
+        <div class="flat-body">
+          <div class="flat-text">Убрать Activity из KPI strip (5 → 4 cards) — Neiry Unite v4</div>
+          <div class="flat-tags"><span class="tag tag-ux">UX/UI</span><span class="tag tag-oos">Out-of-scope</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-oos-4" data-locked="1">
+        <input type="checkbox" class="flat-check" checked disabled>
+        <div class="flat-body">
+          <div class="flat-text">Activity остаётся в drill-down side-panel — Neiry Unite v4</div>
+          <div class="flat-tags"><span class="tag tag-ux">UX/UI</span><span class="tag tag-oos">Out-of-scope</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
   // === Time & countdown ===
   function updateClock() {
     const now = new Date();
@@ -1596,7 +1783,7 @@
   // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    const map = { '1': 'calendar', '2': 'owners', '3': 'questions', '4': 'artifacts', '5': 'rd' };
+    const map = { '1': 'calendar', '2': 'open', '3': 'questions', '4': 'rd', '5': 'artifacts', '6': 'done' };
     if (map[e.key]) switchTab(map[e.key]);
   });
 
@@ -1629,18 +1816,8 @@
   }
 
   function updateCounters() {
-    const tasks = document.querySelectorAll('.task');
-    const total = tasks.length;
-    let done = 0;
-    tasks.forEach(t => {
-      const checkbox = t.querySelector('.task-check');
-      if (checkbox && checkbox.checked) done++;
-    });
-    document.getElementById('tasks-done').textContent = done;
-    document.getElementById('tasks-total').textContent = total;
-    const pct = total ? (done / total * 100) : 0;
-    document.getElementById('progress-fill').style.width = pct + '%';
-
+    // Hero «Задач закрыто» теперь считается updateFlatCounts() — это вкладки «Открыто» / «Готово».
+    // Тут остаётся только счётчик вопросов.
     const qResolved = document.querySelectorAll('.question-card.resolved').length;
     const qDeferred = document.querySelectorAll('.question-card.deferred').length;
     const qCancelled = document.querySelectorAll('.question-card.cancelled').length;
@@ -1709,12 +1886,68 @@
       .filter(k => k.startsWith(STORAGE_PREFIX) || k.startsWith(Q_PREFIX) || k.startsWith(RD_PREFIX))
       .forEach(k => localStorage.removeItem(k));
     loadTasks();
+    loadFlat();
     loadQuestions();
     loadRD();
   });
 
+  // === Flat tasks (Open / Done) ===
+  const FLAT_PREFIX = 'neiry-pm-flat-';
+  function moveFlat(task, toDoneView) {
+    const dest = document.getElementById(toDoneView ? 'done-list' : 'open-list');
+    if (dest && task.parentNode !== dest) dest.appendChild(task);
+    task.classList.toggle('done', toDoneView);
+  }
+  function updateFlatCounts() {
+    const open = document.querySelectorAll('#open-list .flat-task').length;
+    const done = document.querySelectorAll('#done-list .flat-task').length;
+    const total = open + done;
+    const oc = document.getElementById('open-count'); if (oc) oc.textContent = open;
+    const dc = document.getElementById('done-count'); if (dc) dc.textContent = done;
+    const ocd = document.getElementById('open-count-detail'); if (ocd) ocd.textContent = open + ' / ' + total;
+    const dcd = document.getElementById('done-count-detail'); if (dcd) dcd.textContent = done + ' / ' + total;
+    // Update hero stat «Задач закрыто»
+    const td = document.getElementById('tasks-done'); if (td) td.textContent = done;
+    const tt = document.getElementById('tasks-total'); if (tt) tt.textContent = total;
+    const pf = document.getElementById('progress-fill');
+    if (pf) pf.style.width = (total ? (done / total * 100) : 0) + '%';
+  }
+  function loadFlat() {
+    document.querySelectorAll('.flat-task').forEach(t => {
+      if (t.dataset.locked === '1') return;
+      const id = t.dataset.flat;
+      const saved = localStorage.getItem(FLAT_PREFIX + id);
+      if (saved === null) return;
+      const isDone = saved === '1';
+      const cb = t.querySelector('.flat-check');
+      if (cb) cb.checked = isDone;
+      moveFlat(t, isDone);
+    });
+    updateFlatCounts();
+  }
+  document.querySelectorAll('.flat-check').forEach(cb => {
+    cb.addEventListener('change', e => {
+      const task = e.target.closest('.flat-task');
+      if (task.dataset.locked === '1') { e.target.checked = !e.target.checked; return; }
+      const id = task.dataset.flat;
+      const isDone = e.target.checked;
+      localStorage.setItem(FLAT_PREFIX + id, isDone ? '1' : '0');
+      moveFlat(task, isDone);
+      updateFlatCounts();
+    });
+  });
+  document.querySelectorAll('.flat-task').forEach(task => {
+    task.addEventListener('click', e => {
+      if (e.target.tagName === 'INPUT') return;
+      if (task.dataset.locked === '1') return;
+      const cb = task.querySelector('.flat-check');
+      if (cb) { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
+    });
+  });
+
   // === Init ===
   loadTasks();
+  loadFlat();
   loadQuestions();
   loadRD();
 </script>
