@@ -1,3 +1,7 @@
+---
+title: "M2 Engineering Handover — пакет приёмки"
+---
+
 # M2 Engineering Handover — пакет приёмки
 
 **Дата:** 2026-06-04

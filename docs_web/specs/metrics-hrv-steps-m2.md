@@ -1,3 +1,7 @@
+---
+title: "Метрики HRV и Steps — спецификация M2"
+---
+
 # Метрики HRV и Steps — спецификация M2
 
 ## HRV (Heart Rate Variability)
