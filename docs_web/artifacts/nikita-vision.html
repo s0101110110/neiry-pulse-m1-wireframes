@@ -1,0 +1,2978 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neiry Pulse · Demo & MVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f6f1;
+    --bg-card: #ffffff;
+    --bg-soft: #efece4;
+    --ink: #1a1814;
+    --ink-2: #4a463e;
+    --ink-3: #7a766d;
+    --ink-4: #a8a49a;
+    --line: #e5e1d6;
+    --line-strong: #2a2620;
+    --sport: #c2410c;
+    --sport-bg: #fef3e8;
+    --corp: #1e3a8a;
+    --corp-bg: #e0e7ff;
+    --demo: #831843;
+    --demo-bg: #fce7f3;
+    --eng: #047857;
+    --eng-bg: #d1fae5;
+    --prod: #4338ca;
+    --prod-bg: #e0e7ff;
+    --hw: #b91c1c;
+    --hw-bg: #fee2e2;
+    --ok: #166534;
+    --p0: #991b1b;
+    --p0-bg: #fee2e2;
+    --p1: #92400e;
+    --p1-bg: #fef3c7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Manrope', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+  }
+
+  .nav {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--bg);
+    border-right: 1px solid var(--line);
+    padding: 32px 24px;
+  }
+
+  .nav-brand {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+    line-height: 1;
+  }
+
+  .nav-brand .pulse {
+    color: var(--demo);
+    font-style: italic;
+  }
+
+  .nav-sub {
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .nav-section {
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 24px 0 8px;
+    font-weight: 600;
+  }
+
+  .nav-link {
+    display: block;
+    font-size: 13px;
+    color: var(--ink-2);
+    padding: 6px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.15s;
+    cursor: pointer;
+    margin-left: -10px;
+  }
+
+  .nav-link:hover { background: var(--bg-soft); color: var(--ink); }
+  .nav-link.active { background: var(--ink); color: var(--bg); }
+
+  .nav-meta {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.6;
+  }
+
+  .main {
+    padding: 48px 64px 120px;
+    max-width: 920px;
+  }
+
+  .doc-meta {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .doc-meta-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--ink-4);
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 64px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+
+  h1 .accent {
+    font-style: italic;
+    color: var(--demo);
+  }
+
+  .lead {
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 680px;
+    margin-bottom: 48px;
+  }
+
+  .deadline {
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 8px;
+    padding: 20px 28px;
+    margin-bottom: 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .deadline-left { display: flex; flex-direction: column; gap: 4px; }
+  .deadline-tag {
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .deadline-text {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .deadline-right { display: flex; gap: 16px; }
+  .deadline-block { text-align: right; }
+  .deadline-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .deadline-unit {
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin: 64px 0 24px;
+    line-height: 1.15;
+  }
+
+  h2 .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-4);
+    margin-right: 12px;
+    vertical-align: super;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  h3 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin: 32px 0 12px;
+    letter-spacing: -0.01em;
+  }
+
+  p { margin-bottom: 14px; color: var(--ink-2); }
+  strong { color: var(--ink); font-weight: 600; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: var(--bg-soft);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--ink);
+  }
+
+  section { scroll-margin-top: 32px; }
+
+  /* DIAGRAMS */
+  .diagram-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 32px 24px;
+    margin: 24px 0;
+  }
+
+  .diagram-wrap.demo-diag { border-left: 3px solid var(--demo); }
+  .diagram-wrap.mvp-diag { border-left: 3px solid var(--ink); }
+
+  .diagram-tag {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  .diagram-wrap.demo-diag .diagram-tag { color: var(--demo); }
+  .diagram-wrap.mvp-diag .diagram-tag { color: var(--ink); }
+
+  .diagram-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  .diagram-wrap svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .diagram-legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .legend-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  /* TWO STAGES */
+  .stages {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin: 24px 0 48px;
+  }
+
+  .stage {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 24px 28px;
+  }
+
+  .stage.demo { border-top: 3px solid var(--demo); }
+  .stage.village { border-top: 3px solid #92400e; }
+  .stage.mvp { border-top: 3px solid var(--ink); }
+
+  .stage-tag {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .stage.demo .stage-tag { color: var(--demo); }
+  .stage.village .stage-tag { color: #92400e; }
+  .stage.mvp .stage-tag { color: var(--ink); }
+
+  .stage-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .stage-period {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-bottom: 16px;
+  }
+
+  .stage-goal {
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+
+  .stage-checklist { list-style: none; font-size: 12px; }
+  .stage-checklist li {
+    padding: 3px 0 3px 18px;
+    color: var(--ink-2);
+    position: relative;
+  }
+  .stage-checklist li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    top: 3px;
+    font-size: 8px;
+    color: var(--ink-3);
+  }
+
+  /* TEAM */
+  .team {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 24px 0;
+  }
+
+  .team-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 24px 20px;
+  }
+
+  .team-card.eng { border-top: 3px solid var(--eng); }
+  .team-card.prod { border-top: 3px solid var(--prod); }
+  .team-card.hw { border-top: 3px solid var(--hw); }
+
+  .team-role {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .team-card.eng .team-role { color: var(--eng); }
+  .team-card.prod .team-role { color: var(--prod); }
+  .team-card.hw .team-role { color: var(--hw); }
+
+  .team-name {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .team-title {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .team-card h4 {
+    font-size: 11px;
+    color: var(--ink-4);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 16px;
+  }
+
+  .team-card h4:first-of-type { margin-top: 0; }
+
+  .team-card ul { list-style: none; font-size: 12px; color: var(--ink-2); }
+  .team-card li {
+    padding: 3px 0 3px 14px;
+    position: relative;
+    line-height: 1.45;
+  }
+  .team-card li::before {
+    content: '·';
+    position: absolute;
+    left: 4px;
+    color: var(--ink-4);
+    font-weight: 700;
+  }
+
+  /* SYNC */
+  .sync-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--prod);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin: 24px 0;
+  }
+
+  .sync-tag {
+    font-size: 10px;
+    color: var(--prod);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .sync-card h3 { margin-top: 0; }
+
+  .sync-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .sync-item {
+    background: var(--bg-soft);
+    border-radius: 4px;
+    padding: 12px 14px;
+    font-size: 12px;
+  }
+
+  .sync-item strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+
+  /* DECISIONS */
+  .decisions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin: 24px 0;
+  }
+
+  .decision {
+    background: var(--bg-card);
+    padding: 20px;
+  }
+
+  .decision-label {
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .decision-value {
+    font-size: 15px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .decision-meta {
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-top: 4px;
+  }
+
+  /* MODES */
+  .modes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 24px 0;
+  }
+
+  .mode-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .mode-card:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+  }
+
+  .mode-card.expanded { grid-column: span 2; }
+  .mode-card.expanded .mode-detail { display: block; }
+
+  .mode-prio {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+
+  .mode-prio.p0 { background: var(--p0-bg); color: var(--p0); }
+  .mode-prio.p1 { background: var(--p1-bg); color: var(--p1); }
+
+  .mode-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .mode-icon.corp { background: var(--corp-bg); color: var(--corp); }
+  .mode-icon.sport { background: var(--sport-bg); color: var(--sport); }
+
+  .mode-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .mode-subtitle {
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-bottom: 16px;
+  }
+
+  .mode-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+
+  .mode-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .mode-meta-key { color: var(--ink-3); }
+
+  .mode-detail {
+    display: none;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+
+  .mode-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .mode-detail h4 {
+    font-size: 11px;
+    color: var(--ink-4);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .mode-detail ul { list-style: none; font-size: 13px; color: var(--ink-2); }
+  .mode-detail li {
+    padding: 4px 0;
+    padding-left: 12px;
+    position: relative;
+  }
+  .mode-detail li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 4px;
+    height: 1px;
+    background: var(--ink-4);
+  }
+
+  /* PRESETS */
+  .presets-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 16px 0 24px;
+  }
+
+  .preset-card {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 18px 20px;
+    background: var(--bg-card);
+  }
+
+  .preset-card.league { border-top: 3px solid var(--sport); }
+  .preset-card.corp { border-top: 3px solid var(--corp); }
+
+  .preset-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-bottom: 4px;
+  }
+
+  .preset-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .preset-status {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--ok);
+  }
+
+  .preset-card ul { list-style: none; font-size: 12px; }
+  .preset-card li {
+    padding: 3px 0;
+    color: var(--ink-2);
+    line-height: 1.45;
+  }
+
+  /* METRICS MATRIX */
+  .matrix {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .matrix-row {
+    display: grid;
+    grid-template-columns: 240px 1fr 1fr;
+    border-top: 1px solid var(--line);
+    padding: 12px 16px;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  .matrix-row:first-child {
+    border-top: none;
+    background: var(--bg-soft);
+    font-size: 10px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    padding: 10px 16px;
+  }
+
+  .matrix-cell { text-align: center; padding: 2px 0; }
+
+  .matrix-cell.metric {
+    text-align: left;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .matrix-cell.metric small {
+    display: block;
+    color: var(--ink-3);
+    font-size: 11px;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .priority-h, .priority-m, .priority-l {
+    display: inline-block;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .priority-h { background: var(--p0-bg); color: var(--p0); }
+  .priority-m { background: var(--bg-soft); color: var(--ink-3); font-weight: 500; }
+  .priority-l { color: var(--ink-4); padding: 3px 10px; }
+
+  /* ARCHITECTURE */
+  .arch { margin: 24px 0; }
+
+  .layer {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .layer-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding-top: 4px;
+  }
+
+  .layer-name strong {
+    display: block;
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    text-transform: none;
+    letter-spacing: -0.01em;
+    margin-bottom: 2px;
+    font-weight: 600;
+  }
+
+  .layer-content {
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.6;
+  }
+
+  .tech-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--bg-soft);
+    padding: 3px 8px;
+    border-radius: 3px;
+    color: var(--ink-2);
+  }
+
+  /* ROADMAP */
+  .roadmap {
+    margin: 24px 0;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .roadmap-header {
+    background: var(--bg-soft);
+    padding: 12px 24px;
+    font-size: 11px;
+    color: var(--ink-2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-top: 1px solid var(--line);
+  }
+
+  .roadmap-header:first-child { border-top: none; }
+  .roadmap-header.demo { background: var(--demo-bg); color: var(--demo); }
+  .roadmap-header.village { background: #fef3c7; color: #92400e; }
+
+  /* MILESTONES */
+  .milestones {
+    display: grid;
+    grid-template-columns: 1fr 24px 1fr 24px 1fr;
+    gap: 8px;
+    align-items: stretch;
+    margin: 24px 0 32px;
+  }
+
+  .ms {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px 20px;
+    position: relative;
+  }
+
+  .ms-1 { border-top: 3px solid var(--demo); }
+  .ms-2 { border-top: 3px solid #92400e; }
+  .ms-3 { border-top: 3px solid var(--ink); }
+
+  .ms-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .ms-1 .ms-num { color: var(--demo); }
+  .ms-2 .ms-num { color: #92400e; }
+  .ms-3 .ms-num { color: var(--ink); }
+
+  .ms-name {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+    line-height: 1.15;
+  }
+
+  .ms-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .ms-1 .ms-date { color: var(--demo); }
+  .ms-2 .ms-date { color: #92400e; }
+
+  .ms-desc {
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+
+  .ms-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-4);
+    font-size: 18px;
+    font-weight: 300;
+  }
+
+  .roadmap-week {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    border-top: 1px solid var(--line);
+    padding: 18px 24px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .week-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding-top: 2px;
+  }
+
+  .week-label strong {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    color: var(--ink);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .week-content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+
+  .week-tracks {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .track {
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .track-eng { background: var(--eng-bg); color: #064e3b; }
+  .track-prod { background: var(--prod-bg); color: #312e81; }
+  .track-hw { background: var(--hw-bg); color: #7f1d1d; }
+
+  .track-tag {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 4px;
+    opacity: 0.8;
+  }
+
+  /* SCOPE */
+  .scope {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .scope-block {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 20px;
+    background: var(--bg-card);
+  }
+
+  .scope-block.in { border-left: 3px solid var(--ok); }
+  .scope-block.out { border-left: 3px solid var(--ink-4); }
+
+  .scope-header {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+
+  .scope-block.in .scope-header { color: var(--ok); }
+  .scope-block.out .scope-header { color: var(--ink-3); }
+
+  .scope-list { list-style: none; font-size: 13px; }
+
+  .scope-list li {
+    padding: 5px 0 5px 18px;
+    color: var(--ink-2);
+    position: relative;
+    line-height: 1.45;
+  }
+
+  .scope-block.in .scope-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    color: var(--ok);
+    font-weight: 600;
+  }
+
+  .scope-block.out .scope-list li::before {
+    content: '−';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    color: var(--ink-4);
+  }
+
+  /* TASK CARD */
+  .task-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--demo);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin: 24px 0;
+  }
+
+  .task-card-tag {
+    font-size: 10px;
+    color: var(--demo);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .task-card h3 {
+    margin-top: 0;
+    font-size: 18px;
+  }
+
+  /* NEXT */
+  .next {
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 8px;
+    padding: 36px 40px;
+    margin-top: 64px;
+  }
+
+  .next h2 {
+    color: var(--bg);
+    margin-top: 0;
+    font-size: 28px;
+  }
+
+  .next .num { color: rgba(255,255,255,0.4); }
+  .next p { color: rgba(255,255,255,0.75); }
+
+  .next-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .next-option {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .next-option:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.25);
+  }
+
+  .next-option strong {
+    display: block;
+    color: var(--bg);
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .next-option span {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .div { height: 1px; background: var(--line); margin: 64px 0; }
+
+  @media (max-width: 1024px) {
+    .layout { grid-template-columns: 1fr; }
+    .nav { position: relative; height: auto; border-right: none; border-bottom: 1px solid var(--line); }
+    .main { padding: 32px 24px; }
+    h1 { font-size: 36px; }
+    .modes, .stages, .scope, .next-options, .presets-row, .team, .week-tracks, .sync-list { grid-template-columns: 1fr; }
+    .milestones { grid-template-columns: 1fr; }
+    .ms-arrow { transform: rotate(90deg); padding: 4px 0; }
+    .layer { grid-template-columns: 1fr; }
+    .deadline { flex-direction: column; align-items: flex-start; }
+    .matrix-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  /* ─── EDIT MODE ─── */
+  .edit-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    z-index: 100;
+    transition: all 0.2s;
+  }
+
+  .edit-panel.active {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  .edit-panel.active button {
+    color: var(--bg);
+    border-color: rgba(255,255,255,0.25);
+  }
+
+  .edit-panel.active button:hover {
+    background: rgba(255,255,255,0.1);
+  }
+
+  .edit-panel-status {
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .edit-panel.active .edit-panel-status {
+    color: rgba(255,255,255,0.7);
+  }
+
+  .edit-panel button {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-2);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .edit-panel button:hover {
+    background: var(--bg-soft);
+    color: var(--ink);
+  }
+
+  .edit-panel button.primary {
+    background: var(--demo);
+    color: white;
+    border-color: var(--demo);
+  }
+
+  .edit-panel.active button.primary {
+    background: var(--bg);
+    color: var(--ink);
+    border-color: var(--bg);
+  }
+
+  .edit-panel button.primary:hover {
+    opacity: 0.9;
+  }
+
+  .edit-panel-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--line);
+    margin: 0 2px;
+  }
+
+  .edit-panel.active .edit-panel-divider {
+    background: rgba(255,255,255,0.2);
+  }
+
+  body.edit-mode [contenteditable="true"] {
+    outline: 1px dashed transparent;
+    outline-offset: 2px;
+    transition: all 0.15s;
+    border-radius: 2px;
+    cursor: text;
+  }
+
+  body.edit-mode [contenteditable="true"]:hover {
+    outline-color: var(--demo);
+    background: rgba(131, 24, 67, 0.04);
+  }
+
+  body.edit-mode [contenteditable="true"]:focus {
+    outline: 2px solid var(--demo);
+    background: rgba(131, 24, 67, 0.06);
+  }
+
+  body.edit-mode .nav-link,
+  body.edit-mode .next-option,
+  body.edit-mode .mode-card {
+    pointer-events: none;
+  }
+
+  .save-indicator {
+    font-size: 11px;
+    color: var(--ok);
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .save-indicator.show {
+    opacity: 1;
+  }
+
+  .edit-panel.active .save-indicator {
+    color: #6ee7b7;
+  }
+
+  .edit-toast {
+    position: fixed;
+    bottom: 90px;
+    right: 24px;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    z-index: 200;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.25s;
+    pointer-events: none;
+  }
+
+  .edit-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* SVG TEXT EDITING */
+  body.edit-mode .diagram-wrap svg [data-svg-edit-id] {
+    cursor: text;
+    transition: opacity 0.15s;
+  }
+
+  body.edit-mode .diagram-wrap svg [data-svg-edit-id]:hover {
+    opacity: 0.5;
+  }
+
+  .svg-edit-popup {
+    display: none;
+    position: absolute;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 6px;
+    padding: 10px 12px;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    z-index: 200;
+    width: 320px;
+  }
+
+  .svg-edit-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .svg-edit-popup input {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: var(--bg);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    outline: none;
+  }
+
+  .svg-edit-popup input:focus {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.12);
+  }
+
+  .svg-edit-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+
+  .svg-edit-popup button {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.18);
+    color: var(--bg);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .svg-edit-popup button:hover {
+    background: rgba(255,255,255,0.1);
+  }
+
+  .svg-edit-popup button.primary {
+    background: var(--bg);
+    color: var(--ink);
+    border-color: var(--bg);
+  }
+
+  .svg-edit-popup button.primary:hover {
+    opacity: 0.9;
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="nav">
+  <div class="nav-brand">Neiry <span class="pulse">Pulse</span></div>
+  <div class="nav-sub">Demo & MVP</div>
+
+  <div class="nav-section">Обзор</div>
+  <a class="nav-link" data-target="stages">Два этапа</a>
+  <a class="nav-link" data-target="team">Команда</a>
+  <a class="nav-link" data-target="decisions">Ключевые решения</a>
+
+  <div class="nav-section">Tech Demo</div>
+  <a class="nav-link" data-target="demo">Demo · 2 недели</a>
+  <a class="nav-link" data-target="demo-arch">Компоненты Demo</a>
+  <a class="nav-link" data-target="sync">Синхронизация</a>
+  <a class="nav-link" data-target="hbsdk">G BAND inventory</a>
+
+  <div class="nav-section">MVP</div>
+  <a class="nav-link" data-target="mvp-arch">Компоненты MVP</a>
+  <a class="nav-link" data-target="modes">Mode мобайл</a>
+  <a class="nav-link" data-target="presets">Пресеты дэшборда</a>
+  <a class="nav-link" data-target="metrics">Метрики</a>
+  <a class="nav-link" data-target="onboarding">Онбординг</a>
+
+  <div class="nav-section">Техника</div>
+  <a class="nav-link" data-target="arch">Архитектура</a>
+  <a class="nav-link" data-target="scope">In / Out of scope</a>
+
+  <div class="nav-section">Реализация</div>
+  <a class="nav-link" data-target="roadmap">Roadmap</a>
+  <a class="nav-link" data-target="risks">Риски</a>
+  <a class="nav-link" data-target="next">Следующий шаг</a>
+
+  <div class="nav-meta">
+    Tech Demo · 2 недели<br>
+    MVP · не более 8 недель<br>
+    Целимся в 6<br><br>
+    3 потока работ:<br>
+    Engineering · Product · Hardware
+  </div>
+</nav>
+
+<main class="main">
+
+<div class="doc-meta">
+  <span>Конфиденциально</span>
+  <div class="doc-meta-dot"></div>
+  <span>Документ требований</span>
+  <div class="doc-meta-dot"></div>
+  <span>Май 2026</span>
+</div>
+
+<h1>Neiry <span class="accent">Pulse</span></h1>
+
+<p class="lead">
+  Tech Demo 18 мая. Startup Village 25 мая. Финальный MVP 25 июня. Один codebase, 2 Mode на мобайле, 2 пресета дэшборда. Три параллельных потока работ — Engineering, Product, Hardware.
+</p>
+
+<div class="deadline">
+  <div class="deadline-left">
+    <div class="deadline-tag">Три milestone</div>
+    <div class="deadline-text">Tech Demo · Startup Village · MVP</div>
+  </div>
+  <div class="deadline-right">
+    <div class="deadline-block">
+      <div class="deadline-num">18.05</div>
+      <div class="deadline-unit">M1 · Tech Demo</div>
+    </div>
+    <div class="deadline-block">
+      <div class="deadline-num">25.05</div>
+      <div class="deadline-unit">M2 · Village</div>
+    </div>
+    <div class="deadline-block">
+      <div class="deadline-num">25.06</div>
+      <div class="deadline-unit">M3 · MVP</div>
+    </div>
+  </div>
+</div>
+
+<section id="stages">
+<h2><span class="num">01</span>Три milestone</h2>
+<p>
+  M1 — техническое подтверждение пайплайна. M2 — публичная выставка с минимальной функциональностью. M3 — полнофункциональный MVP.
+</p>
+
+<div class="stages">
+
+  <div class="stage demo">
+    <div class="stage-tag">M1 · 18 мая</div>
+    <div class="stage-title">Tech Demo</div>
+    <div class="stage-period">~11 дней · без дизайна</div>
+    <div class="stage-goal">
+      Проверить, что end-to-end пайплайн жив. Браслет → мобайл → backend → дэшборд. Без Mode, без графиков. Параллельно три потока работ.
+    </div>
+    <ul class="stage-checklist">
+      <li>Mobile (Android): регистрация + BLE pairing + sync пульса</li>
+      <li>Backend: FastAPI + PostgreSQL, базовые endpoints</li>
+      <li>Dashboard: логин админа + список юзеров</li>
+      <li>Yandex Cloud VM, NGINX, certbot, Sentry</li>
+      <li>3–5 реальных VITRO браслетов передают реальные данные</li>
+      <li>Синхронизация со смежными командами Mindtracker и Stim-X</li>
+    </ul>
+  </div>
+
+  <div class="stage village">
+    <div class="stage-tag">M2 · 25 мая</div>
+    <div class="stage-title">Startup Village</div>
+    <div class="stage-period">~7 дней после M1 · с дизайном</div>
+    <div class="stage-goal">
+      Публичная выставка. На дэшборде и в приложении должны быть графики и минимальная функциональность. Wow-эффект для инвесторов и партнёров.
+    </div>
+    <ul class="stage-checklist">
+      <li>Графики биометрики на дэшборде (live + история)</li>
+      <li>Базовый main-экран в приложении с графиком пульса</li>
+      <li>Минимально красивый UI (не голый Material)</li>
+      <li>Демо-сценарий: «вот спортсмен, его данные, рейтинг»</li>
+      <li>Расширение биометрики: ВСР, шаги</li>
+      <li>Демо-стенд: live-демонстрация на посетителях</li>
+    </ul>
+  </div>
+
+  <div class="stage mvp">
+    <div class="stage-tag">M3 · 25 июня</div>
+    <div class="stage-title">Финальный MVP</div>
+    <div class="stage-period">~30 дней после M2</div>
+    <div class="stage-goal">
+      Работающий продукт с 2 Mode (Corporate, Sport) и 2 пресетами дэшборда (Лига, Корпорат). Готовность к демо для каждой ниши.
+    </div>
+    <ul class="stage-checklist">
+      <li>Mobile: 2 Mode (Corporate, Sport)</li>
+      <li>Universal Dashboard с 2 пресетами</li>
+      <li>Биометрика: пульс, ВСР, шаги, сон (с условной обработкой)</li>
+      <li>Тренировки, GPS с телефона, готовность к нагрузке</li>
+      <li>Метрики безопасности: сонливость, утомление, готовность к смене</li>
+      <li>Push-уведомления (FCM + APNS)</li>
+    </ul>
+  </div>
+
+</div>
+</section>
+
+<section id="team">
+<h2><span class="num">02</span>Команда и распределение ответственности</h2>
+<p>
+  Три параллельных потока работ. Каждая роль — самостоятельный owner своего домена. Точки синхронизации: еженедельные стендапы и контракты данных между потоками.
+</p>
+
+<div class="team">
+
+  <div class="team-card eng">
+    <div class="team-role">Engineering</div>
+    <div class="team-name">Кирилл</div>
+    <div class="team-title">Engineering Lead</div>
+    <h4>Зона ответственности</h4>
+    <ul>
+      <li>Реализация всей кодовой базы</li>
+      <li>Backend (FastAPI, PostgreSQL, Celery)</li>
+      <li>Mobile-приложение (Flutter, BLE bridge)</li>
+      <li>Web-дэшборд (React, Vite)</li>
+      <li>Инфраструктура (Yandex Cloud, NGINX, CI/CD)</li>
+      <li>Интеграция HBandSDK и BLE</li>
+    </ul>
+    <h4>Артефакты</h4>
+    <ul>
+      <li>HBandSDK Inventory (неделя 1)</li>
+      <li>Working code и production-релизы</li>
+      <li>Технические решения и тех-долг трекер</li>
+    </ul>
+  </div>
+
+  <div class="team-card prod">
+    <div class="team-role">Product</div>
+    <div class="team-name">Константин</div>
+    <div class="team-title">Product & Design Lead</div>
+    <h4>Зона ответственности</h4>
+    <ul>
+      <li>Требования и спецификации фич</li>
+      <li>Метрики: что считаем, какие пороги, какие алерты</li>
+      <li>Флоу пользователей и онбординг</li>
+      <li>UI / UX / визуальный дизайн</li>
+      <li>Тексты, копирайт, локализация</li>
+      <li>Демо-сценарии и питч-материалы</li>
+      <li>Координация со смежными командами</li>
+    </ul>
+    <h4>Артефакты</h4>
+    <ul>
+      <li>Требования по Mode и пресетам</li>
+      <li>Дизайн в Figma (или эквивалент)</li>
+      <li>Демо-сценарии</li>
+    </ul>
+  </div>
+
+  <div class="team-card hw">
+    <div class="team-role">Hardware</div>
+    <div class="team-name">Илья</div>
+    <div class="team-title">Hardware Manager</div>
+    <h4>Зона ответственности</h4>
+    <ul>
+      <li>Закупка и настройка браслетов VITRO/VIGOR</li>
+      <li>Передача устройств тестировщикам</li>
+      <li>Контроль работоспособности парка</li>
+      <li>Координация с поставщиком (Veepoo)</li>
+      <li>QA на этапе пилота</li>
+      <li>Логистика для пилотных клиентов</li>
+    </ul>
+    <h4>Артефакты</h4>
+    <ul>
+      <li>Реестр устройств с привязкой к юзерам</li>
+      <li>Регламент онбординга устройств</li>
+      <li>Канал связи с поставщиком</li>
+    </ul>
+  </div>
+
+</div>
+
+<h3>Точки синхронизации</h3>
+<p>
+  Еженедельный стендап в понедельник на 30 минут — статус по каждому потоку, блокеры, контракты данных. Слабые контракты между потоками: API-схема (Engineering ↔ Product), обновления прошивки и SDK (Engineering ↔ Hardware), демо-сценарии и устройства для них (Product ↔ Hardware).
+</p>
+</section>
+
+<section id="decisions">
+<h2><span class="num">03</span>Ключевые решения</h2>
+
+<div class="decisions">
+
+  <div class="decision">
+    <div class="decision-label">Архитектурная модель</div>
+    <div class="decision-value">Один codebase, 2 Mode на мобайле</div>
+    <div class="decision-meta">Corporate + Sport</div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-label">Дэшборд</div>
+    <div class="decision-value">2 пресета: Лига и Корпорат</div>
+    <div class="decision-meta">Корпорат включает офис и safety-роли</div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-label">Поддомены</div>
+    <div class="decision-value">Гибрид</div>
+    <div class="decision-meta">league.neiry.ru (бренд) + dashboard.neiry.ru</div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-label">Платформы мобайл</div>
+    <div class="decision-value">Android + iOS (Flutter)</div>
+    <div class="decision-meta">Native bridge на Kotlin и Swift</div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-label">Браслет</div>
+    <div class="decision-value">VITRO / VIGOR / микс</div>
+    <div class="decision-meta">SDK один и тот же — не блокер</div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-label">GPS-источник</div>
+    <div class="decision-value">С телефона (Flutter geolocator)</div>
+    <div class="decision-meta">Точность 5–10 м, достаточно для бега</div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-label">Профессии</div>
+    <div class="decision-value">Поле «роль» у юзера</div>
+    <div class="decision-meta">Офис / Водитель / Машинист / Диспетчер</div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-label">Вне MVP</div>
+    <div class="decision-value">Headband, tVNS, Care, Recovery, Tactical</div>
+    <div class="decision-meta">Всё — Волна 2</div>
+  </div>
+
+</div>
+</section>
+
+<div class="div"></div>
+
+<section id="demo">
+<h2><span class="num">04</span>Tech Demo · 2 недели</h2>
+<p>
+  Цель — техническое подтверждение пайплайна. Главный артефакт: видео или live-показ — «человек надел браслет, открыл приложение, через 5 минут его пульс отображается на дэшборде у админа».
+</p>
+
+<h3>Что должно работать</h3>
+<ul style="margin-left: 20px; color: var(--ink-2); font-size: 14px; line-height: 1.85; list-style: none;">
+  <li><strong>Mobile (Flutter, Android):</strong> регистрация по email/пароль, BLE pairing с VITRO, синхронизация пульса в backend каждые N минут</li>
+  <li><strong>Backend (FastAPI):</strong> приём данных, сохранение в PostgreSQL, базовые endpoints (auth, sync, list)</li>
+  <li><strong>Web Dashboard:</strong> логин админа + одна страница со списком юзеров (имя, последняя синхронизация)</li>
+  <li><strong>Infrastructure:</strong> Yandex Cloud VM, NGINX + certbot, GitHub Actions, Sentry</li>
+  <li><strong>3–5 реальных VITRO браслетов</strong> на тестировщиках, передающих реальные данные</li>
+</ul>
+
+<h3>Что НЕ нужно в Tech Demo</h3>
+<ul style="margin-left: 20px; color: var(--ink-3); font-size: 14px; line-height: 1.85;">
+  <li>Дизайн — стандартные компоненты Flutter и фронта</li>
+  <li>Mode-переключение, выбор роли, разные виды юзеров</li>
+  <li>Графики, тренировки, GPS, протоколы, alerts</li>
+  <li>Дополнительная биометрика (ВСР, сон, шаги)</li>
+  <li>Многотенантность, ограничение видимости по группам</li>
+  <li>Push-уведомления</li>
+</ul>
+</section>
+
+<section id="demo-arch">
+<h2><span class="num">05</span>Компоненты Tech Demo</h2>
+<p>
+  Простейшая end-to-end схема. Пять компонентов: браслет, мобайл, backend, БД, дэшборд. Стрелки показывают поток данных.
+</p>
+
+<div class="diagram-wrap demo-diag">
+  <div class="diagram-tag">Этап 1 · Tech Demo</div>
+  <div class="diagram-title">End-to-end пайплайн данных</div>
+
+<svg width="100%" viewBox="0 0 680 460" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Компоненты Tech Demo</title>
+<desc>Схема потока данных от браслета через мобильное приложение и backend в дэшборд</desc>
+
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+<style>
+.t { font-family: Manrope, sans-serif; font-size: 14px; fill: #1a1814; }
+.ts { font-family: Manrope, sans-serif; font-size: 12px; fill: #4a463e; }
+.th { font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; fill: #1a1814; }
+.label { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: #7a766d; letter-spacing: 0.06em; text-transform: uppercase; }
+.box-fill { fill: #ffffff; stroke: #d3d1c7; stroke-width: 0.5; }
+.box-soft { fill: #f1efe8; stroke: #d3d1c7; stroke-width: 0.5; }
+.arr { stroke: #7a766d; stroke-width: 1; fill: none; }
+.proto { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: #831843; }
+</style>
+</defs>
+
+<rect x="40" y="20" width="240" height="40" rx="4" fill="#fce7f3" opacity="0.4"/>
+<text class="label" x="50" y="44">User Side</text>
+
+<rect x="400" y="20" width="240" height="40" rx="4" fill="#e0e7ff" opacity="0.4"/>
+<text class="label" x="410" y="44">Server Side</text>
+
+<rect x="60" y="100" width="160" height="80" rx="8" class="box-fill"/>
+<text class="th" x="140" y="130" text-anchor="middle">Браслет VITRO</text>
+<text class="ts" x="140" y="150" text-anchor="middle">Veepoo VE58 PRO</text>
+<text class="ts" x="140" y="166" text-anchor="middle">Пульс через PPG</text>
+
+<rect x="60" y="240" width="160" height="100" rx="8" class="box-fill"/>
+<text class="th" x="140" y="270" text-anchor="middle">Мобайл-приложение</text>
+<text class="ts" x="140" y="290" text-anchor="middle">Flutter (iOS+Android)</text>
+<text class="ts" x="140" y="306" text-anchor="middle">Регистрация · авторизация</text>
+<text class="ts" x="140" y="322" text-anchor="middle">BLE pairing</text>
+
+<line x1="140" y1="180" x2="140" y2="232" class="arr" marker-end="url(#arrow)"/>
+<text class="proto" x="148" y="210">BLE 5.3</text>
+
+<rect x="280" y="240" width="160" height="100" rx="8" class="box-fill"/>
+<text class="th" x="360" y="270" text-anchor="middle">Backend API</text>
+<text class="ts" x="360" y="290" text-anchor="middle">FastAPI</text>
+<text class="ts" x="360" y="306" text-anchor="middle">Auth · sync · list</text>
+<text class="ts" x="360" y="322" text-anchor="middle">Yandex Cloud VM</text>
+
+<line x1="220" y1="290" x2="272" y2="290" class="arr" marker-end="url(#arrow)"/>
+<text class="proto" x="246" y="282" text-anchor="middle">REST</text>
+
+<rect x="280" y="380" width="160" height="60" rx="8" class="box-soft"/>
+<text class="th" x="360" y="406" text-anchor="middle">PostgreSQL</text>
+<text class="ts" x="360" y="424" text-anchor="middle">База данных</text>
+
+<line x1="360" y1="340" x2="360" y2="372" class="arr" marker-end="url(#arrow)"/>
+
+<rect x="500" y="240" width="140" height="100" rx="8" class="box-fill"/>
+<text class="th" x="570" y="270" text-anchor="middle">Web-дэшборд</text>
+<text class="ts" x="570" y="290" text-anchor="middle">React + Vite</text>
+<text class="ts" x="570" y="306" text-anchor="middle">Логин админа</text>
+<text class="ts" x="570" y="322" text-anchor="middle">Список юзеров</text>
+
+<line x1="440" y1="290" x2="492" y2="290" class="arr" marker-end="url(#arrow)"/>
+<text class="proto" x="466" y="282" text-anchor="middle">REST</text>
+
+<rect x="500" y="100" width="140" height="80" rx="8" class="box-soft"/>
+<text class="th" x="570" y="128" text-anchor="middle">Админ</text>
+<text class="ts" x="570" y="148" text-anchor="middle">HR / организатор</text>
+<text class="ts" x="570" y="164" text-anchor="middle">3–5 тестировщиков</text>
+
+<line x1="570" y1="232" x2="570" y2="180" class="arr" marker-end="url(#arrow)"/>
+
+</svg>
+
+  <div class="diagram-legend">
+    <div class="legend-item">
+      <span class="legend-swatch" style="background: #fce7f3;"></span>
+      Клиентская часть
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background: #e0e7ff;"></span>
+      Серверная часть
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background: #f1efe8;"></span>
+      Хранилище данных
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="sync">
+<h2><span class="num">06</span>Синхронизация со смежными командами</h2>
+<p>
+  Mindtracker (Headband) и Stim-X (tVNS) — продукты той же организации. У них уже есть наработанная инфраструктура и компоненты, которые можно переиспользовать. Это критично для срока.
+</p>
+
+<div class="sync-card">
+  <div class="sync-tag">Задача · Неделя 1 · Owner: Константин</div>
+  <h3>Цель: понять, что переиспользуем, что строим с нуля</h3>
+  <p>
+    Провести встречи с командами Mindtracker и Stim-X. Цель — выяснить, какие компоненты у них уже работают, и согласовать, что можно использовать в Neiry Pulse. Результат — документ с inventory и согласованным планом интеграции.
+  </p>
+
+  <h4 style="font-size: 13px; margin-top: 16px; margin-bottom: 8px;">Что выясняем на встречах:</h4>
+
+  <div class="sync-list">
+    <div class="sync-item">
+      <strong>Регистрация и auth</strong>
+      Есть ли единый Neiry Account? Можно ли подключиться через SSO/OAuth?
+    </div>
+    <div class="sync-item">
+      <strong>Профиль пользователя</strong>
+      Какие поля общие? Где хранится (БД, схема)? Можно ли переиспользовать?
+    </div>
+    <div class="sync-item">
+      <strong>API контракты телеметрии</strong>
+      Есть ли единый стандарт передачи биометрики? Можем ли согласовать общую схему?
+    </div>
+    <div class="sync-item">
+      <strong>Push-сервис</strong>
+      Один FCM/APNS аккаунт на всю экосистему? Кто управляет ключами?
+    </div>
+    <div class="sync-item">
+      <strong>Дизайн-система</strong>
+      Есть ли общий design tokens, компоненты, гайдлайны? Или строим свой?
+    </div>
+    <div class="sync-item">
+      <strong>Биллинг и подписки</strong>
+      Общая модель монетизации? Единая платёжная система?
+    </div>
+  </div>
+
+  <p style="margin-top: 16px; font-size: 13px;">
+    <strong>Стратегия:</strong> то, что у Mindtracker / Stim-X уже работает в проде — берём как есть или с минимальной адаптацией. То, чего нет — строим в Neiry Pulse, но в архитектурно совместимом виде, чтобы потом не мигрировать данные.
+  </p>
+
+  <p style="margin-top: 14px; font-size: 13px;">
+    <strong>Артефакт:</strong> документ <code>Neiry_Ecosystem_Sync.md</code> с тремя секциями: «Что переиспользуем», «Что строим с нуля», «Точки совместимости на будущее».
+  </p>
+</div>
+</section>
+
+<section id="hbsdk">
+<h2><span class="num">07</span>HBandSDK Inventory</h2>
+<p>
+  Оригинальное китайское приложение G BAND детально проработано на той же SDK. Чтобы не пилить заново то, что уже работает в SDK, в первую неделю нужно сделать аудит.
+</p>
+
+<div class="task-card">
+  <div class="task-card-tag">Задача · Неделя 1 · Owner: Кирилл</div>
+  <h3>HBandSDK Inventory Document</h3>
+  <p>Параллельно с настройкой инфраструктуры составить документ с полным инвентарём возможностей SDK.</p>
+
+  <h4 style="font-size: 13px; margin-top: 16px; margin-bottom: 8px;">Что должно быть в документе:</h4>
+  <ul style="font-size: 13px; color: var(--ink-2); margin-left: 20px;">
+    <li>Все методы SDK с пометкой: даёт <strong>готовые данные</strong> или <strong>сырые сигналы</strong></li>
+    <li>Какие <strong>типы тренировок/активностей</strong> поддерживает SDK нативно</li>
+    <li>Какие <strong>расчёты</strong> SDK делает на устройстве: ВСР, VO2max, калории, фазы сна</li>
+    <li>Скриншоты всех экранов G BAND с описанием UX-логики</li>
+    <li>Рекомендация: <strong>что переиспользуем, что пилим сами</strong></li>
+  </ul>
+
+  <p style="margin-top: 14px; font-size: 13px;">
+    <strong>Зачем:</strong> если SDK считает фазы сна или поддерживает workout type «бег» — не пилим. Это экономит недели разработки.
+  </p>
+</div>
+</section>
+
+<div class="div"></div>
+
+<section id="mvp-arch">
+<h2><span class="num">08</span>Компоненты MVP</h2>
+<p>
+  Полная схема MVP. Браслеты на пользователях (спортсмен и сотрудник), мобайл-приложение с двумя Mode, backend с расчётными движками, дэшборд с двумя пресетами. Push-уведомления, конфигурация по Mode.
+</p>
+
+<div class="diagram-wrap mvp-diag">
+  <div class="diagram-tag">Этап 2 · MVP</div>
+  <div class="diagram-title">Архитектура и поток данных</div>
+
+<svg width="100%" viewBox="0 0 680 700" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Компоненты MVP</title>
+<desc>Полная архитектура MVP с двумя Mode на мобайле, backend и двумя пресетами дэшборда</desc>
+
+<defs>
+<marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+<style>
+.t2 { font-family: Manrope, sans-serif; font-size: 14px; fill: #1a1814; }
+.ts2 { font-family: Manrope, sans-serif; font-size: 12px; fill: #4a463e; }
+.th2 { font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; fill: #1a1814; }
+.tt2 { font-family: Manrope, sans-serif; font-size: 11px; fill: #4a463e; }
+.label2 { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: #7a766d; letter-spacing: 0.06em; text-transform: uppercase; }
+.box-fill2 { fill: #ffffff; stroke: #d3d1c7; stroke-width: 0.5; }
+.box-soft2 { fill: #f1efe8; stroke: #d3d1c7; stroke-width: 0.5; }
+.box-sport { fill: #fef3e8; stroke: #c2410c; stroke-width: 0.5; }
+.box-corp { fill: #e0e7ff; stroke: #1e3a8a; stroke-width: 0.5; }
+.arr2 { stroke: #7a766d; stroke-width: 1; fill: none; }
+.proto2 { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: #831843; }
+.zone-bg { fill: #f7f6f1; stroke: #d3d1c7; stroke-width: 0.5; stroke-dasharray: 4 3; }
+</style>
+</defs>
+
+<rect x="20" y="20" width="640" height="180" rx="8" class="zone-bg"/>
+<text class="label2" x="32" y="42">Пользователи</text>
+
+<rect x="60" y="60" width="240" height="120" rx="8" class="box-sport"/>
+<text class="th2" x="180" y="90" text-anchor="middle" fill="#7a2810">Спортсмен</text>
+<text class="ts2" x="180" y="110" text-anchor="middle" fill="#7a2810">Бег · триатрон · вело · лыжи</text>
+<text class="ts2" x="180" y="128" text-anchor="middle" fill="#7a2810">Браслет VITRO или VIGOR</text>
+<text class="tt2" x="180" y="156" text-anchor="middle" fill="#7a2810">Sport Mode</text>
+
+<rect x="380" y="60" width="240" height="120" rx="8" class="box-corp"/>
+<text class="th2" x="500" y="90" text-anchor="middle" fill="#1e3a8a">Сотрудник</text>
+<text class="ts2" x="500" y="110" text-anchor="middle" fill="#1e3a8a">Офис · водитель · машинист</text>
+<text class="ts2" x="500" y="128" text-anchor="middle" fill="#1e3a8a">Браслет VITRO</text>
+<text class="tt2" x="500" y="156" text-anchor="middle" fill="#1e3a8a">Corporate Mode</text>
+
+<rect x="20" y="240" width="640" height="180" rx="8" class="zone-bg"/>
+<text class="label2" x="32" y="262">Mobile · Flutter (Android + iOS)</text>
+
+<rect x="60" y="290" width="240" height="110" rx="8" class="box-fill2"/>
+<text class="th2" x="180" y="318" text-anchor="middle">Sport Mode</text>
+<text class="ts2" x="180" y="336" text-anchor="middle">Тренировки · GPS</text>
+<text class="ts2" x="180" y="352" text-anchor="middle">Готовность к нагрузке</text>
+<text class="ts2" x="180" y="368" text-anchor="middle">Темп · пульсовые зоны</text>
+<text class="ts2" x="180" y="384" text-anchor="middle">Личные рекорды</text>
+
+<rect x="380" y="290" width="240" height="110" rx="8" class="box-fill2"/>
+<text class="th2" x="500" y="318" text-anchor="middle">Corporate Mode</text>
+<text class="ts2" x="500" y="336" text-anchor="middle">Готовность · стресс</text>
+<text class="ts2" x="500" y="352" text-anchor="middle">Сонливость · утомление</text>
+<text class="ts2" x="500" y="368" text-anchor="middle">Готовность к смене</text>
+<text class="ts2" x="500" y="384" text-anchor="middle">Условный учёт сна</text>
+
+<rect x="220" y="270" width="240" height="20" rx="4" fill="#f7f6f1" stroke="#d3d1c7" stroke-width="0.5"/>
+<text class="tt2" x="340" y="284" text-anchor="middle">Регистрация · BLE · Профиль · Биометрика</text>
+
+<line x1="180" y1="180" x2="180" y2="282" class="arr2" marker-end="url(#arrow2)"/>
+<text class="proto2" x="188" y="240">BLE</text>
+
+<line x1="500" y1="180" x2="500" y2="282" class="arr2" marker-end="url(#arrow2)"/>
+<text class="proto2" x="508" y="240">BLE</text>
+
+<rect x="20" y="460" width="640" height="100" rx="8" class="zone-bg"/>
+<text class="label2" x="32" y="482">Backend · FastAPI · Yandex Cloud</text>
+
+<rect x="40" y="500" width="180" height="50" rx="8" class="box-fill2"/>
+<text class="th2" x="130" y="522" text-anchor="middle">REST API</text>
+<text class="ts2" x="130" y="540" text-anchor="middle">Auth · sync · config</text>
+
+<rect x="240" y="500" width="200" height="50" rx="8" class="box-fill2"/>
+<text class="th2" x="340" y="522" text-anchor="middle">Расчётные движки</text>
+<text class="ts2" x="340" y="540" text-anchor="middle">Тренировки · Сонливость · Алерты</text>
+
+<rect x="460" y="500" width="180" height="50" rx="8" class="box-soft2"/>
+<text class="th2" x="550" y="522" text-anchor="middle">PostgreSQL · Redis</text>
+<text class="ts2" x="550" y="540" text-anchor="middle">Данные · очереди</text>
+
+<line x1="180" y1="400" x2="160" y2="492" class="arr2" marker-end="url(#arrow2)"/>
+<line x1="500" y1="400" x2="200" y2="492" class="arr2" marker-end="url(#arrow2)"/>
+
+<line x1="220" y1="525" x2="232" y2="525" class="arr2" marker-end="url(#arrow2)"/>
+<line x1="440" y1="525" x2="452" y2="525" class="arr2" marker-end="url(#arrow2)"/>
+
+<rect x="20" y="600" width="640" height="80" rx="8" class="zone-bg"/>
+<text class="label2" x="32" y="622">Web-дэшборд · React + Vite</text>
+
+<rect x="60" y="630" width="240" height="40" rx="8" class="box-sport"/>
+<text class="th2" x="180" y="656" text-anchor="middle" fill="#7a2810">Лига · league.neiry.ru</text>
+
+<rect x="380" y="630" width="240" height="40" rx="8" class="box-corp"/>
+<text class="th2" x="500" y="656" text-anchor="middle" fill="#1e3a8a">Корпорат · dashboard.neiry.ru</text>
+
+<line x1="340" y1="552" x2="180" y2="622" class="arr2" marker-end="url(#arrow2)"/>
+<line x1="340" y1="552" x2="500" y2="622" class="arr2" marker-end="url(#arrow2)"/>
+
+<line x1="40" y1="525" x2="20" y2="525" stroke="#7a766d" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+<text class="proto2" x="14" y="528" text-anchor="end">Push</text>
+
+</svg>
+
+  <div class="diagram-legend">
+    <div class="legend-item">
+      <span class="legend-swatch" style="background: #fef3e8;"></span>
+      Sport / Лига
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background: #e0e7ff;"></span>
+      Corporate / Корпорат
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background: #ffffff; border: 1px solid #d3d1c7;"></span>
+      Общее ядро
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background: #f1efe8;"></span>
+      Хранилища данных
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="modes">
+<h2><span class="num">09</span>Mode на мобайле · 2 штуки</h2>
+<p>
+  Mode зашит в учётной записи при регистрации. Два варианта: Corporate (включая офис и safety-роли) и Sport.
+</p>
+
+<div class="modes">
+
+  <div class="mode-card" data-mode="corp">
+    <div class="mode-prio p1">P1</div>
+    <div class="mode-icon corp">C</div>
+    <div class="mode-title">Corporate Mode</div>
+    <div class="mode-subtitle">Сотрудник компании (офис и safety-роли)</div>
+    <div class="mode-meta">
+      <div class="mode-meta-row"><span class="mode-meta-key">Девайс</span><span>VITRO</span></div>
+      <div class="mode-meta-row"><span class="mode-meta-key">Дэшборд</span><span>dashboard.neiry.ru</span></div>
+      <div class="mode-meta-row"><span class="mode-meta-key">Объём MVP</span><span>50–500</span></div>
+    </div>
+    <div class="mode-detail">
+      <div class="mode-detail-grid">
+        <div>
+          <h4>Что в приложении</h4>
+          <ul>
+            <li>Биометрика с пометкой «дневная» если нет ночных данных</li>
+            <li>Личный индекс готовности (Readiness Score)</li>
+            <li>Индекс стресса (Stress Index)</li>
+            <li>Готовность к смене для safety-ролей (Pre-shift Readiness)</li>
+            <li>Настройки приватности и отключения трекинга</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Особенности</h4>
+          <ul>
+            <li>Сон не в приоритете — многие не носят ночью</li>
+            <li>Метрики считаются с учётом наличия данных</li>
+            <li>Один Mode для офиса и safety — отличие в роли</li>
+            <li>Разные default-алерты по роли (выгорание vs сонливость)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mode-card" data-mode="sport">
+    <div class="mode-prio p0">P0</div>
+    <div class="mode-icon sport">S</div>
+    <div class="mode-title">Sport Mode</div>
+    <div class="mode-subtitle">Спортсмен лиги (бег, триатлон, велоспорт, лыжи)</div>
+    <div class="mode-meta">
+      <div class="mode-meta-row"><span class="mode-meta-key">Девайс</span><span>VITRO или VIGOR</span></div>
+      <div class="mode-meta-row"><span class="mode-meta-key">Дэшборд</span><span>league.neiry.ru</span></div>
+      <div class="mode-meta-row"><span class="mode-meta-key">Объём MVP</span><span>до 500</span></div>
+    </div>
+    <div class="mode-detail">
+      <div class="mode-detail-grid">
+        <div>
+          <h4>Что в приложении</h4>
+          <ul>
+            <li>Биометрика 24/7 (пульс, ВСР, шаги, сон в приоритете)</li>
+            <li>Тренировки разных типов: GPS-трек с телефона</li>
+            <li>Темп по км, пульсовые зоны, дистанция</li>
+            <li>Готовность к нагрузке (Activity Readiness)</li>
+            <li>Спортивный рейтинг (League Fitness Score), личные рекорды</li>
+            <li>Лидерборды лиги (просмотр)</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Что НЕ входит в MVP</h4>
+          <ul>
+            <li>Live-трекинг соревнований в реальном времени</li>
+            <li>Friends, лайки, чаты</li>
+            <li>Команды/клубы внутри лиги</li>
+            <li>Тренерский план тренировок</li>
+            <li>Интеграция с Strava / Apple Health</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<p style="margin-top: 16px; font-size: 13px; color: var(--ink-3);">
+  Кликните на карточку, чтобы развернуть детали.
+</p>
+</section>
+
+<section id="presets">
+<h2><span class="num">10</span>Пресеты дэшборда · 2 штуки</h2>
+<p>
+  Универсальный дэшборд с общим ядром (auth, список юзеров, графики, экспорт) и 2 пресетами. Лига — на отдельном поддомене с брендом. Корпорат — на dashboard.neiry.ru, включает офис и safety-роли.
+</p>
+
+<div class="presets-row">
+
+  <div class="preset-card league">
+    <div class="preset-name">league.neiry.ru</div>
+    <div class="preset-title">Лига</div>
+    <div class="preset-status">Полная глубина · P0</div>
+    <ul>
+      <li>Готовность к нагрузке (Activity Readiness)</li>
+      <li>Недельный километраж (Weekly Mileage)</li>
+      <li>Распределение пульсовых зон (HR Zones)</li>
+      <li>Лидерборды лиги</li>
+      <li>Алерты по перетренированности (Overtraining)</li>
+      <li>Спортивный рейтинг (League Fitness Score)</li>
+    </ul>
+  </div>
+
+  <div class="preset-card corp">
+    <div class="preset-name">dashboard.neiry.ru</div>
+    <div class="preset-title">Корпорат</div>
+    <div class="preset-status">Полная глубина · P0</div>
+    <ul>
+      <li>Риск выгорания (Burnout Risk)</li>
+      <li>Тренд стресса (Stress Trend)</li>
+      <li>Командные агрегаты с анонимизацией</li>
+      <li>Детектор сонливости (Drowsiness Detection)</li>
+      <li>Индекс утомления (Fatigue Index)</li>
+      <li>Готовность к смене (Pre-shift Readiness)</li>
+    </ul>
+  </div>
+
+</div>
+
+<h3>Как работает «Корпорат» одним пресетом</h3>
+<p>
+  Один дэшборд, два сценария использования. По умолчанию (роль «Офис») — фокус на выгорании, стрессе, командных агрегатах. Если у юзеров выбрана safety-роль (водитель, машинист, диспетчер) — на overview добавляются виджеты сонливости, утомления и готовности к смене. HR / специалист по охране труда видит то и другое в одном интерфейсе, фильтрует по роли.
+</p>
+
+<h3>Архитектура «гибрид поддоменов»</h3>
+<p>
+  <code>league.neiry.ru</code> — отдельный поддомен с брендом лиги. Это нужно для продаж: лига получает «свой» продукт, можно дать white-label под конкретного клиента в Волне 2.
+</p>
+<p>
+  <code>dashboard.neiry.ru</code> — единая точка входа для корп-сегмента. Технически — та же React-сборка, тот же codebase. Разница — env-конфиг и роутинг NGINX.
+</p>
+</section>
+
+<section id="metrics">
+<h2><span class="num">11</span>Метрики и приоритеты</h2>
+<p>
+  Какие метрики в приоритете для каждого пресета. От этого зависит, что выводится первым на overview, какие default-алерты включены.
+</p>
+
+<div class="matrix">
+  <div class="matrix-row">
+    <div class="matrix-cell metric">Метрика</div>
+    <div class="matrix-cell">Корпорат</div>
+    <div class="matrix-cell">Лига</div>
+  </div>
+  <div class="matrix-row">
+    <div class="matrix-cell metric">Пульс <small>HR · Heart Rate</small></div>
+    <div class="matrix-cell"><span class="priority-m">средний</span></div>
+    <div class="matrix-cell"><span class="priority-h">высокий</span></div>
+  </div>
+  <div class="matrix-row">
+    <div class="matrix-cell metric">Вариабельность сердечного ритма <small>ВСР · HRV · Heart Rate Variability</small></div>
+    <div class="matrix-cell"><span class="priority-m">средний</span></div>
+    <div class="matrix-cell"><span class="priority-h">высокий</span></div>
+  </div>
+  <div class="matrix-row">
+    <div class="matrix-cell metric">Сон <small>Sleep · фазы и длительность</small></div>
+    <div class="matrix-cell"><span class="priority-l">низкий</span></div>
+    <div class="matrix-cell"><span class="priority-h">высокий</span></div>
+  </div>
+  <div class="matrix-row">
+    <div class="matrix-cell metric">Стресс <small>Stress Index</small></div>
+    <div class="matrix-cell"><span class="priority-h">высокий</span></div>
+    <div class="matrix-cell"><span class="priority-m">средний</span></div>
+  </div>
+  <div class="matrix-row">
+    <div class="matrix-cell metric">Шаги и активность <small>Steps · Active Minutes</small></div>
+    <div class="matrix-cell"><span class="priority-l">низкий</span></div>
+    <div class="matrix-cell"><span class="priority-h">высокий</span></div>
+  </div>
+  <div class="matrix-row">
+    <div class="matrix-cell metric">Сонливость и утомление <small>Drowsiness · Fatigue Index</small></div>
+    <div class="matrix-cell"><span class="priority-h">высокий</span></div>
+    <div class="matrix-cell"><span class="priority-l">низкий</span></div>
+  </div>
+  <div class="matrix-row">
+    <div class="matrix-cell metric">Риск выгорания <small>Burnout Risk</small></div>
+    <div class="matrix-cell"><span class="priority-h">высокий</span></div>
+    <div class="matrix-cell"><span class="priority-l">низкий</span></div>
+  </div>
+  <div class="matrix-row">
+    <div class="matrix-cell metric">Готовность к нагрузке <small>Activity Readiness</small></div>
+    <div class="matrix-cell"><span class="priority-l">низкий</span></div>
+    <div class="matrix-cell"><span class="priority-h">высокий</span></div>
+  </div>
+  <div class="matrix-row">
+    <div class="matrix-cell metric">Готовность к смене <small>Pre-shift Readiness</small></div>
+    <div class="matrix-cell"><span class="priority-h">высокий</span></div>
+    <div class="matrix-cell"><span class="priority-l">низкий</span></div>
+  </div>
+</div>
+</section>
+
+<section id="onboarding">
+<h2><span class="num">12</span>Онбординг</h2>
+<p>
+  Самый простой возможный флоу. Mode определяется выбором роли при регистрации.
+</p>
+
+<h3>Шаги первого запуска приложения</h3>
+<ol style="margin-left: 20px; color: var(--ink-2); font-size: 14px; line-height: 1.85;">
+  <li><strong>Splash + onboarding скрины</strong> (2–3 экрана о Neiry Pulse)</li>
+  <li><strong>Регистрация</strong> по email или телефону + пароль</li>
+  <li><strong>Экран выбора роли</strong> (всего 2 варианта в MVP):
+    <ul style="margin: 8px 0 8px 20px; font-size: 13px; list-style: none;">
+      <li>— «Я сотрудник компании» → Corporate Mode</li>
+      <li>— «Я спортсмен» → Sport Mode</li>
+    </ul>
+  </li>
+  <li><strong>Базовый профиль</strong>: имя, год рождения, пол, рост, вес</li>
+  <li><strong>Pairing браслета</strong> по BLE (модель определяется автоматически)</li>
+  <li><strong>Mode-специфичные шаги</strong>:
+    <ul style="margin: 8px 0 8px 20px; font-size: 13px; list-style: none;">
+      <li>— Sport: максимальный пульс, основной вид спорта (бег / триатлон / вело / лыжи / другое), целевое соревнование</li>
+      <li>— Corporate: код компании (опционально); ФИО для HR; роль (офис / водитель / машинист / диспетчер) выбирает HR при добавлении</li>
+    </ul>
+  </li>
+</ol>
+</section>
+
+<div class="div"></div>
+
+<section id="arch">
+<h2><span class="num">13</span>Технологический стек</h2>
+
+<div class="arch">
+
+  <div class="layer">
+    <div class="layer-name"><strong>Hardware</strong>Устройства</div>
+    <div class="layer-content">
+      Браслеты VITRO и VIGOR — оба на одной SDK. GPS — с телефона.
+      <div class="tech-pills">
+        <span class="pill">VITRO Veepoo VE58 PRO</span>
+        <span class="pill">VIGOR (та же SDK)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-name"><strong>Mobile</strong>Кросс-платформа</div>
+    <div class="layer-content">
+      Flutter + Riverpod + Drift + Dio. Native bridge на Kotlin (Android) и Swift (iOS). GPS через Flutter geolocator.
+      <div class="tech-pills">
+        <span class="pill">Flutter 3.19+</span>
+        <span class="pill">Kotlin BLE bridge</span>
+        <span class="pill">Swift BLE bridge</span>
+        <span class="pill">geolocator плагин</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-name"><strong>Backend API</strong>FastAPI</div>
+    <div class="layer-content">
+      Python 3.12, FastAPI 0.115, SQLAlchemy 2.0, Alembic. REST API. Endpoint <code>/me/config</code> возвращает Mode-конфиг и role-зависимые алерты.
+      <div class="tech-pills">
+        <span class="pill">FastAPI 0.115</span>
+        <span class="pill">SQLAlchemy 2.0</span>
+        <span class="pill">Mode + Role config</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-name"><strong>Async</strong>Celery + Redis</div>
+    <div class="layer-content">
+      Celery 5.4 для фоновых расчётов. Workers: общие метрики, движок тренировок (Sport), детектор сонливости (Safety), движок алертов.
+      <div class="tech-pills">
+        <span class="pill">Celery 5.4</span>
+        <span class="pill">Redis 7</span>
+        <span class="pill">Workout Engine</span>
+        <span class="pill">Drowsiness Engine</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-name"><strong>Database</strong>PostgreSQL 16</div>
+    <div class="layer-content">
+      Биометрика — time-series в обычных таблицах. GPS-треки — JSONB. Поле <code>role</code> у юзера определяет default-алерты и виджеты.
+      <div class="tech-pills">
+        <span class="pill">PostgreSQL 16</span>
+        <span class="pill">activities + GPS JSONB</span>
+        <span class="pill">role-based alerts</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-name"><strong>Push</strong>FCM + APNS</div>
+    <div class="layer-content">
+      Push-уведомления для алертов сонливости (Safety) и тренировочных напоминаний (Sport). Управление ключами — через единый Neiry-аккаунт по согласованию со смежными командами.
+      <div class="tech-pills">
+        <span class="pill">FCM Android</span>
+        <span class="pill">APNS iOS</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-name"><strong>Frontend</strong>React + Vite</div>
+    <div class="layer-content">
+      Один codebase, две сборки: лига и корпорат. Chart.js для визуализаций.
+      <div class="tech-pills">
+        <span class="pill">React + Vite</span>
+        <span class="pill">Chart.js</span>
+        <span class="pill">league build</span>
+        <span class="pill">corporate build</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-name"><strong>Infra</strong>Yandex Cloud</div>
+    <div class="layer-content">
+      Одна VM 4 vCPU / 8 GB / 100 GB SSD. NGINX роутит поддомены. Бюджет ~4 000 ₽/мес.
+      <div class="tech-pills">
+        <span class="pill">Yandex Cloud VM</span>
+        <span class="pill">NGINX роутинг</span>
+        <span class="pill">GitHub Actions</span>
+        <span class="pill">Sentry</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<section id="scope">
+<h2><span class="num">14</span>In scope / Out of scope · MVP</h2>
+
+<div class="scope">
+
+  <div class="scope-block in">
+    <div class="scope-header">In scope · MVP (8 недель)</div>
+    <ul class="scope-list">
+      <li>Mobile app: Flutter, Android + iOS</li>
+      <li>2 Mode: Corporate + Sport</li>
+      <li>Universal Dashboard, общее ядро</li>
+      <li>2 пресета: Лига и Корпорат (включает офис и safety)</li>
+      <li>Поддомены: league.neiry.ru + dashboard.neiry.ru</li>
+      <li>Биометрика: пульс, ВСР, шаги, сон (с условной обработкой)</li>
+      <li>Тренировки разных видов спорта, GPS с телефона</li>
+      <li>Сонливость и утомление для safety-ролей</li>
+      <li>Готовность к нагрузке, спортивный рейтинг</li>
+      <li>Риск выгорания, тренд стресса</li>
+      <li>Push-уведомления (FCM + APNS)</li>
+    </ul>
+  </div>
+
+  <div class="scope-block out">
+    <div class="scope-header">Out of scope · Волна 2</div>
+    <ul class="scope-list">
+      <li>Care Mode (Patient + Caregiver)</li>
+      <li>Recovery Mode и Recovery preset дэшборда</li>
+      <li>Tactical preset (силовые структуры)</li>
+      <li>Headband BLE-интеграция</li>
+      <li>tVNS BLE-интеграция</li>
+      <li>Live-трекинг соревнований в реальном времени</li>
+      <li>White-label брендинг под конкретного клиента</li>
+      <li>Социалка в Sport (friends, лайки, чаты)</li>
+      <li>Интеграции с Strava / Apple Health / Garmin</li>
+      <li>PostGIS для геоданных</li>
+      <li>GPS с браслета</li>
+    </ul>
+  </div>
+
+</div>
+</section>
+
+<div class="div"></div>
+
+<section id="roadmap">
+<h2><span class="num">15</span>Roadmap · 3 milestone</h2>
+<p>
+  Три ключевых дедлайна между стартом и финальным MVP. Все три потока работают параллельно с первого дня.
+</p>
+
+<div class="milestones">
+  <div class="ms ms-1">
+    <div class="ms-num">M1</div>
+    <div class="ms-name">Tech Demo</div>
+    <div class="ms-date">18 мая</div>
+    <div class="ms-desc">End-to-end пайплайн жив. Браслет → мобайл → backend → дэшборд. Без графиков, без дизайна.</div>
+  </div>
+  <div class="ms-arrow">→</div>
+  <div class="ms ms-2">
+    <div class="ms-num">M2</div>
+    <div class="ms-name">Startup Village</div>
+    <div class="ms-date">25 мая</div>
+    <div class="ms-desc">Публичная выставка. На дэшборде и в приложении — графики и минимальная функциональность. Wow-эффект для инвесторов.</div>
+  </div>
+  <div class="ms-arrow">→</div>
+  <div class="ms ms-3">
+    <div class="ms-num">M3</div>
+    <div class="ms-name">Финальный MVP</div>
+    <div class="ms-date">25 июня</div>
+    <div class="ms-desc">Полнофункциональный продукт. 2 Mode мобайл, 2 пресета дэшборда, push-уведомления, демо для лиги и корпората.</div>
+  </div>
+</div>
+
+<div class="roadmap">
+
+  <div class="roadmap-header demo">M1 · Tech Demo · до 18 мая</div>
+
+  <div class="roadmap-week">
+    <div class="week-label"><strong>Неделя 1</strong>Старт</div>
+    <div class="week-content">
+      <h4>Параллельный старт всех потоков</h4>
+      <div class="week-tracks">
+        <div class="track track-eng">
+          <div class="track-tag">Engineering · Кирилл</div>
+          <div>Yandex Cloud VM, NGINX, certbot, GitHub Actions. Базовая структура FastAPI и Flutter. HBandSDK Inventory документ.</div>
+        </div>
+        <div class="track track-prod">
+          <div class="track-tag">Product · Константин</div>
+          <div>Sync со смежными командами (Mindtracker, Stim-X). Документ <code>Ecosystem_Sync.md</code>. Wireframes Tech Demo и первые экраны Startup Village.</div>
+        </div>
+        <div class="track track-hw">
+          <div class="track-tag">Hardware · Илья</div>
+          <div>Подготовка 3–5 VITRO браслетов. Зарядка, проверка работы, привязка к тестировщикам. Реестр устройств.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-week">
+    <div class="week-label"><strong>11–18 мая</strong>End-to-end</div>
+    <div class="week-content">
+      <h4>Tech Demo готов · M1</h4>
+      <div class="week-tracks">
+        <div class="track track-eng">
+          <div class="track-tag">Engineering · Кирилл</div>
+          <div>BLE-bridge на Android и iOS. Pairing с VITRO. Sync пульса в backend. Минимальный дэшборд: логин + список юзеров.</div>
+        </div>
+        <div class="track track-prod">
+          <div class="track-tag">Product · Константин</div>
+          <div>Дизайн ключевых экранов для Startup Village (приложение + дэшборд). Демо-сценарий M1.</div>
+        </div>
+        <div class="track track-hw">
+          <div class="track-tag">Hardware · Илья</div>
+          <div>QA на тестировщиках: 5 человек носят браслеты, мониторим стабильность синка и работы устройств.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-header village">M2 · Startup Village · до 25 мая</div>
+
+  <div class="roadmap-week">
+    <div class="week-label"><strong>19–25 мая</strong>Графики</div>
+    <div class="week-content">
+      <h4>Минимальная функциональность для выставки · M2</h4>
+      <div class="week-tracks">
+        <div class="track track-eng">
+          <div class="track-tag">Engineering · Кирилл</div>
+          <div>Графики биометрики на дэшборде (пульс live, история за день). Базовый main-экран в мобайле с графиком пульса. Расширение биометрики до ВСР, шагов.</div>
+        </div>
+        <div class="track track-prod">
+          <div class="track-tag">Product · Константин</div>
+          <div>Готовый дизайн под выставку. Демо-аккаунт со «спортсменом» и его данными. Питч и стенд-материалы для Startup Village.</div>
+        </div>
+        <div class="track track-hw">
+          <div class="track-tag">Hardware · Илья</div>
+          <div>Демо-парк браслетов на стенде. Подготовка к live-демонстрации (надеть на посетителя — увидеть пульс на дэшборде).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-header">M3 · MVP · до 25 июня</div>
+
+  <div class="roadmap-week">
+    <div class="week-label"><strong>26 мая – 1 июня</strong>Mode core</div>
+    <div class="week-content">
+      <h4>Mode и онбординг</h4>
+      <div class="week-tracks">
+        <div class="track track-eng">
+          <div class="track-tag">Engineering · Кирилл</div>
+          <div>Mode enum, экран выбора роли. Расширение биометрики до сна. Условная обработка сна для офиса.</div>
+        </div>
+        <div class="track track-prod">
+          <div class="track-tag">Product · Константин</div>
+          <div>Дизайн полного онбординга. Тексты для всех Mode. Спецификация метрик пресетов.</div>
+        </div>
+        <div class="track track-hw">
+          <div class="track-tag">Hardware · Илья</div>
+          <div>Тестирование разных моделей VITRO/VIGOR в полевых условиях. Подготовка устройств для пилотных клиентов.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-week">
+    <div class="week-label"><strong>2–15 июня</strong>Sport</div>
+    <div class="week-content">
+      <h4>Sport Mode и дэшборд Лиги</h4>
+      <div class="week-tracks">
+        <div class="track track-eng">
+          <div class="track-tag">Engineering · Кирилл</div>
+          <div>Sport Mode: тренировки, GPS с телефона, типы активности, темп, пульсовые зоны, готовность к нагрузке. Дэшборд league.neiry.ru.</div>
+        </div>
+        <div class="track track-prod">
+          <div class="track-tag">Product · Константин</div>
+          <div>Финальный дизайн дэшборда Лиги. Спецификация спортивного рейтинга. Демо-данные для лиги (мок-сезон).</div>
+        </div>
+        <div class="track track-hw">
+          <div class="track-tag">Hardware · Илья</div>
+          <div>Передача браслетов в спортивную лигу-пилот. Координация с организаторами.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-week">
+    <div class="week-label"><strong>16–22 июня</strong>Corporate</div>
+    <div class="week-content">
+      <h4>Corporate Mode и дэшборд Корпорат</h4>
+      <div class="week-tracks">
+        <div class="track track-eng">
+          <div class="track-tag">Engineering · Кирилл</div>
+          <div>Corporate Mode: личная готовность, индекс стресса. Дэшборд: риск выгорания, детектор сонливости, готовность к смене для safety-ролей.</div>
+        </div>
+        <div class="track track-prod">
+          <div class="track-tag">Product · Константин</div>
+          <div>Дизайн дэшборда Корпорат. Спецификация role-based алертов. Демо-сценарий для HR / специалиста по охране труда.</div>
+        </div>
+        <div class="track track-hw">
+          <div class="track-tag">Hardware · Илья</div>
+          <div>Передача браслетов в корп-пилот. Регламент ношения для офисных сотрудников и safety-ролей.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-week">
+    <div class="week-label"><strong>23–25 июня</strong>Polish</div>
+    <div class="week-content">
+      <h4>Push, шлифовка, релиз · M3</h4>
+      <div class="week-tracks">
+        <div class="track track-eng">
+          <div class="track-tag">Engineering · Кирилл</div>
+          <div>Push-уведомления (FCM + APNS) — алерты сонливости, тренировочные напоминания. Интеграционное тестирование. Production-релиз.</div>
+        </div>
+        <div class="track track-prod">
+          <div class="track-tag">Product · Константин</div>
+          <div>Демо-аккаунты для каждого пресета. Демо-ролики и презентации для лиги и корп-сегмента. Финальные питч-материалы.</div>
+        </div>
+        <div class="track track-hw">
+          <div class="track-tag">Hardware · Илья</div>
+          <div>Финальное QA. Готовность парка к показу клиентам. Логистика для демо-сессий.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<section id="risks">
+<h2><span class="num">16</span>Риски и митигации</h2>
+
+<div class="decisions">
+  <div class="decision">
+    <div class="decision-label">Риск</div>
+    <div class="decision-value">Не уложимся в 8 недель MVP</div>
+    <div class="decision-meta">Митигация: первым на отказ — push-уведомления и safety-метрики. Sport + офисный корп — must-have.</div>
+  </div>
+  <div class="decision">
+    <div class="decision-label">Риск</div>
+    <div class="decision-value">iOS BLE-bridge сложнее Android</div>
+    <div class="decision-meta">Митигация: параллельная разработка в Tech Demo. Закроем риск на неделе 2.</div>
+  </div>
+  <div class="decision">
+    <div class="decision-label">Риск</div>
+    <div class="decision-value">Детектор сонливости требует валидации</div>
+    <div class="decision-meta">Митигация: в MVP — простая модель (ВСР + микро-паттерны). Полная валидация — Волна 2.</div>
+  </div>
+  <div class="decision">
+    <div class="decision-label">Риск</div>
+    <div class="decision-value">Sport включает много видов спорта</div>
+    <div class="decision-meta">Митигация: в MVP — типизация workout, без специфичных метрик для каждого вида.</div>
+  </div>
+  <div class="decision">
+    <div class="decision-label">Риск</div>
+    <div class="decision-value">APNS — задержка одобрения от Apple</div>
+    <div class="decision-meta">Митигация: настроить APNS параллельно с iOS-bridge на Tech Demo неделе.</div>
+  </div>
+  <div class="decision">
+    <div class="decision-label">Риск</div>
+    <div class="decision-value">Sync со смежными командами затягивается</div>
+    <div class="decision-meta">Митигация: жёсткий дедлайн неделя 1. Если не успели — строим своё, согласуем интеграцию в Волне 2.</div>
+  </div>
+</div>
+</section>
+
+<section id="next">
+<div class="next">
+  <h2><span class="num">17</span>Следующий шаг</h2>
+  <p>
+    Это документ №1 — общая рамка. Дальше — детальные ТЗ по компонентам.
+  </p>
+  <div class="next-options">
+    <div class="next-option" onclick="sendPrompt('Сделай детальное ТЗ на Tech Demo (2 недели): требования к мобайл, бэкенду, дэшборду, разбивка по неделям и потокам, чек-лист готовности')">
+      <strong>→ ТЗ на Tech Demo</strong>
+      <span>Самое срочное · детали по 2 неделям</span>
+    </div>
+    <div class="next-option" onclick="sendPrompt('Опиши задачу синхронизации со смежными командами Mindtracker и Stim-X: agenda встреч, шаблон документа Ecosystem_Sync.md, что выясняем')">
+      <strong>→ Задача Ecosystem Sync</strong>
+      <span>Параллельно неделя 1 · Owner: Константин</span>
+    </div>
+    <div class="next-option" onclick="sendPrompt('Опиши задачу HBandSDK Inventory для Кирилла: что должно быть в документе, шаблон, чек-лист методов SDK')">
+      <strong>→ Задача HBandSDK Inventory</strong>
+      <span>Параллельно неделя 1 · Owner: Кирилл</span>
+    </div>
+    <div class="next-option" onclick="sendPrompt('Сделай детальное ТЗ на Sport Mode мобайл-приложения: экраны, флоу, типы активности, метрики, расчёты')">
+      <strong>→ ТЗ на Sport Mode</strong>
+      <span>Mobile · приоритет №1 после Demo</span>
+    </div>
+    <div class="next-option" onclick="sendPrompt('Сделай детальное ТЗ на пресет Лига дэшборда (league.neiry.ru): экраны, виджеты, фильтры, роли')">
+      <strong>→ ТЗ на дэшборд Лига</strong>
+      <span>Web · приоритет №1 после Demo</span>
+    </div>
+    <div class="next-option" onclick="sendPrompt('Сделай детальное ТЗ на Corporate Mode мобайл-приложения и пресет Корпорат дэшборда: экраны, метрики, роли, алерты')">
+      <strong>→ ТЗ на Corporate (Mode + дэшборд)</strong>
+      <span>Mobile + Web · второй приоритет</span>
+    </div>
+  </div>
+</div>
+</section>
+
+</main>
+</div>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const links = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        links.forEach(l => l.classList.toggle('active', l.dataset.target === id));
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+  links.forEach(link => {
+    link.addEventListener('click', () => {
+      const target = document.getElementById(link.dataset.target);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  document.querySelectorAll('.mode-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') return;
+      const isExpanded = card.classList.contains('expanded');
+      document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('expanded'));
+      if (!isExpanded) card.classList.add('expanded');
+    });
+  });
+</script>
+
+<div class="edit-panel" id="editPanel">
+  <span class="edit-panel-status" id="editStatus">Просмотр</span>
+  <span class="save-indicator" id="saveIndicator">Сохранено</span>
+  <div class="edit-panel-divider"></div>
+  <button id="toggleEdit" class="primary">Включить правку</button>
+  <button id="exportBtn" title="Скачать HTML с правками">Экспорт</button>
+  <button id="resetBtn" title="Откатить все правки">Сброс</button>
+</div>
+
+<div class="edit-toast" id="editToast">Готово</div>
+
+<div class="svg-edit-popup" id="svgEditPopup">
+  <div class="svg-edit-label">Текст в диаграмме</div>
+  <input type="text" id="svgEditInput" autocomplete="off">
+  <div class="svg-edit-actions">
+    <button id="svgEditCancel">Отмена</button>
+    <button id="svgEditSave" class="primary">Сохранить</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'neiry_pulse_edits_v2';
+  const panel = document.getElementById('editPanel');
+  const status = document.getElementById('editStatus');
+  const toggleBtn = document.getElementById('toggleEdit');
+  const exportBtn = document.getElementById('exportBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const saveIndicator = document.getElementById('saveIndicator');
+  const toast = document.getElementById('editToast');
+
+  // Selectors for editable elements — text content only
+  const EDITABLE_SELECTORS = [
+    'h1', 'h2', 'h3', 'h4',
+    'p',
+    '.lead',
+    '.deadline-text',
+    '.stage-title', '.stage-period', '.stage-goal',
+    '.stage-checklist li',
+    '.team-name', '.team-title',
+    '.team-card li',
+    '.decision-value', '.decision-meta', '.decision-label',
+    '.mode-title', '.mode-subtitle',
+    '.mode-meta-row span',
+    '.mode-detail li',
+    '.preset-title', '.preset-status',
+    '.preset-card li',
+    '.matrix-cell.metric',
+    '.layer-content',
+    '.scope-list li',
+    '.task-card-tag',
+    '.sync-tag',
+    '.sync-item strong', '.sync-item',
+    '.week-label strong',
+    '.week-content h4',
+    '.track div:not(.track-tag)',
+    '.next-option strong', '.next-option span',
+    '.diagram-title',
+    'ol li', 'ol li strong',
+    '.ms-num', '.ms-name', '.ms-date', '.ms-desc',
+    '.deadline-tag', '.deadline-num', '.deadline-unit',
+    '.roadmap-header'
+  ];
+
+  // Assign stable IDs to all editable elements
+  function assignIds() {
+    let idx = 0;
+    EDITABLE_SELECTORS.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        if (!el.dataset.editId) {
+          el.dataset.editId = 'e' + (idx++);
+        }
+      });
+      // Re-increment counter to keep unique across selectors
+      idx = Math.max(idx, document.querySelectorAll('[data-edit-id]').length);
+    });
+  }
+  assignIds();
+
+  // Assign stable IDs to all SVG text elements
+  function assignSvgIds() {
+    let svgIdx = 0;
+    document.querySelectorAll('.diagram-wrap svg text').forEach(el => {
+      if (!el.getAttribute('data-svg-edit-id')) {
+        el.setAttribute('data-svg-edit-id', 's' + (svgIdx++));
+      }
+    });
+  }
+  assignSvgIds();
+
+  // Load saved edits from localStorage
+  function loadEdits() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return {};
+      return JSON.parse(raw);
+    } catch (e) {
+      return {};
+    }
+  }
+
+  // Apply saved edits to DOM
+  function applyEdits() {
+    const edits = loadEdits();
+    Object.keys(edits).forEach(id => {
+      const el = document.querySelector('[data-edit-id="' + id + '"]');
+      if (el) {
+        el.innerHTML = edits[id];
+      }
+    });
+    // SVG edits
+    Object.keys(edits).forEach(id => {
+      if (!id.startsWith('s')) return;
+      const el = document.querySelector('[data-svg-edit-id="' + id + '"]');
+      if (el) {
+        el.textContent = edits[id];
+      }
+    });
+  }
+  applyEdits();
+
+  // Save current edits to localStorage
+  let saveTimeout;
+  function saveEdits() {
+    const edits = loadEdits();
+    document.querySelectorAll('[data-edit-id]').forEach(el => {
+      edits[el.dataset.editId] = el.innerHTML;
+    });
+    document.querySelectorAll('[data-svg-edit-id]').forEach(el => {
+      edits[el.getAttribute('data-svg-edit-id')] = el.textContent;
+    });
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
+      showSaveIndicator();
+    } catch (e) {
+      showToast('Ошибка сохранения');
+    }
+  }
+
+  function showSaveIndicator() {
+    saveIndicator.classList.add('show');
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+      saveIndicator.classList.remove('show');
+    }, 1500);
+  }
+
+  function showToast(text) {
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  // Toggle edit mode
+  let editMode = false;
+  function setEditMode(on) {
+    editMode = on;
+    document.body.classList.toggle('edit-mode', on);
+    panel.classList.toggle('active', on);
+    status.textContent = on ? 'Режим правки' : 'Просмотр';
+    toggleBtn.textContent = on ? 'Выключить правку' : 'Включить правку';
+
+    document.querySelectorAll('[data-edit-id]').forEach(el => {
+      if (on) {
+        el.contentEditable = 'true';
+        el.spellcheck = true;
+      } else {
+        el.removeAttribute('contenteditable');
+        el.removeAttribute('spellcheck');
+      }
+    });
+
+    if (on) {
+      showToast('Кликни на любой текст для правки');
+    } else {
+      closeSvgPopup();
+    }
+  }
+
+  toggleBtn.addEventListener('click', () => setEditMode(!editMode));
+
+  // ── SVG TEXT EDITING ─────────────────────────────────────────
+  const svgPopup = document.getElementById('svgEditPopup');
+  const svgInput = document.getElementById('svgEditInput');
+  const svgSaveBtn = document.getElementById('svgEditSave');
+  const svgCancelBtn = document.getElementById('svgEditCancel');
+  let activeSvgEl = null;
+
+  function openSvgPopup(el) {
+    activeSvgEl = el;
+    const rect = el.getBoundingClientRect();
+    svgInput.value = el.textContent;
+    svgPopup.style.display = 'flex';
+
+    // Position above the element if there's room, below otherwise
+    const popupHeight = 80;
+    const popupWidth = 320;
+    let top = rect.top + window.scrollY - popupHeight - 8;
+    if (top < window.scrollY + 12) top = rect.bottom + window.scrollY + 8;
+    let left = rect.left + (rect.width / 2) - (popupWidth / 2);
+    if (left < 12) left = 12;
+    if (left + popupWidth > window.innerWidth - 12) {
+      left = window.innerWidth - popupWidth - 12;
+    }
+    svgPopup.style.top = top + 'px';
+    svgPopup.style.left = left + 'px';
+
+    setTimeout(() => svgInput.focus(), 50);
+  }
+
+  function closeSvgPopup() {
+    svgPopup.style.display = 'none';
+    activeSvgEl = null;
+  }
+
+  function commitSvgEdit() {
+    if (activeSvgEl) {
+      activeSvgEl.textContent = svgInput.value;
+      saveEdits();
+    }
+    closeSvgPopup();
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!editMode) return;
+    const svgText = e.target.closest('[data-svg-edit-id]');
+    if (svgText) {
+      e.preventDefault();
+      e.stopPropagation();
+      openSvgPopup(svgText);
+    } else if (!e.target.closest('#svgEditPopup')) {
+      // clicked outside popup → close it
+      if (svgPopup.style.display === 'flex') {
+        commitSvgEdit();
+      }
+    }
+  });
+
+  svgSaveBtn.addEventListener('click', commitSvgEdit);
+  svgCancelBtn.addEventListener('click', closeSvgPopup);
+  svgInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commitSvgEdit();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      closeSvgPopup();
+    }
+  });
+
+  // Auto-save on blur or input (debounced)
+  let inputTimeout;
+  document.addEventListener('input', (e) => {
+    if (!editMode) return;
+    if (!e.target.dataset.editId) return;
+    clearTimeout(inputTimeout);
+    inputTimeout = setTimeout(saveEdits, 400);
+  });
+
+  document.addEventListener('blur', (e) => {
+    if (!editMode) return;
+    if (!e.target.dataset.editId) return;
+    saveEdits();
+  }, true);
+
+  // Prevent newlines on Enter in single-line elements
+  document.addEventListener('keydown', (e) => {
+    if (!editMode) return;
+    if (!e.target.dataset.editId) return;
+    if (e.key === 'Enter' && !e.shiftKey) {
+      const tag = e.target.tagName.toLowerCase();
+      const isMultiline = ['p', 'div', 'li'].includes(tag) || e.target.classList.contains('lead') || e.target.classList.contains('layer-content') || e.target.classList.contains('stage-goal');
+      if (!isMultiline) {
+        e.preventDefault();
+        e.target.blur();
+      }
+    }
+  });
+
+  // Reset all edits
+  resetBtn.addEventListener('click', () => {
+    if (!confirm('Откатить все правки к исходному документу? Это действие нельзя отменить.')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  });
+
+  // Export HTML with edits
+  exportBtn.addEventListener('click', () => {
+    // Clone the document
+    const clone = document.documentElement.cloneNode(true);
+
+    // Remove edit panel from clone
+    const clonePanel = clone.querySelector('#editPanel');
+    if (clonePanel) clonePanel.remove();
+    const cloneToast = clone.querySelector('#editToast');
+    if (cloneToast) cloneToast.remove();
+    const clonePopup = clone.querySelector('#svgEditPopup');
+    if (clonePopup) clonePopup.remove();
+
+    // Remove all contenteditable attributes from clone
+    clone.querySelectorAll('[contenteditable]').forEach(el => {
+      el.removeAttribute('contenteditable');
+      el.removeAttribute('spellcheck');
+    });
+
+    // Remove edit-mode class from body in clone
+    const cloneBody = clone.querySelector('body');
+    if (cloneBody) cloneBody.classList.remove('edit-mode');
+
+    // Build full HTML
+    const html = '<!DOCTYPE html>\n<html lang="ru">\n' + clone.innerHTML + '\n</html>';
+
+    // Create download
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const date = new Date().toISOString().slice(0, 10);
+    a.download = 'neiry_pulse_' + date + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('HTML с правками скачан');
+  });
+
+  // Keyboard shortcut: Cmd/Ctrl + E to toggle edit mode
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'e') {
+      e.preventDefault();
+      setEditMode(!editMode);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

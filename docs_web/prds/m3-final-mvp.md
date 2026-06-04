@@ -1,3 +1,7 @@
+---
+title: "PRD · M3 — Final MVP (Neiry Pulse)"
+---
+
 # PRD · M3 — Final MVP (Neiry Pulse)
 
 **Версия:** v1.0

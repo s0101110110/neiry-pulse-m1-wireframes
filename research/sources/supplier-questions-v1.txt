@@ -1,0 +1,173 @@
+Вопросы к поставщику HBandSDK / Veepoo
+Questions to HBandSDK / Veepoo supplier
+Сопроводительный документ к аудиту метрик Neiry Vitro v0.1
+Owner: Кирилл (SDK Integration)
+Reviewer: Константин (Product)
+Дата: 15 мая 2026
+Цель документа
+Список открытых вопросов к китайскому поставщику HBandSDK / Veepoo, возникших в ходе аудита метрик Neiry Vitro. Вопросы сгруппированы по приоритету:
+🔴 БЛОКЕР — без ответа невозможно принять архитектурное решение для MVP.
+🟠 ВАЖНО — ответ существенно влияет на качество и юридическую безопасность продукта.
+🟡 ПОЛЕЗНО — ответ позволяет улучшить UX или оптимизировать архитектуру.
+Документ построен в формате «вопрос — контекст — что мы хотим получить — что мы будем делать в зависимости от ответа». Это позволяет отправить вопросы по частям и получать ответы итеративно.
+🔴 Блокеры (требуется ответ в течение 1–2 недель)
+Q1. Доступ к RR-интервалам через SDK
+Вопрос (RU)
+Получаем ли мы массив RR-интервалов (Inter-Beat Intervals) через какой-либо метод HBandSDK? В документации мы видим:
+HR — через startDetectHeart / IHeartDataListener (готовые bpm)
+PPG raw — через IPPGRealTimeTransmissionListener.onGreenLightDataReport (25 Hz сэмплы)
+HRV (Lorenz) — через JNIChange.hrvAnalysisReport
+Но прямого listener'а для RR-массива не нашли. Возможно ли получить RR через:
+Структуру OriginData или OriginData3?
+Отдельный listener (IRRIntervalListener или подобный)?
+Запись в bod_hrv_char_t как массив исходных RR?
+Question (EN)
+Do we get access to the RR-intervals (Inter-Beat Intervals) array through any HBandSDK method? Documentation shows HR (via IHeartDataListener), raw PPG (via IPPGRealTimeTransmissionListener), and HRV via Lorenz plot (JNIChange.hrvAnalysisReport) — but no direct RR-array listener. Is RR accessible via OriginData/OriginData3 structures, a dedicated listener, or as raw input to bod_hrv_char_t?
+Почему это блокер
+От ответа зависит, можем ли мы считать собственные HRV-метрики (RMSSD, SDNN, pNN50, SD1/SD2) на нашем backend. Это критично для:
+Стратегии «честной биометрии» Neiry — научно валидированный HRV сравнимый с Polar
+Архитектуры расчётных движков (где считается L3 Stress Score)
+Долгосрочной независимости от Veepoo (если они поменяют HRV-алгоритм)
+Что мы будем делать в зависимости от ответа
+Если RR доступны: стримим RR в Mobile App → batch-sync в backend → собственный расчёт HRV-метрик в Python (Celery worker). Veepoo HRV храним как референс.
+Если RR не доступны: используем готовый Veepoo HRV из bod_hrv_char_t (см. Q2). Дополнительно делаем собственный Neiry Stress Score на основе того HRV-значения, что отдаст SDK, плюс HR-baseline.
+Q2. Состав структуры bod_hrv_char_t
+Вопрос (RU)
+Native-метод JNIChange.hrvAnalysisReport(short[] rr, short count, bod_hrv_char_t result) возвращает результат в структуре bod_hrv_char_t из libnative-lib.so. Какие именно поля содержит эта структура? Конкретно интересуют:
+RMSSD (Root Mean Square of Successive Differences) — в мс
+SDNN (Standard Deviation of NN-intervals) — в мс
+pNN50 (Percentage of NN intervals differing by >50 ms) — в %
+SD1, SD2 (стандартные отклонения эллипса Пуанкаре) — в мс
+LF / HF (Low Frequency / High Frequency power) — частотный анализ
+Stress score / другие производные индексы
+Можете ли предоставить header-файл (.h) с определением структуры?
+Question (EN)
+The native method JNIChange.hrvAnalysisReport(short[] rr, short count, bod_hrv_char_t result) returns results in the bod_hrv_char_t structure from libnative-lib.so. What fields does this structure contain? Specifically: RMSSD, SDNN, pNN50, SD1/SD2, LF/HF spectral components, derived stress indices? Could you provide the header file (.h) with the struct definition?
+Почему это блокер
+Без понимания состава bod_hrv_char_t мы не знаем, какая HRV-метрика отображается у пользователя. Если возвращается только один скаляр (например SD1) — мы не можем построить полноценный HRV-дашборд. Если возвращается полный набор Task Force standards — мы можем работать с этим напрямую.
+Что мы будем делать в зависимости от ответа
+Полный набор (RMSSD, SDNN, pNN50, и т.д.): используем готовые поля, не дублируем расчёт.
+Только SD1 или один индекс: запрашиваем доступ к RR (Q1) и считаем сами. Или строим Neiry HRV на основе того, что есть.
+🟠 Важные вопросы (срок — до начала разработки L2/L3 в backend)
+Q3. ЭКГ — сертификация и точность
+Вопрос (RU)
+Для модели VANTA (Health) с ЭКГ:
+Сертифицирована ли ECG-алгоритмика Veepoo как медицинская? CFDA (Китай), CE-mark (Европа), FDA (США)?
+Какова точность AFib detection (если поддерживается)? Sensitivity / Specificity vs медицинская ЭКГ?
+Что входит в «ECG-32 diagnostics» (упоминается в маркетинговых материалах)? Список из 32 классификаций ритма?
+Можно ли получить отчёт об интерпретации на устройстве, или классификация делается на нашей стороне на основе сырых ADC?
+Question (EN)
+For the VANTA (Health) model with ECG: Is Veepoo's ECG algorithm medically certified (CFDA, CE-mark, FDA)? What is AFib detection accuracy (Sensitivity/Specificity vs medical ECG)? What is included in 'ECG-32 diagnostics' — list of 32 rhythm classifications? Is interpretation done on-device, or do we receive raw ADC samples for our own classification?
+Зачем
+Для сегмента Care (пенсионеры) и для премиум-позиционирования VANTA критично — если ЭКГ-алгоритм медицински сертифицирован, мы можем легально использовать его в Care-пакете. Если нет — мы должны добавить дисклеймер «не для медицинских целей».
+Q4. Mini Checkup — что входит
+Вопрос (RU)
+В SDK есть API «Mini Checkup» (раздел 4.5 deepwiki). Заявлен как «comprehensive 10-parameter health assessment». Уточните:
+Какие конкретно 10 параметров входят?
+Какова длительность одного assessment-цикла?
+Какие сенсоры активируются?
+Можно ли получить документацию по формулам каждого параметра?
+Поддерживается ли Mini Checkup на всех трёх наших моделях (VITRO, VANTA, VIGOR)?
+Question (EN)
+The SDK has a 'Mini Checkup' API (section 4.5 deepwiki) advertised as 'comprehensive 10-parameter health assessment'. Please clarify: What 10 parameters are included? What is the duration of one assessment? Which sensors are activated? Can you provide documentation on the formula for each parameter? Is Mini Checkup supported on all our three models (VITRO, VANTA, VIGOR)?
+Зачем
+Mini Checkup — потенциальный USP-кандидат для премиум-пресета (VANTA + Recovery центры). Если 10 параметров включают полезные для биохакинга метрики — это легитимная фича. Если это переупаковка маркетинговых метрик (глюкоза, состав крови) — нужно убрать.
+Q5. Signal Quality / Confidence Score
+Вопрос (RU)
+Apple Watch, Garmin, WHOOP добавляют к каждому измерению confidence score (показатель качества сигнала). Это позволяет фильтровать ненадёжные данные на backend.
+Есть ли в HBandSDK эквивалент confidence score для HR / SpO₂ / ECG?
+Возвращается ли индикатор «браслет надет / снят» (wearing detection)?
+Возвращается ли уровень motion artifact для PPG-измерений?
+Question (EN)
+Apple Watch, Garmin, WHOOP attach a confidence score to each measurement (signal quality indicator). Does HBandSDK provide an equivalent confidence score for HR / SpO₂ / ECG? Is there a 'wearing detection' indicator? Is motion artifact level returned for PPG measurements?
+Зачем
+Без confidence score мы вынуждены либо фильтровать данные эвристически (ненадёжно), либо показывать пользователю все измерения включая мусор. Это критично для backend-логики и для алертов в Care/Tactical сегментах.
+Q6. PPG Raw Streaming — энергопотребление и ограничения
+Вопрос (RU)
+Документация описывает два режима PPG raw streaming: MODE1 (15 мин / 10 сек) и MODE2 (5 мин / 60 сек). Уточните:
+Какое реальное энергопотребление в каждом режиме? Сколько часов автономии при continuous streaming?
+Поддерживается ли PPG raw на всех трёх моделях (VITRO, VANTA, VIGOR)?
+Можно ли одновременно стримить PPG raw И запускать другие measurement (HR / SpO₂)?
+Какой объём данных передаётся за сутки в каждом режиме? (примерно, чтобы оценить нагрузку на телефон)
+Question (EN)
+The documentation describes two PPG raw streaming modes: MODE1 (every 15 min for 10 sec) and MODE2 (every 5 min for 60 sec). Please clarify: What is the actual battery consumption in each mode? Is PPG raw supported on all three models (VITRO, VANTA, VIGOR)? Can we simultaneously stream PPG raw AND run other measurements (HR / SpO₂)? What is the daily data volume in each mode?
+Зачем
+Battery life — главный USP для корпоративного сегмента (25–30 дней автономности). Если PPG raw убивает батарею за день — мы не можем использовать его как основной источник для собственного HRV.
+🟡 Полезные вопросы (срок — до релиза MVP)
+Q7. Sleep Detection — алгоритм
+Какой алгоритм Sleep Detection использует Veepoo? Это Cole-Kripke (стандарт actigraphy)? Sadeh? Или собственный? Используются ли HRV-features или только motion для классификации фаз сна (Light / Deep / REM)? Какая валидация по сравнению с PSG (polysomnography)?
+Q8. Stress Score Veepoo — формула
+Stress Score возвращается в OriginData (см. периодический stress measurement). По какой формуле он считается? На основе HRV-падения от baseline? Что является baseline (последние 7 дней? месяц?)? Шкала 0–100 — как мапируется на физиологию?
+Q9. Blood Pressure — Private Mode калибровка
+Для DETECT_MODEL_PRIVATE — какова процедура калибровки? Сколько измерений эталонной манжетой нужно? Как долго калибровка остаётся валидной (Samsung требует ежемесячную)? Что происходит, если давление пользователя за это время реально меняется?
+Q10. OTA-обновления алгоритмов
+Если Veepoo обновит свой HRV или sleep алгоритм через OTA — будут ли исторические данные пересчитываться? Или они останутся в старой шкале? Как нам узнать о смене алгоритма (changelog)? Это важно для long-term трендов пользователей.
+Q11. Гироскоп и 6-осевой IMU
+Для моделей VANTA и VIGOR заявлен 6-осевой IMU (для fall detection и расширенной аналитики движений). Подтверждается ли это? Доступен ли через SDK raw гироскоп-сигнал (3 оси, deg/s) синхронно с акселерометром? Какая частота?
+Q12. GNSS — характеристики (для VIGOR)
+Какие именно созвездия поддерживает GPS-чип VIGOR (GPS L1, GLONASS, Beidou, Galileo)? Какая точность fix'a в условиях городской застройки? Какое энергопотребление в режиме непрерывной записи трека?
+Q13. Множественные модели и SDK-совместимость
+Подтверждается ли, что одна сборка HBandSDK работает со всеми тремя моделями (VITRO Base, VANTA Health, VIGOR Sport)? Есть ли feature flag, который говорит mobile-приложению о возможностях конкретной модели (например, ECG доступен / нет)? Видим VpSpGetUtil и FunctionDeviceSupportData — это полный список?
+Сводная таблица для отслеживания ответов
+#
+Тема вопроса
+Приоритет
+Статус
+Дата ответа
+Q1
+Доступ к RR-интервалам
+🔴 БЛОКЕР
+Отправлен / Ожидание
+Q2
+Состав bod_hrv_char_t
+🔴 БЛОКЕР
+Отправлен / Ожидание
+Q3
+ЭКГ — сертификация и точность
+🟠 Важно
+—
+Q4
+Mini Checkup — что входит
+🟠 Важно
+—
+Q5
+Signal Quality / Confidence
+🟠 Важно
+—
+Q6
+PPG Raw — энергопотребление
+🟠 Важно
+—
+Q7
+Sleep Detection — алгоритм
+🟡 Полезно
+—
+Q8
+Stress Score — формула
+🟡 Полезно
+—
+Q9
+BP Private Mode — калибровка
+🟡 Полезно
+—
+Q10
+OTA-обновления алгоритмов
+🟡 Полезно
+—
+Q11
+Гироскоп и 6-осевой IMU
+🟡 Полезно
+—
+Q12
+GNSS — характеристики
+🟡 Полезно
+—
+Q13
+Множественные модели и SDK
+🟡 Полезно
+—
+Рекомендуемая последовательность общения с поставщиком:
+Первое письмо: Q1, Q2 (блокеры) — отдельным письмом, помечено как critical
+Второе письмо (через 1 неделю): Q3, Q4, Q5, Q6 (важные)
+Третье письмо: Q7–Q13 — пачкой, low priority
+Это сохраняет фокус и не перегружает поставщика 13 вопросами одновременно.

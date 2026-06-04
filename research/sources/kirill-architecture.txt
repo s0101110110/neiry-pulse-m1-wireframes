@@ -1,0 +1,46 @@
+Схема системы
+2.2 Компоненты
+Слой
+Компонент
+Технология MVP
+Hardware
+Браслет Neiry Vitro Band
+Готовый Veepoo VE58 PRO
+Mobile
+Android-приложение
+Flutter 3.19+ · Riverpod · Drift · Dio
+Mobile native
+BLE-bridge
+Kotlin + Veepoo Java SDK + MethodChannel/EventChannel
+Backend (web)
+FastAPI
+Python 3.12 · FastAPI 0.115 · uvicorn · Pydantic v2 · SQLAlchemy 2.0 · Alembic
+Backend (фоновые задачи)
+Celery
+Celery 5.4 + Redis как broker. Cron-задачи (расчёт метрик), отложенные действия (отправка email)
+БД
+Реляционка
+PostgreSQL 16. Time-series в обычных таблицах с индексом по (employee_id, recorded_at)
+Кэш и брокер
+Redis 7
+Брокер для Celery + опционально кэш агрегатов дашборда
+Фронтенд
+Дашборд
+React + Vite + Chart.js (по существующему прототипу neiry_unite_v3.html)
+Reverse proxy / TLS
+NGINX + certbot
+TLS-терминация (Let's Encrypt), статика дашборда, проксирование /api
+Хостинг
+Одна VM
+Yandex Cloud — Compute Cloud, 4 vCPU · 8 GB RAM · 100 GB SSD
+Бэкапы
+pg_dump → Object Storage
+Cron-скрипт в отдельном контейнере, retention 14 дней
+Мониторинг
+UptimeRobot + Sentry
+Внешний пинг /health, краши и performance в Sentry
+CI/CD
+GitHub Actions
+Build → docker push → ssh deploy через docker compose pull && up
+Бюджет инфраструктуры
+VM Yandex Cloud ~3 500 ₽/мес · Object Storage для бэкапов ~200 ₽/мес · Container Registry бесплатно · TLS-сертификат бесплатно (Let's Encrypt) · Sentry бесплатно · UptimeRobot бесплатно · корпоративная почта Yandex 360 ~250 ₽/мес. Итого ~4 000₽/мес. Redis и Celery работают на той же VM как контейнеры — не требуют отдельной оплаты.

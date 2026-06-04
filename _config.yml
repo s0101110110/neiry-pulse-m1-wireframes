@@ -1,0 +1,24 @@
+title: Neiry Pulse · Artifacts
+markdown: kramdown
+kramdown:
+  syntax_highlighter: rouge
+  input: GFM
+  hard_wrap: false
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+exclude:
+  - Design/
+  - Contracts/
+  - _local_archive/
+  - node_modules/
+  - "*.docx"
+  - "*.pdf"
+  - dashboard/node_modules/
+  - backend/
+  - mobile/
+  - UI_assets/screenshots/
