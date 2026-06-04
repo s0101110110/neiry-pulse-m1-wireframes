@@ -277,6 +277,8 @@
   .owner-badge.uxui { color: #c084fc; border-color: rgba(192,132,252,0.3); }
   .owner-badge.alexey { color: #f87171; border-color: rgba(248,113,113,0.3); }
   .owner-badge.team { color: #65a30d; border-color: rgba(101,163,13,0.4); }
+  .owner-badge.ux { color: #c084fc; border-color: rgba(192,132,252,0.3); }
+  .owner-badge.nikita { color: #34d399; border-color: rgba(52,211,153,0.35); }
 
   /* === Owners view === */
   .owners-grid {
@@ -556,8 +558,8 @@
   <!-- HEADER -->
   <div class="header">
     <div>
-      <h1>Neiry · <span class="brand">Startup Village</span> — Панель управления</h1>
-      <div class="subtitle">PM Dashboard · M2 Stand · Brief 2026-05-22</div>
+      <h1>Neiry Pulse · <span class="brand">Project Dashboard</span> · Roadmap M3</h1>
+      <div class="subtitle">Final MVP · 2 Mode · 2 пресета · Релиз 25.06.2026</div>
     </div>
     <div class="meta">
       <div><span class="live-dot"></span>LIVE · <span id="now-time">--:--</span></div>
@@ -568,9 +570,9 @@
   <!-- HERO STRIP -->
   <div class="hero">
     <div class="hero-card accent">
-      <div class="label">До Village</div>
+      <div class="label">До M3</div>
       <div class="value mono"><span id="countdown">--</span><span class="unit">дн.</span></div>
-      <div class="caption">Демо 28-29.05.2026 · Стыковка 27.05 · Москва</div>
+      <div class="caption">Final MVP · 25.06.2026</div>
     </div>
     <div class="hero-card">
       <div class="label">Задач закрыто</div>
@@ -578,14 +580,14 @@
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width: 0%"></div></div>
     </div>
     <div class="hero-card">
-      <div class="label">Открытых вопросов</div>
-      <div class="value mono"><span id="questions-open">10</span><span class="unit">/ 10</span></div>
-      <div class="caption">Ждут решения PM</div>
+      <div class="label">R&amp;D · открытых дорожек</div>
+      <div class="value mono"><span>6</span><span class="unit">/ 6</span></div>
+      <div class="caption">См. вкладку 🔬 R&amp;D</div>
     </div>
     <div class="hero-card">
       <div class="label">Текущий этап</div>
-      <div class="value mono" style="font-size: 22px; padding-top: 8px;" id="current-stage">Спринт 2 дня</div>
-      <div class="caption" id="current-stage-desc">Пн 25.05 + Вт 26.05 → Ср 27.05 стыковка → Чт-Пт выставка</div>
+      <div class="value mono" style="font-size: 22px; padding-top: 8px;" id="current-stage">W1 · Core</div>
+      <div class="caption" id="current-stage-desc">2-8 июня · Mode enum · сон · ICP v2 · privacy bench</div>
     </div>
   </div>
 
@@ -600,420 +602,234 @@
 
   <!-- VIEW: CALENDAR -->
   <div class="view active" data-view="calendar">
-    <div class="calendar">
+    <div class="calendar" style="grid-template-columns: repeat(4, 1fr);">
 
-      <!-- 24.05 (прошло) -->
-      <div class="day-col post">
+      <!-- W1 · текущая -->
+      <div class="day-col today" style="min-height: 540px;">
         <div class="day-header">
           <div>
-            <div class="day-date">24.05</div>
-            <div class="day-name">Вс · D-4 · прошло</div>
+            <div class="day-date">W1</div>
+            <div class="day-name">2-8 июня · Core</div>
           </div>
         </div>
-        <div class="day-badge done">Done · Брифы отправлены</div>
+        <div class="day-badge today">Сейчас</div>
         <div style="margin-top: 14px;">
-          <div class="task done" data-task="t1">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div style="flex:1;">
-                <div class="task-text">Брифы A1-A5 + PDF для Кирилла отправлены</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="task done" data-task="t2">
-            <div class="task-row">
-              <input type="checkbox" class="task-check" checked>
-              <div style="flex:1;">
-                <div class="task-text">Decisions: фильтр R-R 2 ступени, simplicity rule, стратегия рисков</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="task" data-task="t2b">
+          <div class="task" data-task="m3-w1-1">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text">Объединённый риск-документ для Никиты (M2-specific)</div>
-                <div class="task-time">перенос на 25.05</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                </div>
+                <div class="task-text">Mode enum в auth (Sport / Corporate) + экран выбора при регистрации</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w1-2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Root cause «сон» — SDK Veepoo vs actigraphy fallback (R&amp;D-3)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w1-3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">ICP v2 — структурировать лиды Village (R&amp;D-4)</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w1-4">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Privacy / consent bench (Whoop, Oura, Polar) → требования onboarding (R&amp;D-5)</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w1-5">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Запросить sample raw IMU/PPG у Vigor — 10 мин записи (R&amp;D-2)</div>
+                <div class="task-owners"><span class="owner-badge nikita">Никита</span></div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 25.05 -->
-      <div class="day-col today">
+      <!-- W2 -->
+      <div class="day-col" style="min-height: 540px;">
         <div class="day-header">
           <div>
-            <div class="day-date">25.05</div>
-            <div class="day-name">Пн · D-3 · сегодня</div>
+            <div class="day-date">W2</div>
+            <div class="day-name">9-15 июня · Sport</div>
           </div>
         </div>
-        <div class="day-badge today">Сегодня · 3 трека параллельно</div>
+        <div class="day-badge upcoming">Sport Mode + Лига</div>
         <div style="margin-top: 14px;">
-
-          <div class="task" data-task="t-pm1">
+          <div class="task" data-task="m3-w2-1">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text"><b>PM:</b> Объединённый риск-документ для Никиты (M2-specific)</div>
-                <div class="task-time">утро</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                </div>
+                <div class="task-text">Sport Mode mobile: тренировки, GPS, типы активности, пульсовые зоны</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
               </div>
             </div>
           </div>
-          <div class="task" data-task="t-pm2">
+          <div class="task" data-task="m3-w2-2">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text"><b>PM:</b> Flow выставки + блок-схема сценария гостя/питча</div>
-                <div class="task-time">первая половина</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                </div>
+                <div class="task-text">Дизайн дашборда Лиги на league.neiry.ru (отдельный поддомен + бренд)</div>
+                <div class="task-owners"><span class="owner-badge ux">UX</span></div>
               </div>
             </div>
           </div>
-          <div class="task" data-task="t-pm3">
+          <div class="task" data-task="m3-w2-3">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text"><b>PM:</b> Бриф UX/UI на редизайн стенда + дашборда (React kit)</div>
-                <div class="task-time">вторая половина</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                  <span class="owner-badge uxui">UX/UI</span>
-                </div>
+                <div class="task-text">Спецификация League Fitness Score (формула + входы)</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
               </div>
             </div>
           </div>
-
-          <div class="task" data-task="t-k1">
+          <div class="task" data-task="m3-w2-4">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text"><b>Кирилл:</b> Утилита фильтра R-R (медиана 20% → перцентиль 5/95) + ИН Баевского</div>
-                <div class="task-time">первая половина</div>
-                <div class="task-owners">
-                  <span class="owner-badge kirill">Кирилл</span>
-                </div>
+                <div class="task-text">Демо-данные для лиги (мок-сезон, 10-15 спортсменов)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
               </div>
             </div>
           </div>
-          <div class="task" data-task="t-k2">
+          <div class="task" data-task="m3-w2-5">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text"><b>Кирилл:</b> <span class="mono">POST /admin/seed-rr</span> + RMSSD/SDNN + ИН</div>
-                <div class="task-time">вторая половина</div>
-                <div class="task-owners">
-                  <span class="owner-badge kirill">Кирилл</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="task" data-task="t-k3">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text"><b>Кирилл:</b> Заглушки 3 drill-down эндпоинтов Баевского (<span class="mono">/start · /next-phase · /result</span>)</div>
-                <div class="task-time">вечер</div>
-                <div class="task-owners">
-                  <span class="owner-badge kirill">Кирилл</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="task" data-task="t-c1">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text"><b>Команда:</b> 3 разных Android выделены + дев-UI APK + паринг 1:1 с браслетами</div>
-                <div class="task-time">первая половина</div>
-                <div class="task-owners">
-                  <span class="owner-badge team">Команда</span>
-                  <span class="owner-badge kirill">Кирилл (на связи)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="task" data-task="t-c2">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text"><b>Анкеры:</b> Алексей, Илья, перформер надевают браслеты — <b>не снимают до 29.05</b></div>
-                <div class="task-time">вечер</div>
-                <div class="task-owners">
-                  <span class="owner-badge alexey">Алексей</span>
-                  <span class="owner-badge team">Илья</span>
-                  <span class="owner-badge team">Перформер</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="task" data-task="t-u1">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text"><b>UX/UI:</b> Чистка M1 wireframes (mobile-hrv-sync / result) + старт drill-down макета</div>
-                <div class="task-time">в течение дня</div>
-                <div class="task-owners">
-                  <span class="owner-badge uxui">UX/UI</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- 26.05 -->
-      <div class="day-col">
-        <div class="day-header">
-          <div>
-            <div class="day-date">26.05</div>
-            <div class="day-name">Вт · D-2 · последний полный день</div>
-          </div>
-        </div>
-        <div class="day-badge upcoming">Sync #1 + Smoke-test стенда</div>
-        <div style="margin-top: 14px;">
-          <div class="task" data-task="t-d2-1">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text">1-й sync ночных данных анкеров через dev-UI → <span class="mono">/admin/seed-rr</span></div>
-                <div class="task-time">утро</div>
-                <div class="task-owners">
-                  <span class="owner-badge alexey">Анкеры</span>
-                  <span class="owner-badge kirill">Кирилл</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="task" data-task="t-d2-2">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text"><b>Проверка RMSSD/ИН анкеров</b> — если красная зона: план Б по замене</div>
-                <div class="task-time">утро</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                  <span class="owner-badge kirill">Кирилл</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="task" data-task="t-d2-3">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text"><b>Кирилл:</b> Полная логика drill-down Баевского (3 фазы baseline/Stroop/treadmill)</div>
-                <div class="task-time">в течение дня</div>
-                <div class="task-owners">
-                  <span class="owner-badge kirill">Кирилл</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="task" data-task="t-d2-4">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text"><b>UX/UI:</b> Drill-down + Neiry Unite v5 (4 cards вместо 5) — в репо к вечеру</div>
-                <div class="task-time">в течение дня</div>
-                <div class="task-owners">
-                  <span class="owner-badge uxui">UX/UI</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="task" data-task="t-d2-5">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text"><b>PM:</b> Аренда дорожки, костюм перформера, приложение Тест Струпа</div>
-                <div class="task-time">в течение дня</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="task" data-task="t-d2-6">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text"><b>PM:</b> Тезисы питча v1.0 (финал) + слайды на стыковку</div>
-                <div class="task-time">в течение дня</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="task" data-task="t-d2-7">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text"><b>Smoke-test:</b> сквозной прогон браслет → backend → плазма (NSI live)</div>
-                <div class="task-time">вечер</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                  <span class="owner-badge kirill">Кирилл</span>
-                  <span class="owner-badge team">Команда</span>
-                </div>
+                <div class="task-text">Передача браслетов в спорт-пилот (координация с Никитой)</div>
+                <div class="task-owners"><span class="owner-badge nikita">Никита</span></div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 27.05 -->
-      <div class="day-col">
+      <!-- W3 -->
+      <div class="day-col" style="min-height: 540px;">
         <div class="day-header">
           <div>
-            <div class="day-date">27.05</div>
-            <div class="day-name">Ср · D-1</div>
+            <div class="day-date">W3</div>
+            <div class="day-name">16-22 июня · Corporate</div>
           </div>
         </div>
-        <div class="day-badge upcoming">Стыковка · офис</div>
+        <div class="day-badge upcoming">Corporate + Safety + Sleep</div>
         <div style="margin-top: 14px;">
-          <div class="task" data-task="t-stykovka">
+          <div class="task" data-task="m3-w3-1">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text">Прогон питча + проверка стенда (плазма, drill-down, TG-отчёт)</div>
-                <div class="task-time">в течение дня</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                  <span class="owner-badge kirill">Кирилл</span>
-                  <span class="owner-badge team">все</span>
-                </div>
+                <div class="task-text">Corporate Mode mobile: ввод роли (office / водитель / машинист / диспетчер)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Детектор сонливости (safety-роли) + алерт-движок</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Дашборд dashboard.neiry.ru — role-based фильтр (office vs safety), sleep-блок для office</div>
+                <div class="task-owners"><span class="owner-badge ux">UX</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-4">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Ревизия dashboard-corporate.html: убрать 3-табную модель, перенести на role-фильтр</div>
+                <div class="task-owners"><span class="owner-badge ux">UX</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-5">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Передача браслетов в корп-пилот, регламент ношения</div>
+                <div class="task-owners"><span class="owner-badge nikita">Никита</span></div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 28-29.05 -->
-      <div class="day-col event">
+      <!-- W4 -->
+      <div class="day-col event" style="min-height: 540px;">
         <div class="day-header">
           <div>
-            <div class="day-date">28-29.05</div>
-            <div class="day-name">Чт-Пт · DAY</div>
+            <div class="day-date">W4</div>
+            <div class="day-name">23-25 июня · Release</div>
           </div>
         </div>
-        <div class="day-badge event">Startup Village</div>
+        <div class="day-badge event">🚀 M3 Final MVP</div>
         <div style="margin-top: 14px;">
-          <div class="task" data-task="t11">
+          <div class="task" data-task="m3-w4-1">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text">Финальный sync ночных данных + загрузка через <span class="mono">/admin/seed-rr</span></div>
-                <div class="task-time">утро</div>
-                <div class="task-owners">
-                  <span class="owner-badge alexey">Алексей</span>
-                  <span class="owner-badge kirill">Кирилл</span>
-                </div>
+                <div class="task-text">Push-уведомления: alerts safety + reminders sport</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
               </div>
             </div>
           </div>
-          <div class="task" data-task="t12">
+          <div class="task" data-task="m3-w4-2">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text">Развёртывание стенда: плазма, дорожка, браслеты-ротация</div>
-                <div class="task-time">до открытия</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                  <span class="owner-badge team">все</span>
-                </div>
+                <div class="task-text">Финальное QA на 2 пресетах + парк браслетов</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
               </div>
             </div>
           </div>
-          <div class="task" data-task="t13">
+          <div class="task" data-task="m3-w4-3">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text">🚀 <b>DEMO DAY</b> — Wow-сценарий: Струп + перформер + браслеты гостей</div>
-                <div class="task-time">весь день</div>
-                <div class="task-owners">
-                  <span class="owner-badge team">все</span>
-                </div>
+                <div class="task-text">Демо-аккаунты под каждый пресет (Лига + Корпорат office + Корпорат safety)</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- POST-VILLAGE -->
-      <div class="day-col post">
-        <div class="day-header">
-          <div>
-            <div class="day-date">30.05+</div>
-            <div class="day-name">После</div>
-          </div>
-        </div>
-        <div class="day-badge upcoming">Post-Village</div>
-        <div style="margin-top: 14px;">
-          <div class="task" data-task="t14">
+          <div class="task" data-task="m3-w4-4">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text">4 типа event-алертов в Celery (Sleep/Illness/Burnout/Recovery)</div>
-                <div class="task-time">M3</div>
-                <div class="task-owners">
-                  <span class="owner-badge kirill">Кирилл</span>
-                </div>
+                <div class="task-text">Демо-ролики 2-3 шт. + финальные питч-материалы под каждый сегмент</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
               </div>
             </div>
           </div>
-          <div class="task" data-task="t15">
+          <div class="task" data-task="m3-w4-5">
             <div class="task-row">
               <input type="checkbox" class="task-check">
               <div style="flex:1;">
-                <div class="task-text">Backend для Neiry Unite v4 (Никитин дизайн)</div>
-                <div class="task-time">M3</div>
-                <div class="task-owners">
-                  <span class="owner-badge kirill">Кирилл</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="task" data-task="t16">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text">Блоки B-C-D-E из BRIEF (метрики, ограничения, архитектура)</div>
-                <div class="task-time">отложено</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                  <span class="owner-badge team">R&D</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="task" data-task="t17">
-            <div class="task-row">
-              <input type="checkbox" class="task-check">
-              <div style="flex:1;">
-                <div class="task-text">Privacy / consent для Neiry Unite — юрист</div>
-                <div class="task-time">M3</div>
-                <div class="task-owners">
-                  <span class="owner-badge pm">PM</span>
-                </div>
+                <div class="task-text">Acceptance review с Никитой: проходим ли все criteria из PRD M3</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
               </div>
             </div>
           </div>
@@ -1454,6 +1270,21 @@
   <!-- VIEW: ARTIFACTS -->
   <div class="view" data-view="artifacts">
     <div class="artifacts-list">
+      <a class="artifact-row" href="../../../docs_web/prds/m3-final-mvp.md">
+        <div class="artifact-icon">📘</div>
+        <div class="artifact-title">prds/m3-final-mvp.md</div>
+        <div class="artifact-desc">PRD M3 — source of truth: 2 Mode + 2 пресета · roadmap по неделям · acceptance · 25.06.2026</div>
+      </a>
+      <a class="artifact-row" href="../../../docs_web/reports/post-village-2026-05.html">
+        <div class="artifact-icon">📋</div>
+        <div class="artifact-title">reports/post-village-2026-05.html</div>
+        <div class="artifact-desc">Пост-мортем M2 Startup Village: инциденты · action items M3 · что не зашло</div>
+      </a>
+      <a class="artifact-row" href="../../../knowledge-base/INBOX/external/nikita-vision.processed.html">
+        <div class="artifact-icon">🎯</div>
+        <div class="artifact-title">nikita-vision.processed.html</div>
+        <div class="artifact-desc">Видение M3 от Никиты (CCO) — основа PRD: Corporate + Sport, Лига + Корпорат</div>
+      </a>
       <a class="artifact-row" href="../2026-05-22-task-package.md">
         <div class="artifact-icon">📦</div>
         <div class="artifact-title">2026-05-22-task-package.md</div>
@@ -1678,32 +1509,32 @@
     document.getElementById('today-date').textContent =
       `${days[now.getDay()]} · ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
-    // Countdown to 28.05.2026 (Startup Village day 1)
-    const village = new Date(2026, 4, 28);
-    const diff = Math.ceil((village - now) / (1000 * 60 * 60 * 24));
+    // Countdown to 25.06.2026 (M3 Final MVP release)
+    const m3 = new Date(2026, 5, 25);
+    const diff = Math.ceil((m3 - now) / (1000 * 60 * 60 * 24));
     document.getElementById('countdown').textContent = diff > 0 ? diff : 0;
 
-    // Current stage
+    // Current M3 week (W1: 2-8 июня, W2: 9-15, W3: 16-22, W4: 23-25)
     const stageEl = document.getElementById('current-stage');
     const stageDesc = document.getElementById('current-stage-desc');
     const day = now.getDate();
     const month = now.getMonth() + 1;
-    if (month < 5 || (month === 5 && day < 24)) {
-      stageEl.textContent = 'Pre-flight'; stageDesc.textContent = 'Брейншторм закрыт';
-    } else if (month === 5 && day === 24) {
-      stageEl.textContent = 'Done'; stageDesc.textContent = 'Брифы отправлены, Кирилл взял в работу';
-    } else if (month === 5 && day === 25) {
-      stageEl.textContent = 'Спринт · день 1/2';
-      stageDesc.textContent = 'Параллельно: PM (риски + flow) · Кирилл (backend) · команда (паринг)';
-    } else if (month === 5 && day === 26) {
-      stageEl.textContent = 'Спринт · день 2/2';
-      stageDesc.textContent = 'Sync #1 + drill-down + smoke-test вечером';
-    } else if (month === 5 && day === 27) {
-      stageEl.textContent = 'Стыковка'; stageDesc.textContent = 'Прогон питча в офисе с Никитой';
-    } else if (month === 5 && (day === 28 || day === 29)) {
-      stageEl.textContent = '🚀 LIVE'; stageDesc.textContent = 'Startup Village · DEMO';
+    if (month < 6) {
+      stageEl.textContent = 'Pre-M3'; stageDesc.textContent = 'Post-Village · подготовка к старту M3';
+    } else if (month === 6 && day <= 8) {
+      stageEl.textContent = 'W1 · Core';
+      stageDesc.textContent = '2-8 июня · Mode enum · сон · ICP v2 · privacy bench';
+    } else if (month === 6 && day <= 15) {
+      stageEl.textContent = 'W2 · Sport';
+      stageDesc.textContent = '9-15 июня · Sport Mode mobile · дашборд Лиги · league.neiry.ru';
+    } else if (month === 6 && day <= 22) {
+      stageEl.textContent = 'W3 · Corporate';
+      stageDesc.textContent = '16-22 июня · Corporate Mode · safety-роли · dashboard.neiry.ru';
+    } else if (month === 6 && day <= 25) {
+      stageEl.textContent = 'W4 · Release';
+      stageDesc.textContent = '23-25 июня · Push · QA · demo accounts · ролики';
     } else {
-      stageEl.textContent = 'Post-Village'; stageDesc.textContent = 'Unified риск-док · M3 · Unite';
+      stageEl.textContent = 'Post-M3'; stageDesc.textContent = 'Готов к показу клиентам · App Store / Google Play';
     }
   }
   updateClock();
