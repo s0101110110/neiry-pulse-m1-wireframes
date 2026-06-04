@@ -389,6 +389,40 @@
   .question-card.resolved .q-resolve-btn {
     border-color: var(--green); color: var(--green);
   }
+  .question-card.deferred { border-left-color: var(--yellow); }
+  .question-card.deferred .q-resolve-btn { border-color: var(--yellow); color: var(--yellow); }
+  .question-card.cancelled { opacity: 0.4; border-left-color: var(--muted); }
+  .question-card.cancelled .question-text { text-decoration: line-through; color: var(--muted); }
+  .question-card.cancelled .q-resolve-btn { border-color: var(--muted); color: var(--muted); }
+  .question-resolution {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: rgba(34,197,94,0.06);
+    border-left: 2px solid var(--green);
+    border-radius: 0 4px 4px 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--text-dim, #c4c4c4);
+  }
+  .question-card.deferred .question-resolution {
+    background: rgba(251,191,36,0.06);
+    border-left-color: var(--yellow);
+  }
+  .question-card.cancelled .question-resolution {
+    background: rgba(120,120,120,0.06);
+    border-left-color: var(--muted);
+  }
+  .question-resolution .res-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--green);
+    margin-right: 6px;
+    font-weight: 700;
+  }
+  .question-card.deferred .res-label { color: var(--yellow); }
+  .question-card.cancelled .res-label { color: var(--muted); }
 
   /* === Artifacts view === */
   .artifacts-list {
@@ -1174,94 +1208,104 @@
   <div class="view" data-view="questions">
     <div class="questions-grid">
 
-      <div class="question-card" data-q="q1">
+      <div class="question-card resolved" data-q="q1">
         <div class="question-num mono">Q1 / 10</div>
         <div class="question-text">Костюм перформера: пиджак vs джинсы+рубашка (визуальный код «офис»)</div>
         <div class="question-meta">
           <span class="q-category logistics">Логистика</span>
           <button class="q-resolve-btn">Resolved</button>
         </div>
+        <div class="question-resolution"><span class="res-label">Resolved</span>Отказались от перформансов в принципе.</div>
       </div>
 
-      <div class="question-card" data-q="q2">
+      <div class="question-card resolved" data-q="q2">
         <div class="question-num mono">Q2 / 10</div>
         <div class="question-text">2 или 3 одновременных гостя на плазме — финальное число от Кирилла</div>
         <div class="question-meta">
           <span class="q-category tech">Tech</span>
           <button class="q-resolve-btn">Resolved</button>
         </div>
+        <div class="question-resolution"><span class="res-label">Resolved</span>Village день 1: стартовали с 3, стабильно работали 2. Алексей дома вечером в комфортных условиях подключил все 3 — без проблем. День 2: паринг не случился, демо-стенд не завёлся. На ПМЭФ используем 2 браслета — стабильно (нет внешнего BLE-шума). Вывод: 2 — рабочий минимум, 3 — зависит от окружения.</div>
       </div>
 
-      <div class="question-card" data-q="q3">
+      <div class="question-card resolved" data-q="q3">
         <div class="question-num mono">Q3 / 10</div>
         <div class="question-text">HBandSDK: 3 BLE-connection с одного телефона — поддерживает или нет?</div>
         <div class="question-meta">
           <span class="q-category tech">Tech</span>
           <button class="q-resolve-btn">Resolved</button>
         </div>
+        <div class="question-resolution"><span class="res-label">Resolved</span>Ответ поставщика браслетов про паринг с 3 телефонами — в артефакте (Никита прислал в чате).</div>
       </div>
 
-      <div class="question-card" data-q="q4">
+      <div class="question-card resolved" data-q="q4">
         <div class="question-num mono">Q4 / 10</div>
         <div class="question-text">Конкретные модели 3 Android-телефонов и минимальная Android-версия</div>
         <div class="question-meta">
           <span class="q-category logistics">Логистика</span>
           <button class="q-resolve-btn">Resolved</button>
         </div>
+        <div class="question-resolution"><span class="res-label">Resolved</span>Модели не критичны. Узкое место — улучшенный APK и стабильное BLE-соединение.</div>
       </div>
 
-      <div class="question-card" data-q="q5">
+      <div class="question-card resolved" data-q="q5">
         <div class="question-num mono">Q5 / 10</div>
         <div class="question-text">SIM / Wi-Fi на стенде Startup Village</div>
         <div class="question-meta">
           <span class="q-category logistics">Логистика</span>
           <button class="q-resolve-btn">Resolved</button>
         </div>
+        <div class="question-resolution"><span class="res-label">Resolved</span>Wi-Fi на стенде работал. Проблема была не в сети, а в BLE: количество посторонних Bluetooth-устройств вокруг сбивало качество связи. 3 браслета стабильно держать не получилось.</div>
       </div>
 
-      <div class="question-card" data-q="q6">
+      <div class="question-card deferred" data-q="q6">
         <div class="question-num mono">Q6 / 10</div>
         <div class="question-text">iOS bridge для Ильи — готов или fallback через Алексея?</div>
         <div class="question-meta">
           <span class="q-category tech">Tech</span>
-          <button class="q-resolve-btn">Resolved</button>
+          <button class="q-resolve-btn">Deferred</button>
         </div>
+        <div class="question-resolution"><span class="res-label">Deferred</span>Отложено до финала M3. Задача переименована в «iOS Bridge для M3» — не закрыта, перенесена.</div>
       </div>
 
-      <div class="question-card" data-q="q7">
+      <div class="question-card cancelled" data-q="q7">
         <div class="question-num mono">Q7 / 10</div>
         <div class="question-text">Если RMSSD у якоря критика 24.05 — план Б по замене?</div>
         <div class="question-meta">
           <span class="q-category fallback">Fallback</span>
-          <button class="q-resolve-btn">Resolved</button>
+          <button class="q-resolve-btn">Cancelled</button>
         </div>
+        <div class="question-resolution"><span class="res-label">Cancelled</span>M2-specific вопрос (контекст: якорь = Алексей/Илья, носит браслет 4 ночи до Village, показывает «здоровый baseline» на плазме). После отказа от перформансов и переезда на M3 — неактуален.</div>
       </div>
 
-      <div class="question-card" data-q="q8">
+      <div class="question-card deferred" data-q="q8">
         <div class="question-num mono">Q8 / 10</div>
         <div class="question-text">Privacy / consent в Neiry Unite — когда обсуждаем?</div>
         <div class="question-meta">
           <span class="q-category strategy">Стратегия</span>
-          <button class="q-resolve-btn">Resolved</button>
+          <button class="q-resolve-btn">Deferred</button>
         </div>
+        <div class="question-resolution"><span class="res-label">Deferred</span>Отложено на будущее. Связано с R&D-карточкой #5 «Privacy / consent для V2 + B2C» — там лежит план: bench Whoop/Oura/Polar, список onboarding-экранов, оценка юриста.</div>
       </div>
 
-      <div class="question-card" data-q="q9">
+      <div class="question-card deferred" data-q="q9">
         <div class="question-num mono">Q9 / 10</div>
         <div class="question-text">Neiry Headband / tVNS roadmap — когда готовы для drill-down рекомендаций?</div>
         <div class="question-meta">
           <span class="q-category strategy">Стратегия</span>
-          <button class="q-resolve-btn">Resolved</button>
+          <button class="q-resolve-btn">Deferred</button>
         </div>
+        <div class="question-resolution"><span class="res-label">Deferred</span>В PRD M3 health-линейка (включая Headband и tVNS) явно out-of-scope — «приходит позже июня». Переносится в post-M3 roadmap. Привязка drill-down к рекомендациям recovery-устройств — отдельный брейншторм после готовности hardware.</div>
       </div>
 
-      <div class="question-card" data-q="q10">
+      <div class="question-card resolved" data-q="q10">
         <div class="question-num mono">Q10 / 10</div>
         <div class="question-text">KPI strip Neiry Unite на пустой команде (нет данных) — onboarding UX?</div>
         <div class="question-meta">
           <span class="q-category strategy">Стратегия</span>
           <button class="q-resolve-btn">Resolved</button>
         </div>
+        <div class="question-resolution"><span class="res-label">Resolved</span>Вариант (б): onboarding-туториал «раздай браслеты → подключи через app → первые данные через 24 ч». Применяется к обоим пресетам (Лига и Корпорат). Привязка — acceptance criteria M3 W4 «демо-аккаунты».</div>
       </div>
 
     </div>
@@ -1577,8 +1621,9 @@
     document.querySelectorAll('.question-card').forEach(q => {
       const id = q.dataset.q;
       if (!id) return;
-      const saved = localStorage.getItem(Q_PREFIX + id) === '1';
-      q.classList.toggle('resolved', saved);
+      if (q.classList.contains('deferred') || q.classList.contains('cancelled')) return;
+      const stored = localStorage.getItem(Q_PREFIX + id);
+      if (stored !== null) q.classList.toggle('resolved', stored === '1');
     });
     updateCounters();
   }
@@ -1597,9 +1642,12 @@
     document.getElementById('progress-fill').style.width = pct + '%';
 
     const qResolved = document.querySelectorAll('.question-card.resolved').length;
+    const qDeferred = document.querySelectorAll('.question-card.deferred').length;
+    const qCancelled = document.querySelectorAll('.question-card.cancelled').length;
     const qTotal = document.querySelectorAll('.question-card').length;
-    document.getElementById('questions-open').textContent = qTotal - qResolved;
-    document.querySelector('[data-tab="questions"] .tab-count').textContent = qTotal - qResolved;
+    const qOpen = qTotal - qResolved - qDeferred - qCancelled;
+    document.getElementById('questions-open').textContent = qOpen;
+    document.querySelector('[data-tab="questions"] .tab-count').textContent = qOpen;
   }
 
   document.querySelectorAll('.task-check').forEach(cb => {
