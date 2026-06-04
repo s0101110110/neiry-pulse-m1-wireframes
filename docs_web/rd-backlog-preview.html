@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R&D Backlog — Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:ital,wght@1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1c1c1c;
+    --border: #2a2a2a;
+    --fg: #ededed;
+    --muted: #888;
+    --accent: #831843;
+    --ok: #10b981;
+    --info: #3b82f6;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: 'Manrope', -apple-system, sans-serif;
+    line-height: 1.5; padding: 40px 32px; min-height: 100vh;
+  }
+  .header {
+    max-width: 1400px; margin: 0 auto 32px;
+    display: flex; align-items: baseline; justify-content: space-between;
+    border-bottom: 1px solid var(--border); padding-bottom: 20px;
+  }
+  .header h1 { font-size: 28px; font-weight: 800; }
+  .header h1 .italic { font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; color: var(--accent); }
+  .header .meta { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); }
+  .subtitle {
+    max-width: 1400px; margin: 0 auto 24px;
+    color: var(--muted); font-size: 14px;
+  }
+  .grid {
+    max-width: 1400px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  @media (max-width: 1100px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 720px)  { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  .card-title { font-size: 15px; font-weight: 700; line-height: 1.3; }
+  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  .status::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .status.open { color: var(--warn); }
+  .status.in-research { color: var(--info); }
+  .status.answered { color: var(--ok); }
+  .row { display: flex; gap: 6px; font-size: 12.5px; }
+  .row .label { color: var(--muted); flex-shrink: 0; font-weight: 600; min-width: 60px; }
+  .row .value { color: var(--fg); }
+  .block-label {
+    font-size: 10px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--muted); margin-top: 4px;
+  }
+  ul.questions { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  ul.questions li { font-size: 12.5px; padding-left: 12px; position: relative; color: var(--fg); }
+  ul.questions li::before { content: '·'; position: absolute; left: 4px; color: var(--accent); font-weight: 700; }
+  ul.tasks { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  ul.tasks li {
+    font-size: 12.5px; display: flex; align-items: flex-start; gap: 8px;
+    padding: 6px 8px; background: var(--surface-2); border-radius: 6px;
+  }
+  ul.tasks li input[type="checkbox"] {
+    accent-color: var(--accent); margin-top: 2px; flex-shrink: 0;
+  }
+  ul.tasks li .task-text { flex: 1; }
+  ul.tasks li .owner {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--muted); flex-shrink: 0;
+  }
+  .source {
+    font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace;
+    border-top: 1px solid var(--border); padding-top: 8px; margin-top: auto;
+  }
+  .note {
+    max-width: 1400px; margin: 32px auto 0;
+    padding: 16px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13px; color: var(--muted);
+  }
+  .note .italic { font-family: 'Fraunces', serif; font-style: italic; color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🔬 <span class="italic">R&D</span> · Открытый бэклог исследований</h1>
+  <div class="meta">PREVIEW · 2026-06-04</div>
+</div>
+<div class="subtitle">
+  Preview-страница для PM. После твоего OK — встраиваю в 5-й таб PM-дашборда.
+</div>
+
+<div class="grid">
+
+  <!-- 1 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">🧮 Композитный Stress Index</div>
+      <div class="status open">open</div>
+    </div>
+    <div class="row"><span class="label">Зачем:</span><span class="value">Единый индикатор стресса нужен плазме, дашборду корпоратов и B2C-app — без него тяжело продавать Recovery/Burnout.</span></div>
+    <div class="row"><span class="label">Контекст:</span><span class="value">На плазме NSI Fast = <code>clamp(2×(BPM−baseline),0..100)</code> — только сердечный ритм. Баевский ИН живёт отдельно в TG. Композитной метрики нет.</span></div>
+
+    <div class="block-label">Открытые вопросы</div>
+    <ul class="questions">
+      <li>Нужна ли третья «гибридная» метрика, или достаточно показывать NSI Fast + Bayevsky Slow раздельно?</li>
+      <li>Какие веса/нормализация у композитов конкурентов (Polar, Garmin Body Battery, Whoop Strain, Oura)?</li>
+      <li>Как валидировать композит — по самооценке или кортизолу/HRV-baseline?</li>
+    </ul>
+
+    <div class="block-label">Задачи</div>
+    <ul class="tasks">
+      <li><input type="checkbox"><span class="task-text">Сравнительная таблица композитов: формула, входы, окно усреднения, нормализация для 4 конкурентов</span><span class="owner">— </span></li>
+      <li><input type="checkbox"><span class="task-text">Прототип <code>0.6×NSI + 0.4×norm(Bayevsky)</code> на исторических данных Village</span><span class="owner">— </span></li>
+      <li><input type="checkbox"><span class="task-text">Решение PM: одна метрика или две — зафиксировать в <code>metrics/stress-index.md</code></span><span class="owner">— </span></li>
+    </ul>
+    <div class="source">⤴ metrics/hrv.md, MEMORY stress_index · upd 2026-06-04</div>
+  </div>
+
+  <!-- 2 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">📡 Vigor IMU/PPG Raw — 50 Hz × 6 осей</div>
+      <div class="status open">open</div>
+    </div>
+    <div class="row"><span class="label">Зачем:</span><span class="value">Сырой поток открывает слой фич (сон, каденс, fall-detection, чистка PPG) без замены железа — рычаг V2.</span></div>
+    <div class="row"><span class="label">Контекст:</span><span class="value">Сейчас браслет отдаёт обработанный статус (rest/light/active, int8). Поставщик готов отдать raw IMU + raw PPG 50 Hz за допразработку (письмо 03.06).</span></div>
+
+    <div class="block-label">Открытые вопросы</div>
+    <ul class="questions">
+      <li>Что достаём из 50 Hz × 6 осей: каденс, actigraphy-сон, fall-detection, motion-artifact PPG — что приоритетнее?</li>
+      <li>Storage: 1 юзер × 24 ч × 6 осей × 50 Hz × 2 B ≈ 20.7 МБ/день — терпимо ли для 1000+ юзеров?</li>
+      <li>Что отдаёт raw PPG — световой сигнал или уже beat-to-beat? Хватит ли для своего HRV/SpO₂/аритмий?</li>
+    </ul>
+
+    <div class="block-label">Задачи</div>
+    <ul class="tasks">
+      <li><input type="checkbox"><span class="task-text">Запросить sample raw IMU + raw PPG (10 минут записи) у поставщика</span><span class="owner">— </span></li>
+      <li><input type="checkbox"><span class="task-text">Посчитать storage и трафик BLE для 50 Hz × 6 осей, сверить с пропускной способностью</span><span class="owner">— </span></li>
+      <li><input type="checkbox"><span class="task-text">Литобзор: actigraphy (Cole-Kripke, Sadeh) + motion-artifact removal для PPG</span><span class="owner">— </span></li>
+    </ul>
+    <div class="source">⤴ post-village-2026-05 (vendor), changelog 2026-05-28 · upd 2026-06-04</div>
+  </div>
+
+  <!-- 3 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">🌙 «Сон» в MVP</div>
+      <div class="status open">open</div>
+    </div>
+    <div class="row"><span class="label">Зачем:</span><span class="value">Без корректного сна не работают Recovery и Burnout — блокер для линейки Health/Sport.</span></div>
+    <div class="row"><span class="label">Контекст:</span><span class="value">На M2 цифры Deep/REM/Light выглядели некорректно. Root cause не определён: SDK мусор или mobile-обвязка не подняла. Узнали только 28.05.</span></div>
+
+    <div class="block-label">Открытые вопросы</div>
+    <ul class="questions">
+      <li>Что возвращает <code>getSleepReport</code> (структура, единицы, периоды) и какие алгоритмы стейджинга?</li>
+      <li>Где сломалась проверка — фичи не было в acceptance M2, или «проверили» без эталона?</li>
+      <li>К M3 (25.06): чиним SDK-вызов или собираем свой actigraphy поверх raw IMU (см. карточку 2)?</li>
+    </ul>
+
+    <div class="block-label">Задачи</div>
+    <ul class="tasks">
+      <li><input type="checkbox"><span class="task-text">Прочитать SDK-doc вендора раздел Sleep — выписать API, формат, алгоритмы</span><span class="owner">— </span></li>
+      <li><input type="checkbox"><span class="task-text">Снять 1 ночь записи на 2-3 сотрудниках, сравнить с Oura/Whoop или субъективом</span><span class="owner">— </span></li>
+      <li><input type="checkbox"><span class="task-text">Решение PM: SDK-fix vs свой алгоритм — зафиксировать к M3</span><span class="owner">— </span></li>
+    </ul>
+    <div class="source">⤴ post-village-2026-05 (WIP) · upd 2026-06-04</div>
+  </div>
+
+  <!-- 4 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">🎯 ICP / segment после Village</div>
+      <div class="status in-research">in-research</div>
+    </div>
+    <div class="row"><span class="label">Зачем:</span><span class="value">Все решения (mobile scope, дашборд, прайс, упаковка) зависят от реального покупателя — после Village есть полевые данные.</span></div>
+    <div class="row"><span class="label">Контекст:</span><span class="value">До Village гипотезы: фитнес-клубы / HR / водители / B2C-энтузиасты. После 28-29.05 надо понять, кто подходил, оставлял лиды и был готов платить.</span></div>
+
+    <div class="block-label">Открытые вопросы</div>
+    <ul class="questions">
+      <li>Какой сегмент дал &gt;50% качественных лидов на стенде?</li>
+      <li>Совпадает ли «кто подходил» с «кто оставил контакт» с «кто платит» — где обрывается воронка?</li>
+      <li>Какие возражения повторялись — сигнал недозревшего продукта или непопадания в ICP?</li>
+    </ul>
+
+    <div class="block-label">Задачи</div>
+    <ul class="tasks">
+      <li><input type="checkbox"><span class="task-text">Структурировать лиды Village: сегмент, роль, интерес, готовность платить, next step</span><span class="owner">— </span></li>
+      <li><input type="checkbox"><span class="task-text">Интервью с Алексеем и перформерами — собрать 3-5 паттернов</span><span class="owner">— </span></li>
+      <li><input type="checkbox"><span class="task-text">ICP v2 (1 основной + 1 запасной) → <code>brainstorms/2026-06-XX-icp-v2.md</code></span><span class="owner">— </span></li>
+    </ul>
+    <div class="source">⤴ лиды Village, наблюдения Алексея, PROJECT_STATE · upd 2026-06-04</div>
+  </div>
+
+  <!-- 5 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">🔒 Privacy / consent для V2 + B2C</div>
+      <div class="status open">open</div>
+    </div>
+    <div class="row"><span class="label">Зачем:</span><span class="value">Без consent и privacy policy = отказ App Store review; работа с биометрией без 152-ФЗ = юридический риск.</span></div>
+    <div class="row"><span class="label">Контекст:</span><span class="value">Сейчас приложение на закрытых корпоративных Android'ах — privacy полу-формальная. V2 идёт в публичные сторы и B2C.</span></div>
+
+    <div class="block-label">Открытые вопросы</div>
+    <ul class="questions">
+      <li>Что считается «биометрическими ПД» по 152-ФЗ (HRV, R-R, ЭКГ?) — нужно ли согласие и регистрация ИСПДн?</li>
+      <li>Какой объём GDPR-обязательств триггерится при продаже в EU (DPA, право на удаление, DPO)?</li>
+      <li>Какой медицинский дисклеймер нужен, чтобы не попасть под регуляцию медизделий?</li>
+    </ul>
+
+    <div class="block-label">Задачи</div>
+    <ul class="tasks">
+      <li><input type="checkbox"><span class="task-text">Privacy policy 3 бенчмарков (Whoop, Oura, Polar) — что декларируют, как формулируют дисклеймер</span><span class="owner">— </span></li>
+      <li><input type="checkbox"><span class="task-text">Список обязательных экранов onboarding: consent биометрия, privacy, age gate (16+/18+), дисклеймер</span><span class="owner">— </span></li>
+      <li><input type="checkbox"><span class="task-text">Оценка юриста: шаблон или с нуля + смета</span><span class="owner">— </span></li>
+    </ul>
+    <div class="source">⤴ MEMORY ios_post_m2, post-village WIP · upd 2026-06-04</div>
+  </div>
+
+  <!-- 6 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">📱 Mobile B2C — feature scope</div>
+      <div class="status open">open</div>
+    </div>
+    <div class="row"><span class="label">Зачем:</span><span class="value">Первый публичный релиз mobile-app определяет first-impression B2C и проходит ли продукт review App Store (строгая health-политика).</span></div>
+    <div class="row"><span class="label">Контекст:</span><span class="value">Сейчас mobile — инженерный UI: pairing, BLE, синк HRV, foreground. Под B2C не годится. Никита настаивает на полном дизайне под сторы.</span></div>
+
+    <div class="block-label">Открытые вопросы</div>
+    <ul class="questions">
+      <li>Минимум: pairing + sync + базовая статистика — или нужен self-serve дашборд внутри app?</li>
+      <li>Что критично для App Store review health-приложений: HealthKit, дисклеймеры, обоснование сбора данных?</li>
+      <li>Что у Hume Band / Whoop / Oura / Polar Flow / Garmin Connect в day-1 onboarding?</li>
+    </ul>
+
+    <div class="block-label">Задачи</div>
+    <ul class="tasks">
+      <li><input type="checkbox"><span class="task-text">Скриншот-аудит onboarding 5 бенчмарков — выписать обязательные экраны</span><span class="owner">— </span></li>
+      <li><input type="checkbox"><span class="task-text">Прочитать App Store Review Guidelines § 1.4 + § 5.1.1 — выписать требования</span><span class="owner">— </span></li>
+      <li><input type="checkbox"><span class="task-text">MVP-scope mobile B2C (must / nice / out) — передать UX/UI в бриф</span><span class="owner">— </span></li>
+    </ul>
+    <div class="source">⤴ post-village (Никита), MEMORY ios_post_m2 · upd 2026-06-04</div>
+  </div>
+
+</div>
+
+<div class="note">
+  <span class="italic">Заметка для PM:</span> это preview-страница. Карточки не подключены к localStorage — чекбоксы visual-only. После твоего OK я встраиваю секцию в 5-й таб PM-дашборда с полноценным state-management.
+</div>
+
+</body>
+</html>
