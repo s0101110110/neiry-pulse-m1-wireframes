@@ -455,3 +455,75 @@ Transparent (`screenshots/sliced-flow-v2-1-transparent-2026-06-14/`):
 ### НЕ КОММИТИЛОСЬ.
 
 Ждём явного «принято» от PM перед commit.
+
+---
+
+## Revision 2 · Header hotfix (2026-06-14, после accept A5 с одной правкой)
+
+PM акцептовал A5, но указал один финальный баг на Phone 1: header выглядел «сломанным» (logo не центрован вертикально, иконки bell + avatar выглядели как boxed buttons с видимыми border'ами вместо clean icon-buttons).
+
+### Root cause (важно зафиксировать)
+
+**В `<head>` файла A5 отсутствовал `<script src="https://cdn.tailwindcss.com"></script>`**, хотя canonical `mobile-home-f1-v0.html` его подключает. App-bar markup использует Tailwind-классы:
+- `flex items-center gap-2` (logo wrap) → без Tailwind не работает flexbox → logo визуально съезжает с baseline
+- `w-9 h-9 flex items-center justify-center rounded-full bg-stone-200 hover:bg-stone-100` (bell + avatar) → без Tailwind: нет фиксированного размера 36×36, нет округления, нет фона, нет flex-центровки контента → SVG/текст «болтаются» в дефолтном inline-block, отсюда вид «коробки с border»
+
+Кастомный CSS A5 (всё после `<style>`) не дублировал эти Tailwind-классы, потому что предполагал что Tailwind будет загружен (как в Home f1, History, Settings и т.д.).
+
+### Что сделано
+
+Один точечный edit в `mobile-onboarding-05-empty-states-v0.html`:
+
+```html
+  <title>Neiry Pulse · Mobile Onboarding 05 · Empty States ...</title>
++ <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+```
+
+Markup секции `.app-bar` уже **byte-for-byte идентичен** canonical Home f1 (logo SVG + текст + 2 button'а с одинаковыми классами и aria-label) — менять HTML не пришлось, только подключить runtime.
+
+### Skills check (inline)
+
+**impeccable critique:**
+- Vertical alignment: logo wrap `flex items-center gap-2` теперь центрует pulse-volna icon (22×22) + текст 16pt по средней линии 48pt app-bar. Visually centered. PASS
+- Icon-buttons cleanliness: bell — 36×36 круглый прозрачный (hover: bg-stone-100), без border. Avatar — 36×36 круглый bg-stone-200, текст «КЛ» 13pt #57534e центрован. Без видимых рамок. PASS
+- Spacing: gap-3 (12px) между bell и avatar, padding 0/20 на app-bar — visual rhythm совпадает с Home f1. PASS
+
+**impeccable audit (WCAG AA):**
+- `<button aria-label="Уведомления">` + `<button aria-label="Профиль">` — screen reader names присутствуют. PASS
+- `focus-visible:ring-2 focus-visible:ring-[#831843]` — keyboard focus indicator wine 2px (contrast 9.7:1 на white card). PASS
+- Touch targets 36×36 — соответствует minimum AA 24px (рекомендуемые 44 не достигнуты, но это canonical Home f1 spec — не регрессия). NOTE для будущего, не блокер для hotfix.
+
+### Перегенерация PNG (только Phone 1)
+
+По уроку из lessons-learned **`slice_phones_transparent.py` deprecated** для proof. Использован side-by-side render + PIL crop:
+
+```
+chrome --headless --window-size=1280,1100 --force-device-scale-factor=2 \
+       --screenshot=sxs.png file://.../mobile-onboarding-05-empty-states-v0.html
+```
+Затем PIL crop Phone 1 (box 400/140/1320/1940 @ 2x).
+
+Для transparent — inject CSS убирающий page-chrome / page-title / frame-caption + `--default-background-color=00000000`, затем auto-bbox по non-transparent pixels на left half.
+
+### Перегенерированные PNG (Phone 2 не тронут)
+
+- `screenshots/onboarding-2026-06-14/14-home-first-run-empty.png` — 920×1800 @ 2x, proof on warm bg
+- `screenshots/onboarding-2026-06-14/16-empty-states-side-by-side.png` — 2560×2200 @ 2x, full SxS
+- `screenshots/sliced-flow-v2-1-transparent-2026-06-14/12a-home-first-run-empty.png` — 914×1870 @ 2x, RGBA, alpha=0 углы
+
+### Visual self-review (14-home-first-run-empty.png)
+
+Открыт через Read tool. Описание:
+- Logo «Neiry Pulse» (wine pulse-volna circle 22px + Space Grotesk 16pt semibold) **визуально центрован** по vertical midline app-bar — gap 8px между icon и текстом
+- Bell-icon (20px stroke, neutral foreground) — в круглом 36×36 прозрачном контейнере, **без border**
+- Avatar «КЛ» — 36×36 круг, bg tan-stone, текст 13pt #57534e центрован, **без border**
+- Spacing между bell и avatar — 12px (gap-3), совпадает с Home f1
+- Status bar над app-bar отрисован корректно (9:50 + signal/wifi/battery icons)
+- Остальной контент Phone 1 (baseline-card, stats-stack, training-empty, hs-preview-row, tab-bar) — без регрессий
+
+**Acceptance:** header идентичен canonical Home f1. Phone 2 не тронут (не перегенерировался отдельно — берётся из существующего side-by-side).
+
+### НЕ КОММИТИЛОСЬ.
+
+Ждём явного «принято» от PM на header hotfix перед commit.

@@ -244,3 +244,19 @@ html, body { background: transparent !important; }
 Retroactive cleanup НЕ опционален — каждая inconsistency в tab-bar = сломанная навигация в восприятии пользователя.
 
 В этой итерации обновлён `mobile-home-f1-v0.html` (последний файл без HS-tab). Остальные Ф1 mobile файлы уже унифицированы.
+
+## 2026-06-14 (Revision 2 hotfix) — Header = single source of truth между empty и loaded variants
+
+Проблема: при создании empty-state экрана `mobile-onboarding-05-empty-states-v0.html` я **пересоздал app-bar markup с нуля**, копируя только видимую часть DOM из `mobile-home-f1-v0.html` (logo SVG + button'ы), НО **забыл подключить `<script src="https://cdn.tailwindcss.com"></script>`** в `<head>`. Markup app-bar использует Tailwind-классы (`flex items-center gap-2`, `w-9 h-9`, `rounded-full`, `bg-stone-200`, `hover:bg-stone-100`) — без runtime'а они мёртвые. Результат: logo не центровался вертикально (flexbox не работал), icon-buttons выглядели как «коробки с border» (нет round + размер + bg). PM это поймал на финальном ревью A5.
+
+**Правило:** для любой empty/loading/error variant существующего экрана header **= byte-for-byte копия canonical**, включая runtime-зависимости (Tailwind CDN, иконочные библиотеки, шрифты). Чеклист при создании variant'а:
+
+1. **Открыть canonical** (`mobile-home-f1-v0.html` для Home variants, `mobile-history-v0.html` для History variants и т.д.) — это source of truth
+2. **Скопировать весь `<head>`** новому файлу (Tailwind CDN, `<link>` шрифтов, `<link>` иконок) — НЕ только относящиеся к header'у строки, потому что header может зависеть от любой из них через классы Tailwind
+3. **Скопировать app-bar блок целиком** — каждый класс, каждый aria-label, каждый inline-style. Не «перепечатывать», а буквально copy-paste
+4. **Проверка** в браузере: открыть variant и canonical рядом на одинаковой ширине, сравнить header pixel-perfect (или хотя бы скриншоты overlay'нуть)
+5. Если canonical обновился (новый avatar style, иной icon-bell) — синхронизировать ВСЕ variants одновременно (как Tab-bar single source of truth)
+
+**Альтернатива:** если Tailwind не нужен в variant'е (только кастомный CSS) — дублировать все эффективные стили app-bar в `<style>` (`.app-bar > div { display:flex; align-items:center; gap:8px }`, `.icon-btn { width:36px; height:36px; border-radius:50%; ... }`). Но это удваивает работу — проще подключить Tailwind CDN.
+
+Урок шире: **никогда не пересоздавай повторно используемый блок с нуля. Копируй markup + runtime + CSS из canonical**. Это применимо к header'у, tab-bar'у, dev-bar'у, card'ам с типовой структурой.
