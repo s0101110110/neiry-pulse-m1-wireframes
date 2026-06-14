@@ -1,0 +1,3087 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Neiry · PM Dashboard · M3 Final MVP · v2.6 (акцепт 12.06)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e0b;
+    --surface: #17150f;
+    --surface-2: #1f1c14;
+    --border: #2a261b;
+    --border-bright: #3a3525;
+    --text: #f4ede0;
+    --muted: #9b927d;
+    --label: #6e6750;
+    --accent: #831843;
+    --accent-bright: #be185d;
+    --accent-dim: rgba(131, 24, 67, 0.15);
+    --green: #65a30d;
+    --yellow: #d97706;
+    --red: #b91c1c;
+    --blue: #1d4ed8;
+    --done: rgba(101, 163, 13, 0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); }
+  body {
+    font-family: 'Manrope', -apple-system, sans-serif;
+    font-size: 14px; line-height: 1.5;
+    min-height: 100vh;
+    padding: 32px 24px 64px;
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(131,24,67,0.08), transparent 40%),
+      radial-gradient(circle at 80% 100%, rgba(101,163,13,0.05), transparent 50%);
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  .container { max-width: 1400px; margin: 0 auto; }
+
+  /* === Header === */
+  .header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
+  }
+  .header h1 {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
+  }
+  .header h1 span.brand { color: var(--accent-bright); }
+  .header .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-top: 6px;
+  }
+  .header .meta {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .header .meta .live-dot {
+    display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green); margin-right: 6px;
+    animation: pulse 1.6s infinite;
+    vertical-align: middle;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* === Hero strip === */
+  .hero {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin-bottom: 28px;
+  }
+  .hero-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    position: relative; overflow: hidden;
+  }
+  .hero-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--border-bright);
+  }
+  .hero-card.accent::before { background: var(--accent); }
+  .hero-card .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+  .hero-card .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 38px; font-weight: 700; color: var(--text);
+    line-height: 1; letter-spacing: -0.02em;
+  }
+  .hero-card .value .unit {
+    font-size: 14px; color: var(--muted); margin-left: 4px;
+    font-weight: 500;
+  }
+  .hero-card .caption {
+    font-size: 11px; color: var(--muted); margin-top: 8px;
+  }
+  .progress-bar {
+    height: 4px; background: var(--border); border-radius: 2px;
+    margin-top: 12px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--green); border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* === Tabs === */
+  .tabs {
+    display: flex; gap: 4px; margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 12px 18px; background: transparent; border: none;
+    color: var(--muted); cursor: pointer;
+    font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--accent-bright); }
+  .tab .kbd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; padding: 2px 5px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 3px; color: var(--label);
+  }
+  .tab-count {
+    background: var(--accent-dim); color: var(--accent-bright);
+    padding: 1px 7px; border-radius: 9px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700;
+  }
+
+  /* === Views === */
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn 0.2s; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === Calendar view === */
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  .day-col {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 14px;
+    min-height: 480px;
+  }
+  .day-col.today {
+    border-color: var(--accent);
+    background: linear-gradient(to bottom, var(--accent-dim) 0%, var(--surface) 30%);
+  }
+  .day-col.event {
+    background: linear-gradient(to bottom, rgba(101,163,13,0.10) 0%, var(--surface) 40%);
+    border-color: var(--green);
+  }
+  .day-col.post {
+    background: var(--surface-2);
+    border-style: dashed;
+  }
+  .day-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .day-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px; font-weight: 700; color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .day-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .day-badge {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 4px; font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 6px;
+  }
+  .day-badge.today { background: var(--accent); color: white; }
+  .day-badge.event { background: var(--green); color: #0a0a0a; }
+  .day-badge.upcoming { background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
+  .day-badge.done { background: var(--done); color: var(--green); border: 1px solid rgba(101,163,13,0.4); }
+
+  /* === Task cards === */
+  .task {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .task:hover {
+    border-color: var(--border-bright);
+    transform: translateX(2px);
+  }
+  .task.done {
+    background: var(--done);
+    border-color: rgba(101,163,13,0.3);
+  }
+  .task.done .task-text {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+  .task-row {
+    display: flex; align-items: flex-start; gap: 9px;
+  }
+  .task-check {
+    appearance: none; -webkit-appearance: none;
+    width: 16px; height: 16px; min-width: 16px;
+    border: 1.5px solid var(--border-bright); border-radius: 4px;
+    background: var(--bg); cursor: pointer;
+    margin-top: 1px;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .task-check:hover { border-color: var(--accent-bright); }
+  .task-check:checked {
+    background: var(--green); border-color: var(--green);
+  }
+  .task-check:checked::after {
+    content: '✓'; position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    color: #0a0a0a; font-size: 11px; font-weight: 900;
+  }
+  .task-text {
+    flex: 1; font-size: 12.5px; line-height: 1.4;
+    color: var(--text);
+  }
+  .task-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    margin-top: 3px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .task-owners {
+    display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap;
+  }
+  .owner-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; font-weight: 700;
+    padding: 1px 6px; border-radius: 3px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .owner-badge.pm { color: #fbbf24; border-color: rgba(251,191,36,0.3); }
+  .owner-badge.kirill { color: #60a5fa; border-color: rgba(96,165,250,0.3); }
+  .owner-badge.uxui { color: #c084fc; border-color: rgba(192,132,252,0.3); }
+  .owner-badge.alexey { color: #f87171; border-color: rgba(248,113,113,0.3); }
+  .owner-badge.team { color: #65a30d; border-color: rgba(101,163,13,0.4); }
+  .owner-badge.ux { color: #c084fc; border-color: rgba(192,132,252,0.3); }
+  .owner-badge.nikita { color: #34d399; border-color: rgba(52,211,153,0.35); }
+  .owner-badge.rd { color: #22d3ee; border-color: rgba(34,211,238,0.35); }
+
+  /* === Owners view === */
+  .owners-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .owner-lane {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .owner-lane h2 {
+    font-size: 15px; font-weight: 700;
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .owner-lane h2 .icon {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1px solid var(--border-bright);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .owner-lane .role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 16px; padding-left: 42px;
+  }
+  .owner-section {
+    margin-top: 14px;
+  }
+  .owner-section h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--accent-bright);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  /* === Questions view === */
+  .questions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .question-card:hover {
+    border-left-color: var(--accent-bright);
+    background: var(--surface-2);
+  }
+  .question-card.resolved {
+    opacity: 0.45;
+    border-left-color: var(--green);
+  }
+  .question-card.resolved .question-text { text-decoration: line-through; }
+  .question-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--accent-bright);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .question-text {
+    font-size: 13.5px; line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .question-meta {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+  }
+  .q-category {
+    padding: 2px 7px; border-radius: 3px;
+    background: var(--surface-2);
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .q-category.logistics { color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+  .q-category.tech { color: #60a5fa; border: 1px solid rgba(96,165,250,0.25); }
+  .q-category.strategy { color: #c084fc; border: 1px solid rgba(192,132,252,0.25); }
+  .q-category.fallback { color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
+  .q-resolve-btn {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; padding: 3px 9px;
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--muted); cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .q-resolve-btn:hover {
+    border-color: var(--green); color: var(--green);
+  }
+  .question-card.resolved .q-resolve-btn {
+    border-color: var(--green); color: var(--green);
+  }
+  .question-card.deferred { border-left-color: var(--yellow); }
+  .question-card.deferred .q-resolve-btn { border-color: var(--yellow); color: var(--yellow); }
+  .question-card.cancelled { opacity: 0.4; border-left-color: var(--muted); }
+  .question-card.cancelled .question-text { text-decoration: line-through; color: var(--muted); }
+  .question-card.cancelled .q-resolve-btn { border-color: var(--muted); color: var(--muted); }
+  .question-resolution {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: rgba(34,197,94,0.06);
+    border-left: 2px solid var(--green);
+    border-radius: 0 4px 4px 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--text-dim, #c4c4c4);
+  }
+  .question-card.deferred .question-resolution {
+    background: rgba(251,191,36,0.06);
+    border-left-color: var(--yellow);
+  }
+  .question-card.cancelled .question-resolution {
+    background: rgba(120,120,120,0.06);
+    border-left-color: var(--muted);
+  }
+  .question-resolution .res-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--green);
+    margin-right: 6px;
+    font-weight: 700;
+  }
+  .question-card.deferred .res-label { color: var(--yellow); }
+  .question-card.cancelled .res-label { color: var(--muted); }
+
+  /* === Flat task list (Open / Done) === */
+  .flat-list { display: flex; flex-direction: column; gap: 8px; }
+  .flat-list-header {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .flat-list-header h2 {
+    font-size: 18px; font-weight: 600; margin: 0;
+    color: var(--text);
+  }
+  .flat-list-header .count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--muted);
+  }
+  .flat-list-header .legend {
+    margin-left: auto; font-size: 11px; color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .flat-task {
+    display: flex; gap: 12px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .flat-task:hover { background: var(--surface-2); border-left-color: var(--accent-bright); }
+  .flat-task.done { border-left-color: var(--green); opacity: 0.75; }
+  .flat-task.done .flat-text { text-decoration: line-through; color: var(--muted); }
+  .flat-task[data-locked="1"] { border-left-color: var(--yellow); cursor: not-allowed; opacity: 0.85; }
+  .flat-task[data-locked="1"]:hover { background: var(--surface); }
+  .flat-check {
+    appearance: none;
+    width: 18px; height: 18px; min-width: 18px;
+    border: 1.5px solid var(--border-bright);
+    border-radius: 4px; cursor: pointer;
+    transition: all 0.15s; margin-top: 1px;
+    background: transparent;
+  }
+  .flat-check:hover { border-color: var(--accent-bright); }
+  .flat-check:checked {
+    background: var(--green); border-color: var(--green);
+  }
+  .flat-check:checked::after {
+    content: '✓'; display: block; text-align: center;
+    color: #0b0a08; font-size: 12px; font-weight: 800; line-height: 15px;
+  }
+  .flat-check:disabled { cursor: not-allowed; opacity: 0.6; }
+  .flat-body { flex: 1; min-width: 0; }
+  .flat-text { font-size: 13.5px; line-height: 1.45; color: var(--text); margin-bottom: 6px; }
+  .flat-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px; padding: 2px 6px;
+    border-radius: 3px; letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 600;
+    border: 1px solid transparent;
+  }
+  /* Stage tags */
+  .tag-m2 { color: #94a3b8; border-color: rgba(148,163,184,0.35); background: rgba(148,163,184,0.08); }
+  .tag-m3 { color: #f0abfc; border-color: rgba(240,171,252,0.35); background: rgba(240,171,252,0.08); }
+  .tag-postm3 { color: #d4d4d8; border-color: rgba(212,212,216,0.35); background: rgba(212,212,216,0.08); }
+  /* Week tags */
+  .tag-w1, .tag-w2, .tag-w3, .tag-w4 { color: #fbbf24; border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.08); }
+  /* Stream tags */
+  .tag-backend { color: #60a5fa; border-color: rgba(96,165,250,0.35); background: rgba(96,165,250,0.08); }
+  .tag-mobile { color: #34d399; border-color: rgba(52,211,153,0.35); background: rgba(52,211,153,0.08); }
+  .tag-ux { color: #c084fc; border-color: rgba(192,132,252,0.35); background: rgba(192,132,252,0.08); }
+  .tag-strategy { color: #fb923c; border-color: rgba(251,146,60,0.35); background: rgba(251,146,60,0.08); }
+  .tag-logistics { color: #facc15; border-color: rgba(250,204,21,0.35); background: rgba(250,204,21,0.08); }
+  .tag-rd { color: #2dd4bf; border-color: rgba(45,212,191,0.35); background: rgba(45,212,191,0.08); }
+  .tag-hardware { color: #f87171; border-color: rgba(248,113,113,0.35); background: rgba(248,113,113,0.08); }
+  .tag-sdk { color: #a78bfa; border-color: rgba(167,139,250,0.35); background: rgba(167,139,250,0.08); }
+  /* Special */
+  .tag-oos { color: #71717a; border-color: rgba(113,113,122,0.45); background: rgba(113,113,122,0.12); text-decoration: line-through; }
+  .tag-waiting { color: #fde047; border-color: rgba(253,224,71,0.45); background: rgba(253,224,71,0.12); }
+  .tag-default { color: var(--muted); border-color: var(--border); }
+
+  /* === Artifacts view === */
+  .artifact-section { margin-bottom: 28px; }
+  .artifact-section:last-child { margin-bottom: 0; }
+  .artifact-section-header {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 10px;
+    padding: 0 4px;
+  }
+  .artifact-section-title {
+    font-size: 13px; font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .artifact-section-legend {
+    font-size: 11.5px; color: var(--muted);
+  }
+  .artifact-section.archive .artifacts-list { opacity: 0.65; }
+  .artifact-section.archive .artifacts-list:hover { opacity: 1; }
+  .artifacts-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: opacity 0.2s;
+  }
+  .artifact-row {
+    display: grid;
+    grid-template-columns: 40px 2fr 3fr auto;
+    gap: 16px;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+  }
+  .artifact-row:last-child { border-bottom: none; }
+  .artifact-row:hover { background: var(--surface-2); }
+  .artifact-author {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .artifact-author.pm  { color: #e5c07b; border-color: #e5c07b44; }
+  .artifact-author.cco { color: #c678dd; border-color: #c678dd44; }
+  .artifact-author.rd  { color: #61afef; border-color: #61afef44; }
+  .artifact-author.ux  { color: #98c379; border-color: #98c37944; }
+  .artifact-icon {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .artifact-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--accent-bright);
+    font-weight: 600;
+  }
+  .artifact-desc {
+    font-size: 12.5px; color: var(--muted);
+  }
+
+  /* === R&D view === */
+  .rd-intro {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 18px; max-width: 720px;
+  }
+  .rd-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .rd-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative; overflow: hidden;
+  }
+  .rd-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--border-bright);
+  }
+  .rd-card.open::before     { background: var(--yellow); }
+  .rd-card.in-research::before { background: var(--blue); }
+  .rd-card.answered::before { background: var(--green); }
+  .rd-card-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  .rd-card-title { font-size: 14px; font-weight: 700; line-height: 1.3; }
+  .rd-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted); flex-shrink: 0;
+  }
+  .rd-status::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+  }
+  .rd-card.open .rd-status     { color: var(--yellow); }
+  .rd-card.in-research .rd-status { color: var(--blue); }
+  .rd-card.answered .rd-status { color: var(--green); }
+  .rd-row { display: flex; gap: 6px; font-size: 12px; line-height: 1.5; }
+  .rd-row .rd-label {
+    color: var(--label); flex-shrink: 0; font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+    min-width: 64px; padding-top: 3px;
+  }
+  .rd-row .rd-value { color: var(--text); }
+  .rd-row code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; background: var(--surface-2);
+    padding: 1px 5px; border-radius: 3px; color: var(--accent-bright);
+  }
+  .rd-block-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--label); margin-top: 4px;
+  }
+  .rd-questions { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  .rd-questions li {
+    font-size: 12px; padding-left: 12px; position: relative; color: var(--text);
+    line-height: 1.5;
+  }
+  .rd-questions li::before {
+    content: '·'; position: absolute; left: 4px; color: var(--accent-bright);
+    font-weight: 700;
+  }
+  .rd-tasks { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .rd-tasks li {
+    font-size: 12px; display: flex; align-items: flex-start; gap: 8px;
+    padding: 7px 9px; background: var(--surface-2); border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .rd-tasks li input[type="checkbox"] {
+    accent-color: var(--accent); margin-top: 2px; flex-shrink: 0; cursor: pointer;
+  }
+  .rd-tasks li.done { opacity: 0.5; background: var(--done); }
+  .rd-tasks li.done .rd-task-text { text-decoration: line-through; }
+  .rd-task-text { flex: 1; line-height: 1.4; }
+  .rd-owner {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--muted); flex-shrink: 0;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .rd-source {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    border-top: 1px solid var(--border); padding-top: 8px; margin-top: auto;
+  }
+
+  /* === Footer === */
+  .footer {
+    margin-top: 48px; padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .footer .reset-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); cursor: pointer;
+    padding: 5px 12px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+    transition: all 0.15s;
+  }
+  .footer .reset-btn:hover {
+    border-color: var(--red); color: var(--red);
+  }
+
+  /* === Pilot tracker === */
+  .pilot-tracker {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    margin-bottom: 18px;
+  }
+  .pilot-card {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, rgba(131,24,67,0.18), var(--surface-2));
+    border: 1px solid var(--accent);
+    border-left: 3px solid var(--accent-bright);
+    border-radius: 8px;
+  }
+  .pilot-icon {
+    font-size: 22px; flex-shrink: 0;
+    width: 38px; height: 38px;
+    background: var(--bg); border: 1px solid var(--border-bright);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pilot-label {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .pilot-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* === Stand-up === */
+  .standup {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--yellow);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+  }
+  .standup-header {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .standup-header .standup-title {
+    font-size: 13px; color: var(--text); font-weight: 700;
+    letter-spacing: 0;
+    font-family: 'Manrope', sans-serif;
+    text-transform: none;
+  }
+  .standup-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
+  .standup-cell {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .standup-cell label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--accent-bright);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+  .standup-cell textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    padding: 8px 10px;
+    resize: vertical;
+    min-height: 50px;
+    transition: border-color 0.15s;
+  }
+  .standup-cell textarea:focus {
+    outline: none; border-color: var(--accent-bright);
+  }
+  .standup-cell textarea::placeholder { color: var(--label); font-style: italic; }
+
+  /* === Week mini progress-bar === */
+  .week-progress {
+    height: 3px; background: var(--border); border-radius: 2px;
+    margin-top: 6px; overflow: hidden;
+  }
+  .week-progress-fill {
+    height: 100%; background: var(--green); border-radius: 2px;
+    width: 0%; transition: width 0.4s ease;
+  }
+
+  /* === Owner workload === */
+  .owner-workload {
+    margin-top: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .owner-workload h3 {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    margin-bottom: 10px;
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .owner-workload h3 .sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label); font-weight: 400;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .workload-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  .workload-table th, .workload-table td {
+    padding: 8px 10px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .workload-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  .workload-table td.num {
+    font-family: 'JetBrains Mono', monospace;
+    text-align: right;
+  }
+  .workload-table tr:last-child td { border-bottom: none; }
+
+  /* === Task dependencies === */
+  .dep-blocks, .dep-blocked {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--label);
+    margin-top: 5px;
+    letter-spacing: 0.04em;
+  }
+  .dep-blocks { color: rgba(248,113,113,0.7); }
+  .dep-blocked { color: rgba(251,191,36,0.7); }
+
+  /* === Combined M3·W1 tag === */
+  .tag-m3w1, .tag-m3w2, .tag-m3w3, .tag-m3w4 {
+    color: #f0abfc;
+    border-color: rgba(240,171,252,0.35);
+    background: rgba(240,171,252,0.08);
+  }
+
+  /* === Acceptance view === */
+  .acceptance-hero {
+    background: linear-gradient(135deg, rgba(131,24,67,0.22), var(--surface));
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 22px;
+  }
+  .acceptance-hero .ac-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--accent-bright);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .acceptance-hero .ac-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px; font-weight: 700; color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .acceptance-hero .ac-value .unit {
+    font-size: 16px; color: var(--muted); margin-left: 6px;
+  }
+  .acceptance-hero .progress-bar { margin-top: 16px; height: 6px; }
+  .acceptance-list { display: flex; flex-direction: column; gap: 10px; }
+  .ac-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ac-item:hover { background: var(--surface-2); }
+  .ac-item.done { border-left-color: var(--green); opacity: 0.75; }
+  .ac-item.done .ac-text { text-decoration: line-through; color: var(--muted); }
+  .ac-check {
+    appearance: none;
+    width: 20px; height: 20px; min-width: 20px;
+    border: 1.5px solid var(--border-bright); border-radius: 5px;
+    background: transparent; cursor: pointer; margin-top: 1px;
+    transition: all 0.15s;
+  }
+  .ac-check:hover { border-color: var(--accent-bright); }
+  .ac-check:checked { background: var(--green); border-color: var(--green); }
+  .ac-check:checked::after {
+    content: '✓'; display: block; text-align: center;
+    color: #0a0a0a; font-size: 13px; font-weight: 900; line-height: 17px;
+  }
+  .ac-body { flex: 1; }
+  .ac-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--accent-bright);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .ac-text { font-size: 13.5px; line-height: 1.5; color: var(--text); }
+  .ac-related {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  /* === Risks view === */
+  .risks-summary {
+    margin-bottom: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .risks-summary table {
+    width: 100%; border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  .risks-summary th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .risks-summary td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .risks-summary tr:last-child td { border-bottom: none; }
+  .risks-summary .r-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; color: var(--accent-bright);
+  }
+  .risks-summary .r-status-open    { color: var(--yellow); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .risks-summary .r-status-mit     { color: var(--blue); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .risks-summary .r-status-closed  { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+  .risks-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+  }
+  .risk-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .risk-card.crit { border-left-color: var(--red); }
+  .risk-card.high { border-left-color: var(--yellow); }
+  .risk-card.med  { border-left-color: var(--green); }
+  .risk-card.low  { border-left-color: var(--label); }
+  .risk-card.closed { opacity: 0.55; }
+  .risk-head {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .risk-title {
+    font-size: 13.5px; font-weight: 700; line-height: 1.3; color: var(--text);
+  }
+  .risk-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--accent-bright); font-weight: 700;
+    flex-shrink: 0;
+  }
+  .risk-meta {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+  }
+  .risk-meta span {
+    padding: 2px 6px; border-radius: 3px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .risk-row { font-size: 12px; line-height: 1.5; margin-bottom: 6px; color: var(--text); }
+  .risk-row .lab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-right: 4px;
+  }
+  .risk-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--accent-bright);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin: 22px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  /* === Responsive === */
+  @media (max-width: 1200px) {
+    .calendar { grid-template-columns: repeat(3, 1fr); }
+    .owners-grid, .questions-grid { grid-template-columns: 1fr; }
+    .rd-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: repeat(2, 1fr); }
+    .calendar { grid-template-columns: 1fr; }
+    .rd-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <h1>Neiry Pulse · <span class="brand">Project Dashboard</span> · Roadmap M3 v2.6</h1>
+      <div class="subtitle">Final MVP · Ф1 19.06 + Ф2 30.06 · акцептовано Никитой 12.06</div>
+    </div>
+    <div class="meta">
+      <div><span class="live-dot"></span>LIVE · <span id="now-time">--:--</span></div>
+      <div style="margin-top:4px;" id="today-date">--</div>
+    </div>
+  </div>
+
+  <!-- HERO STRIP -->
+  <div class="hero">
+    <div class="hero-card accent">
+      <div class="label">До Ф1 release</div>
+      <div class="value mono"><span id="countdown">--</span><span class="unit">дн.</span></div>
+      <div class="caption">Ф1 Super-Mega-Lite · 19.06.2026 пт (hard)</div>
+    </div>
+    <div class="hero-card">
+      <div class="label">До pilots start</div>
+      <div class="value mono"><span id="countdown-pilots">--</span><span class="unit">дн.</span></div>
+      <div class="caption">Pilots · 22.06.2026 пн (hard)</div>
+    </div>
+    <div class="hero-card">
+      <div class="label">До Ф2 release</div>
+      <div class="value mono"><span id="countdown-f2">--</span><span class="unit">дн.</span></div>
+      <div class="caption">Onboarding + Композитная метрика · 30.06.2026</div>
+    </div>
+    <div class="hero-card">
+      <div class="label">Текущий этап</div>
+      <div class="value mono" style="font-size: 22px; padding-top: 8px;" id="current-stage">W3 · Ф1 разработка</div>
+      <div class="caption" id="current-stage-desc">PRD v2.6 акцептован Никитой 12.06 · iOS submit 12.06 · Ф1 release 19.06</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" data-tab="calendar">📅 Календарь <span class="kbd">1</span></button>
+    <button class="tab" data-tab="open">📋 Открыто <span class="tab-count" id="open-count">0</span> <span class="kbd">2</span></button>
+    <button class="tab" data-tab="questions">❓ Вопросы <span class="tab-count">0</span> <span class="kbd">3</span></button>
+    <button class="tab" data-tab="rd">🔬 R&amp;D <span class="kbd">4</span></button>
+    <button class="tab" data-tab="artifacts">📎 Артефакты <span class="kbd">5</span></button>
+    <button class="tab" data-tab="acceptance">🎯 Acceptance <span class="tab-count" id="ac-count">0/25</span> <span class="kbd">6</span></button>
+    <button class="tab" data-tab="risks">⚠ Риски <span class="tab-count" id="risks-count">0</span> <span class="kbd">7</span></button>
+    <button class="tab" data-tab="done">✅ Готово <span class="tab-count" id="done-count">0</span> <span class="kbd">8</span></button>
+  </div>
+
+  <!-- VIEW: CALENDAR -->
+  <div class="view active" data-view="calendar">
+
+    <!-- Pilot-readiness tracker -->
+    <div class="pilot-tracker">
+      <div class="pilot-card">
+        <div class="pilot-icon">🏃</div>
+        <div>
+          <div class="pilot-label">Pilot · Лига беговая</div>
+          <div class="pilot-status">hold до встречи 11.06 · owner Никита · старт 22.06</div>
+        </div>
+      </div>
+      <div class="pilot-card">
+        <div class="pilot-icon">🏢</div>
+        <div>
+          <div class="pilot-label">Pilot · Райф колл-центр</div>
+          <div class="pilot-status">hold до встречи 09.06 · owner Алексей · 13–15 VIGOR</div>
+        </div>
+      </div>
+      <div class="pilot-card">
+        <div class="pilot-icon">🧪</div>
+        <div>
+          <div class="pilot-label">Внутренняя бета · Neiry</div>
+          <div class="pilot-status">owner Кирилл #2 (Дьяков) · 8–10 VITRO · может стартовать раньше 22.06</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Today's stand-up -->
+    <div class="standup">
+      <div class="standup-header">
+        <span style="font-size:14px;">📌</span>
+        <span class="standup-title">Сегодня · стендап</span>
+        <span id="standup-date">--</span>
+      </div>
+      <div class="standup-grid">
+        <div class="standup-cell">
+          <label>Вчера</label>
+          <textarea id="standup-yesterday" placeholder="Что сделано вчера…"></textarea>
+        </div>
+        <div class="standup-cell">
+          <label>Сегодня</label>
+          <textarea id="standup-today" placeholder="План на сегодня…"></textarea>
+        </div>
+        <div class="standup-cell">
+          <label>Blockers</label>
+          <textarea id="standup-blockers" placeholder="Заблокированы чем-либо? Кто разбирает?"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="calendar" style="grid-template-columns: repeat(4, 1fr);">
+
+      <!-- W1 · 2-8 июня · Pivot (исторический) -->
+      <div class="day-col" style="min-height: 540px;" data-week="w1">
+        <div class="day-header">
+          <div style="flex:1;">
+            <div class="day-date">W1</div>
+            <div class="day-name">2-8 июня · Pivot</div>
+            <div class="week-progress"><div class="week-progress-fill" data-week-fill="w1"></div></div>
+          </div>
+        </div>
+        <div class="day-badge">Закрыто</div>
+        <div style="margin-top: 14px;">
+          <div class="task" data-task="m3-w1-1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Pivot-встреча 08.06: сушка M3 (Mode/дашборды под нож, HRV-движок в Ф1)</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span><span class="owner-badge nikita">Никита</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w1-2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">iOS Bridge старт (Кирилл) — для китайского SDK Veepoo</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w1-3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">PRD M3 v2.0 → v2.4: 3 фазы, измеримые AC, унификация R-нумерации</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w1-4">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Дина онбординг: договор, доступ к PRD, сырьё R-R от Кирилла</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span><span class="owner-badge rd">Дина</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w1-5">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Ранний прото-submit iOS в App Store для запуска модерации</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- W2 · 9-12 июня · iOS submit + встречи + акцепт -->
+      <div class="day-col today" style="min-height: 540px;" data-week="w2">
+        <div class="day-header">
+          <div style="flex:1;">
+            <div class="day-date">W2</div>
+            <div class="day-name">9-12 июня · iOS submit + акцепт</div>
+            <div class="week-progress"><div class="week-progress-fill" data-week-fill="w2"></div></div>
+          </div>
+        </div>
+        <div class="day-badge today">Сейчас</div>
+        <div style="margin-top: 14px;">
+          <div class="task" data-task="m3-w2-1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">09.06 вт · Встреча Райф (гипотезы корп-пилота)</div>
+                <div class="task-owners"><span class="owner-badge nikita">Алексей</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w2-2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">10.06 ср · Встреча Сбер + Sber-демо опекунства (вне PM-скоупа — Паша/Кирилл, биллинг отдельно)</div>
+                <div class="task-owners"><span class="owner-badge nikita">Алексей</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w2-3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">11.06 чт 14:00 · Встреча Лиги (Саввинская)</div>
+                <div class="task-owners"><span class="owner-badge nikita">Никита</span><span class="owner-badge rd">Дина</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w2-4">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">12.06 пт · iOS submit в App Store (hard, R-008) — финальный или прото-бандл</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocks">⛓ блокирует: Apple review до 19.06</span>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w2-5">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">12.06 · Письмо Никите с сводной таблицей скоупа Этапа 3 → акцепт получен</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w2-6">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">PRD v2.5 → v2.6: NSI/Баевский разведены, даты Ф1 19.06, фид в Ф2, Sber вне PM-скоупа</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w2-7">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">RISKS.md v2 → v3: R-013/R-019 closed, R-017/R-018 downgrade</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w2-8">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">PROJECT_STATE.md актуализация под v2.6 акцепт</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- W3 · 13-22 июня · Ф1 release + Pilots -->
+      <div class="day-col event" style="min-height: 540px;" data-week="w3">
+        <div class="day-header">
+          <div style="flex:1;">
+            <div class="day-date">W3</div>
+            <div class="day-name">13-22 июня · Ф1 + pilots</div>
+            <div class="week-progress"><div class="week-progress-fill" data-week-fill="w3"></div></div>
+          </div>
+        </div>
+        <div class="day-badge event">🚀 Ф1 19.06 пт · pilots 22.06</div>
+        <div style="margin-top: 14px;">
+          <div class="task" data-task="m3-w3-1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">HRV-движок: дельты день/неделя/месяц + текстовая рекомендация + shareable splash (статический)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span><span class="owner-badge rd">Дина</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Полная тренировка: HR + длительность + GPS-трек + темп + типы + зоны Z1–Z5 + calories (AC-1.9)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+                <span class="dep-blocks">⛓ AC-1.9b fallback на Ф1.5 если не успеваем</span>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Health Sharing v1 (QR-pairing тренер/опекун, AC-1.10)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-4">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Fall detection в приложении + GBand «звонок из коробки» (AC-1.11). Проверить базовый IMU VITRO/VANTA</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-5">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Sleep demo + Push (унифицированные: HRV-инсайт / training reminders / fall-alert)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-6">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Дизайн Ф1-экранов: Bevel-стиль + light primary (HRV-главный, тренировка, splash, Health Sharing, AC-1.14)</div>
+                <div class="task-owners"><span class="owner-badge ux">UX</span><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-7">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">YouGile подключение (deadline 13.06, owner — PM)</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-8">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Google Play submit + финальный iOS-бандл до 19.06 пт</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-9">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">19.06 пт · Ф1 MVP release (hard) + Acceptance Ф1 (AC-1.1..AC-1.15)</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w3-10">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">22.06 пн · Pilots start (hard) — ≥1 группа из Райф / Лига / внутренняя бета</div>
+                <div class="task-owners"><span class="owner-badge nikita">Никита</span><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- W4 · 23-30 июня · Ф2 -->
+      <div class="day-col event" style="min-height: 540px;" data-week="w4">
+        <div class="day-header">
+          <div style="flex:1;">
+            <div class="day-date">W4</div>
+            <div class="day-name">23-30 июня · Ф2</div>
+            <div class="week-progress"><div class="week-progress-fill" data-week-fill="w4"></div></div>
+          </div>
+        </div>
+        <div class="day-badge event">🚀 Ф2 30.06 + pilots running</div>
+        <div style="margin-top: 14px;">
+          <div class="task" data-task="m3-w4-1">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Onboarding-опросник ≥7 вопросов вкл. хронические заболевания + юр-чек Алисы (AC-2.1)</div>
+                <div class="task-owners"><span class="owner-badge rd">Дина</span><span class="owner-badge ux">UX</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w4-2">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Калибровка с прогресс-баром 24h–48h (AC-2.2)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w4-3">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Композитная метрика стресса: формула + UI (число + категория + дельта) (AC-2.3)</div>
+                <div class="task-owners"><span class="owner-badge rd">Дина</span><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w4-4">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Расширенная рекомендация (HRV-дельта + composite, ≤200 символов) (AC-2.4)</div>
+                <div class="task-owners"><span class="owner-badge rd">Дина</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w4-5">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Internal-фид: лента карточек с автосохранением + удалением (AC-2.7, AC-2.8, AC-2.10)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span><span class="owner-badge ux">UX</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w4-6">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Telegram-шеринг: генерация картинки + share-sheet (AC-2.9, ≤2 сек)</div>
+                <div class="task-owners"><span class="owner-badge kirill">Кирилл</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w4-7">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">Сбор фидбека с pilots (TG-бот или Google Form) + ≥5 pilots-юзеров на Ф2-onboarding (AC-2.5)</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="task" data-task="m3-w4-8">
+            <div class="task-row">
+              <input type="checkbox" class="task-check">
+              <div style="flex:1;">
+                <div class="task-text">30.06 · Ф2 Acceptance (AC-2.1..AC-2.10) + сдача Этапа 3 PM</div>
+                <div class="task-owners"><span class="owner-badge pm">PM</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Ф3 опциональный research-трек (вне Акта Этапа 3) -->
+    <div style="margin-top: 28px; padding: 20px; border: 1px dashed var(--border-bright); border-radius: 12px; background: rgba(131,24,67,0.04);">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <span style="font-size: 18px;">🔬</span>
+        <h3 style="font-size: 14px; color: var(--accent-bright); margin: 0;">Ф3 · опциональный research-карман (вне Акта Этапа 3)</h3>
+        <span style="font-family: 'JetBrains Mono'; font-size: 10px; color: var(--label); text-transform: uppercase; letter-spacing: 0.12em;">1–10 июля · TBD</span>
+      </div>
+      <div style="font-size: 13px; color: var(--muted); line-height: 1.6;">
+        <strong style="color: var(--text);">Под вопросом:</strong> Дина разрабатывает собственную <strong>новую формулу NSI</strong> (Neiry Stress Index) — не путать с тестом Баевского и с M2-формулой со стенда Startup Village. На стоимость и сроки Этапа 3 (108 000 ₽, 30.06) не влияет. Acceptance Criteria отсутствуют. Если получится → research-выход для M4. Если не успевает → переносится в M4 целиком.
+      </div>
+    </div>
+
+    <!-- Owner workload view -->
+    <div class="owner-workload">
+      <h3>👥 Owner workload <span class="sub">пересчёт по чек-боксам календаря</span></h3>
+      <table class="workload-table">
+        <thead>
+          <tr><th>Owner</th><th class="num">Open</th><th class="num">Done</th><th class="num">Total</th></tr>
+        </thead>
+        <tbody id="workload-tbody">
+          <tr><td>Кирилл</td><td class="num" data-wl="kirill-open">0</td><td class="num" data-wl="kirill-done">0</td><td class="num" data-wl="kirill-total">0</td></tr>
+          <tr><td>PM</td><td class="num" data-wl="pm-open">0</td><td class="num" data-wl="pm-done">0</td><td class="num" data-wl="pm-total">0</td></tr>
+          <tr><td>UX</td><td class="num" data-wl="ux-open">0</td><td class="num" data-wl="ux-done">0</td><td class="num" data-wl="ux-total">0</td></tr>
+          <tr><td>Никита</td><td class="num" data-wl="nikita-open">0</td><td class="num" data-wl="nikita-done">0</td><td class="num" data-wl="nikita-total">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- VIEW: OPEN -->
+  <div class="view" data-view="open">
+    <div class="flat-list-header">
+      <h2>Открытые задачи</h2>
+      <span class="count" id="open-count-detail">0 / 0</span>
+      <span class="legend">клик по галочке → переезд в «Готово»</span>
+    </div>
+    <div class="flat-list" id="open-list">
+
+      <!-- Ф1 · 13-19 июня · core разработка -->
+      <div class="flat-task" data-flat="o-f1-hrv">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">HRV-движок: дельты день/неделя/месяц + текстовая рекомендация + shareable splash (статический)</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">Ф1 · 19.06</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-rd">Дина</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f1-training">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Полная тренировка: HR + длительность + GPS-трек + темп + типы + Z1–Z5 + calories (AC-1.9). Fallback AC-1.9b → Ф1.5</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">Ф1 · 19.06</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f1-sharing">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Health Sharing v1: QR-pairing тренер/опекун (AC-1.10, ≤30 сек QR → данные)</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">Ф1 · 19.06</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f1-fall">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Fall detection в приложении + GBand «звонок из коробки» (AC-1.11). Проверить базовый IMU VITRO/VANTA</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">Ф1 · 19.06</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-sdk">SDK</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f1-sleep-push">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Sleep demo + Push (унифицированные: HRV-инсайт / training reminders / fall-alert)</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">Ф1 · 19.06</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f1-design">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Дизайн Ф1-экранов: Bevel-стиль + light primary (HRV-главный, тренировка, splash, Health Sharing) AC-1.14</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">Ф1 · 19.06</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f1-yougile">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Подключить YouGile (deadline 13.06, owner — PM; рекомендация Дины + Дымова)</div>
+          <div class="flat-tags"><span class="tag tag-m3w2">Сегодня</span><span class="tag tag-strategy">PM</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f1-stores">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Google Play submit + финальный iOS-бандл до 19.06 пт (AC-1.2)</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">Ф1 · 19.06</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f1-ios-submit">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">iOS submit в App Store до 12.06 пт 23:59 (hard, R-008, AC-1.1) — финальный или прото-бандл</div>
+          <div class="flat-tags"><span class="tag tag-m3w2">12.06</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f1-release">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">19.06 пт · Ф1 MVP release (hard) + Acceptance Ф1 (AC-1.1..AC-1.15)</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">Ф1 · 19.06</span><span class="tag tag-strategy">Milestone</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f1-pilots">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">22.06 пн · Pilots start (hard) — ≥1 группа из Райф / Лига / внутренняя бета (AC-1.15)</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">22.06</span><span class="tag tag-strategy">Milestone</span></div>
+        </div>
+      </div>
+
+      <!-- Ф2 · 19-30 июня · Onboarding + Composite -->
+      <div class="flat-task" data-flat="o-f2-onb">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Onboarding-опросник ≥7 вопросов вкл. хронические заболевания + юр-чек Алисы (AC-2.1)</div>
+          <div class="flat-tags"><span class="tag tag-m3w4">Ф2 · 30.06</span><span class="tag tag-rd">Дина</span><span class="tag tag-ux">UX</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f2-calib">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Калибровка с прогресс-баром 24h–48h + счётчик «осталось N часов» (AC-2.2)</div>
+          <div class="flat-tags"><span class="tag tag-m3w4">Ф2 · 30.06</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f2-composite">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Композитная метрика стресса: формула + валидация Диной + UI (число + категория + дельта) (AC-2.3)</div>
+          <div class="flat-tags"><span class="tag tag-m3w4">Ф2 · 30.06</span><span class="tag tag-rd">Дина</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f2-rec">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Расширенная рекомендация (HRV-дельта + composite, ≤200 символов) (AC-2.4)</div>
+          <div class="flat-tags"><span class="tag tag-m3w4">Ф2 · 30.06</span><span class="tag tag-rd">Дина</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f2-feed">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Internal-фид: лента карточек HRV + автосохранение + удаление (AC-2.7, AC-2.8, AC-2.10)</div>
+          <div class="flat-tags"><span class="tag tag-m3w4">Ф2 · 30.06</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-ux">UX</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f2-tg">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Telegram-шеринг: генерация картинки + share-sheet ≤2 сек (AC-2.9)</div>
+          <div class="flat-tags"><span class="tag tag-m3w4">Ф2 · 30.06</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f2-feedback">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Сбор фидбека с pilots (TG-бот / Google Form) + ≥5 pilots-юзеров на Ф2-onboarding (AC-2.5)</div>
+          <div class="flat-tags"><span class="tag tag-m3w4">Ф2 · 30.06</span><span class="tag tag-strategy">PM</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-f2-acceptance">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">30.06 · Ф2 Acceptance (AC-2.1..AC-2.10) + сдача Этапа 3 PM</div>
+          <div class="flat-tags"><span class="tag tag-m3w4">Ф2 · 30.06</span><span class="tag tag-strategy">Milestone</span></div>
+        </div>
+      </div>
+
+      <!-- Команда: бизнес/координация -->
+      <div class="flat-task" data-flat="o-team-rdata">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Сырьё R-R от Кирилла Дине на mityurevadi@gmail.com (R-011)</div>
+          <div class="flat-tags"><span class="tag tag-m3w2">Сейчас</span><span class="tag tag-team">Team</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-team-roles">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">1-1 синк Костя+Дина: границы ролей PM vs Researcher (R-012)</div>
+          <div class="flat-tags"><span class="tag tag-m3w2">Сейчас</span><span class="tag tag-team">Team</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-team-band">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Алексей: отправка Vanta/Vigor Косте в Белград (после 10.06, R-014)</div>
+          <div class="flat-tags"><span class="tag tag-m3w2">Сейчас</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-team-mine">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Никита+Алексей: проработка sync браслет ↔ Mine Tracker для Райф-пилота (R-015)</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">До pilots</span><span class="tag tag-strategy">B2B</span></div>
+        </div>
+      </div>
+      <div class="flat-task" data-flat="o-team-firebase">
+        <input type="checkbox" class="flat-check">
+        <div class="flat-body">
+          <div class="flat-text">Алиса: Firebase к ~15.06 для пуш-инфраструктуры Ф1 (R-017)</div>
+          <div class="flat-tags"><span class="tag tag-m3w3">15.06</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+
+      <!-- Ф3 опц. (вне Акта) -->
+      <div class="flat-task" data-flat="o-f3-nsi" data-locked="1">
+        <input type="checkbox" class="flat-check" disabled>
+        <div class="flat-body">
+          <div class="flat-text">Ф3 опц. — Дина разрабатывает собственную новую формулу NSI (Neiry Stress Index). Вне Акта Этапа 3, без AC и дедлайна</div>
+          <div class="flat-tags"><span class="tag tag-postm3">Ф3 · опц.</span><span class="tag tag-rd">Дина</span><span class="tag tag-waiting">Под вопросом</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW: QUESTIONS -->
+  <div class="view" data-view="questions">
+    <div style="margin-bottom: 16px; padding: 12px 16px; background: rgba(217,119,6,0.08); border-left: 3px solid var(--yellow); border-radius: 6px; font-size: 12px; color: var(--muted);">
+      Открытые блокеры v2.6 → v2.7 — требуют ответа в ближайшие 1–7 дней.
+    </div>
+    <div class="questions-grid">
+
+      <!-- OPEN — блокеры v2.6 → v2.7 -->
+      <div class="question-card" data-q="q1">
+        <div class="question-num mono">Q1 / открытые</div>
+        <div class="question-text">Кирилл: успеваем ли полную тренировку (HR + длительность + темп + GPS + типы + зоны + calories) к 19.06? Или часть в Ф1.5 / Ф2 по AC-1.9b?</div>
+        <div class="question-meta">
+          <span class="q-category tech">Tech</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q2">
+        <div class="question-num mono">Q2 / открытые</div>
+        <div class="question-text">Кирилл: работает ли fall detection на базовом IMU всех моделей (VITRO/VANTA) или только на 9-осевом VIGOR? До 12.06.</div>
+        <div class="question-meta">
+          <span class="q-category tech">Tech</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q3">
+        <div class="question-num mono">Q3 / открытые</div>
+        <div class="question-text">Алиса: юр-чек хранения хронических заболеваний в onboarding Ф2 — 152-ФЗ, чувствительные категории персданных, шаблон согласия.</div>
+        <div class="question-meta">
+          <span class="q-category strategy">Compliance</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q4">
+        <div class="question-num mono">Q4 / открытые</div>
+        <div class="question-text">Никита+Алексей: после встречи Лиги 11.06 — pilot-decision (заходит / hold / на post-M3). От этого зависит состав pilots 22.06.</div>
+        <div class="question-meta">
+          <span class="q-category strategy">B2B</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q5">
+        <div class="question-num mono">Q5 / открытые</div>
+        <div class="question-text">Никита+Алексей: проработка sync браслет ↔ Mine Tracker для Райф-пилота (методология не отработана, R-015) — до старта pilots.</div>
+        <div class="question-meta">
+          <span class="q-category strategy">B2B</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q6">
+        <div class="question-num mono">Q6 / открытые</div>
+        <div class="question-text">Алиса: Firebase к ~15.06 — успеваем ли поднять облачный push до Ф1 release 19.06 или Ф1 идёт с локальной fall detection без облака?</div>
+        <div class="question-meta">
+          <span class="q-category tech">Tech</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q7">
+        <div class="question-num mono">Q7 / открытые</div>
+        <div class="question-text">Дина: формула HRV — RMSSD / SDNN / pNN50? Алгоритм агрегации, размер окна. Контракт API §4 PRD уже зафиксирован, нужны точные значения.</div>
+        <div class="question-meta">
+          <span class="q-category tech">R&amp;D</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q8">
+        <div class="question-num mono">Q8 / открытые</div>
+        <div class="question-text">Дина: композитная метрика стресса Ф2 — формула, пороги, валидация. AC-2.3 не закрывается без её подписи в research/composite-metric.md.</div>
+        <div class="question-meta">
+          <span class="q-category tech">R&amp;D</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q9">
+        <div class="question-num mono">Q9 / открытые</div>
+        <div class="question-text">PM: подключить YouGile до 13.06 — какой workspace, кому раздаём доступы (Кирилл, Дина, PM минимум), кто комитит правки в PRD?</div>
+        <div class="question-meta">
+          <span class="q-category logistics">Tooling</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <div class="question-card" data-q="q10">
+        <div class="question-num mono">Q10 / открытые</div>
+        <div class="question-text">PM: что показываем Лиге как «коробку» 22.06? Pilot-юзеры получают APK + ссылку на TestFlight или Google Play link? Кто проводит onboarding-звонок?</div>
+        <div class="question-meta">
+          <span class="q-category strategy">B2B</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+      </div>
+
+      <!-- RESOLVED 12.06 -->
+      <div class="question-card resolved" data-q="r1">
+        <div class="question-num mono">R1 / 12.06</div>
+        <div class="question-text">Скоуп Этапа 3 — что входит и не входит в Акт?</div>
+        <div class="question-meta">
+          <span class="q-category strategy">Contract</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+        <div class="question-resolution"><span class="res-label">Resolved 12.06</span>Никита акцептовал письмо с сводной таблицей: 6 сокращений ↔ 6 расширений + 5 уточнений + 1 сохранение. Стоимость Этапа 3 — 108 000 ₽ без изменений.</div>
+      </div>
+
+      <div class="question-card resolved" data-q="r2">
+        <div class="question-num mono">R2 / 12.06</div>
+        <div class="question-text">Sber-демо опекунства — входит ли в PM-скоуп Кости?</div>
+        <div class="question-meta">
+          <span class="q-category strategy">Billing</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+        <div class="question-resolution"><span class="res-label">Resolved 12.06</span>Нет. Sber-демо 10.06 — work-for-hire: Паша (mobile) + Кирилл (backend), биллинг отдельным счётом в конце M3, не входит в Акт Этапа 3. Память: project_neiry_sber_demo_billing.md.</div>
+      </div>
+
+      <div class="question-card resolved" data-q="r3">
+        <div class="question-num mono">R3 / 12.06</div>
+        <div class="question-text">NSI vs тест Баевского — одна метрика или две?</div>
+        <div class="question-meta">
+          <span class="q-category tech">R&amp;D</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+        <div class="question-resolution"><span class="res-label">Resolved 12.06</span>Две разные сущности. NSI = собственная формула Neiry (M2-формула на стенде была синтетической). Тест Баевского = стандартный ИН в drill-down kiosk M2. В M3 в продукте Баевский отсутствует. Ф3 опц. — Дина разрабатывает новую формулу NSI.</div>
+      </div>
+
+      <div class="question-card resolved" data-q="r4">
+        <div class="question-num mono">R4 / 09.06</div>
+        <div class="question-text">Тренировка в Ф1 — lite (HR+таймер) или полная?</div>
+        <div class="question-meta">
+          <span class="q-category strategy">Scope</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+        <div class="question-resolution"><span class="res-label">Resolved 09.06</span>Никита: полная (темп, GPS, типы, зоны, calories). Разворот от lite-решения 08.06. Без полной нельзя идти к Лиге.</div>
+      </div>
+
+      <div class="question-card resolved" data-q="r5">
+        <div class="question-num mono">R5 / 09.06</div>
+        <div class="question-text">Дизайн — «без визуальных параллелей с Whoop» или допустимы UX-элементы?</div>
+        <div class="question-meta">
+          <span class="q-category strategy">Design</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+        <div class="question-resolution"><span class="res-label">Resolved 09.06</span>Никита смягчил: качество Whoop + отдельные UX-элементы + Bevel как приоритетный референс (light primary). AC-1.14 PRD v2.6 переписан. R-019 closed.</div>
+      </div>
+
+      <div class="question-card resolved" data-q="r6">
+        <div class="question-num mono">R6 / 08.06</div>
+        <div class="question-text">2 Mode / 2 дашборда / Safety-метрики / полный сон / push с Mode / юрист — оставляем в M3?</div>
+        <div class="question-meta">
+          <span class="q-category strategy">Pivot</span>
+          <button class="q-resolve-btn">Resolved</button>
+        </div>
+        <div class="question-resolution"><span class="res-label">Resolved 08.06 pivot</span>Всё out-of-scope. Заменяем: HRV-движок, Health Sharing, Fall detection, композитная метрика — в Ф1/Ф2. Privacy через Алису, не юриста. Push сохранён, но без Mode-разделения.</div>
+      </div>
+
+      <!-- DEFERRED -->
+      <div class="question-card deferred" data-q="d1">
+        <div class="question-num mono">D1 / отложено</div>
+        <div class="question-text">Neiry Headband / tVNS — когда готовы для drill-down рекомендаций?</div>
+        <div class="question-meta">
+          <span class="q-category strategy">Roadmap</span>
+          <button class="q-resolve-btn">Deferred</button>
+        </div>
+        <div class="question-resolution"><span class="res-label">Deferred</span>Health-линейка out-of-scope M3. После выхода в стор и hardware-готовности (Q3 2026) — отдельный брейншторм.</div>
+      </div>
+
+      <div class="question-card deferred" data-q="d2">
+        <div class="question-num mono">D2 / отложено</div>
+        <div class="question-text">Опечатка «000 тысяч ₽» в разделе 4 Приложения № 1 — нужно ли отдельное ДС № 2 на исправление техошибки?</div>
+        <div class="question-meta">
+          <span class="q-category strategy">Contract</span>
+          <button class="q-resolve-btn">Deferred</button>
+        </div>
+        <div class="question-resolution"><span class="res-label">Deferred</span>Проверить подписную копию Приложения vs копия Neiry. Если расхождение — поднять отдельным треком после сдачи Этапа 3.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VIEW: ARTIFACTS -->
+  <div class="view" data-view="artifacts">
+
+    <div class="artifact-section">
+      <div class="artifact-section-header">
+        <span class="artifact-section-title">🎯 M3 v2.6 · source of truth (акцепт Никиты 12.06)</span>
+        <span class="artifact-section-legend">читать перед каждым стендапом и решением</span>
+      </div>
+      <div class="artifacts-list">
+        <a class="artifact-row" href="../../../docs_web/prds/m3-final-mvp-v2-6.md">
+          <div class="artifact-icon">📘</div>
+          <div class="artifact-title">m3-final-mvp-v2-6</div>
+          <div class="artifact-desc">PRD M3 v2.6 — актуальный: Ф1 19.06 пт + Ф2 30.06 + Ф3 опц. (вне Акта) · 25 AC · акцептовано Никитой 12.06</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/handover/letter-to-nikita-2026-06-11-scope-pivot.md">
+          <div class="artifact-icon">✉️</div>
+          <div class="artifact-title">letter-to-nikita · акцепт скоупа</div>
+          <div class="artifact-desc">Письмо Никите 12.06 с сводной таблицей: 6 сокращений ↔ 6 расширений + 5 уточнений + 1 сохранение. <strong>Акцепт получен.</strong></div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/handover/addendum-1-to-prilojenie-1.md">
+          <div class="artifact-icon">📜</div>
+          <div class="artifact-title">addendum-1 · проект ДС № 1</div>
+          <div class="artifact-desc">Проект ДС № 1 к Приложению № 1: новый перечень работ Этапа 3, перенос дедлайна на 30.06, балансовые изменения</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/risks/RISKS.md">
+          <div class="artifact-icon">⚠</div>
+          <div class="artifact-title">RISKS.md · v3</div>
+          <div class="artifact-desc">Риск-реестр v3 (12.06): R-013/R-019 closed, R-017/R-018 downgrade. Открытых: 1 🔴 + 5 🟡 + 3 🟢</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+        <a class="artifact-row" href="../../../../knowledge-base/PROJECT_STATE.md">
+          <div class="artifact-icon">🧭</div>
+          <div class="artifact-title">PROJECT_STATE.md</div>
+          <div class="artifact-desc">Живой снимок проекта (12.06): фокус Ф1, открытые задачи команды, milestones, последние решения</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/research/internal-beta-2026-06.md">
+          <div class="artifact-icon">🧪</div>
+          <div class="artifact-title">internal-beta-2026-06</div>
+          <div class="artifact-desc">Бриф внутренней беты на сотрудниках Neiry (10 человек, 2 недели VITRO, Android-only) — старт после Ф1 19.06</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="artifact-section">
+      <div class="artifact-section-header">
+        <span class="artifact-section-title">📚 База знаний</span>
+        <span class="artifact-section-legend">сквозные референсы — метрики, аудит, брейнштормы</span>
+      </div>
+      <div class="artifacts-list">
+        <a class="artifact-row" href="../../metrics/hrv.html">
+          <div class="artifact-icon">💓</div>
+          <div class="artifact-title">hrv</div>
+          <div class="artifact-desc">RMSSD: формула, шкала 60-100/30-60/15-25/&lt;15, окно 00:00–07:00</div>
+          <span class="artifact-author rd">R&amp;D</span>
+        </a>
+        <a class="artifact-row" href="../../metrics/rhr.html">
+          <div class="artifact-icon">🫀</div>
+          <div class="artifact-title">rhr</div>
+          <div class="artifact-desc">RHR: шкала, окно, формула Early Illness Alert</div>
+          <span class="artifact-author rd">R&amp;D</span>
+        </a>
+        <a class="artifact-row" href="../../metrics/vitro-metrics-registry.html">
+          <div class="artifact-icon">📊</div>
+          <div class="artifact-title">vitro-metrics-registry</div>
+          <div class="artifact-desc">Vitro Metrics Registry v0.2 — реестр 58 метрик</div>
+          <span class="artifact-author rd">R&amp;D</span>
+        </a>
+        <a class="artifact-row" href="../../sources/metrics-audit-v0.1.txt">
+          <div class="artifact-icon">🔍</div>
+          <div class="artifact-title">metrics-audit-v0.1</div>
+          <div class="artifact-desc">Аудит Никиты по 58 метрикам, trust-маркеры, 6 архитектурных слоёв</div>
+          <span class="artifact-author cco">CCO</span>
+        </a>
+        <a class="artifact-row" href="../2026-05-18-ui-i-metriki.html">
+          <div class="artifact-icon">🧠</div>
+          <div class="artifact-title">ui-i-metriki</div>
+          <div class="artifact-desc">Брейншторм-фундамент: Wow-сценарий, L4, HRV, Mobile UI, Neiry Unite</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+        <a class="artifact-row" href="../2026-06-04-rd-backlog-cards.html">
+          <div class="artifact-icon">🔬</div>
+          <div class="artifact-title">rd-backlog-cards</div>
+          <div class="artifact-desc">R&amp;D-бэклог: 6 карточек (Stress Index · IMU/PPG raw · Сон · ICP · Privacy · Mobile B2C)</div>
+          <span class="artifact-author rd">R&amp;D</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/risks/RISKS.html">
+          <div class="artifact-icon">⚠</div>
+          <div class="artifact-title">risks-unified</div>
+          <div class="artifact-desc">Risks Unified · реестр рисков M3 — мигрировано из M2 + новые M3-риски</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="artifact-section archive">
+      <div class="artifact-section-header">
+        <span class="artifact-section-title">🗄️ M2 · архив</span>
+        <span class="artifact-section-legend">контекст — не трогаем, при наведении проявится</span>
+      </div>
+      <div class="artifacts-list">
+        <a class="artifact-row" href="../../../docs_web/handover/M2_Engineering_Handover.html">
+          <div class="artifact-icon">📦</div>
+          <div class="artifact-title">M2 Engineering Handover · индекс пакета</div>
+          <div class="artifact-desc">Индекс 7 артефактов M2 для приёмки Никитой (на feature/m2-handover, ожидает merge)</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/wireframes/m2/mobile-main.html">
+          <div class="artifact-icon">📱</div>
+          <div class="artifact-title">mobile-main · M2 handover</div>
+          <div class="artifact-desc">Live BPM + HRV + шаги + sparkline 24ч. Baseline для M3 W1-W2 mobile-рестайла</div>
+          <span class="artifact-author ux">UX</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/specs/metrics-hrv-steps-m2.html">
+          <div class="artifact-icon">📐</div>
+          <div class="artifact-title">metrics-hrv-steps-m2 · спека</div>
+          <div class="artifact-desc">Формулы RMSSD / SDNN / Баевский ИН, источники SDK, пороги, визуализация</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/pitch/M2_Pitch_Onepager.html">
+          <div class="artifact-icon">📄</div>
+          <div class="artifact-title">M2 Pitch onepager · A4 print-ready</div>
+          <div class="artifact-desc">Одноэкранник для инвесторов: проблема / решение / тракшен / ask</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/demo/Demo_Script_M2_Athlete.html">
+          <div class="artifact-icon">🎙️</div>
+          <div class="artifact-title">Demo Script · Спортсмен</div>
+          <div class="artifact-desc">5-мин сценарий стенда + wow-моменты + fallback на отказ устройства/гостя</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/wireframes/m3/dashboard-corporate-v5-baseline.html">
+          <div class="artifact-icon">📊</div>
+          <div class="artifact-title">dashboard-corporate · v5 baseline</div>
+          <div class="artifact-desc">Рестайл v5 Никиты в wine + UI Kit M2. УСТАРЕЛ по PRD M3 (2 пресета), станет baseline для переделки в W3</div>
+          <span class="artifact-author ux">UX</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/artifacts/milestones-m2.html">
+          <div class="artifact-icon">🎯</div>
+          <div class="artifact-title">milestones-m2</div>
+          <div class="artifact-desc">M2 strategy: medical traffic light, PIN-flow</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+        <a class="artifact-row" href="../2026-05-22-task-package.html">
+          <div class="artifact-icon">📦</div>
+          <div class="artifact-title">task-package-2026-05-22</div>
+          <div class="artifact-desc">M2 пакет задач: календарь, исполнители, открытые вопросы</div>
+          <span class="artifact-author pm">PM</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/wireframes/m2/kiosk-v2.html">
+          <div class="artifact-icon">🖥️</div>
+          <div class="artifact-title">kiosk-v2 · внешняя карточка</div>
+          <div class="artifact-desc">M2 Kiosk: IDLE / ACTIVE / PENDING_CLAIM — главный экран киоска</div>
+          <span class="artifact-author ux">UX</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/wireframes/m2/kiosk-drilldown.html">
+          <div class="artifact-icon">🔍</div>
+          <div class="artifact-title">kiosk-drilldown · карточка персонажа</div>
+          <div class="artifact-desc">M2 Kiosk drill-down: внутренние показатели + Bayevsky test</div>
+          <span class="artifact-author ux">UX</span>
+        </a>
+        <a class="artifact-row" href="2026-05-18-m2-plasma-layout-l4.html">
+          <div class="artifact-icon">🎨</div>
+          <div class="artifact-title">plasma-layout-l4</div>
+          <div class="artifact-desc">M2 Standalone L4-прототип плазмы 42"</div>
+          <span class="artifact-author ux">UX</span>
+        </a>
+        <a class="artifact-row" href="../../../docs_web/wireframes/m1/">
+          <div class="artifact-icon">📱</div>
+          <div class="artifact-title">wireframes/m1</div>
+          <div class="artifact-desc">Mobile UI baseline (M1 wireframes) — основа для M3 расширения</div>
+          <span class="artifact-author ux">UX</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- VIEW: ACCEPTANCE -->
+  <div class="view" data-view="acceptance">
+    <div class="acceptance-hero">
+      <div class="ac-label">Acceptance M3 · PRD v2.6 §8</div>
+      <div class="ac-value mono"><span id="ac-passed">0</span><span class="unit">/ 25 пройдено</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="ac-progress" style="width:0%"></div></div>
+    </div>
+
+    <h3 style="margin: 20px 0 10px; font-size: 13px; color: var(--accent-bright); text-transform: uppercase; letter-spacing: 0.08em;">Фаза 1 · Super-Mega-Lite MVP · deadline 19.06 пт</h3>
+    <div class="acceptance-list" id="ac-list">
+      <div class="ac-item" data-ac="ac1-1"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.1</div><div class="ac-text">iOS submit в App Store до 12.06 23:59 пт (hard). Артефакт: App Store Connect submission. Прото-бандл минимум.</div><div class="ac-related">связано: m3-w2-4</div></div></div>
+      <div class="ac-item" data-ac="ac1-2"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.2</div><div class="ac-text">Android + iOS билды поданы в обоих сторах до 19.06 23:59 пт (минимум на review).</div><div class="ac-related">связано: m3-w3-8</div></div></div>
+      <div class="ac-item" data-ac="ac1-3"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.3</div><div class="ac-text">E2E onboarding: install → permissions → bracelet paired → first HRV. Walltime ≤ 5 минут (Pixel 7 / iPhone 14).</div><div class="ac-related">связано: m3-w3-1</div></div></div>
+      <div class="ac-item" data-ac="ac1-4"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.4</div><div class="ac-text">Экран HRV: 3 числовых поля (hrv_day, hrv_delta_day_pct, hrv_week_avg) + график 30 дней. Tap → объяснение.</div><div class="ac-related">связано: m3-w3-1</div></div></div>
+      <div class="ac-item" data-ac="ac1-5"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.5</div><div class="ac-text">recommendation_text ≤ 140 символов под HRV-числом, цвет фона = type (зелёный / нейтральный / жёлтый).</div><div class="ac-related">связано: m3-w3-1</div></div></div>
+      <div class="ac-item" data-ac="ac1-6"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.6</div><div class="ac-text">Shareable splash-экран: полноэкранная карточка (число + дельта + рекомендация + бренд). Скриншот руками. Хранение и автошеринг — в Ф2.</div><div class="ac-related">связано: m3-w3-1, m3-w3-6</div></div></div>
+      <div class="ac-item" data-ac="ac1-7"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.7</div><div class="ac-text">⚠️ Перенесено в Ф2 → AC-2.9 (Telegram-шеринг через share-sheet).</div><div class="ac-related">связано: m3-w4-6</div></div></div>
+      <div class="ac-item" data-ac="ac1-8"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.8</div><div class="ac-text">Instagram, VK и прочие соцсети — out of MVP полностью (Ф1 + Ф2).</div><div class="ac-related">—</div></div></div>
+      <div class="ac-item" data-ac="ac1-9"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.9</div><div class="ac-text">Полная тренировка: HR + длительность + темп + GPS-трек + типы активности + Z1–Z5 + calories. Артефакт: видео цикла бег 5 мин на улице.</div><div class="ac-related">связано: m3-w3-2</div></div></div>
+      <div class="ac-item" data-ac="ac1-9b"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.9b</div><div class="ac-text">Fallback: если AC-1.9 не успевается к 19.06 — сокращённый scope + перенос в Ф1.5 (до 22.06) или Ф2. Решение в PROJECT_STATE.md.</div><div class="ac-related">связано: m3-w3-2</div></div></div>
+      <div class="ac-item" data-ac="ac1-10"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.10</div><div class="ac-text">Health Sharing E2E: юзер A QR → B сканирует → B видит HRV A на главной. Время от QR до данных ≤ 30 сек.</div><div class="ac-related">связано: m3-w3-3</div></div></div>
+      <div class="ac-item" data-ac="ac1-11"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.11</div><div class="ac-text">Fall detection E2E: браслет роняется → ≤ 10 сек push «упал» на втором телефоне. FP rate &lt; 10% (20 движений).</div><div class="ac-related">связано: m3-w3-4</div></div></div>
+      <div class="ac-item" data-ac="ac1-12"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.12</div><div class="ac-text">Sleep demo: моки (8h, 22% / 15% / 63%) + «Demo data, real sleep tracking coming soon» сверху, шрифт ≥ 14pt.</div><div class="ac-related">связано: m3-w3-5</div></div></div>
+      <div class="ac-item" data-ac="ac1-14"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.14</div><div class="ac-text">3 ключевых экрана (HRV-главный, тренировка, splash) с Bevel-стилем (light primary) + premium-качество Whoop. UX-элементы Whoop допустимы.</div><div class="ac-related">связано: m3-w3-6</div></div></div>
+      <div class="ac-item" data-ac="ac1-15"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-1.15</div><div class="ac-text">До 22.06 09:00: ≥1 группа из таблицы pilots выбрана, у каждого юзера установлен app + спарен браслет + onboarding получен.</div><div class="ac-related">связано: m3-w3-10</div></div></div>
+    </div>
+
+    <h3 style="margin: 28px 0 10px; font-size: 13px; color: var(--accent-bright); text-transform: uppercase; letter-spacing: 0.08em;">Фаза 2 · Onboarding + Композитная метрика · deadline 30.06</h3>
+    <div class="acceptance-list">
+      <div class="ac-item" data-ac="ac2-1"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-2.1</div><div class="ac-text">Onboarding-опросник: ≥ 7 вопросов (возраст, пол, рост/вес, цель, нагрузка, хронические заболевания, согласие). Walltime ≤ 3 мин.</div><div class="ac-related">связано: m3-w4-1</div></div></div>
+      <div class="ac-item" data-ac="ac2-2"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-2.2</div><div class="ac-text">Калибровка с прогресс-баром: 24h ≤ длит. ≤ 48h, счётчик «осталось N часов» + объяснение что собираем.</div><div class="ac-related">связано: m3-w4-2</div></div></div>
+      <div class="ac-item" data-ac="ac2-3"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-2.3</div><div class="ac-text">Композитная метрика: N ≥ 50 R-R, валидирована Диной, UI = число + категория (низкий/средний/высокий) + дельта.</div><div class="ac-related">связано: m3-w4-3</div></div></div>
+      <div class="ac-item" data-ac="ac2-4"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-2.4</div><div class="ac-text">Расширенная рекомендация (HRV-дельта + composite, ≥2 входа), ≤ 200 символов, правила Дины.</div><div class="ac-related">связано: m3-w4-4</div></div></div>
+      <div class="ac-item" data-ac="ac2-5"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-2.5</div><div class="ac-text">≥ 5 pilots-юзеров прошли Ф2-onboarding к 30.06. Артефакт: список user_id + дата калибровки.</div><div class="ac-related">связано: m3-w4-7</div></div></div>
+      <div class="ac-item" data-ac="ac2-6"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-2.6</div><div class="ac-text">Решение по приоритетам Ф2 зафиксировано после встречи Лиги 11.06 — артефакт в PROJECT_STATE.md до 12.06.</div><div class="ac-related">связано: m3-w2-3</div></div></div>
+      <div class="ac-item" data-ac="ac2-7"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-2.7</div><div class="ac-text">Internal-фид: при генерации новой рекомендации карточка автоматически добавляется в фид (без действий юзера).</div><div class="ac-related">связано: m3-w4-5</div></div></div>
+      <div class="ac-item" data-ac="ac2-8"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-2.8</div><div class="ac-text">Фид: лента карточек сортирована по дате убывания + пустое состояние «Здесь будут ваши инсайты…».</div><div class="ac-related">связано: m3-w4-5</div></div></div>
+      <div class="ac-item" data-ac="ac2-9"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-2.9</div><div class="ac-text">Telegram-шеринг: tap «Share» → картинка-карточка → share-sheet → TG. Время tap → share-sheet ≤ 2 сек.</div><div class="ac-related">связано: m3-w4-6</div></div></div>
+      <div class="ac-item" data-ac="ac2-10"><input type="checkbox" class="ac-check"><div class="ac-body"><div class="ac-num">AC-2.10</div><div class="ac-text">Юзер может удалить карточку (свайп / меню). Карточка исчезает из ленты.</div><div class="ac-related">связано: m3-w4-5</div></div></div>
+    </div>
+
+    <div style="margin-top: 28px; padding: 14px 16px; background: rgba(101,163,13,0.06); border-left: 3px solid var(--green); border-radius: 6px;">
+      <div style="font-size: 12px; color: var(--green); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">Ф3 · опц.</div>
+      <div style="font-size: 13px; color: var(--muted); margin-top: 4px;">Research-карман Дины (новая формула NSI). <strong style="color:var(--text);">Acceptance Criteria отсутствуют.</strong> Не входит в Акт Этапа 3.</div>
+    </div>
+  </div>
+
+  <!-- VIEW: RISKS -->
+  <div class="view" data-view="risks">
+    <div style="margin-bottom: 16px; padding: 12px 16px; background: rgba(101,163,13,0.06); border-left: 3px solid var(--green); border-radius: 6px; font-size: 12px; color: var(--muted);">
+      Синхронизировано с <code style="color: var(--text);">risks/RISKS.md v3</code> (12.06.2026, после акцепта Никиты на PRD v2.6).
+    </div>
+    <div class="risks-summary">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Sev</th><th>Категория</th><th>Название</th><th>Статус</th><th>Owner</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="r-id">R-008</td><td>🔴</td><td>Технические</td><td>iOS Bridge не успеваем к 12.06</td><td class="r-status-open">open</td><td>Кирилл</td></tr>
+          <tr><td class="r-id">R-009</td><td>🟡</td><td>Юр / Compliance</td><td>App Store review &gt;7 дней</td><td class="r-status-mit">in-mitigation</td><td>PM</td></tr>
+          <tr><td class="r-id">R-010</td><td>🟡</td><td>Дизайн</td><td>Дизайн затягивается</td><td class="r-status-open">open</td><td>PM</td></tr>
+          <tr><td class="r-id">R-011</td><td>🟡</td><td>Технические</td><td>Сырьё данных Дины задерживается</td><td class="r-status-open">open</td><td>Кирилл</td></tr>
+          <tr><td class="r-id">R-012</td><td>🟢</td><td>Команда</td><td>Костя+Дина границы ролей</td><td class="r-status-open">open</td><td>PM+Дина</td></tr>
+          <tr><td class="r-id">R-013</td><td>⚪</td><td>Бизнес</td><td><s>Демка Сбера 10.06 не готова</s> — Sber-демо вне PM-скоупа</td><td class="r-status-closed">CLOSED 12.06</td><td>—</td></tr>
+          <tr><td class="r-id">R-014</td><td>🟢</td><td>Логистика</td><td>Костя без браслета</td><td class="r-status-mit">in-mitigation</td><td>Алексей</td></tr>
+          <tr><td class="r-id">R-015</td><td>🟡</td><td>Бизнес</td><td>Sync браслет ↔ Mine Tracker для Райф</td><td class="r-status-open">open</td><td>Никита+Алексей</td></tr>
+          <tr><td class="r-id">R-016</td><td>🟡</td><td>Продукт</td><td>Композитная метрика Ф2 не валидируется</td><td class="r-status-open">open</td><td>Дина</td></tr>
+          <tr><td class="r-id">R-017</td><td>🟡</td><td>Технические</td><td>Firebase для пуш-инфраструктуры Ф1 (downgrade 🔴→🟡)</td><td class="r-status-mit">in-mitigation</td><td>Кирилл+Алиса</td></tr>
+          <tr><td class="r-id">R-018</td><td>🟢</td><td>Сроки</td><td>Цепочка 12.06→19.06→22.06 — буфер 1 раб.день (downgrade 🟡→🟢)</td><td class="r-status-open">open</td><td>PM</td></tr>
+          <tr><td class="r-id">R-019</td><td>⚪</td><td>Дизайн</td><td><s>UI-клон Whoop вопреки брифу</s> — принцип смягчён</td><td class="r-status-closed">CLOSED 12.06</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="risk-section-title">🔴 Critical · открытые</div>
+    <div class="risks-grid">
+      <div class="risk-card crit">
+        <div class="risk-head"><div class="risk-title">🔴 iOS Bridge не успеваем к 12.06</div><div class="risk-id">R-008</div></div>
+        <div class="risk-meta"><span>Технические</span><span>Ф1 W2</span><span>open</span><span>Кирилл</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Hard deadline submit iOS в App Store — 12.06 пт. Bridge стартует 08.06 — 4 рабочих дня до submit.</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>Флоттерист Дымова через Алису + Асанов/Конеев. Milestone: 10.06 на тестовом → 11.06 склейка → 12.06 submit.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Прото-бандл для запуска модерации; финальный бандл обновляется до 19.06 пт.</div>
+        <div class="risk-row"><span class="lab">Источник:</span>PRD v2.6 · акцепт Никиты 12.06</div>
+      </div>
+    </div>
+
+    <div class="risk-section-title">🟡 High · открытые</div>
+    <div class="risks-grid">
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 App Store review &gt;7 дней</div><div class="risk-id">R-009</div></div>
+        <div class="risk-meta"><span>Юр / Compliance</span><span>Ф1 W2-W3</span><span>in-mitigation</span><span>PM</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Apple ревью health-приложений непредсказуемо. При submit 12.06 и MVP 19.06 пт — буфер 7 дней (вырос с 5 после сдвига Ф1).</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>Ранний submit прото-бандла для запуска модерации параллельно.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>AC-1.1 = «submitted, awaiting review»; pilots 22.06 могут стартовать Android-only.</div>
+      </div>
+
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 Дизайн затягивается</div><div class="risk-id">R-010</div></div>
+        <div class="risk-meta"><span>Дизайн</span><span>Ф1 W2</span><span>open</span><span>PM</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Методология Кости через Claude+скиллы (Whoop+Bevel→синтез) может не дать качества к 19.06.</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>Бюджет на UI-дизайнера одобрен Никитой (цифра не зафиксирована — определяется по факту).</div>
+      </div>
+
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 Сырьё данных Дины задерживается</div><div class="risk-id">R-011</div></div>
+        <div class="risk-meta"><span>Технические</span><span>Ф1 W2</span><span>open</span><span>Кирилл</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>R-R интервалы за сутки от Кирилла Дине (mityurevadi@gmail.com) — deadline 09.06 вечер.</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>Дина параллельно работает с SDK-документацией и ответами китайцев из чата.</div>
+      </div>
+
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 Sync браслет ↔ Mine Tracker для Райф</div><div class="risk-id">R-015</div></div>
+        <div class="risk-meta"><span>Бизнес</span><span>Ф1 W2-W3</span><span>open</span><span>Никита+Алексей</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Райффайзен пилот (13-15 колл-центр) требует сшивки с их Mine Tracker — методология не отработана.</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>Никита + Алексей прорабатывают отдельным треком.</div>
+      </div>
+
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 Композитная метрика Ф2 не валидируется Диной</div><div class="risk-id">R-016</div></div>
+        <div class="risk-meta"><span>Продукт</span><span>Ф2 W3-W4</span><span>open</span><span>Дина</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Если Дина не подтверждает методологию — AC-2.3 проваливается.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>HRV-движок + рекомендация без композитной метрики, перенос в M4.</div>
+      </div>
+
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 Firebase задержка для пуш-инфраструктуры Ф1</div><div class="risk-id">R-017</div></div>
+        <div class="risk-meta"><span>Технические</span><span>Ф1 W2</span><span>in-mitigation</span><span>Кирилл+Алиса</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Алиса обещала Firebase к ~15.06. Нужен для пушей Ф1 (HRV-инсайт / training reminders / fall-alert).</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>Локальный fall detection без облака как fallback. Миграция push-флоу после 15.06.</div>
+        <div class="risk-row"><span class="lab">Закрытое:</span>Sber-демо часть R-017 закрыта 12.06 — биллинг вне Акта Этапа 3 (Паша + Кирилл work-for-hire). <strong>Downgrade 🔴 → 🟡.</strong></div>
+      </div>
+    </div>
+
+    <div class="risk-section-title">🟢 Medium · открытые</div>
+    <div class="risks-grid">
+      <div class="risk-card med">
+        <div class="risk-head"><div class="risk-title">🟢 Костя+Дина границы ролей</div><div class="risk-id">R-012</div></div>
+        <div class="risk-meta"><span>Команда</span><span>Ф1 W1</span><span>open</span><span>PM+Дина</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Дина = researcher+product. Костя = PM. Пересечение по фичам/метрикам.</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>1-1 синк Костя+Дина: кто за метрики, кто за фичи, кто комитит правки в PRD.</div>
+      </div>
+
+      <div class="risk-card med">
+        <div class="risk-head"><div class="risk-title">🟢 Костя без браслета</div><div class="risk-id">R-014</div></div>
+        <div class="risk-meta"><span>Логистика</span><span>Ф1 W2</span><span>in-mitigation</span><span>Алексей</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>PM не носит браслет → теряет связь с продуктом.</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>Алексей отправляет Vanta/Vigor Косте в Белград после 10.06.</div>
+      </div>
+
+      <div class="risk-card med">
+        <div class="risk-head"><div class="risk-title">🟢 Цепочка 12.06 → 19.06 → 22.06 — буфер 1 раб. день</div><div class="risk-id">R-018</div></div>
+        <div class="risk-meta"><span>Сроки</span><span>Ф1 W2-W3</span><span>open</span><span>PM</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>После сдвига Ф1 17.06 → 19.06 пт цепочка остаётся плотной. Между Ф1 и pilots — выходные + 1 раб. день.</div>
+        <div class="risk-row"><span class="lab">Митигация:</span>Прото-submit 12.06 для запуска модерации. Параллельная разработка финального бандла. AC-1.9b fallback на Ф1.5 если не успеваем.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Если Apple отказывает до 19.06 — pilots 22.06 Android-only старт. <strong>Downgrade 🟡 → 🟢.</strong></div>
+      </div>
+    </div>
+
+    <div class="risk-section-title">⚪ Closed 12.06 (после акцепта Никиты)</div>
+    <div class="risks-grid">
+      <div class="risk-card closed low">
+        <div class="risk-head"><div class="risk-title">⚪ R-013 · Демка Сбера 10.06 не готова</div><div class="risk-id">closed</div></div>
+        <div class="risk-meta"><span>Бизнес</span><span>Ф1 W2</span><span>closed 12.06</span></div>
+        <div class="risk-row"><span class="lab">Итог:</span>Sber-демо 10.06 проведено вне PM-скоупа: Паша (mobile) + Кирилл (backend) как work-for-hire. Биллинг отдельным счётом, не входит в Акт Этапа 3.</div>
+      </div>
+      <div class="risk-card closed low">
+        <div class="risk-head"><div class="risk-title">⚪ R-019 · UI-клон Whoop вопреки брифу</div><div class="risk-id">closed</div></div>
+        <div class="risk-meta"><span>Дизайн</span><span>Ф1 W2</span><span>closed 12.06</span></div>
+        <div class="risk-row"><span class="lab">Итог:</span>Принцип «не копируем UX Whoop» снят правкой Никиты 09.06. AC-1.14 PRD v2.6 переписан: Bevel + light primary, UX-элементы Whoop допустимы.</div>
+      </div>
+    </div>
+
+    <div class="risk-section-title">⚪ Superseded решениями 08.06 pivot (M2-era + R-001..R-007 + R-104..R-108)</div>
+    <div class="risks-grid">
+      <div class="risk-card closed low">
+        <div class="risk-head"><div class="risk-title">⚪ R-001..R-007, R-101..R-108</div><div class="risk-id">superseded</div></div>
+        <div class="risk-meta"><span>Различные</span><span>M2-эра</span><span>closed</span></div>
+        <div class="risk-row"><span class="lab">Итог:</span>Закрыты решениями встречи 08.06 (pivot M3): Sleep → демо, Mode → out-of-scope, дашборды → out-of-scope, push с Mode → out-of-scope, юрист → Алиса. Часть мигрировала в R-008..R-019. Полная история — в risks/RISKS.md v3.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW: R&D -->
+  <div class="view" data-view="rd">
+    <div class="rd-intro">
+      R&amp;D-бэклог M3 v2.6. Owner методологии — Дина (HRV-движок Ф1, композитная метрика Ф2, новая NSI Ф3 опц.). Owner UX/data — PM.
+    </div>
+    <div class="rd-grid">
+
+      <!-- Card 1: HRV-методология (Ф1, in-research) -->
+      <div class="rd-card in-research">
+        <div class="rd-card-head">
+          <div class="rd-card-title">💓 HRV-методология (Ф1)</div>
+          <div class="rd-status">in-research</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Контракт API §4 PRD v2.6 уже зафиксирован для Кирилла. Дина параллельно формирует точную методологию — без неё placeholder-правила выводов не заменятся на финальные.</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">Никита 09.06 снял жёсткий deadline 11.06 — методология формируется параллельно. Кирилл собирает сырьё R-R за сутки на mityurevadi@gmail.com (R-011).</span></div>
+        <div class="rd-block-label">Открытые вопросы</div>
+        <ul class="rd-questions">
+          <li>Выбор метрики: RMSSD / SDNN / pNN50 — какая чувствительность к артефактам PPG?</li>
+          <li>Размер окна (5-мин стандарт) и алгоритм агрегации до hrv_day?</li>
+          <li>Точные пороги триггеров recommendation_type (positive / neutral / alert) и шаблоны фраз?</li>
+          <li>Алгоритм расчёта confidence (для затемнения UI при низкой уверенности)?</li>
+        </ul>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd1-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Получить сырьё R-R от Кирилла, проанализировать качество данных</span><span class="rd-owner">Дина</span></li>
+          <li data-rd-task="rd1-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Выбрать формулу и зафиксировать в <code>research/hrv-methodology.md</code></span><span class="rd-owner">Дина</span></li>
+          <li data-rd-task="rd1-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">Шаблоны рекомендаций (≤140 символов) под positive / neutral / alert</span><span class="rd-owner">Дина+PM</span></li>
+        </ul>
+        <div class="rd-source">⤴ PRD v2.6 §4 · API-контракт фиксирован · upd 12.06</div>
+      </div>
+
+      <!-- Card 2: Композитная метрика стресса (Ф2) -->
+      <div class="rd-card open">
+        <div class="rd-card-head">
+          <div class="rd-card-title">🧮 Композитная метрика стресса (Ф2)</div>
+          <div class="rd-status">open</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">AC-2.3 PRD v2.6 — обязательная фича Ф2. Без подписи Диной AC проваливается (R-016).</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">Не путать с тестом Баевского (M2 drill-down) и с новой формулой NSI (Ф3 опц.). Композитная — на базе HRV + R-R-данных, валидируется Диной к 30.06.</span></div>
+        <div class="rd-block-label">Открытые вопросы</div>
+        <ul class="rd-questions">
+          <li>Какие входы беруться (HRV-дельта + что ещё)?</li>
+          <li>Окно расчёта: N ≥ 50 R-R — оптимально или нужно больше?</li>
+          <li>Категоризация (низкий/средний/высокий) — пороги?</li>
+          <li>Как валидировать без эталона: самооценка / Polar reference / другое?</li>
+        </ul>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd2-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Бенч композитов конкурентов (Polar Body Battery, Whoop Strain, Oura Readiness) — формулы и входы</span><span class="rd-owner">Дина</span></li>
+          <li data-rd-task="rd2-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Прототип формулы на сырых R-R от Кирилла</span><span class="rd-owner">Дина</span></li>
+          <li data-rd-task="rd2-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">Спецификация в <code>docs_web/specs/composite-metric.md</code> + подпись Researcher</span><span class="rd-owner">Дина</span></li>
+        </ul>
+        <div class="rd-source">⤴ PRD v2.6 §3 Ф2 · AC-2.3 · upd 12.06</div>
+      </div>
+
+      <!-- Card 3: Новая формула NSI (Ф3 опц.) -->
+      <div class="rd-card open">
+        <div class="rd-card-head">
+          <div class="rd-card-title">🔬 Новая формула NSI (Neiry Stress Index) — Ф3 опц.</div>
+          <div class="rd-status">opt · вне Акта</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Под вопросом. Дина после Ф2 (если успевает) разрабатывает <strong>собственную новую формулу NSI</strong> — не путать с M2-формулой (синтетическая для wow на стенде) и не путать с тестом Баевского.</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">M2-NSI: <code>100 − (BPM − Baseline) × 2</code>, clamp [0..100] — это была wow-метрика плазмы. M3-NSI Дины должна быть продуктовой методологически валидной формулой.</span></div>
+        <div class="rd-block-label">Открытые вопросы</div>
+        <ul class="rd-questions">
+          <li>Какие входы — HRV / композитная метрика / R-R / другое?</li>
+          <li>Шкала (0-100 / 0-1000 / категории)?</li>
+          <li>Чем NSI отличается от композитной метрики Ф2 — позиционирование?</li>
+        </ul>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd3-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Решение после Ф2: брать в M3 (Ф3 опц.) или переносить в M4</span><span class="rd-owner">Дина+PM</span></li>
+          <li data-rd-task="rd3-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Если в M3: спецификация формулы как research-выход (без AC)</span><span class="rd-owner">Дина</span></li>
+        </ul>
+        <div class="rd-source">⤴ PRD v2.6 §3 Ф3 · вне Акта Этапа 3 · upd 12.06</div>
+      </div>
+
+      <!-- Card 4: Data Quality foundation (IMU+PPG cleanup) -->
+      <div class="rd-card open">
+        <div class="rd-card-head">
+          <div class="rd-card-title">📡 Data Quality: IMU+PPG cleanup (post-MVP)</div>
+          <div class="rd-status">backlog post-M3</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Никита 08.06: «данные IMU должны чистить артефакты PPG — если знаем с гироскопа, что было движение, усредняем спайк в пульсограмме». Иначе HRV-числа шумные.</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">Out-of-MVP foundation (PRD §10). Не реализуем в Ф1–Ф2, но фиксируем как принцип в архитектуре: Кирилл сохраняет R-R + IMU sample timestamps вместе.</span></div>
+        <div class="rd-block-label">Открытые вопросы</div>
+        <ul class="rd-questions">
+          <li>Какие алгоритмы IMU-aware artifact removal в PPG (Cole-Kripke / motion-artifact filters)?</li>
+          <li>Бенчмарк до/после на реальных данных pilots 22.06?</li>
+          <li>Сравнение с industry baselines (Polar, Apple Watch)?</li>
+        </ul>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd4-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Hook в архитектуре HRV-движка для post-processing фильтра (пустая реализация в Ф1)</span><span class="rd-owner">Кирилл</span></li>
+          <li data-rd-task="rd4-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Литобзор post-M3: actigraphy + motion-artifact removal</span><span class="rd-owner">Дина</span></li>
+        </ul>
+        <div class="rd-source">⤴ PRD v2.6 §10 Data Quality · NB Никиты 08.06 · upd 12.06</div>
+      </div>
+
+      <!-- Card 5: Pilots research (что собираем 22.06+) -->
+      <div class="rd-card open">
+        <div class="rd-card-head">
+          <div class="rd-card-title">🎯 Pilots research — что собираем 22.06+</div>
+          <div class="rd-status">prep</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">Первые внешние пилоты (Райф / Лига / внутренняя бета) — продуктовый сигнал до полного релиза. Что меряем, как собираем фидбек.</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">См. бриф `research/internal-beta-2026-06.md` (10 сотрудников Neiry, 2 недели, Android-only, 4 продуктовых + 4 технических вопроса).</span></div>
+        <div class="rd-block-label">Открытые вопросы</div>
+        <ul class="rd-questions">
+          <li>Метрики успеха pilots: retention, NPS, частота открытия app, share-actions?</li>
+          <li>Канал фидбека: TG-чат + Google Form + финальные интервью (3 человека) — оптимально?</li>
+          <li>Контрольная группа нужна или нет (выборка слишком мала)?</li>
+        </ul>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd5-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Финализировать бриф внутренней беты + согласовать с Никитой</span><span class="rd-owner">PM</span></li>
+          <li data-rd-task="rd5-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Google Form weekly + TG-чат «Neiry Pulse Beta»</span><span class="rd-owner">PM</span></li>
+          <li data-rd-task="rd5-3"><input type="checkbox" class="rd-check"><span class="rd-task-text">План финальных интервью (3 человека, по 30 мин)</span><span class="rd-owner">PM</span></li>
+        </ul>
+        <div class="rd-source">⤴ research/internal-beta-2026-06.md · upd 12.06</div>
+      </div>
+
+      <!-- Card 6: Fall detection IMU validation (Ф1 open question) -->
+      <div class="rd-card open">
+        <div class="rd-card-head">
+          <div class="rd-card-title">📲 Fall detection на базовом IMU — валидация</div>
+          <div class="rd-status">блокер Ф1</div>
+        </div>
+        <div class="rd-row"><span class="rd-label">Зачем</span><span class="rd-value">AC-1.11 PRD v2.6 — Fall detection E2E ≤ 10 сек + false positive &lt; 10%. Никита 09.06 поставил вопрос: работает ли на базовом IMU VITRO/VANTA или только на VIGOR 9-осевом.</span></div>
+        <div class="rd-row"><span class="rd-label">Контекст</span><span class="rd-value">Открытый блокер v2.6 → v2.7. Кирилл перепроверяет до 12.06. Альтернатива при провале — GBand «звонок из коробки».</span></div>
+        <div class="rd-block-label">Задачи</div>
+        <ul class="rd-tasks">
+          <li data-rd-task="rd6-1"><input type="checkbox" class="rd-check"><span class="rd-task-text">Тест fall detection на VITRO + VANTA — 20 движений (ходьба / махание / тряска)</span><span class="rd-owner">Кирилл</span></li>
+          <li data-rd-task="rd6-2"><input type="checkbox" class="rd-check"><span class="rd-task-text">Если базовый IMU не справляется — переключиться на GBand «звонок из коробки»</span><span class="rd-owner">Кирилл</span></li>
+        </ul>
+        <div class="rd-source">⤴ PRD v2.6 §3 Ф1 п.4 + AC-1.11 · открытый блокер · upd 12.06</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>Neiry · PM Dashboard · v2.6 · 2026-06-12 · акцепт Никиты получен</div>
+    <div>
+      <button class="reset-btn" id="reset-btn">⟲ Сбросить состояние</button>
+    </div>
+  </div>
+
+  <!-- VIEW: DONE -->
+  <div class="view" data-view="done">
+    <div class="flat-list-header">
+      <h2>Выполненные задачи</h2>
+      <span class="count" id="done-count-detail">0 / 0</span>
+      <span class="legend">M3 v2.6 (свежее) + ретроспектива M2 ниже · клик по галочке → возврат в «Открыто»</span>
+    </div>
+    <div class="flat-list" id="done-list">
+
+      <!-- M3 v2.6 (12.06) — свежие -->
+      <div class="flat-task done" data-flat="d-m3-acc">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">✅ Акцепт Никиты на скоупе Этапа 3 (12.06) — письмо с сводной таблицей принято</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-strategy">Contract</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-m3-prd26">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">PRD v2.5 → v2.6: NSI/Баевский разведены, даты Ф1 19.06, фид в Ф2, Sber вне PM-скоупа, AC-1.14 смягчён</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-strategy">PRD</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-m3-letter">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Письмо Никите 12.06 (handover/letter-to-nikita-2026-06-11-scope-pivot) + проект ДС № 1</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-strategy">Contract</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-m3-risks3">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">RISKS.md v2 → v3: R-013/R-019 closed, R-017/R-018 downgrade, даты 17→19.06</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-strategy">Risks</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-m3-state">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">PROJECT_STATE.md актуализация под v2.6 акцепт (фокус, задачи команды, milestones)</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-strategy">PM-doc</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-m3-pivot">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Pivot-встреча 08.06: 3 фазы M3, Mode/дашборды под нож, HRV-движок в Ф1</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-strategy">Strategy</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-m3-dina">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Дина онбординг: договор, доступ к PRD, сырьё R-R от Кирилла</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-strategy">Team</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-m3-meetings">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Встречи W2: Райф 09.06, Сбер 10.06, Лига 11.06</div>
+          <div class="flat-tags"><span class="tag tag-m3">M3</span><span class="tag tag-strategy">B2B</span></div>
+        </div>
+      </div>
+
+      <!-- M2 ретроспектива -->
+      <div class="flat-task done" data-flat="d-pm-1">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Объединённый риск-документ для Никиты (M2-specific)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-strategy">Strategy</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-2">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Flow выставки + блок-схема сценария гостя / питча</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-strategy">Strategy</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-3">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Бриф UX/UI на редизайн стенда + дашборда корпоратов (React kit выбран)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-4">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Скоординировать паринг 3 Android'ов с браслетами</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span><span class="tag tag-hardware">Hardware</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-5">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Подтвердить анкерам: браслеты на ночь 25→26, не снимать до 29.05</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-6">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Аренда беговой дорожки (~10–20 тыс ₽)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-7">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">2 актёра-перформера посменно</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-8">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Найти готовое приложение «Тест Струпа»</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-9">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">2–3 запасных браслета для ротации, дезинфекция</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span><span class="tag tag-hardware">Hardware</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-10">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Wi-Fi/4G на стенде Startup Village</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-pm-11">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">План Б: замена якоря если RMSSD в красной зоне</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-logistics">Логистика</span><span class="tag tag-strategy">Strategy</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-1">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Утилита: двухступенчатый фильтр R-R (медиана 20% → перцентиль 5/95) + ИН Баевского</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-2">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">POST /admin/seed-rr (RMSSD/SDNN + ИН с фильтром)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-3">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Заглушки 3 эндпоинтов drill-down Баевского (/start · /next-phase · /result)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-4">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Техподдержка команды на паринге (быть на связи в первой половине)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-5">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Полная логика drill-down Баевского (3 фазы: baseline / Stroop / treadmill)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-6">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">NSI на бэке (формула 100 − (BPM − Baseline) × 2, clamp 0..100) + цветовые зоны</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-be-7">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Smoke-test 26.05 — сквозной прогон браслет → backend → плазма</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span><span class="tag tag-hardware">Hardware</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-mob-1">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Экран mobile name_input — input «Как тебя зовут?» → POST participant.display_name</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-mob-2">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Session state machine: pairing → name_input → calibrating → active → ended</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-sdk">SDK</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-mob-3">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Калибровка 12 сек (расширение до 16 при недостатке семплов)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-sdk">SDK</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-mob-4">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">BLE lifecycle: heartbeat 2с · lost timeout 5с · hard disconnect 30с</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-sdk">SDK</span><span class="tag tag-hardware">Hardware</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-mob-5">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">WebSocket-схема: 11 событий backend→plasma + 2 команды plasma→backend</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-backend">Backend</span><span class="tag tag-mobile">Mobile</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-ux-1">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">mobile-hrv-sync: убрать readOriginData, «пакет 50 из 158»</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-ux-2">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">mobile-hrv-result: RMSSD-блок наверху над графиком + светофор</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-ux-3">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">«2230 HRV · RR/resRates: 169 знач.» → человеческий язык</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-ux-4">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">L4-прототип → m2/kiosk.html (шкала + модули)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-ux-5">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">5-й модуль HRV ночной (RMSSD + светофор + caption)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-ux">UX/UI</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-al-1">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Спарить браслеты с Android-телефонами по фиксированной схеме (1↔1)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-al-2">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Зарядить браслеты и телефоны до 100%</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-al-3">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Надеть браслеты, не снимать до 29.05 (4 ночи: 25→29)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-logistics">Логистика</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-al-4">
+        <input type="checkbox" class="flat-check" checked>
+        <div class="flat-body">
+          <div class="flat-text">Утром: sync через dev-UI, проверка чтения данных</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-hardware">Hardware</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-oos-1" data-locked="1">
+        <input type="checkbox" class="flat-check" checked disabled>
+        <div class="flat-body">
+          <div class="flat-text">Записывать когда снимали браслет (душ) — для понимания gaps</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-hardware">Hardware</span><span class="tag tag-oos">Out-of-scope</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-oos-2" data-locked="1">
+        <input type="checkbox" class="flat-check" checked disabled>
+        <div class="flat-body">
+          <div class="flat-text">Илья: использует Android от команды (iOS bridge снят со скоупа M2)</div>
+          <div class="flat-tags"><span class="tag tag-m2">M2</span><span class="tag tag-mobile">Mobile</span><span class="tag tag-oos">Out-of-scope</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-oos-3" data-locked="1">
+        <input type="checkbox" class="flat-check" checked disabled>
+        <div class="flat-body">
+          <div class="flat-text">Убрать Activity из KPI strip (5 → 4 cards) — Neiry Unite v4</div>
+          <div class="flat-tags"><span class="tag tag-ux">UX/UI</span><span class="tag tag-oos">Out-of-scope</span></div>
+        </div>
+      </div>
+      <div class="flat-task done" data-flat="d-oos-4" data-locked="1">
+        <input type="checkbox" class="flat-check" checked disabled>
+        <div class="flat-body">
+          <div class="flat-text">Activity остаётся в drill-down side-panel — Neiry Unite v4</div>
+          <div class="flat-tags"><span class="tag tag-ux">UX/UI</span><span class="tag tag-oos">Out-of-scope</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  <script>
+  // === Time & countdown ===
+  function updateClock() {
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('now-time').textContent = `${hh}:${mm}`;
+
+    const days = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+    const months = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+    document.getElementById('today-date').textContent =
+      `${days[now.getDay()]} · ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+    // Countdowns (M3 v2.6 — акцепт Никиты 12.06)
+    const f1 = new Date(2026, 5, 19);       // Ф1 Super-Mega-Lite release · 19.06.2026 пт
+    const pilots = new Date(2026, 5, 22);   // Pilots start · 22.06.2026 пн
+    const f2 = new Date(2026, 5, 30);       // Ф2 Onboarding + Композитная · 30.06.2026
+    const dF1 = Math.ceil((f1 - now) / (1000 * 60 * 60 * 24));
+    const dPilots = Math.ceil((pilots - now) / (1000 * 60 * 60 * 24));
+    const dF2 = Math.ceil((f2 - now) / (1000 * 60 * 60 * 24));
+    document.getElementById('countdown').textContent = dF1 > 0 ? dF1 : 0;
+    const cP = document.getElementById('countdown-pilots'); if (cP) cP.textContent = dPilots > 0 ? dPilots : 0;
+    const cF2 = document.getElementById('countdown-f2'); if (cF2) cF2.textContent = dF2 > 0 ? dF2 : 0;
+
+    // Current M3 stage (v2.6 — Ф1 release 19.06 пт, Ф2 release 30.06)
+    const stageEl = document.getElementById('current-stage');
+    const stageDesc = document.getElementById('current-stage-desc');
+    const day = now.getDate();
+    const month = now.getMonth() + 1;
+    if (month < 6) {
+      stageEl.textContent = 'Pre-M3'; stageDesc.textContent = 'Post-Village · подготовка к старту M3';
+      stageEl.style.color = '';
+    } else if (month === 6 && day <= 8) {
+      stageEl.textContent = 'W1 · Pivot';
+      stageDesc.textContent = '2-8 июня · сушка скоупа · iOS Bridge старт · Дина онбординг';
+    } else if (month === 6 && day <= 12) {
+      stageEl.textContent = 'W2 · iOS submit';
+      stageDesc.textContent = '9-12 июня · встречи Райф/Сбер/Лига · iOS submit 12.06 (hard)';
+    } else if (month === 6 && day <= 19) {
+      stageEl.textContent = 'W3 · Ф1 финал';
+      stageDesc.textContent = '13-19 июня · Ф1 разработка · release 19.06 пт (hard)';
+    } else if (month === 6 && day <= 22) {
+      stageEl.textContent = 'W3 · Pilots';
+      stageDesc.textContent = '20-22 июня · Apple review буфер · pilots start 22.06 пн (hard)';
+    } else if (month === 6 && day <= 30) {
+      stageEl.textContent = 'W4 · Ф2';
+      stageDesc.textContent = '23-30 июня · Onboarding + Композитная метрика · pilots running';
+    } else if (month === 7 && day <= 10) {
+      stageEl.textContent = 'W5 · Ф3 опц.';
+      stageDesc.textContent = '1-10 июля · research-карман Дины (новая NSI, вне Акта Этапа 3)';
+    } else {
+      stageEl.textContent = '✅ M3 завершён';
+      stageEl.style.color = 'var(--green)';
+      stageDesc.textContent = 'Готов к показу клиентам · App Store / Google Play';
+    }
+
+    // Standup date label
+    const sdLab = document.getElementById('standup-date');
+    if (sdLab) {
+      sdLab.textContent = `${now.getDate()} ${months[now.getMonth()]}`;
+    }
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+
+  // === Tabs ===
+  const tabs = document.querySelectorAll('.tab');
+  const views = document.querySelectorAll('.view');
+  function switchTab(name) {
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    views.forEach(v => v.classList.toggle('active', v.dataset.view === name));
+  }
+  tabs.forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const map = { '1': 'calendar', '2': 'open', '3': 'questions', '4': 'rd', '5': 'artifacts', '6': 'acceptance', '7': 'risks', '8': 'done' };
+    if (map[e.key]) switchTab(map[e.key]);
+  });
+
+  // === Tasks (localStorage) ===
+  const STORAGE_PREFIX = 'neiry-pm-task-';
+  const Q_PREFIX = 'neiry-pm-q-';
+  const RD_PREFIX = 'neiry-pm-rd-';
+
+  function loadTasks() {
+    document.querySelectorAll('.task').forEach(task => {
+      const id = task.dataset.task;
+      const checkbox = task.querySelector('.task-check');
+      if (!id || !checkbox) return;
+      const saved = localStorage.getItem(STORAGE_PREFIX + id) === '1';
+      checkbox.checked = saved;
+      task.classList.toggle('done', saved);
+    });
+    updateCounters();
+  }
+
+  function loadQuestions() {
+    document.querySelectorAll('.question-card').forEach(q => {
+      const id = q.dataset.q;
+      if (!id) return;
+      if (q.classList.contains('deferred') || q.classList.contains('cancelled')) return;
+      const stored = localStorage.getItem(Q_PREFIX + id);
+      if (stored !== null) q.classList.toggle('resolved', stored === '1');
+    });
+    sortQuestions();
+    updateCounters();
+  }
+
+  function sortQuestions() {
+    const grid = document.querySelector('.questions-grid');
+    if (!grid) return;
+    const cards = Array.from(grid.querySelectorAll('.question-card'));
+    // rank: 0 — open (нет статуса), 1 — deferred, 2 — resolved, 3 — cancelled
+    const rank = (c) => {
+      if (c.classList.contains('cancelled')) return 3;
+      if (c.classList.contains('resolved')) return 2;
+      if (c.classList.contains('deferred')) return 1;
+      return 0;
+    };
+    cards.sort((a, b) => {
+      const ra = rank(a), rb = rank(b);
+      if (ra !== rb) return ra - rb;
+      // стабильность по data-q (q1..q10)
+      const na = parseInt((a.dataset.q || '').replace(/\D/g, ''), 10) || 0;
+      const nb = parseInt((b.dataset.q || '').replace(/\D/g, ''), 10) || 0;
+      return na - nb;
+    });
+    cards.forEach(c => grid.appendChild(c));
+  }
+
+  function updateCounters() {
+    // Hero «Задач закрыто» теперь считается updateFlatCounts() — это вкладки «Открыто» / «Готово».
+    // Тут остаётся только счётчик вопросов.
+    const qResolved = document.querySelectorAll('.question-card.resolved').length;
+    const qDeferred = document.querySelectorAll('.question-card.deferred').length;
+    const qCancelled = document.querySelectorAll('.question-card.cancelled').length;
+    const qTotal = document.querySelectorAll('.question-card').length;
+    const qOpen = qTotal - qResolved - qDeferred - qCancelled;
+    const qoEl = document.getElementById('questions-open'); if (qoEl) qoEl.textContent = qOpen;
+    const qTab = document.querySelector('[data-tab="questions"] .tab-count'); if (qTab) qTab.textContent = qOpen;
+    updateWeekProgress();
+    updateWorkload();
+  }
+
+  function updateWeekProgress() {
+    ['w1','w2','w3','w4'].forEach(w => {
+      const col = document.querySelector(`.day-col[data-week="${w}"]`);
+      if (!col) return;
+      const total = col.querySelectorAll('.task').length;
+      const done = col.querySelectorAll('.task.done').length;
+      const pct = total ? (done / total * 100) : 0;
+      const fill = document.querySelector(`[data-week-fill="${w}"]`);
+      if (fill) fill.style.width = pct + '%';
+    });
+  }
+
+  function updateWorkload() {
+    const owners = { kirill: {open:0,done:0}, pm: {open:0,done:0}, ux: {open:0,done:0}, nikita: {open:0,done:0} };
+    document.querySelectorAll('.calendar .task').forEach(t => {
+      const isDone = t.classList.contains('done');
+      t.querySelectorAll('.owner-badge').forEach(b => {
+        // классы owner-badge pm/kirill/ux/nikita/uxui
+        let key = null;
+        if (b.classList.contains('kirill')) key = 'kirill';
+        else if (b.classList.contains('pm')) key = 'pm';
+        else if (b.classList.contains('ux') || b.classList.contains('uxui')) key = 'ux';
+        else if (b.classList.contains('nikita')) key = 'nikita';
+        if (key && owners[key]) {
+          if (isDone) owners[key].done++; else owners[key].open++;
+        }
+      });
+    });
+    Object.keys(owners).forEach(k => {
+      const o = owners[k];
+      const total = o.open + o.done;
+      const eOpen = document.querySelector(`[data-wl="${k}-open"]`);
+      const eDone = document.querySelector(`[data-wl="${k}-done"]`);
+      const eTotal = document.querySelector(`[data-wl="${k}-total"]`);
+      if (eOpen) eOpen.textContent = o.open;
+      if (eDone) eDone.textContent = o.done;
+      if (eTotal) eTotal.textContent = total;
+    });
+  }
+
+  function updateRDCounts() {
+    const all = document.querySelectorAll('.rd-card');
+    const open = document.querySelectorAll('.rd-card.open').length;
+    const inProg = document.querySelectorAll('.rd-card.in-research').length;
+    const closed = document.querySelectorAll('.rd-card.answered').length;
+    const elO = document.getElementById('rd-open-count'); if (elO) elO.textContent = open;
+    const elT = document.getElementById('rd-total-count'); if (elT) elT.textContent = all.length;
+    const elP = document.getElementById('rd-inprog-count'); if (elP) elP.textContent = inProg;
+    const elC = document.getElementById('rd-closed-count'); if (elC) elC.textContent = closed;
+  }
+
+  document.querySelectorAll('.task-check').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      const task = e.target.closest('.task');
+      const id = task.dataset.task;
+      if (id) localStorage.setItem(STORAGE_PREFIX + id, e.target.checked ? '1' : '0');
+      task.classList.toggle('done', e.target.checked);
+      updateCounters();
+    });
+  });
+
+  document.querySelectorAll('.task').forEach(task => {
+    task.addEventListener('click', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      const cb = task.querySelector('.task-check');
+      if (cb) {
+        cb.checked = !cb.checked;
+        cb.dispatchEvent(new Event('change'));
+      }
+    });
+  });
+
+  function loadRD() {
+    document.querySelectorAll('.rd-tasks li').forEach(li => {
+      const id = li.dataset.rdTask;
+      const cb = li.querySelector('.rd-check');
+      if (!id || !cb) return;
+      const saved = localStorage.getItem(RD_PREFIX + id) === '1';
+      cb.checked = saved;
+      li.classList.toggle('done', saved);
+    });
+  }
+  document.querySelectorAll('.rd-tasks .rd-check').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      const li = e.target.closest('li');
+      const id = li.dataset.rdTask;
+      if (id) localStorage.setItem(RD_PREFIX + id, e.target.checked ? '1' : '0');
+      li.classList.toggle('done', e.target.checked);
+    });
+  });
+
+  document.querySelectorAll('.q-resolve-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const card = btn.closest('.question-card');
+      const id = card.dataset.q;
+      const isResolved = card.classList.toggle('resolved');
+      if (id) localStorage.setItem(Q_PREFIX + id, isResolved ? '1' : '0');
+      btn.textContent = isResolved ? '✓ Resolved' : 'Resolved';
+      sortQuestions();
+      updateCounters();
+    });
+  });
+
+  // === Reset ===
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    if (!confirm('Сбросить все галочки и resolved-вопросы?')) return;
+    Object.keys(localStorage)
+      .filter(k => k.startsWith(STORAGE_PREFIX) || k.startsWith(Q_PREFIX) || k.startsWith(RD_PREFIX))
+      .forEach(k => localStorage.removeItem(k));
+    loadTasks();
+    loadFlat();
+    loadQuestions();
+    loadRD();
+  });
+
+  // === Flat tasks (Open / Done) ===
+  const FLAT_PREFIX = 'neiry-pm-flat-';
+  function moveFlat(task, toDoneView) {
+    const dest = document.getElementById(toDoneView ? 'done-list' : 'open-list');
+    if (dest && task.parentNode !== dest) dest.appendChild(task);
+    task.classList.toggle('done', toDoneView);
+  }
+  function updateFlatCounts() {
+    const open = document.querySelectorAll('#open-list .flat-task').length;
+    const done = document.querySelectorAll('#done-list .flat-task').length;
+    const total = open + done;
+    const oc = document.getElementById('open-count'); if (oc) oc.textContent = open;
+    const dc = document.getElementById('done-count'); if (dc) dc.textContent = done;
+    const ocd = document.getElementById('open-count-detail'); if (ocd) ocd.textContent = open + ' / ' + total;
+    const dcd = document.getElementById('done-count-detail'); if (dcd) dcd.textContent = done + ' / ' + total;
+    // Update hero stat «Задач открыто» (трекаем работу in-progress)
+    const to = document.getElementById('tasks-open'); if (to) to.textContent = open;
+    const tt = document.getElementById('tasks-total'); if (tt) tt.textContent = total;
+    const pf = document.getElementById('progress-fill');
+    if (pf) pf.style.width = (total ? (open / total * 100) : 0) + '%';
+  }
+  function loadFlat() {
+    document.querySelectorAll('.flat-task').forEach(t => {
+      if (t.dataset.locked === '1') return;
+      const id = t.dataset.flat;
+      const saved = localStorage.getItem(FLAT_PREFIX + id);
+      if (saved === null) return;
+      const isDone = saved === '1';
+      const cb = t.querySelector('.flat-check');
+      if (cb) cb.checked = isDone;
+      moveFlat(t, isDone);
+    });
+    updateFlatCounts();
+  }
+  document.querySelectorAll('.flat-check').forEach(cb => {
+    cb.addEventListener('change', e => {
+      const task = e.target.closest('.flat-task');
+      if (task.dataset.locked === '1') { e.target.checked = !e.target.checked; return; }
+      const id = task.dataset.flat;
+      const isDone = e.target.checked;
+      localStorage.setItem(FLAT_PREFIX + id, isDone ? '1' : '0');
+      moveFlat(task, isDone);
+      updateFlatCounts();
+    });
+  });
+  document.querySelectorAll('.flat-task').forEach(task => {
+    task.addEventListener('click', e => {
+      if (e.target.tagName === 'INPUT') return;
+      if (task.dataset.locked === '1') return;
+      const cb = task.querySelector('.flat-check');
+      if (cb) { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
+    });
+  });
+
+  // === Acceptance ===
+  const AC_PREFIX = 'neiry-pm-ac-';
+  function loadAcceptance() {
+    document.querySelectorAll('.ac-item').forEach(item => {
+      const id = item.dataset.ac;
+      const cb = item.querySelector('.ac-check');
+      if (!id || !cb) return;
+      const saved = localStorage.getItem(AC_PREFIX + id) === '1';
+      cb.checked = saved;
+      item.classList.toggle('done', saved);
+    });
+    updateAcceptanceCounts();
+  }
+  function updateAcceptanceCounts() {
+    const total = document.querySelectorAll('.ac-item').length;
+    const done = document.querySelectorAll('.ac-item.done').length;
+    const pct = total ? (done / total * 100) : 0;
+    const passEl = document.getElementById('ac-passed'); if (passEl) passEl.textContent = done;
+    const prog = document.getElementById('ac-progress'); if (prog) prog.style.width = pct + '%';
+    const tab = document.getElementById('ac-count'); if (tab) tab.textContent = done + '/' + total;
+  }
+  document.querySelectorAll('.ac-check').forEach(cb => {
+    cb.addEventListener('change', e => {
+      const item = e.target.closest('.ac-item');
+      const id = item.dataset.ac;
+      const isDone = e.target.checked;
+      if (id) localStorage.setItem(AC_PREFIX + id, isDone ? '1' : '0');
+      item.classList.toggle('done', isDone);
+      updateAcceptanceCounts();
+    });
+  });
+  document.querySelectorAll('.ac-item').forEach(item => {
+    item.addEventListener('click', e => {
+      if (e.target.tagName === 'INPUT') return;
+      const cb = item.querySelector('.ac-check');
+      if (cb) { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
+    });
+  });
+
+  // === Standup (localStorage per-day) ===
+  function standupKey(field) {
+    const now = new Date();
+    const ds = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+    return 'neiry-pm-standup-' + ds + '-' + field;
+  }
+  function loadStandup() {
+    ['yesterday', 'today', 'blockers'].forEach(f => {
+      const ta = document.getElementById('standup-' + f);
+      if (!ta) return;
+      const saved = localStorage.getItem(standupKey(f));
+      if (saved !== null) ta.value = saved;
+      ta.addEventListener('input', () => {
+        localStorage.setItem(standupKey(f), ta.value);
+      });
+    });
+  }
+
+  // === Risks count (статичный — количество open строк) ===
+  function updateRisksCount() {
+    const openRows = document.querySelectorAll('.risks-summary .r-status-open').length;
+    const mit = document.querySelectorAll('.risks-summary .r-status-mit').length;
+    const el = document.getElementById('risks-count');
+    if (el) el.textContent = (openRows + mit);
+  }
+
+  // === Init ===
+  loadTasks();
+  loadFlat();
+  loadQuestions();
+  loadRD();
+  loadAcceptance();
+  loadStandup();
+  updateRDCounts();
+  updateRisksCount();
+</script>
+
+</body>
+</html>

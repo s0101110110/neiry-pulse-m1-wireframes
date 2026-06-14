@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Mobile Onboarding 04 · Fall Detection · Push + In-app · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      /* shadcn light tokens + warm tint (Bevel-leaning) — identical to Home / Onboarding-01..03 */
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;            /* Neiry wine — PROTECTED */
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --warning-strong: #b45309;
+      --destructive: #b91c1c;
+      --destructive-soft: #fff5f5;
+      --destructive-strong: #991b1b;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+    .hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame — identical with prior onboarding */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    /* ============================================================ */
+    /* PHONE 1 · LOCK SCREEN (DARK)                                 */
+    /* ============================================================ */
+    .lock-screen {
+      flex: 1;
+      min-height: 0;
+      background:
+        radial-gradient(ellipse 100% 60% at 50% 0%, #2a2a2e 0%, #1c1c1e 55%, #131315 100%);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Status bar — white text on dark */
+    .lock-status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: #ffffff;
+      background: transparent;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* Lock icon row (small, above clock) */
+    .lock-icon-row {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      padding-top: 12px;
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* Hero clock */
+    .lock-clock-wrap {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 16px;
+    }
+    .lock-date {
+      font-family: 'Geist Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.72);
+      font-variant-numeric: tabular-nums;
+    }
+    .lock-time {
+      font-family: 'Onest', sans-serif;
+      font-weight: 200;          /* iOS-like ultra-thin clock */
+      font-size: 96px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: #ffffff;
+      margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Push spacer pushes notification into vertical zone */
+    .lock-spacer { flex: 1; min-height: 8px; }
+
+    /* Push stack at bottom */
+    .lock-push-zone {
+      flex-shrink: 0;
+      padding: 0 14px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* Notification card — frosted iOS-style */
+    .push-card {
+      background: rgba(40, 40, 42, 0.78);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 0.5px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 12px 14px 12px 14px;
+      color: #ffffff;
+      box-shadow: 0 4px 16px -4px rgba(0,0,0,0.4);
+      animation: push-slide-in 520ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+    }
+    @keyframes push-slide-in {
+      from { opacity: 0; transform: translateY(-16px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Missed-call card — same frosted bg as push for consistency, no actions */
+    .missed-card {
+      background: rgba(40, 40, 42, 0.78);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 0.5px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 14px 16px 16px 16px;
+      color: #ffffff;
+      box-shadow: 0 4px 16px -4px rgba(0,0,0,0.4);
+      animation: push-slide-in 520ms cubic-bezier(0.16, 1, 0.3, 1) 40ms both;
+    }
+    .missed-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .missed-app-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      background: #34c759;  /* iOS system green */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .missed-app-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: #ffffff;
+      letter-spacing: 0.005em;
+    }
+    .missed-time {
+      margin-left: auto;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .missed-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 1.25;
+      color: #ffffff;
+      letter-spacing: -0.005em;
+      margin: 0;
+    }
+    .missed-body {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.4;
+      color: rgba(255,255,255,0.82);
+      margin-top: 2px;
+    }
+    .missed-body strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .push-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .push-app-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .push-app-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.005em;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .push-time {
+      margin-left: auto;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.02em;
+    }
+
+    .push-title-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .push-alert-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      color: #fda4af;        /* light-rose for visibility on dark glass */
+      margin-top: 2px;
+    }
+    .push-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 15.5px;
+      line-height: 1.25;
+      color: #ffffff;
+      letter-spacing: -0.005em;
+    }
+    .push-body {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.4;
+      color: rgba(255,255,255,0.82);
+      margin-top: 4px;
+    }
+    .push-body strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* iOS-style action bar — 2 divided buttons inside card */
+    .push-actions {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      align-items: stretch;
+      margin: 10px -14px -12px -14px;
+      border-top: 0.5px solid rgba(255,255,255,0.10);
+    }
+    .push-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 40px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #ffffff;
+      transition: background 140ms ease;
+    }
+    .push-action:hover { background: rgba(255,255,255,0.06); }
+    .push-action.push-action-call {
+      color: #f9a8c5;  /* wine-tinted-light — AA contrast 8.1:1 on rgba(40,40,42,0.78) */
+      font-weight: 700;
+    }
+    .push-action-divider {
+      background: rgba(255,255,255,0.10);
+    }
+    .push-action-icon { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* Helper text under push — small, muted, but ≥ AA on dark */
+    .lock-helper {
+      text-align: center;
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.05em;
+      color: rgba(255,255,255,0.62);
+      padding-top: 8px;
+    }
+
+    /* Home indicator (bottom bar) */
+    .lock-home-indicator {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      padding-bottom: 8px;
+    }
+    .lock-home-bar {
+      width: 134px;
+      height: 5px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.85);
+    }
+
+    /* ============================================================ */
+    /* PHONE 2 · IN-APP DETAIL (LIGHT)                              */
+    /* ============================================================ */
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+    }
+
+    /* Main scroll area */
+    .alert-feed {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--background);
+      padding: 16px 16px 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .alert-feed::-webkit-scrollbar { display: none; }
+
+    /* Big alert banner — sticky-like top card */
+    .alert-banner {
+      background: var(--destructive-soft);
+      border: 1px solid #fecaca;
+      border-left: 4px solid var(--destructive);
+      border-radius: 14px;
+      padding: 16px 16px 14px 16px;
+      box-shadow: 0 4px 14px -6px rgba(185, 28, 28, 0.18);
+    }
+    .alert-head-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .alert-icon-pulse {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(185, 28, 28, 0.12);
+      color: var(--destructive);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .alert-icon-pulse::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 10px;
+      border: 2px solid var(--destructive);
+      opacity: 0;
+      animation: alert-glow 1400ms ease-out infinite;
+    }
+    @keyframes alert-glow {
+      0%   { opacity: 0.55; transform: scale(0.92); }
+      70%  { opacity: 0;    transform: scale(1.18); }
+      100% { opacity: 0;    transform: scale(1.18); }
+    }
+    .alert-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--destructive-strong);
+    }
+    .alert-time {
+      margin-left: auto;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--destructive-strong);
+      opacity: 0.78;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .alert-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 26px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--destructive-strong);
+      margin: 0 0 4px 0;
+    }
+    .alert-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 13.5px;
+      line-height: 1.4;
+      color: var(--foreground);
+      opacity: 0.78;
+    }
+
+    /* Stats grid inside alert */
+    .alert-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 12px 0 0 0;
+      border-top: 1px solid #fecaca;
+    }
+    .alert-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .alert-stat-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #57534e;   /* darker than --muted-foreground for AA on alert-soft */
+    }
+    .alert-stat-value {
+      font-family: 'Geist Mono', monospace;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      letter-spacing: -0.005em;
+      display: flex;
+      align-items: baseline;
+      gap: 3px;
+    }
+    .alert-stat-value.is-alert {
+      color: var(--warning-strong);
+    }
+    .alert-stat-value.is-success {
+      color: var(--success);
+    }
+    .bracelet-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 3px rgba(101, 163, 13, 0.18);
+      flex-shrink: 0;
+    }
+    .alert-stat-unit {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      letter-spacing: 0;
+    }
+    .alert-stat-arrow {
+      font-size: 10px;
+      margin-left: 1px;
+    }
+
+    /* Action buttons inside banner */
+    .alert-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .btn {
+      border-radius: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 160ms ease-out, background 160ms ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+      width: 100%;
+    }
+    .btn:active { transform: scale(0.985); }
+    .btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .btn-destructive {
+      height: 52px;
+      background: var(--destructive);
+      color: #ffffff;
+      letter-spacing: 0.005em;
+    }
+    .btn-destructive:hover { background: var(--destructive-strong); }
+    .btn-text-wine {
+      height: 40px;
+      background: transparent;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .btn-text-wine:hover { background: var(--primary-soft); }
+
+    /* Mini section "Сегодня у папы" */
+    .today-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px 12px;
+    }
+    .today-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .today-card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--foreground);
+      letter-spacing: -0.005em;
+    }
+    .today-card-link {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .today-card-link:hover { text-decoration: underline; }
+    .today-card-link:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .today-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .today-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      color: var(--foreground);
+    }
+    .today-row-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .today-row-icon.is-warning {
+      background: var(--warning-soft);
+      color: var(--warning-strong);
+    }
+    .today-row-icon.is-muted {
+      background: var(--muted);
+      color: var(--muted-foreground);
+    }
+    .today-row-label {
+      flex: 1;
+      color: var(--muted-foreground);
+      font-size: 12.5px;
+    }
+    .today-row-value {
+      font-family: 'Geist Mono', monospace;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+    }
+    .today-row-value.is-warning { color: var(--warning-strong); }
+
+    /* Disclaimer */
+    .disclaimer {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      line-height: 1.5;
+      color: var(--muted-foreground);
+      text-align: center;
+      padding: 4px 12px 0;
+      letter-spacing: 0.02em;
+    }
+
+    /* ============================================================ */
+    /* PAGE CHROME                                                  */
+    /* ============================================================ */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px;
+      gap: 24px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .frames-row {
+      display: flex;
+      gap: 56px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .alert-icon-pulse::before { animation: none; opacity: 0; }
+      .push-card { animation: none; }
+      .btn:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Neiry Pulse · Mobile Onboarding 04 · Fall Detection · Push (Lock Screen) + In-app Detail · v0 · 390×844</div>
+
+    <div class="frames-row">
+
+      <!-- ============================================== -->
+      <!-- PHONE 1 · FALL · PUSH (LOCK SCREEN)            -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 8</strong> · FALL · PUSH (LOCK SCREEN)</div>
+
+        <section class="device-frame" aria-label="Push-уведомление о падении на залоченном экране">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="lock-screen">
+
+            <!-- Status bar (white text) — момент СЕЙЧАС, ровно когда push прилетел -->
+            <div class="lock-status-bar" aria-hidden="true">
+              <span class="num">9:42</span>
+              <div class="flex items-center gap-1.5">
+                <svg width="18" height="12" viewBox="0 0 18 12" fill="#ffffff"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+                <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="#ffffff" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+                <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="#ffffff" opacity="0.55"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="#ffffff"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="#ffffff" opacity="0.55"/></svg>
+              </div>
+            </div>
+
+            <!-- Small lock glyph -->
+            <div class="lock-icon-row" aria-hidden="true">
+              <svg width="14" height="18" viewBox="0 0 14 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="8" width="10" height="8.5" rx="2"/>
+                <path d="M4 8 V5.5 A3 3 0 0 1 10 5.5 V8"/>
+              </svg>
+            </div>
+
+            <!-- Clock -->
+            <div class="lock-clock-wrap">
+              <div class="lock-date">пятница, 14 июня</div>
+              <div class="lock-time">9:42</div>
+            </div>
+
+            <!-- Spacer pushes push-card to lower-mid -->
+            <div class="lock-spacer"></div>
+
+            <!-- Push notification stack: missed call (9:41) → Neiry Pulse push (9:42) -->
+            <div class="lock-push-zone">
+
+              <!-- Missed call from "Папа" — came FIRST (GBand direct call from bracelet) -->
+              <article class="missed-card" role="alert" aria-labelledby="missed-title">
+                <header class="missed-head">
+                  <span class="missed-app-icon" aria-hidden="true">
+                    <!-- iOS handset SVG (white on green) -->
+                    <svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 2 L5 2 L6 5 L4.5 6 A6.5 6.5 0 0 0 8 9.5 L9 8 L12 9 L12 11 A1 1 0 0 1 11 12 A9 9 0 0 1 2 3 A1 1 0 0 1 3 2 Z" fill="#ffffff" stroke="none"/>
+                    </svg>
+                  </span>
+                  <span class="missed-app-name">Телефон</span>
+                  <span class="missed-time num">9:41</span>
+                </header>
+
+                <h2 id="missed-title" class="missed-title">Пропущенный звонок</h2>
+                <p class="missed-body"><strong>Папа</strong> · 1 пропущенный</p>
+              </article>
+
+              <!-- Neiry Pulse push — came SECOND (~1 min later) -->
+              <article class="push-card" role="alert" aria-labelledby="push-title">
+
+                <header class="push-head">
+                  <span class="push-app-icon" aria-hidden="true">
+                    <!-- Mini Neiry pulse wave glyph -->
+                    <svg width="12" height="12" viewBox="0 0 22 22" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 11 L7 11 L9 7 L12 15 L14 10 L16 12 L19 12"/>
+                    </svg>
+                  </span>
+                  <span class="push-app-name">Neiry&nbsp;Pulse</span>
+                  <span class="push-time num">9:42</span>
+                </header>
+
+                <div class="push-title-row">
+                  <svg class="push-alert-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9 2 L16.5 15 L1.5 15 Z"/>
+                    <path d="M9 7 V10.5"/>
+                    <circle cx="9" cy="12.8" r="0.8" fill="currentColor" stroke="none"/>
+                  </svg>
+                  <h2 id="push-title" class="push-title">Папа упал — действуйте сейчас</h2>
+                </div>
+
+                <p class="push-body">
+                  Браслет зафиксировал падение в <strong class="num">9:42</strong>. Пульс <strong class="num">95 bpm</strong>&nbsp;↑, шаги остановились <strong class="num">12 мин</strong>&nbsp;назад.
+                </p>
+
+                <div class="push-actions" role="group" aria-label="Действия">
+                  <button class="push-action push-action-call" aria-label="Позвонить папе">
+                    <svg class="push-action-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M3 2 L5 2 L6 5 L4.5 6 A6.5 6.5 0 0 0 8 9.5 L9 8 L12 9 L12 11 A1 1 0 0 1 11 12 A9 9 0 0 1 2 3 A1 1 0 0 1 3 2 Z"/>
+                    </svg>
+                    Позвонить
+                  </button>
+                  <div class="push-action-divider" aria-hidden="true"></div>
+                  <button class="push-action" aria-label="Посмотреть в приложении">
+                    Посмотреть
+                  </button>
+                </div>
+
+              </article>
+
+              <p class="lock-helper" aria-hidden="true">свайп вверх — открыть · удержание — действия</p>
+            </div>
+
+            <!-- Home indicator -->
+            <div class="lock-home-indicator" aria-hidden="true">
+              <div class="lock-home-bar"></div>
+            </div>
+
+          </div>
+        </section>
+      </div>
+
+
+      <!-- ============================================== -->
+      <!-- PHONE 2 · FALL · IN-APP DETAIL                 -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 9</strong> · FALL · IN-APP DETAIL</div>
+
+        <section class="device-frame" aria-label="Карточка алерта о падении внутри приложения опекуна">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar (light) — 3 min after fall event @ 9:42 → now 9:45 -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:45</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar — Neiry Pulse logo + back -->
+          <div class="app-bar">
+            <button aria-label="Назад" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]" style="margin-left:-6px;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12.5 4 L6 10 L12.5 16"/>
+              </svg>
+            </button>
+            <div class="flex items-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="9.5" stroke="#831843" stroke-width="1.6"/>
+                <path d="M6 11 L9 8 L11 14 L13 9 L16 11" stroke="#831843" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+              <span style="font-family:'Space Grotesk'; font-weight:600; font-size:15px; letter-spacing:-0.01em;">Neiry Pulse</span>
+            </div>
+            <div class="w-9 h-9" aria-hidden="true"></div>
+          </div>
+
+          <!-- Feed -->
+          <div class="alert-feed">
+
+            <!-- Big alert banner -->
+            <article class="alert-banner" role="alert" aria-labelledby="alert-title">
+
+              <div class="alert-head-row">
+                <span class="alert-icon-pulse" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 2 L16.5 15 L1.5 15 Z"/>
+                    <path d="M9 7 V10.5"/>
+                    <circle cx="9" cy="12.8" r="0.8" fill="currentColor" stroke="none"/>
+                  </svg>
+                </span>
+                <span class="alert-eyebrow">срочно · падение</span>
+              </div>
+
+              <h1 id="alert-title" class="alert-title">Папа упал</h1>
+              <p class="alert-sub">
+                Браслет зафиксировал падение в <span class="num">9:42</span> — <span class="num">3 минуты</span> назад.
+              </p>
+
+              <div class="alert-stats" role="group" aria-label="Показатели на момент падения">
+                <div class="alert-stat">
+                  <span class="alert-stat-label">Пульс</span>
+                  <span class="alert-stat-value is-alert">
+                    <span class="num">95</span>
+                    <span class="alert-stat-unit">bpm</span>
+                    <span class="alert-stat-arrow" aria-label="растёт">↑</span>
+                  </span>
+                </div>
+                <div class="alert-stat">
+                  <span class="alert-stat-label">Шаги</span>
+                  <span class="alert-stat-value">
+                    <span class="num">12</span>
+                    <span class="alert-stat-unit">мин назад</span>
+                  </span>
+                </div>
+                <div class="alert-stat">
+                  <span class="alert-stat-label">Браслет</span>
+                  <span class="alert-stat-value">
+                    <span class="bracelet-dot" aria-hidden="true"></span>
+                    <span class="alert-stat-unit" style="color:var(--foreground); font-weight:600; letter-spacing:0;">на&nbsp;связи</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="alert-actions">
+                <button class="btn btn-destructive" aria-label="Позвонить папе">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3.5 2.5 L6 2.5 L7.5 6 L5.5 7.5 A8 8 0 0 0 10.5 12.5 L12 10.5 L15.5 12 L15.5 14.5 A1.2 1.2 0 0 1 14.3 15.7 A12 12 0 0 1 2.3 3.7 A1.2 1.2 0 0 1 3.5 2.5 Z"/>
+                  </svg>
+                  Позвонить папе
+                </button>
+                <button class="btn btn-text-wine" aria-label="Отметить как ложную тревогу">
+                  Это ложная тревога
+                </button>
+              </div>
+
+            </article>
+
+            <!-- Mini section "Сегодня у папы" -->
+            <article class="today-card" aria-labelledby="today-title">
+              <div class="today-card-head">
+                <h3 id="today-title" class="today-card-title">Сегодня у папы</h3>
+                <a href="#" class="today-card-link">Полная карточка →</a>
+              </div>
+
+              <div class="today-rows">
+                <div class="today-row">
+                  <span class="today-row-icon is-muted" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2 8 L5 8 L6.5 5 L9 11 L10.5 8 L14 8"/>
+                    </svg>
+                  </span>
+                  <span class="today-row-label">HRV</span>
+                  <span class="today-row-value is-warning"><span class="num">38</span> ms&nbsp;↓</span>
+                </div>
+
+                <div class="today-row">
+                  <span class="today-row-icon is-muted" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="6" cy="3.5" r="1.2"/>
+                      <path d="M5.5 13.5 L7 9.5 L5 7 L7.5 5.5 L9.5 7.5 L11 11"/>
+                    </svg>
+                  </span>
+                  <span class="today-row-label">Шаги</span>
+                  <span class="today-row-value"><span class="num">3 420</span> / 6 000</span>
+                </div>
+
+                <div class="today-row">
+                  <span class="today-row-icon is-muted" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="8" cy="8" r="6"/>
+                      <path d="M8 4.5 V8 L10.5 9.5"/>
+                    </svg>
+                  </span>
+                  <span class="today-row-label">Последняя активность</span>
+                  <span class="today-row-value num">12:42</span>
+                </div>
+              </div>
+            </article>
+
+            <p class="disclaimer">
+              Если папа в безопасности — отметьте «ложная тревога», и алерт скроется.
+            </p>
+
+          </div>
+
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

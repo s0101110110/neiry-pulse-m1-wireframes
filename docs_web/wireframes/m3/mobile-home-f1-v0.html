@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Mobile Home · Ф1 · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      /* shadcn light tokens + warm tint (Bevel-leaning) */
+      --background: #f7f5ef;          /* page outside frame */
+      --foreground: #0c0a09;          /* primary text */
+      --card: #ffffff;                /* default card surface */
+      --card-warm: #faf8f3;           /* subtle warm card */
+      --muted: #f1ede4;               /* muted surface */
+      --muted-foreground: #78716c;    /* secondary text */
+      --border: #e8e4d8;              /* hairline border */
+      --border-strong: #d4cfc0;       /* stronger separator */
+      --primary: #831843;             /* Neiry wine - PROTECTED */
+      --primary-foreground: #ffffff;
+      --success: #65a30d;             /* lime-600 */
+      --success-soft: #f0f7e1;
+      --warning: #d97706;             /* amber-600 */
+      --warning-soft: #fdf3e1;
+      --destructive: #b91c1c;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Number rendering — load-bearing for live values */
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    .hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    /* Status bar */
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    /* App bar */
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid transparent;
+    }
+
+    /* Feed scroll */
+    .feed {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--background);
+      padding: 12px 16px 88px 16px; /* bottom padding clears tabbar */
+    }
+    .feed::-webkit-scrollbar { display: none; }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .card-warm {
+      background: var(--card-warm);
+    }
+
+    /* Delta chip */
+    .chip-success {
+      background: var(--success-soft);
+      color: #4d7c0f;
+      font-family: 'Geist Mono', monospace;
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.02em;
+      padding: 4px 8px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .chip-warning {
+      background: var(--warning-soft);
+      color: #b45309;
+      font-family: 'Geist Mono', monospace;
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    /* Labels */
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    /* Buttons */
+    .btn {
+      height: 48px;
+      border-radius: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 140ms ease-out, background 140ms ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+    .btn-primary:hover { background: #6b1238; }
+    .btn-outline {
+      background: var(--card);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Tab-bar */
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 8px 16px 8px;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .tab-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+    .tab.active { color: var(--primary); }
+    .tab.active .tab-icon { stroke: var(--primary); }
+    .tab:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    /* Sparkline */
+    .sparkline {
+      width: 100%;
+      height: 44px;
+      display: block;
+    }
+    .spark-line {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .spark-area {
+      fill: var(--primary);
+      opacity: 0.08;
+    }
+    .spark-dot {
+      fill: var(--primary);
+    }
+
+    /* Page chrome */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+      gap: 16px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Neiry Pulse · Mobile Home · Ф1 v0 · 390×844</div>
+
+    <section class="device-frame" aria-label="Главный экран мобильного приложения">
+      <div class="device-notch" aria-hidden="true"></div>
+
+      <!-- Status bar (static mock) -->
+      <div class="status-bar" aria-hidden="true">
+        <span class="num">9:41</span>
+        <div class="flex items-center gap-1.5">
+          <!-- signal -->
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+          <!-- wifi -->
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+          <!-- battery -->
+          <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+        </div>
+      </div>
+
+      <!-- App bar -->
+      <div class="app-bar">
+        <div class="flex items-center gap-2">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="9.5" stroke="#831843" stroke-width="1.6"/>
+            <path d="M6 11 L9 8 L11 14 L13 9 L16 11" stroke="#831843" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+          <span style="font-family:'Space Grotesk'; font-weight:600; font-size:16px; letter-spacing:-0.01em;">Neiry Pulse</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button aria-label="Уведомления" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14H4l1.5-1.8V8.5a4.5 4.5 0 0 1 9 0v3.7L16 14z"/><path d="M8 17a2 2 0 0 0 4 0"/></svg>
+          </button>
+          <button aria-label="Профиль" class="w-9 h-9 rounded-full bg-stone-200 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]" style="font-family:'Space Grotesk'; font-weight:600; font-size:13px; color:#57534e;">КЛ</button>
+        </div>
+      </div>
+
+      <!-- Feed -->
+      <div class="feed">
+
+        <!-- 1. HRV card (compact, ~148px) -->
+        <article class="card card-warm mb-3" aria-labelledby="hrv-label">
+          <div class="flex items-start justify-between">
+            <div>
+              <div id="hrv-label" class="eyebrow">HRV сегодня</div>
+              <div class="mt-2 flex items-baseline gap-2">
+                <span class="hero-num num" style="font-size:40px; line-height:1;">47</span>
+                <span class="mono" style="font-size:14px; color:var(--muted-foreground); font-weight:500;">ms</span>
+              </div>
+            </div>
+            <span class="chip-success" aria-label="Прирост 12% к вчера">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 1.5 L8.5 6.5 L1.5 6.5 Z"/></svg>
+              <span class="num">+12%</span>
+              <span style="opacity:0.7; font-weight:500;">к вчера</span>
+            </span>
+          </div>
+          <p style="margin-top:10px; font-size:14px; line-height:1.45; color:var(--muted-foreground);">
+            Вы набираете форму и справляетесь со стрессом лучше
+          </p>
+        </article>
+
+        <!-- 2. Sport hero card (~260px) -->
+        <article class="card mb-3" style="padding:16px;" aria-labelledby="sport-headline">
+          <div class="flex items-center justify-between">
+            <div class="eyebrow">Готовы тренироваться</div>
+            <span class="mono" style="font-size:10px; color:var(--success); font-weight:600; letter-spacing:0.08em;">READY</span>
+          </div>
+
+          <h2 id="sport-headline" style="margin-top:8px; font-family:'Space Grotesk'; font-weight:600; font-size:22px; letter-spacing:-0.01em; line-height:1.2;">
+            Сегодня лёгкий бег
+          </h2>
+          <p style="margin-top:6px; font-size:13px; line-height:1.45; color:var(--muted-foreground);">
+            3 дня форма растёт — идеальное время для нагрузки
+          </p>
+
+          <!-- Sparkline: HRV 7d trend -->
+          <div class="mt-3" aria-hidden="true">
+            <svg class="sparkline" viewBox="0 0 280 44" preserveAspectRatio="none">
+              <!-- area under curve -->
+              <path class="spark-area"
+                    pathLength="100"
+                    d="M0,32 L40,28 L80,30 L120,22 L160,18 L200,14 L240,10 L280,8 L280,44 L0,44 Z"/>
+              <!-- line -->
+              <path class="spark-line"
+                    pathLength="100"
+                    d="M0,32 L40,28 L80,30 L120,22 L160,18 L200,14 L240,10 L280,8"/>
+              <!-- last point -->
+              <circle class="spark-dot" cx="280" cy="8" r="3"/>
+            </svg>
+            <div class="flex items-center justify-between mt-1">
+              <span class="mono" style="font-size:9px; color:var(--muted-foreground); letter-spacing:0.06em;">HRV · 7 ДНЕЙ</span>
+              <span class="mono" style="font-size:9px; color:var(--success); letter-spacing:0.04em;">тренд ↑</span>
+            </div>
+          </div>
+
+          <!-- 2 equal CTAs -->
+          <div class="grid grid-cols-2 gap-2 mt-4">
+            <button class="btn btn-primary" aria-label="Начать тренировку">Начать тренировку</button>
+            <button class="btn btn-outline" aria-label="Подробнее о рекомендации">Подробнее</button>
+          </div>
+        </article>
+
+        <!-- 3. Sleep card (compact, ~120px) with demo disclaimer on TOP per AC-1.12 -->
+        <article class="card mb-3" style="padding:12px 16px;" aria-labelledby="sleep-label">
+          <!-- Demo disclaimer ABOVE Sleep block, ≥14px, warning color — AC-1.12 compliance -->
+          <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; margin-bottom:10px; background:var(--warning-soft); border:1px solid #f5d9a8; border-radius:8px;" role="note" aria-label="Демо-данные, реальный сон скоро">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#b45309" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;">
+              <path d="M8 1.5 L14.5 13 L1.5 13 Z"/>
+              <path d="M8 6 V9"/>
+              <circle cx="8" cy="11" r="0.6" fill="#b45309"/>
+            </svg>
+            <span style="font-family:'Space Grotesk'; font-weight:600; font-size:14px; line-height:1.3; color:#b45309;">
+              Demo data — real sleep tracking coming soon
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div style="width:36px; height:36px; border-radius:10px; background:var(--muted); display:flex; align-items:center; justify-content:center;">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#78716c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 12.5A6.5 6.5 0 0 1 7.5 4a6.5 6.5 0 1 0 8.5 8.5z"/></svg>
+              </div>
+              <div>
+                <div id="sleep-label" style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; color:var(--foreground);">Сон прошлой ночью</div>
+                <div class="mt-0.5">
+                  <span class="mono" style="font-size:16px; font-weight:600;">7ч 42м</span>
+                  <span class="mono" style="font-size:11px; color:var(--muted-foreground); margin-left:8px;">22% / 15% / 63%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4. Health Sharing status (compact, ~76px) -->
+        <article class="card" style="padding:14px 16px;" aria-labelledby="share-label">
+          <button class="w-full flex items-center justify-between text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843] rounded-lg" aria-label="Открыть Health Sharing">
+            <div class="flex items-center gap-3">
+              <div style="width:36px; height:36px; border-radius:10px; background:#fdf2f8; display:flex; align-items:center; justify-content:center;">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#831843" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="7" cy="8" r="3"/>
+                  <path d="M1.5 17a5.5 5.5 0 0 1 11 0"/>
+                  <circle cx="14.5" cy="6" r="2.5"/>
+                  <path d="M12 12a4 4 0 0 1 6.5 3"/>
+                </svg>
+              </div>
+              <div>
+                <div id="share-label" style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; color:var(--foreground);">Тренер видит ваши данные</div>
+                <div style="font-size:12px; color:var(--muted-foreground); margin-top:1px;">Иван П. · с 03.06</div>
+              </div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#a8a29e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l5 5-5 5"/></svg>
+          </button>
+        </article>
+
+      </div>
+
+      <!-- Bottom tab-bar — unified format (Revision 1: HS added, retroactive) -->
+      <nav class="tabbar" aria-label="Главная навигация">
+        <button class="tab active" aria-current="page" aria-label="Дом">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 11.5 L12 4 L21 11.5"/>
+            <path d="M5 10.5 V20 H19 V10.5"/>
+          </svg>
+          Дом
+        </button>
+        <button class="tab" aria-label="История">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h10"/>
+          </svg>
+          История
+        </button>
+        <button class="tab" aria-label="Health Sharing">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="8" cy="9" r="3"/>
+            <path d="M2 19a6 6 0 0 1 12 0"/>
+            <circle cx="16" cy="7" r="2.5"/>
+            <path d="M13 13a4 4 0 0 1 7 3.5"/>
+          </svg>
+          Health Sharing
+        </button>
+        <button class="tab" aria-label="Ещё">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="5" cy="12" r="1.6"/>
+            <circle cx="12" cy="12" r="1.6"/>
+            <circle cx="19" cy="12" r="1.6"/>
+          </svg>
+          Ещё
+        </button>
+      </nav>
+
+    </section>
+  </main>
+</body>
+</html>

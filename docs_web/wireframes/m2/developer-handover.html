@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neiry Pulse · Developer Handover · kiosk-v2 + drilldown</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 6%;
+    --card-foreground: 0 0% 98%;
+    --primary: 336 76% 45%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --destructive: 348 100% 54%;
+    --success: 151 100% 45%;
+    --warning: 42 100% 50%;
+    --border: 240 3.7% 15.9%;
+    --radius: 0.5rem;
+    --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --font-display: 'Onest', 'Space Grotesk', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, monospace;
+  }
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+  .font-display { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.04em; }
+  .font-data { font-family: var(--font-mono); }
+  .bg-background { background-color: hsl(var(--background)); }
+  .bg-card { background-color: hsl(var(--card)); }
+  .bg-muted { background-color: hsl(var(--muted)); }
+  .bg-primary { background-color: hsl(var(--primary)); }
+  .bg-secondary { background-color: hsl(var(--secondary)); }
+  .text-foreground { color: hsl(var(--foreground)); }
+  .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+  .text-primary { color: hsl(var(--primary)); }
+  .text-success { color: hsl(var(--success)); }
+  .text-warning { color: hsl(var(--warning)); }
+  .text-destructive { color: hsl(var(--destructive)); }
+  .border-border { border-color: hsl(var(--border)); }
+  .border-primary { border-color: hsl(var(--primary)); }
+  html { scroll-behavior: smooth; }
+
+  pre.code-block {
+    background: hsl(var(--muted));
+    color: hsl(var(--foreground));
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 16px 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    border: 1px solid hsl(var(--border));
+  }
+  pre.code-block code { white-space: pre; }
+
+  .nav-link {
+    color: hsl(var(--muted-foreground));
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 150ms;
+    display: block;
+  }
+  .nav-link:hover { color: hsl(var(--foreground)); background: hsl(var(--muted) / 0.5); }
+
+  table.handover-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.handover-table th,
+  table.handover-table td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid hsl(var(--border));
+    vertical-align: top;
+  }
+  table.handover-table th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: hsl(var(--muted-foreground));
+    font-family: var(--font-mono);
+    font-weight: 600;
+    background: hsl(var(--muted) / 0.4);
+  }
+  table.handover-table td.id-cell {
+    font-family: var(--font-mono);
+    color: hsl(var(--primary));
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  table.handover-table td.type-cell {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: hsl(var(--warning));
+  }
+
+  .section-divider { border-top: 1px solid hsl(var(--border)); margin: 80px 0; }
+  .tag {
+    display: inline-flex; align-items: center;
+    padding: 3px 9px;
+    font-size: 11px; font-weight: 600;
+    border-radius: 9999px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+  .tag-static    { background: hsl(var(--muted)); color: hsl(var(--muted-foreground)); }
+  .tag-dynamic   { background: hsl(var(--success) / 0.18); color: hsl(var(--success)); }
+  .tag-state     { background: hsl(var(--warning) / 0.18); color: hsl(var(--warning)); }
+  .tag-action    { background: hsl(var(--primary) / 0.22); color: hsl(var(--primary)); }
+  .tag-todo      { background: hsl(var(--destructive) / 0.18); color: hsl(var(--destructive)); }
+
+  .callout {
+    background: hsl(var(--muted) / 0.5);
+    border-left: 3px solid hsl(var(--primary));
+    padding: 14px 18px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .callout.warning { border-left-color: hsl(var(--warning)); }
+  .callout.danger  { border-left-color: hsl(var(--destructive)); }
+  .callout strong  { color: hsl(var(--foreground)); }
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="border-b border-border bg-card sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+  <div class="max-w-[1440px] mx-auto px-6 py-4 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <svg viewBox="0 0 733 280" class="h-6 w-auto" aria-hidden="true">
+        <path fill="currentColor" fill-rule="evenodd" d="M364.3,0v45.5h53V0h-53ZM363.9,65.2v156.5h53.8V65.2h-53.8ZM530.9,64.3h14.2v49.6h-20.8c-9.5,0-16.3,2.2-20.6,6.7-4.2,4.4-6.3,11.6-6.3,21.4v79.7h-53.8V65.2h35.9l8.4,17.4c10.4-12.2,24.8-18.2,43.1-18.2l-.1-.1ZM675.1,65.2h57.9l-65.4,149.6c-10.8,24.3-22,41.3-33.6,50.7-11.6,9.6-27.3,14.5-47.2,14.5h-18.5v-46.4h14.7c10.2,0,17.5-1.6,22-4.9,4.4-3.3,8.5-10,12.2-20l-64.5-143.5h58.4l33,86.1,31-86.1h0ZM342.4,142c0,4.4-.4,9.2-1.2,14.2h-116.1c1.7,8.9,5.3,15.6,10.7,20.3,5.6,4.6,12.6,7,21.1,7s8.2-.6,11.9-1.7c3.7-1.2,6.8-2.8,9.6-4.9,2.9-2.3,5.2-5,7-8.1h53.5c-5.4,18-15.5,32.2-30.4,42.6-14.7,10.5-31.8,15.6-51.5,15.6s-44.6-7.9-60.8-23.8c-16-16.1-24-35.9-24-59.7s3.7-30.1,11-42.9c7.3-12.8,17.5-22.7,30.4-29.9s27.4-10.7,43.4-10.7,31.3,3.7,44.3,11c13.1,7.2,23.3,17,30.4,29.6,7.1,12.4,10.7,26.2,10.7,41.5h0v-.1ZM257.1,102.3c-7.7,0-14.3,2.1-19.7,6.4-5.2,4-9,10-11.3,17.7h63.4c-4.8-16.1-15.6-24-32.4-24v-.1ZM137.8,78.6c-10.8-12-25.3-18-43.4-18s-36.9,7-49.2,20.9l-7.5-16.3H0v156.5h53.8v-83.5c0-6.8,1-12.5,2.9-17.1,2.1-4.9,5.1-8.5,9-11,4-2.5,8.9-3.8,14.5-3.8,13.5,0,20.3,9.1,20.3,27.3v88.1h53.8v-95.4c0-19.9-5.5-35.9-16.5-47.8h0v.1Z"/>
+      </svg>
+      <span class="text-foreground/40">·</span>
+      <h1 class="text-sm font-medium text-foreground">Developer Handover · <span class="font-display text-primary">Pulse Kiosk</span></h1>
+      <span class="tag tag-static">v1.0 · 2026-05-27</span>
+    </div>
+    <div class="flex items-center gap-3 text-xs text-muted-foreground font-data">
+      <a href="./ui-kit.html" class="hover:text-primary">→ ui-kit.html</a>
+      <a href="./kiosk-v2.html" class="hover:text-primary">→ kiosk-v2.html</a>
+      <a href="./kiosk-drilldown.html" class="hover:text-primary">→ kiosk-drilldown.html</a>
+    </div>
+  </div>
+</header>
+
+<div class="max-w-[1440px] mx-auto px-6 py-8 grid grid-cols-[220px_1fr] gap-10">
+
+  <aside class="sticky top-[88px] self-start space-y-6 text-sm">
+    <div>
+      <p class="text-[11px] uppercase tracking-wider text-muted-foreground mb-3 font-semibold font-data">Навигация</p>
+      <nav class="flex flex-col gap-1">
+        <a href="#about" class="nav-link font-semibold">0. Что в пакете</a>
+        <a href="#stack" class="nav-link font-semibold mt-2">1. Технический стек</a>
+        <a href="#design-tokens" class="nav-link font-semibold mt-2">2. Дизайн-токены</a>
+        <a href="#viewport-fit" class="nav-link font-semibold mt-2">3. Viewport-fit паттерн</a>
+
+        <a href="#kiosk-v2" class="nav-link font-semibold mt-4">4. kiosk-v2.html</a>
+        <a href="#kv2-states" class="nav-link pl-3 text-xs">· State machine</a>
+        <a href="#kv2-dom" class="nav-link pl-3 text-xs">· DOM-id</a>
+        <a href="#kv2-mock" class="nav-link pl-3 text-xs">· Mock data</a>
+        <a href="#kv2-js" class="nav-link pl-3 text-xs">· JS API</a>
+        <a href="#kv2-backend" class="nav-link pl-3 text-xs">· Что нужно от backend</a>
+
+        <a href="#drilldown" class="nav-link font-semibold mt-4">5. kiosk-drilldown.html</a>
+        <a href="#dd-params" class="nav-link pl-3 text-xs">· URL-параметры</a>
+        <a href="#dd-states" class="nav-link pl-3 text-xs">· State machine</a>
+        <a href="#dd-dom" class="nav-link pl-3 text-xs">· DOM-id виджетов</a>
+        <a href="#dd-mock" class="nav-link pl-3 text-xs">· Mock data</a>
+        <a href="#dd-js" class="nav-link pl-3 text-xs">· JS API</a>
+        <a href="#dd-backend" class="nav-link pl-3 text-xs">· Что нужно от backend</a>
+
+        <a href="#common" class="nav-link font-semibold mt-4">6. Общие правила</a>
+        <a href="#donts" class="nav-link font-semibold mt-2">7. Что НЕ менять</a>
+      </nav>
+    </div>
+    <div class="text-[11px] text-muted-foreground border-t border-border pt-4 leading-relaxed font-data">
+      <p>Дизайн: Костя (PM) + UI</p>
+      <p class="mt-1">Контакт по правкам — Костя</p>
+    </div>
+  </aside>
+
+  <main class="space-y-12 min-w-0">
+
+    <!-- 0. ABOUT -->
+    <section id="about" class="space-y-4">
+      <header class="space-y-2">
+        <span class="text-[11px] uppercase tracking-widest text-primary font-bold font-data">00</span>
+        <h2 class="text-2xl font-bold text-foreground">Что в пакете</h2>
+        <p class="text-sm text-muted-foreground max-w-3xl">Это документ-карта для разработчика: какие файлы в пакете, какие DOM-id нужно обновлять реальными данными, что переключается через какой state. Скриншоты и live-просмотр — открыть HTML-файлы в Chrome.</p>
+      </header>
+      <table class="handover-table border border-border rounded-lg overflow-hidden">
+        <thead>
+          <tr><th>Файл</th><th>Назначение</th><th>Размер</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="id-cell">kiosk-v2.html</td>
+            <td>Стена 3 карточек на плазме 1920×1080 (Костя + Алексей + Гость). Главный демо-экран на стенде.</td>
+            <td class="type-cell">~1310 строк</td>
+          </tr>
+          <tr>
+            <td class="id-cell">kiosk-drilldown.html</td>
+            <td>Детальный профайл одной персоны: BPM + ECG + Stress + IMU + предиктивные метрики + Баевский тест. Открывается по клику на карточку kiosk-v2 (через query <span class="font-data text-primary">?id=...</span>).</td>
+            <td class="type-cell">~1340 строк</td>
+          </tr>
+          <tr>
+            <td class="id-cell">ui-kit.html</td>
+            <td>Каталог компонентов для копипасты: токены, кнопки, бэйджи, gauge, IMU waveform, кнопки теста.</td>
+            <td class="type-cell">~1530 строк</td>
+          </tr>
+          <tr>
+            <td class="id-cell">developer-handover.html</td>
+            <td>Этот документ.</td>
+            <td class="type-cell">—</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Все 4 файла — самодостаточные.</strong> Tailwind подключён через CDN, шрифты — Google Fonts, без сборки. Можно сразу открыть в Chrome или скопировать в React-проект, заменив CSS-переменные на shadcn-конфиг.
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- 1. TECH STACK -->
+    <section id="stack" class="space-y-4">
+      <header class="space-y-2">
+        <span class="text-[11px] uppercase tracking-widest text-primary font-bold font-data">01</span>
+        <h2 class="text-2xl font-bold text-foreground">Технический стек</h2>
+      </header>
+      <ul class="text-sm text-foreground space-y-2 leading-relaxed pl-4 list-disc">
+        <li><strong>HTML5</strong> + inline SVG (всё кастомное — gauge, ECG, иконки)</li>
+        <li><strong>Tailwind CSS</strong> через CDN (<span class="font-data text-primary">cdn.tailwindcss.com</span>) — без сборки</li>
+        <li><strong>Vanilla JS</strong> — никаких фреймворков, всё через <span class="font-data text-primary">getElementById</span> / <span class="font-data text-primary">setInterval</span> / <span class="font-data text-primary">requestAnimationFrame</span></li>
+        <li><strong>Google Fonts:</strong> Onest (display) + Space Grotesk (UI) + Geist Mono (числа/метки)</li>
+        <li><strong>HSL CSS-переменные</strong> в стиле <a href="https://ui.shadcn.com" class="text-primary underline">shadcn/ui</a> — единая палитра в <span class="font-data">:root</span></li>
+        <li><strong>Никаких внешних зависимостей</strong> — иконки, графики, анимации написаны вручную в SVG/CSS</li>
+      </ul>
+      <div class="callout warning">
+        <strong>При портировании на React:</strong> вся структура DOM-id переносится один-в-один. Tailwind-классы тоже. JS-функции (<span class="font-data">applyPersona</span>, <span class="font-data">tickBPM</span> и т.д.) — это будущие React-хуки или Zustand-actions, логика без изменений.
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- 2. DESIGN TOKENS -->
+    <section id="design-tokens" class="space-y-4">
+      <header class="space-y-2">
+        <span class="text-[11px] uppercase tracking-widest text-primary font-bold font-data">02</span>
+        <h2 class="text-2xl font-bold text-foreground">Дизайн-токены</h2>
+        <p class="text-sm text-muted-foreground max-w-3xl">Полный каталог — в <a href="./ui-kit.html" class="text-primary underline">ui-kit.html</a>. Здесь — только самое важное для разработки.</p>
+      </header>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+          <p class="text-xs uppercase tracking-wider text-muted-foreground font-semibold font-data">Палитра (HSL)</p>
+          <ul class="text-xs font-data space-y-1.5 text-foreground">
+            <li><span class="text-success">●</span> <span class="text-muted-foreground">--success</span> 151 100% 45% — норма / OK</li>
+            <li><span class="text-warning">●</span> <span class="text-muted-foreground">--warning</span> 42 100% 50% — повышен / внимание</li>
+            <li><span class="text-destructive">●</span> <span class="text-muted-foreground">--destructive</span> 348 100% 54% — высокий / алерт</li>
+            <li><span class="text-primary">●</span> <span class="text-muted-foreground">--primary</span> 336 76% 45% — wine, бренд Neiry</li>
+            <li><span class="text-muted-foreground">●</span> <span class="text-muted-foreground">--muted</span> — нейтральный фон / disabled</li>
+          </ul>
+        </div>
+        <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+          <p class="text-xs uppercase tracking-wider text-muted-foreground font-semibold font-data">Шрифты</p>
+          <ul class="text-xs font-data space-y-1.5 text-foreground">
+            <li><strong>Onest</strong> — крупные цифры (BPM, NSI, IN-индекс)</li>
+            <li><strong>Space Grotesk</strong> — кнопки, описания, имена</li>
+            <li><strong>Geist Mono</strong> — uppercase-лейблы, тех. данные</li>
+          </ul>
+        </div>
+        <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+          <p class="text-xs uppercase tracking-wider text-muted-foreground font-semibold font-data">Type-scale (kiosk)</p>
+          <ul class="text-xs font-data space-y-1.5 text-foreground">
+            <li><span class="text-muted-foreground">--t-caption</span> 14px — labels</li>
+            <li><span class="text-muted-foreground">--t-body</span> 16px — описания</li>
+            <li><span class="text-muted-foreground">--t-lead</span> 20px — CTA</li>
+            <li><span class="text-muted-foreground">--t-h2</span> 28px — имена в карточках</li>
+            <li><span class="text-muted-foreground">--t-h1</span> 72px — NSI / IN</li>
+            <li><span class="text-muted-foreground">--t-display</span> 120px — BPM hero</li>
+          </ul>
+        </div>
+        <div class="bg-card border border-border rounded-lg p-5 space-y-3">
+          <p class="text-xs uppercase tracking-wider text-muted-foreground font-semibold font-data">Grid</p>
+          <ul class="text-xs font-data space-y-1.5 text-foreground">
+            <li>Все отступы и размеры — <strong>кратны 4px</strong> (Tailwind spacing scale)</li>
+            <li>Числа: добавлять <span class="text-primary">font-variant-numeric: tabular-nums</span> чтобы не «прыгали»</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- 3. VIEWPORT-FIT -->
+    <section id="viewport-fit" class="space-y-4">
+      <header class="space-y-2">
+        <span class="text-[11px] uppercase tracking-widest text-primary font-bold font-data">03</span>
+        <h2 class="text-2xl font-bold text-foreground">Viewport-fit паттерн (общий)</h2>
+        <p class="text-sm text-muted-foreground max-w-3xl">Обе kiosk-страницы рендерятся в фиксированном canvas <strong>1920×1080</strong>, который скейлится под viewport через CSS <span class="font-data">transform: scale(...)</span>. Это гарантирует идентичный рендер на ноуте разработчика, MacBook 13/14/15, плазме 42″ — независимо от browser zoom и DPI.</p>
+      </header>
+      <pre class="code-block"><code>html, body { margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden; }
+body { display: flex; align-items: center; justify-content: center; }
+#kiosk-stage {
+  width: 1920px; height: 1080px;
+  flex-shrink: 0;
+  transform-origin: center center;
+  position: relative; overflow: hidden;
+  background: hsl(var(--background));
+}
+
+// JS:
+function fitStage() {
+  const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  document.getElementById('kiosk-stage').style.transform = `scale(${scale})`;
+}
+fitStage();
+window.addEventListener('resize', fitStage);</code></pre>
+      <div class="callout warning">
+        <strong>Важно для React-портирования:</strong> весь kiosk-контент должен оставаться внутри обёртки <span class="font-data text-primary">#kiosk-stage</span>. Модалки (<span class="font-data">fixed inset-0</span>) внутри scaled-ancestor ведут себя как absolute относительно stage — это норма, claim-overlay и QR-модалки уже так работают.
+      </div>
+      <div class="callout">
+        <strong>Dev-bar (нижняя плашка с кнопками state/persona)</strong> — служебная, для QA/демонстрации. Находится <strong>снаружи</strong> <span class="font-data">#kiosk-stage</span> (не масштабируется). На проде её можно скрыть или удалить — никакого продакшен-кода она не несёт.
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- 4. KIOSK-V2 -->
+    <section id="kiosk-v2" class="space-y-6">
+      <header class="space-y-2">
+        <span class="text-[11px] uppercase tracking-widest text-primary font-bold font-data">04</span>
+        <h2 class="text-2xl font-bold text-foreground">kiosk-v2.html — стена 3 карточек</h2>
+        <p class="text-sm text-muted-foreground max-w-3xl">Главный экран на плазме. 3 одинаковые карточки участников (Костя, Алексей, Гость) идут в ряд. Каждая показывает BPM + мини-ECG + NSI gauge. Клик по карточке открывает детальный профайл <a href="./kiosk-drilldown.html" class="text-primary underline">kiosk-drilldown.html</a> в новой вкладке через query-параметр.</p>
+      </header>
+
+      <!-- 4.1 STATE MACHINE -->
+      <article id="kv2-states" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">4.1 State machine</h3>
+        <p class="text-sm text-muted-foreground">Глобальный state стены управляется через атрибут <span class="font-data text-primary">data-state</span> на <span class="font-data">&lt;body&gt;</span>. CSS-селекторы показывают/скрывают слоты внутри карточек.</p>
+        <table class="handover-table border border-border rounded-lg overflow-hidden">
+          <thead>
+            <tr><th>data-state</th><th>Что показывается</th><th>Когда</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="id-cell">idle</td>
+              <td>Все 3 карточки в режиме «надень браслет» (пульсирующее сердце + копия)</td>
+              <td>Стартовое состояние, никто не подключён</td>
+            </tr>
+            <tr>
+              <td class="id-cell">active-2</td>
+              <td>2 карточки активны (Костя, Алексей), 3-я ждёт калибровки гостя</td>
+              <td>Якоря на стенде уже надели браслеты, гость ещё нет</td>
+            </tr>
+            <tr>
+              <td class="id-cell">active-3</td>
+              <td>Все 3 карточки активны</td>
+              <td>Гость подключился, идёт калибровка / сессия</td>
+            </tr>
+            <tr>
+              <td class="id-cell">pending-claim</td>
+              <td>QR-модалка поверх стены — забрать отчёт</td>
+              <td>Гость закончил тест Баевского, открыт QR на телефон</td>
+            </tr>
+          </tbody>
+        </table>
+        <pre class="code-block"><code>// Переключение state:
+document.body.setAttribute('data-state', 'active-3');
+
+// CSS реагирует декларативно:
+body[data-state="active-3"] .when-active { display: flex; }
+body[data-state="idle"]     .when-idle   { display: flex; }</code></pre>
+      </article>
+
+      <!-- 4.2 DOM IDs -->
+      <article id="kv2-dom" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">4.2 DOM-id и data-атрибуты</h3>
+        <p class="text-sm text-muted-foreground">Каждая карточка — это <span class="font-data text-primary">&lt;article data-id="kostya|alexey|guest"&gt;</span>. Live-значения внутри карточек обновляются через <span class="font-data text-primary">data-*</span> атрибуты (не id — чтобы можно было искать сразу для всех трёх):</p>
+        <table class="handover-table border border-border rounded-lg overflow-hidden">
+          <thead>
+            <tr><th>Селектор</th><th>Что обновлять</th><th>Формат</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="id-cell">[data-bpm="kostya"]</td><td>Число ударов в минуту</td><td class="type-cell">number (50–180)</td></tr>
+            <tr><td class="id-cell">[data-spark-line="kostya"]</td><td>ECG-линия (SVG polyline points)</td><td class="type-cell">string — координаты точек</td></tr>
+            <tr><td class="id-cell">[data-spark-pulse="kostya"]</td><td>Пульсирующая точка на конце ECG</td><td class="type-cell">cx/cy attrs</td></tr>
+            <tr><td class="id-cell">[data-spark-halo="kostya"]</td><td>Ореол вокруг пульса</td><td class="type-cell">cx/cy attrs</td></tr>
+            <tr><td class="id-cell">[data-nsi-arc="kostya"]</td><td>SVG арка стресса (270°)</td><td class="type-cell">stroke-dashoffset = 100 − stress%</td></tr>
+            <tr><td class="id-cell">[data-nsi-digit="kostya"]</td><td>Число NSI (0–100)</td><td class="type-cell">number</td></tr>
+            <tr><td class="id-cell">[data-nsi-badge="kostya"]</td><td>Бэйдж статуса (НОРМА / ПОВЫШЕН / ВЫСОКИЙ)</td><td class="type-cell">class: status-norm|status-elevated|status-high</td></tr>
+            <tr><td class="id-cell">[data-ble="kostya"]</td><td>Статус BLE</td><td class="type-cell">connected | lost | disconnected</td></tr>
+            <tr><td class="id-cell">[data-calib-countdown="guest"]</td><td>Обратный отсчёт калибровки гостя</td><td class="type-cell">number (12 → 0)</td></tr>
+          </tbody>
+        </table>
+        <div class="callout">
+          <strong>Глобальные элементы стены:</strong>
+          <ul class="mt-2 ml-4 list-disc text-xs font-data text-foreground space-y-1">
+            <li><span class="text-primary">#kiosk-stage</span> — контейнер 1920×1080 (не трогать)</li>
+            <li><span class="text-primary">#qr-modal</span> — overlay с QR-кодом (visible при pending-claim)</li>
+            <li><span class="text-primary">#qr-close</span> — кнопка закрытия QR</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 4.3 MOCK DATA -->
+      <article id="kv2-mock" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">4.3 Mock data (что заменить на реальные)</h3>
+        <p class="text-sm text-muted-foreground">Текущая фейковая логика — sin-волна вокруг базовых значений, чтобы на стенде картинка «жила» без подключения железа. Реальные данные кладутся в те же data-атрибуты.</p>
+        <pre class="code-block"><code>// Сейчас в kiosk-v2.html:
+const baseBPMs = { kostya: 142, alexey: 78, guest: 88 };
+const BPM_VARIANCE = 2;                // ±2 BPM за тик
+const NSI_BASE    = { kostya: 30, alexey: 55, guest: 42 };
+const nsiOsc      = {
+  kostya: { amp: 12, phase: 0,    period: 20000 },  // 20 сек период
+  alexey: { amp: 15, phase: 5000, period: 25000 },
+  guest:  { amp: 10, phase: 2000, period: 18000 },
+};
+
+// Тикеры:
+setInterval(tickBPM, 1500);   // BPM-вариация раз в 1.5 сек
+setInterval(tickNSI, 200);    // NSI sin-модулятор каждые 200 мс
+requestAnimationFrame(ecgFrame); // ECG-волна непрерывно</code></pre>
+      </article>
+
+      <!-- 4.4 JS API -->
+      <article id="kv2-js" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">4.4 JS API</h3>
+        <table class="handover-table border border-border rounded-lg overflow-hidden">
+          <thead>
+            <tr><th>Функция</th><th>Что делает</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="id-cell">setState(state)</td><td>Переключить body.data-state. Принимает <span class="font-data">idle | active-2 | active-3 | pending-claim</span></td></tr>
+            <tr><td class="id-cell">tickBPM()</td><td>Sin-волна вокруг baseBPMs — вызывается каждые 1500 мс</td></tr>
+            <tr><td class="id-cell">tickNSI()</td><td>Sin-волна NSI — каждые 200 мс, разные фазы для каждой персоны</td></tr>
+            <tr><td class="id-cell">nsiZone(v)</td><td>Маппинг числа NSI → <span class="font-data">{token, statusClass, label}</span> (success/warning/destructive)</td></tr>
+            <tr><td class="id-cell">ecgWave(t, rrMs)</td><td>Параметрический P-QRS-T генератор, привязанный к BPM</td></tr>
+          </tbody>
+        </table>
+        <p class="text-xs text-muted-foreground font-data">Управление с клавиатуры (служебное, для QA): <span class="text-primary">1</span> = idle, <span class="text-primary">2</span> = active-2, <span class="text-primary">3</span> = active-3, <span class="text-primary">4</span> = pending-claim, <span class="text-primary">Esc</span> = закрыть QR.</p>
+      </article>
+
+      <!-- 4.5 BACKEND -->
+      <article id="kv2-backend" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">4.5 Что нужно от backend для kiosk-v2</h3>
+        <p class="text-sm text-muted-foreground">Описано понятным языком — конкретный API-контракт согласовываем отдельно.</p>
+        <div class="space-y-3">
+          <div class="callout">
+            <strong>BPM (поток):</strong> текущий пульс для каждой из 3 персон. Обновление 1–2 раза в секунду. Лучше всего через WebSocket или Server-Sent Events. Если REST — поллинг каждые 1.5 сек по 3 endpoint'ам одновременно (или один батч-эндпоинт).
+          </div>
+          <div class="callout">
+            <strong>NSI / Stress (поток):</strong> индекс стресса 0–100 для каждой персоны. Может обновляться реже — раз в 5–10 сек хватит (визуально мы шумом sin-волны добавляем «жизнь»). Алгоритм считать на бэке — отдавать готовое число.
+          </div>
+          <div class="callout">
+            <strong>ECG (поток):</strong> отдельная история. Сейчас рисуется параметрический P-QRS-T-pattern на основе BPM. Если есть реальный сэмплированный сигнал с браслета — можно либо отдать массив точек (≥100 Гц), либо оставить наш генератор и использовать только BPM (визуально неотличимо для зрителя).
+          </div>
+          <div class="callout">
+            <strong>BLE-статус (события):</strong> событие «браслет подключился / потерял связь / отключился» для каждой персоны. Просто строка <span class="font-data">connected / lost / disconnected</span> — кладём в <span class="font-data">data-ble</span>.
+          </div>
+          <div class="callout">
+            <strong>Калибровка гостя (событие):</strong> старт/прогресс/конец калибровки. Сейчас 12-секундный счётчик имитирует процесс. На бэке нужно сообщить «гость готов к измерениям» — после этого переключаем <span class="font-data">data-state</span> на <span class="font-data">active-3</span>.
+          </div>
+          <div class="callout">
+            <strong>Готовый отчёт (событие):</strong> когда гость закончил тест Баевского и можно показать QR. Бэк генерирует короткую ссылку → передаёт в <span class="font-data">#qr-modal</span>. Состояние переключаем на <span class="font-data">pending-claim</span>.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- 5. DRILLDOWN -->
+    <section id="drilldown" class="space-y-6">
+      <header class="space-y-2">
+        <span class="text-[11px] uppercase tracking-widest text-primary font-bold font-data">05</span>
+        <h2 class="text-2xl font-bold text-foreground">kiosk-drilldown.html — детальный профайл</h2>
+        <p class="text-sm text-muted-foreground max-w-3xl">Открывается по клику на карточку стены kiosk-v2 через URL <span class="font-data text-primary">kiosk-drilldown.html?id=kostya</span>. Показывает живые данные браслета + предиктивные метрики + Баевский тест с пошаговым прохождением.</p>
+      </header>
+
+      <!-- 5.1 URL PARAMS -->
+      <article id="dd-params" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">5.1 URL-параметры</h3>
+        <p class="text-sm text-muted-foreground">Все параметры — для демонстрации и QA, не часть продакшен-API. На проде <span class="font-data text-primary">?id=</span> остаётся (определяет персону), остальное — служебное.</p>
+        <table class="handover-table border border-border rounded-lg overflow-hidden">
+          <thead>
+            <tr><th>Параметр</th><th>Значения</th><th>Что делает</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="id-cell">?id=</td>
+              <td><span class="tag tag-static">kostya</span> <span class="tag tag-static">alexey</span> <span class="tag tag-static">guest</span></td>
+              <td>Какую персону показать. По умолчанию <span class="font-data">guest</span>.</td>
+            </tr>
+            <tr>
+              <td class="id-cell">?state=</td>
+              <td><span class="tag tag-state">empty</span> <span class="tag tag-state">drilldown</span> <span class="tag tag-state">phase-1</span> <span class="tag tag-state">phase-2</span> <span class="tag tag-state">phase-3</span> <span class="tag tag-state">result</span> <span class="tag tag-state">claim</span></td>
+              <td>Принудительно стартовать в указанном состоянии. Удобно для скриншотов / тестов.</td>
+            </tr>
+            <tr>
+              <td class="id-cell">?session=active</td>
+              <td><span class="tag tag-static">active</span></td>
+              <td>Если задано — открывается в <span class="font-data">drilldown</span>, иначе в <span class="font-data">empty</span>.</td>
+            </tr>
+            <tr>
+              <td class="id-cell">?imu=</td>
+              <td><span class="tag tag-dynamic">rest</span> <span class="tag tag-dynamic">light</span> <span class="tag tag-dynamic">motion</span> <span class="tag tag-dynamic">off</span></td>
+              <td>Принудительно выставить статус IMU (для проверки 4 состояний и блокировки кнопки теста).</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+
+      <!-- 5.2 STATE MACHINE -->
+      <article id="dd-states" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">5.2 State machine</h3>
+        <p class="text-sm text-muted-foreground">Класс на <span class="font-data text-primary">&lt;body&gt;</span> переключает видимость блоков через CSS-селекторы <span class="font-data">body.state-X .when-X</span>.</p>
+        <table class="handover-table border border-border rounded-lg overflow-hidden">
+          <thead>
+            <tr><th>body.class</th><th>Что показано</th><th>Когда</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="id-cell">state-empty</td>
+              <td>Скелетон — все цифры «—», ECG нет сигнала, Stress/IMU бэйджи скрыты</td>
+              <td>Браслет не подключён / нет данных</td>
+            </tr>
+            <tr>
+              <td class="id-cell">state-drilldown</td>
+              <td>Полная демонстрация — BPM, ECG, Stress, IMU, предиктивные метрики, Sleep</td>
+              <td>Основной режим — браслет на руке, данные текут</td>
+            </tr>
+            <tr>
+              <td class="id-cell">state-phase-1</td>
+              <td>Фаза 1 Баевского — покой (5 мин таймер, ECG-плашка)</td>
+              <td>Кнопка «Тест Баевского» нажата</td>
+            </tr>
+            <tr>
+              <td class="id-cell">state-phase-2</td>
+              <td>Фаза 2 — STROOP-тест на планшете (показ «передайте планшет»)</td>
+              <td>После фазы 1</td>
+            </tr>
+            <tr>
+              <td class="id-cell">state-phase-3</td>
+              <td>Фаза 3 — НАГРУЗКА (физическая активность)</td>
+              <td>После фазы 2</td>
+            </tr>
+            <tr>
+              <td class="id-cell">state-result</td>
+              <td>Модалка с итогами Баевского: ИН Σ, 3 фазы, вердикт</td>
+              <td>Тест закончен</td>
+            </tr>
+            <tr>
+              <td class="id-cell">state-claim</td>
+              <td>Полноэкранный финальный экран: «Спасибо за участие» + QR</td>
+              <td>После закрытия результатов</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+
+      <!-- 5.3 DOM IDs -->
+      <article id="dd-dom" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">5.3 DOM-id по виджетам</h3>
+        <p class="text-sm text-muted-foreground">Все live-значения апдейтятся через <span class="font-data text-primary">getElementById(...)</span>. Группировка — по виджетам.</p>
+
+        <div class="space-y-5">
+
+          <div>
+            <h4 class="text-sm font-semibold text-foreground mb-2 font-data uppercase tracking-wider">BPM hero + ECG</h4>
+            <table class="handover-table border border-border rounded-lg overflow-hidden">
+              <tbody>
+                <tr><td class="id-cell">#bpm-value</td><td>Число BPM (50–180)</td><td class="type-cell">textContent number</td></tr>
+                <tr><td class="id-cell">#bpm-status-chip</td><td>Чип статуса (Подключен / Нет связи). children[0] — dot, children[1] — текст</td><td class="type-cell">HTML</td></tr>
+                <tr><td class="id-cell">#ecg-pattern</td><td>SVG &lt;g&gt; для ECG-волны (цвет через class)</td><td class="type-cell">SVG attrs</td></tr>
+                <tr><td class="id-cell">#ecg-svg</td><td>Контейнер ECG (скрывается при no-signal)</td><td class="type-cell">opacity</td></tr>
+                <tr><td class="id-cell">#ecg-no-signal</td><td>Оверлей «— нет сигнала —» (при потере BLE)</td><td class="type-cell">display</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-semibold text-foreground mb-2 font-data uppercase tracking-wider">Stress (NSI)</h4>
+            <table class="handover-table border border-border rounded-lg overflow-hidden">
+              <tbody>
+                <tr><td class="id-cell">#stress-value</td><td>Число стресса 0–100</td><td class="type-cell">textContent</td></tr>
+                <tr><td class="id-cell">#stress-arc</td><td>SVG-арка (заполнение через stroke-dashoffset)</td><td class="type-cell">stroke-dashoffset = 100 − value</td></tr>
+                <tr><td class="id-cell">#stress-badge</td><td>Бэйдж зоны (НОРМА / ПОВЫШЕН / ВЫСОКИЙ)</td><td class="type-cell">class + innerHTML</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-semibold text-foreground mb-2 font-data uppercase tracking-wider">IMU / Activity (4 статуса)</h4>
+            <table class="handover-table border border-border rounded-lg overflow-hidden">
+              <tbody>
+                <tr><td class="id-cell">#activity-card</td><td>Контейнер — переключается класс <span class="font-data">imu-rest | imu-light | imu-motion | imu-off</span></td><td class="type-cell">class</td></tr>
+                <tr><td class="id-cell">#imu-badge</td><td>Бэйдж статуса (ПОКОЙ / ЛЁГКАЯ / ДВИЖЕНИЕ / НЕ НАДЕТ)</td><td class="type-cell">class + innerHTML</td></tr>
+                <tr><td class="id-cell">#btn-test</td><td>Кнопка «Тест Баевского» — disabled при не-rest</td><td class="type-cell">class btn-disabled</td></tr>
+                <tr><td class="id-cell">#test-hint</td><td>Подсказка под кнопкой («Готов» / «Замрите» / «Наденьте браслет»)</td><td class="type-cell">textContent + class hint-blocked</td></tr>
+                <tr><td class="id-cell">#btn-stop</td><td>Кнопка СТОП</td><td class="type-cell">—</td></tr>
+              </tbody>
+            </table>
+            <p class="text-xs text-muted-foreground font-data mt-2">→ детальная демонстрация 4 статусов в <a href="./ui-kit.html#imu-activity" class="text-primary underline">ui-kit.html → 3.8 IMU / Activity</a></p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-semibold text-foreground mb-2 font-data uppercase tracking-wider">Предиктивные метрики (правая колонка)</h4>
+            <table class="handover-table border border-border rounded-lg overflow-hidden">
+              <tbody>
+                <tr><td class="id-cell">#recovery-value</td><td>Число «Восстановление %»</td><td class="type-cell">textContent</td></tr>
+                <tr><td class="id-cell">#recovery-bar</td><td>Прогресс-бар восстановления</td><td class="type-cell">style.width = N%</td></tr>
+                <tr><td class="id-cell">#recovery-caption</td><td>Подпись под баром</td><td class="type-cell">innerHTML</td></tr>
+                <tr><td class="id-cell">#burnout-value</td><td>Число «Выгорание %»</td><td class="type-cell">textContent</td></tr>
+                <tr><td class="id-cell">#burnout-bar</td><td>Прогресс-бар выгорания</td><td class="type-cell">style.width</td></tr>
+                <tr><td class="id-cell">#burnout-caption</td><td>Подпись</td><td class="type-cell">innerHTML</td></tr>
+                <tr><td class="id-cell">#drowsy-value</td><td>Число «Сонливость %»</td><td class="type-cell">textContent</td></tr>
+                <tr><td class="id-cell">#drowsy-bar</td><td>Прогресс-бар сонливости</td><td class="type-cell">style.width</td></tr>
+                <tr><td class="id-cell">#drowsy-caption</td><td>Подпись</td><td class="type-cell">innerHTML</td></tr>
+                <tr><td class="id-cell">#sleep-value</td><td>Длительность сна (например, «7ч 12м»)</td><td class="type-cell">textContent</td></tr>
+                <tr><td class="id-cell">#sleep-caption</td><td>Подпись (Норма / Граница нормы)</td><td class="type-cell">innerHTML</td></tr>
+                <tr><td class="id-cell">#sleep-gauge circle[pathLength]</td><td>Donut фаз сна (DEEP / REM / LIGHT)</td><td class="type-cell">stroke-dasharray</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-semibold text-foreground mb-2 font-data uppercase tracking-wider">Баевский тест (результат + claim)</h4>
+            <table class="handover-table border border-border rounded-lg overflow-hidden">
+              <tbody>
+                <tr><td class="id-cell">#bayevsky-card</td><td>Кликабельный блок с результатом теста (или заглушка)</td><td class="type-cell">click handler</td></tr>
+                <tr><td class="id-cell">#bayevsky-empty</td><td>Заглушка «тест не пройден»</td><td class="type-cell">display</td></tr>
+                <tr><td class="id-cell">#bayevsky-done</td><td>Контейнер с результатами</td><td class="type-cell">display</td></tr>
+                <tr><td class="id-cell">#bayevsky-summary-in</td><td>Итоговое число ИН Баевского</td><td class="type-cell">textContent</td></tr>
+                <tr><td class="id-cell">#bayevsky-verdict</td><td>Вердикт (Реактивность нормальная / повышенная / напряжённая)</td><td class="type-cell">textContent + color</td></tr>
+                <tr><td class="id-cell">#result-in-sum</td><td>ИН Σ в модалке результатов</td><td class="type-cell">textContent</td></tr>
+                <tr><td class="id-cell">#result-verdict</td><td>Вердикт в модалке</td><td class="type-cell">textContent</td></tr>
+                <tr><td class="id-cell">#result-phases</td><td>Контейнер для 3 phase-card</td><td class="type-cell">innerHTML</td></tr>
+                <tr><td class="id-cell">#result-close</td><td>Кнопка × — возврат в drilldown</td><td class="type-cell">click</td></tr>
+                <tr><td class="id-cell">#claim-screen</td><td>Полноэкранный финальный overlay</td><td class="type-cell">display</td></tr>
+                <tr><td class="id-cell">#claim-done</td><td>Кнопка завершения сессии</td><td class="type-cell">click</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-semibold text-foreground mb-2 font-data uppercase tracking-wider">Сессия / служебное</h4>
+            <table class="handover-table border border-border rounded-lg overflow-hidden">
+              <tbody>
+                <tr><td class="id-cell">#session-timer</td><td>Таймер сессии (формат «02:47», инкремент каждую секунду)</td><td class="type-cell">textContent</td></tr>
+                <tr><td class="id-cell">#state-indicator</td><td>Скрытый span с текущим state (для дебага)</td><td class="type-cell">textContent</td></tr>
+                <tr><td class="id-cell">#ble-toggle</td><td>Кнопка эмуляции BLE disconnect/connect (служебная)</td><td class="type-cell">click</td></tr>
+                <tr><td class="id-cell">#ble-toggle-label</td><td>Лейбл BLE-статуса (BLE: connected / потеря связи)</td><td class="type-cell">textContent</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </article>
+
+      <!-- 5.4 MOCK DATA -->
+      <article id="dd-mock" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">5.4 Mock data — структура по персоне</h3>
+        <p class="text-sm text-muted-foreground">Текущий объект <span class="font-data text-primary">MOCK_DATA[id]</span> в kiosk-drilldown.html — это «как должен выглядеть ответ бэка на запрос данных одной персоны». На реальных данных эта структура заменяется ответом API; функция <span class="font-data text-primary">applyPersona(id)</span> остаётся без изменений.</p>
+        <pre class="code-block"><code>MOCK_DATA = {
+  kostya: {
+    // BPM + ECG
+    bpm:            82,                        // текущий пульс
+    ecgColor:       'hsl(var(--success))',     // цвет волны ECG (success/warning по статусу)
+
+    // Stress (NSI)
+    stress:         32,                        // 0–100
+    stressLabel:    'Норма',
+    stressColor:    'hsl(var(--success))',
+    stressStatus:   'status-norm',             // CSS-класс бэйджа
+
+    // IMU
+    imuStatus:      'rest',                    // rest | light | motion | off
+
+    // Предиктивные метрики (могут быть null, если нет истории — например, гость)
+    recovery:       78,                        // 0–100 %
+    recoveryCap:    'Хорошее восстановление',
+    recoveryColor:  'hsl(var(--success))',
+    burnout:        12,                        // 0–100 %
+    burnoutCap:     'Низкий риск',
+    burnoutColor:   'hsl(var(--success))',
+    drowsy:         18,                        // 0–100 %
+    drowsyCap:      'Бодрость',
+    drowsyColor:    'hsl(var(--success))',
+
+    // Сон
+    sleep:          '7ч 12м',
+    sleepCap:       'Норма',
+    sleepDeep:      22,                        // % фазы DEEP
+    sleepRem:       28,                        // % фазы REM
+    sleepLight:     50,                        // % фазы LIGHT
+
+    // Баевский тест
+    bayevsky: {
+      done:      true,                         // прошёл ли тест
+      in:        145,                          // ИН Σ
+      verdict:   'Реактивность нормальная',
+      color:     'hsl(var(--success))',
+      phases: [                                // 3 фазы
+        { label: 'Покой',    in: 95,  icon: '🧘', cap: 'Адекватная' },
+        { label: 'STROOP',   in: 180, icon: '🧠', cap: 'Активация ОК' },
+        { label: 'Нагрузка', in: 215, icon: '💪', cap: 'Восстановление в норме' },
+      ]
+    }
+  },
+  alexey: { ... },
+  guest:  { ... }   // у гостя обычно нет recovery/sleep — там null
+}</code></pre>
+        <div class="callout warning">
+          <strong>Гость:</strong> у него нет истории, поэтому <span class="font-data">recovery</span>, <span class="font-data">burnout</span>, <span class="font-data">drowsy</span>, <span class="font-data">sleep</span> могут быть <span class="font-data">null</span> — в этом случае в UI показываем «нет данных» (это уже реализовано через skeleton-стили).
+        </div>
+      </article>
+
+      <!-- 5.5 JS API -->
+      <article id="dd-js" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">5.5 JS API</h3>
+        <table class="handover-table border border-border rounded-lg overflow-hidden">
+          <thead>
+            <tr><th>Функция</th><th>Что делает</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="id-cell">applyPersona(id)</td><td>Загрузить все данные <span class="font-data">MOCK_DATA[id]</span> в DOM (BPM, Stress, IMU, метрики, Sleep, Баевский). Главная entry-точка для подмены реальных данных.</td></tr>
+            <tr><td class="id-cell">applyImuStatus(status)</td><td>Переключить IMU-статус: класс <span class="font-data">imu-*</span> на карточке, обновление бэйджа, enable/disable кнопки Теста, текст подсказки.</td></tr>
+            <tr><td class="id-cell">setState(state)</td><td>Сменить body.class.state-*, обновить dev-bar pills (служебное). Принимает <span class="font-data">empty | drilldown | phase-1 | phase-2 | phase-3 | result | claim</span></td></tr>
+            <tr><td class="id-cell">updateResult()</td><td>Отрендерить модалку результатов из <span class="font-data">MOCK_DATA[id].bayevsky.phases</span></td></tr>
+            <tr><td class="id-cell">applyImuStatus('off')</td><td>В empty-state вызывается автоматически — обнуляет все live-значения и скрывает бэйджи</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <!-- 5.6 BACKEND -->
+      <article id="dd-backend" class="space-y-4">
+        <h3 class="text-lg font-semibold text-foreground">5.6 Что нужно от backend для drilldown</h3>
+        <div class="space-y-3">
+          <div class="callout">
+            <strong>1. Снимок текущего состояния персоны:</strong> при открытии страницы нужен полный объект из 5.4 — BPM, Stress, IMU, метрики, Sleep, Баевский. Один REST-вызов на старте, шаблон ответа уже описан в MOCK_DATA.
+          </div>
+          <div class="callout">
+            <strong>2. Live-обновления BPM + ECG:</strong> WebSocket / SSE, 1–2 обновления в секунду на BPM, ECG — либо реальный сигнал ≥100 Гц, либо оставить наш генератор (визуально неотличимо).
+          </div>
+          <div class="callout">
+            <strong>3. Stress (NSI):</strong> обновление 1 раз в 5–10 сек хватит. Бэк отдаёт уже посчитанное число 0–100 + лейбл зоны.
+          </div>
+          <div class="callout">
+            <strong>4. IMU-статус:</strong> событие смены состояния (rest → light → motion → off). Сейчас сама блокировка кнопки Теста завязана на этот статус — если IMU «не в покое», тест запустить нельзя.
+          </div>
+          <div class="callout">
+            <strong>5. Предиктивные метрики (recovery / burnout / drowsy):</strong> обновляются редко (раз в минуту / раз за сессию). Один REST-эндпоинт, дёргать по таймеру или после ключевых событий (закончил тест, новые данные сна).
+          </div>
+          <div class="callout">
+            <strong>6. Sleep:</strong> данные за прошлую ночь — приходят один раз при загрузке страницы. Структура: длительность + % фаз (DEEP / REM / LIGHT).
+          </div>
+          <div class="callout">
+            <strong>7. Баевский тест:</strong> отдельный flow. Сейчас имитируется через клик и таймеры:
+            <ul class="mt-2 ml-4 list-disc text-xs font-data text-foreground space-y-1">
+              <li>Старт теста (фаза 1 — покой 5 мин): бэк начинает запись R-R интервалов</li>
+              <li>Переход на фазу 2 (STROOP на планшете): на стороне UI открывается экран «передайте планшет», результат STROOP'а нужен бэку для расчёта ИН2</li>
+              <li>Фаза 3 (нагрузка): браслет продолжает писать, UI просто показывает таймер</li>
+              <li>Конец теста: бэк отдаёт ИН Σ, 3 фазы (label / ИН / вердикт), общий вердикт</li>
+              <li>После закрытия модалки результата — генерится QR-ссылка для claim</li>
+            </ul>
+          </div>
+          <div class="callout warning">
+            <strong>Empty-state:</strong> если бэк не вернул данные (нет активной сессии) — UI просто показывает skeleton. Никакого дополнительного запроса не нужно — добавь класс <span class="font-data">body.state-empty</span> и всё схлопнется в плейсхолдеры.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- 6. COMMON -->
+    <section id="common" class="space-y-4">
+      <header class="space-y-2">
+        <span class="text-[11px] uppercase tracking-widest text-primary font-bold font-data">06</span>
+        <h2 class="text-2xl font-bold text-foreground">Общие правила (важно для обеих страниц)</h2>
+      </header>
+      <ul class="text-sm text-foreground space-y-3 leading-relaxed">
+        <li><strong>State-driven CSS:</strong> видимость блоков переключается через атрибут/класс на <span class="font-data text-primary">&lt;body&gt;</span> и CSS-селекторы вида <span class="font-data">body.state-X .when-X { display: flex; }</span>. Не делать видимость через JS — всё декларативно, отлаживается за секунду в DevTools.</li>
+        <li><strong>Цвета — только через токены:</strong> <span class="font-data text-primary">hsl(var(--success))</span>, прозрачность через <span class="font-data">hsl(var(--token) / 0.18)</span>. Хардкод hex/rgb запрещён — при смене темы всё сломается.</li>
+        <li><strong>Tabular-nums:</strong> для всех live-чисел добавлять <span class="font-data text-primary">font-variant-numeric: tabular-nums</span>, иначе цифры «прыгают» при смене значения.</li>
+        <li><strong>4-pixel grid:</strong> все отступы и размеры — кратны 4. Если хочется поставить 18 — округлять до 16 или 20.</li>
+        <li><strong>SVG-gauge:</strong> на каждой <span class="font-data">&lt;circle&gt;</span> / <span class="font-data">&lt;path&gt;</span> для арок ставится <span class="font-data text-primary">pathLength="100"</span>. Тогда <span class="font-data">stroke-dashoffset = 100 − value%</span> — без подсчёта окружности.</li>
+        <li><strong>ECG-генератор:</strong> параметрический P-QRS-T waveform, привязан к BPM. Длительности компонентов масштабируются при высоком пульсе. Если есть реальный сэмплированный ECG с браслета — можно просто кормить его в полилинию SVG, генератор не нужен.</li>
+      </ul>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- 7. DONTS -->
+    <section id="donts" class="space-y-4">
+      <header class="space-y-2">
+        <span class="text-[11px] uppercase tracking-widest text-primary font-bold font-data">07</span>
+        <h2 class="text-2xl font-bold text-foreground">Что НЕ менять</h2>
+      </header>
+      <div class="space-y-3">
+        <div class="callout danger">
+          <strong>Не убирать viewport-fit pattern.</strong> Плазма 42″ не рендерится корректно без <span class="font-data">transform: scale()</span> — обрезается на 100% zoom, растягивается на 75%. Если делаешь рефакторинг — оставляй <span class="font-data">#kiosk-stage</span> + <span class="font-data">fitStage()</span>.
+        </div>
+        <div class="callout danger">
+          <strong>Не менять структуру SVG-gauge</strong> (NSI, Stress, Sleep, Recovery-bar). Все они завязаны на <span class="font-data">pathLength="100"</span> и <span class="font-data">stroke-dashoffset</span>. Изменение viewBox / радиуса сломает математику процентов.
+        </div>
+        <div class="callout warning">
+          <strong>Dev-bar pills (нижняя плашка) — служебные.</strong> Можно скрывать на проде через CSS (<span class="font-data">.dev-bar { display: none }</span>), но не удалять обработчики событий — на них завязаны хоткеи и QA-сценарии. Лучше оставить под флагом <span class="font-data">?dev=1</span>.
+        </div>
+        <div class="callout warning">
+          <strong>Не переименовывать существующие DOM-id.</strong> Все они задокументированы в этом файле и используются как контракт между UI и логикой обновления. Если нужен новый id — добавлять, не переименовывать.
+        </div>
+        <div class="callout">
+          <strong>Не вводить новые font-size инлайн.</strong> Использовать <span class="font-data text-primary">--t-caption</span> / <span class="font-data">--t-body</span> / ... — список из 6 ступеней (7 с <span class="font-data">--t-widget</span>). Если нужен новый размер — добавлять в <span class="font-data">:root</span> как ступень, не хардкодить пиксели.
+        </div>
+        <div class="callout">
+          <strong>Шрифты — 3 семейства, не больше.</strong> Onest / Space Grotesk / Geist Mono. Не добавлять новые без согласования с дизайнером.
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <footer class="text-xs text-muted-foreground font-data text-center pb-12 space-y-1">
+      <p>Neiry Pulse · Developer Handover · v1.0 · 2026-05-27</p>
+      <p>По вопросам и правкам — <a href="mailto:c.dvugroshev@gmail.com" class="text-primary">Костя</a> (PM)</p>
+    </footer>
+
+  </main>
+</div>
+
+</body>
+</html>

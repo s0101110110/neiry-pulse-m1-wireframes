@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Mobile Training Start · v0 · 2-step flow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      /* shadcn light tokens + warm tint (Bevel-leaning) — copy from mobile-home-f1-v0 */
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;             /* Neiry wine — PROTECTED */
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --destructive: #b91c1c;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+    .hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid transparent;
+    }
+
+    .app-bar-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    /* Step body — no scrolling, vertical layout */
+    .step-body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--background);
+      display: flex;
+      flex-direction: column;
+    }
+    .step-body::-webkit-scrollbar { display: none; }
+
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    /* Activity type card (Step 1) */
+    .activity-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      min-height: 128px;
+      cursor: pointer;
+      transition: transform 140ms ease-out, border-color 140ms ease, background 140ms ease;
+      text-align: left;
+    }
+    .activity-card:hover { border-color: var(--border-strong); }
+    .activity-card:active { transform: scale(0.98); }
+    .activity-card:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .activity-card.selected {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      border-width: 2px;
+      padding: 15px; /* compensate +1px border so layout doesn't jump */
+    }
+    .activity-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--foreground);
+    }
+    .activity-card.selected .activity-icon {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+    .activity-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      margin-top: 12px;
+    }
+    .activity-hint {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      margin-top: 4px;
+    }
+    .activity-card.selected .activity-hint { color: var(--primary); opacity: 0.85; }
+
+    /* Status row (Step 2) */
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+    }
+    .status-row + .status-row { border-top: 1px solid var(--border); }
+    .status-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--foreground);
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-dot.ok { background: var(--success); }
+    .status-dot.wait {
+      background: var(--warning);
+      animation: pulse-dot 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    /* Primary CTA (Step 2 start button) */
+    .btn-hero {
+      height: 64px;
+      width: 100%;
+      border-radius: 16px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 140ms ease-out, background 140ms ease;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-hero:hover { background: #6b1238; }
+    .btn-hero:active { transform: scale(0.98); }
+    .btn-hero:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 4px;
+    }
+
+    .btn-outline-wine {
+      width: 100%;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--primary);
+      border: 1px dashed var(--primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 140ms ease;
+    }
+    .btn-outline-wine:hover { background: var(--primary-soft); }
+    .btn-outline-wine:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 140ms ease;
+      border: none;
+    }
+    .icon-btn:hover { background: var(--muted); }
+    .icon-btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* Confirmation card on Step 2 */
+    .confirm-card {
+      background: var(--card-warm);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Page chrome */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px 16px;
+      gap: 24px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .frames-row {
+      display: flex;
+      gap: 56px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .status-dot.wait { animation: none; }
+      .activity-card:active, .btn-hero:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Neiry Pulse · Mobile Training Start · v0 · 2-step flow · 390×844</div>
+
+    <div class="frames-row">
+
+      <!-- ============================================== -->
+      <!-- STEP 1 · Выбор типа активности                -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>STEP 1</strong> · Выбор типа активности</div>
+
+        <section class="device-frame" aria-label="Тренировка — выбор типа активности">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar -->
+          <div class="app-bar">
+            <button class="icon-btn" aria-label="Назад на главный экран">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#0c0a09" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 5l-6 6 6 6"/>
+              </svg>
+            </button>
+            <span class="app-bar-title">Тренировка</span>
+            <span class="w-9 h-9" aria-hidden="true"></span>
+          </div>
+
+          <!-- Body -->
+          <div class="step-body">
+            <div style="padding: 24px 20px 12px 20px;">
+              <h1 style="font-family:'Space Grotesk'; font-weight:700; font-size:28px; line-height:1.1; letter-spacing:-0.02em; text-align:center;">
+                Что тренируем?
+              </h1>
+              <p style="margin-top:8px; font-size:14px; line-height:1.4; color:var(--muted-foreground); text-align:center;">
+                Выбери тип активности
+              </p>
+            </div>
+
+            <!-- Grid 2×2 of activity types -->
+            <div style="padding: 12px 20px 20px 20px;">
+              <div class="grid grid-cols-2 gap-3">
+
+                <!-- Бег (selected) -->
+                <button class="activity-card selected" aria-pressed="true" aria-label="Бег — выбрано">
+                  <div class="activity-icon" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="13" cy="4" r="2"/>
+                      <path d="M5 21l3-5 3 1 1-4 3 3-1 5"/>
+                      <path d="M8 12l3-3 3 3"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="activity-name">Бег</div>
+                    <div class="activity-hint">GPS · темп · зоны</div>
+                  </div>
+                </button>
+
+                <!-- Ходьба -->
+                <button class="activity-card" aria-pressed="false" aria-label="Ходьба">
+                  <div class="activity-icon" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="13" cy="4" r="2"/>
+                      <path d="M7 21l3-7 4-1-2-4"/>
+                      <path d="M9 11l-3 3"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="activity-name">Ходьба</div>
+                    <div class="activity-hint">GPS · шаги · зоны</div>
+                  </div>
+                </button>
+
+                <!-- Велосипед -->
+                <button class="activity-card" aria-pressed="false" aria-label="Велосипед">
+                  <div class="activity-icon" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="6" cy="16" r="4"/>
+                      <circle cx="18" cy="16" r="4"/>
+                      <path d="M6 16l5-7h4l3 7"/>
+                      <circle cx="14" cy="5" r="1.5"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="activity-name">Велосипед</div>
+                    <div class="activity-hint">GPS · каденс · зоны</div>
+                  </div>
+                </button>
+
+                <!-- Другое -->
+                <button class="activity-card" aria-pressed="false" aria-label="Другое">
+                  <div class="activity-icon" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="6" cy="12" r="1.6"/>
+                      <circle cx="12" cy="12" r="1.6"/>
+                      <circle cx="18" cy="12" r="1.6"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="activity-name">Другое</div>
+                    <div class="activity-hint">Своё название · HR · зоны</div>
+                  </div>
+                </button>
+
+              </div>
+            </div>
+
+            <!-- Footnote -->
+            <div style="padding: 4px 24px 24px 24px; margin-top:auto;">
+              <p style="font-size:12px; line-height:1.45; color:var(--muted-foreground); text-align:center;">
+                Сменить можно в любой момент во время тренировки
+              </p>
+            </div>
+          </div>
+
+        </section>
+      </div>
+
+
+      <!-- ============================================== -->
+      <!-- STEP 2 · Preview + готовность                  -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>STEP 2</strong> · Preview + СТАРТ</div>
+
+        <section class="device-frame" aria-label="Тренировка — preview и готовность">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar -->
+          <div class="app-bar">
+            <button class="icon-btn" aria-label="Назад на выбор типа">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#0c0a09" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 5l-6 6 6 6"/>
+              </svg>
+            </button>
+            <span class="app-bar-title">Готов к старту</span>
+            <span class="w-9 h-9" aria-hidden="true"></span>
+          </div>
+
+          <!-- Body -->
+          <div class="step-body" style="padding: 16px 20px 24px 20px; gap:12px;">
+
+            <!-- 1. Selected type confirmation card -->
+            <div class="confirm-card">
+              <div class="activity-icon selected" style="background:var(--primary); color:var(--primary-foreground); width:40px; height:40px; border-radius:10px;" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="13" cy="4" r="2"/>
+                  <path d="M5 21l3-5 3 1 1-4 3 3-1 5"/>
+                  <path d="M8 12l3-3 3 3"/>
+                </svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-family:'Space Grotesk'; font-weight:600; font-size:18px; line-height:1.1; letter-spacing:-0.01em;">Бег</div>
+                <div class="eyebrow" style="margin-top:2px;">Активность</div>
+              </div>
+              <button class="icon-btn" aria-label="Изменить тип активности" style="color:var(--muted-foreground);">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3l4 4-9 9H2v-4l9-9z"/></svg>
+              </button>
+            </div>
+
+            <!-- 2. Goal CTA (collapsed by default) -->
+            <button class="btn-outline-wine" aria-label="Задать цель тренировки">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2v10M2 7h10"/></svg>
+              Задать цель тренировки
+            </button>
+
+            <!-- 3. Readiness block -->
+            <div style="background:var(--card); border:1px solid var(--border); border-radius:16px; padding: 4px 16px; margin-top:4px;">
+              <div style="padding: 10px 0 6px; display:flex; align-items:center; justify-content:space-between;">
+                <span class="eyebrow">Готовность</span>
+                <span class="mono" style="font-size:10px; color:var(--success); font-weight:600; letter-spacing:0.08em;">READY</span>
+              </div>
+
+              <!-- GPS row -->
+              <div class="status-row">
+                <div class="status-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 17.5s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/>
+                    <circle cx="10" cy="7.5" r="2.2"/>
+                  </svg>
+                </div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; line-height:1.2;">GPS</div>
+                  <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">захвачен · точность 5м</div>
+                </div>
+                <span class="status-dot ok" aria-label="Готово"></span>
+              </div>
+
+              <!-- Браслет row -->
+              <div class="status-row">
+                <div class="status-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5" y="3.5" width="10" height="13" rx="3"/>
+                    <path d="M7 2.5h6M7 17.5h6"/>
+                    <circle cx="10" cy="10" r="1.6"/>
+                  </svg>
+                </div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; line-height:1.2;">Браслет</div>
+                  <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">подключён · HR 68</div>
+                </div>
+                <span class="status-dot ok" aria-label="Готово"></span>
+              </div>
+
+              <!-- HR baseline row -->
+              <div class="status-row" style="padding-bottom:14px;">
+                <div class="status-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 11h4l2-5 3 9 2-4h5"/>
+                  </svg>
+                </div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; line-height:1.2;">HR baseline</div>
+                  <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">47 ms · сегодня</div>
+                </div>
+                <span class="status-dot ok" aria-label="Готово"></span>
+              </div>
+            </div>
+
+            <!-- Spacer to push CTA to bottom -->
+            <div style="flex:1; min-height:8px;"></div>
+
+            <!-- 4. Hero START button -->
+            <button class="btn-hero" aria-label="Начать тренировку">
+              Начать тренировку
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 5l10 6-10 6V5z" fill="currentColor"/>
+              </svg>
+            </button>
+
+            <!-- 5. Bottom hint -->
+            <p style="font-size:12px; line-height:1.45; color:var(--muted-foreground); text-align:center; margin-top:2px;">
+              Закрепи телефон на руке или положи в карман
+            </p>
+          </div>
+
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

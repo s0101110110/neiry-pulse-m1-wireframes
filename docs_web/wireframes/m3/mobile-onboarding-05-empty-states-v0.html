@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Mobile Onboarding 05 · Empty States (Home first-run + HS Main empty) · v0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      /* shadcn light tokens + warm tint — identical to Home / Onboarding 01-04 */
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #6c655c;        /* darkened from #78716c → 4.7:1 on warm card (was 4.0:1) */
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;                 /* Neiry wine — PROTECTED */
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --destructive: #b91c1c;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+    .hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    /* Status bar */
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    /* App bar — Home variant */
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid transparent;
+    }
+    /* App bar — title-bar (HS screen) */
+    .app-bar-title {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+    }
+
+    /* Eyebrow */
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .eyebrow-wine {
+      color: var(--primary);
+      opacity: 0.9;
+    }
+
+    /* Feed scroll */
+    .feed {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--background);
+      padding: 12px 16px 100px 16px;  /* Revision 2: 88px → 100px (tab-bar 76px + 24px breathing gap) для consistency с .hs-body */
+    }
+    .feed::-webkit-scrollbar { display: none; }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .card-warm { background: var(--card-warm); }
+
+    /* Welcome eyebrow row (first-run only) */
+    .welcome-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 4px 8px 4px;
+    }
+    .welcome-row .eyebrow { font-size: 11px; letter-spacing: 0.16em; }
+
+    /* ============ HERO · BASELINE CALIBRATING (compact home variant) ============ */
+    .baseline-card {
+      padding: 18px 18px 16px;
+    }
+    .baseline-row-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .baseline-ring-wrap {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .baseline-ring-svg {
+      position: absolute;
+      inset: 0;
+      transform: rotate(-90deg);
+      transform-origin: center;
+      animation: baseline-ring-rotate 3000ms linear infinite;
+    }
+    .baseline-ring-bg {
+      stroke: var(--muted);
+      stroke-width: 5;
+      fill: none;
+    }
+    .baseline-ring-fg {
+      stroke: var(--primary);
+      stroke-width: 5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-dasharray: 30 100;
+    }
+    @keyframes baseline-ring-rotate {
+      0%   { transform: rotate(-90deg); }
+      100% { transform: rotate(270deg); }
+    }
+    .baseline-ring-core {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+    .baseline-text { flex: 1; min-width: 0; }
+    .baseline-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 19px;
+      letter-spacing: -0.015em;
+      color: var(--foreground);
+      line-height: 1.2;
+    }
+    .baseline-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--muted-foreground);
+      margin-top: 4px;
+    }
+
+    .baseline-progress-row {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .baseline-progress-track {
+      flex: 1;
+      height: 6px;
+      background: var(--muted);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .baseline-progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 3px;
+      width: 25%;
+      animation: baseline-progress-grow 1400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms 1 both;
+      transform-origin: left center;
+    }
+    @keyframes baseline-progress-grow {
+      0%   { width: 0%; }
+      100% { width: 25%; }
+    }
+    .baseline-progress-label {
+      font-family: 'Geist Mono', monospace;
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.04em;
+    }
+    .baseline-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    .baseline-hours {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      color: var(--muted-foreground);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.04em;
+    }
+    .baseline-hours strong {
+      color: var(--foreground);
+      font-weight: 600;
+    }
+    .baseline-link {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--primary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      margin: -4px -6px;
+    }
+    .baseline-link:hover { background: var(--primary-soft); }
+    .baseline-link:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* ============ STATS STACK · 3 FULL-WIDTH WIDGETS (Revision 1) ============ */
+    /* layout-grammar matches Home f1 — stacked cards full-width, не 3-колонный grid (revision 1: PM правка) */
+    .stats-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 76px;
+    }
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: var(--muted);
+      color: var(--muted-foreground);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .stat-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .stat-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      line-height: 1.2;
+    }
+    .stat-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .stat-value {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.015em;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--foreground);
+    }
+    .stat-value.placeholder {
+      color: var(--border-strong);    /* em-dash placeholder — visually quieter */
+      animation: placeholder-pulse 2400ms ease-in-out infinite;
+    }
+    @keyframes placeholder-pulse {
+      0%, 100% { opacity: 0.5; }
+      50%      { opacity: 1; }
+    }
+    .stat-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--muted-foreground);
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-mini-bar {
+      height: 3px;
+      background: var(--muted);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 8px;
+      width: 100%;
+    }
+    .stat-mini-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 2px;
+      width: 0%;
+    }
+    .stat-mini-bar-fill.empty {
+      background: var(--border-strong);
+      opacity: 0.5;
+      width: 6%;   /* tiny stub so user sees the bar exists */
+    }
+
+    /* ============ TRAINING CARD (empty) ============ */
+    .training-empty {
+      margin-top: 12px;
+      padding: 16px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .training-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .training-body { flex: 1; min-width: 0; }
+    .training-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+      line-height: 1.25;
+    }
+    .training-desc {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--muted-foreground);
+      margin-top: 4px;
+    }
+    .training-cta {
+      margin-top: 12px;
+      width: 100%;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      border: none;
+      cursor: pointer;
+      transition: background 140ms ease, transform 140ms ease-out;
+    }
+    .training-cta:hover { background: #6b1238; }
+    .training-cta:active { transform: scale(0.985); }
+    .training-cta:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* ============ HS PREVIEW ROW (empty) — on Home Phone 1 ============ */
+    .hs-preview-row {
+      margin-top: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .hs-preview-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+    .hs-preview-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .hs-preview-text { min-width: 0; }
+    .hs-preview-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--foreground);
+      line-height: 1.25;
+    }
+    .hs-preview-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--muted-foreground);
+      margin-top: 2px;
+    }
+    .hs-preview-link {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--primary);
+      text-decoration: none;
+      padding: 6px 8px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .hs-preview-link:hover { background: var(--primary-soft); }
+    .hs-preview-link:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* ============ HS EMPTY (Phone 2) ============ */
+    .hs-body {
+      flex: 1;
+      min-height: 0;
+      background: var(--card);
+      display: flex;
+      flex-direction: column;
+      padding: 8px 20px 100px;      /* bottom 100px = tab-bar (76px) + 24px breathing gap; horizontal 20px — safe-zone от bezel. Revision 2: prior 24px → CTA обрезался tab-bar'ом */
+      overflow-y: auto;
+    }
+    .hs-body::-webkit-scrollbar { display: none; }
+
+    .hs-illustration-wrap {
+      display: flex;
+      justify-content: center;
+      padding-top: 16px;
+      padding-bottom: 4px;
+      animation: hs-fade-in 600ms cubic-bezier(0.16, 1, 0.3, 1) 80ms 1 both;
+    }
+    @keyframes hs-fade-in {
+      0%   { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .hs-illustration { width: 200px; height: 140px; display: block; }
+
+    .hs-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      text-align: center;
+      margin-top: 16px;
+      line-height: 1.15;
+    }
+    .hs-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--muted-foreground);
+      text-align: center;
+      margin-top: 10px;
+      max-width: 296px;
+      align-self: center;
+    }
+
+    .hs-bullets {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 24px 8px 0;
+    }
+    .hs-bullet-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .hs-bullet-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .hs-bullet-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1.4;
+      color: var(--foreground);
+    }
+
+    .hs-spacer { flex: 0 1 32px; min-height: 12px; max-height: 40px; }   /* Revision 2: было flex:1 без max-height → 250px дыра между bullets и CTA */
+
+    .hs-cta-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 24px 0 0;
+      margin-top: auto;             /* Revision 2: прижимаем CTA-stack к bottom через margin-top:auto на flex-child, spacer ограничен max-height (40px) — устраняет «дыру» */
+    }
+    .hs-cta {
+      width: 100%;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.01em;
+      border: none;
+      cursor: pointer;
+      transition: background 140ms ease, transform 140ms ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .hs-cta:hover { background: #6b1238; }
+    .hs-cta:active { transform: scale(0.985); }
+    .hs-cta:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .hs-text-link {
+      width: 100%;
+      height: 40px;
+      background: transparent;
+      color: var(--primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    .hs-text-link:hover { color: #6b1238; }
+    .hs-text-link:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* Tab-bar */
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 4px 16px 4px;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .tab-icon { width: 22px; height: 22px; display: block; }
+    .tab.active { color: var(--primary); }
+    .tab.active .tab-icon { stroke: var(--primary); }
+    .tab:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    /* Page chrome */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px;
+      gap: 24px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .frames-row {
+      display: flex;
+      gap: 56px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .baseline-ring-svg { animation: none; }
+      .baseline-progress-fill { animation: none; width: 25%; }
+      .hs-illustration-wrap { animation: none; }
+      .stat-value.placeholder { animation: none; opacity: 0.7; }
+      .training-cta:active, .hs-cta:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Neiry Pulse · Mobile Onboarding 05 · Empty States · v0 · 390×844</div>
+
+    <div class="frames-row">
+
+      <!-- ============================================== -->
+      <!-- ЭКРАН 10 · HOME · FIRST-RUN EMPTY              -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 10</strong> · HOME · FIRST-RUN EMPTY</div>
+
+        <section class="device-frame" aria-label="Главный экран — первый запуск, baseline калибруется, данных ещё нет">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:50</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar -->
+          <div class="app-bar">
+            <div class="flex items-center gap-2">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="9.5" stroke="#831843" stroke-width="1.6"/>
+                <path d="M6 11 L9 8 L11 14 L13 9 L16 11" stroke="#831843" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+              <span style="font-family:'Space Grotesk'; font-weight:600; font-size:16px; letter-spacing:-0.01em;">Neiry Pulse</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button aria-label="Уведомления" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 14H4l1.5-1.8V8.5a4.5 4.5 0 0 1 9 0v3.7L16 14z"/><path d="M8 17a2 2 0 0 0 4 0"/></svg>
+              </button>
+              <button aria-label="Профиль" class="w-9 h-9 rounded-full bg-stone-200 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]" style="font-family:'Space Grotesk'; font-weight:600; font-size:13px; color:#57534e;">КЛ</button>
+            </div>
+          </div>
+
+          <!-- Feed -->
+          <div class="feed">
+
+            <!-- Welcome eyebrow (first-run only) -->
+            <div class="welcome-row">
+              <span class="eyebrow eyebrow-wine">День 1 · Настройка завершена</span>
+            </div>
+
+            <!-- 1. Baseline calibrating hero -->
+            <article class="card card-warm baseline-card mb-3" aria-labelledby="baseline-empty-title">
+              <div class="baseline-row-top">
+                <div class="baseline-ring-wrap" aria-hidden="true">
+                  <svg class="baseline-ring-svg" viewBox="0 0 100 100">
+                    <circle class="baseline-ring-bg" cx="50" cy="50" r="46" pathLength="100"/>
+                    <circle class="baseline-ring-fg" cx="50" cy="50" r="46" pathLength="100"/>
+                  </svg>
+                  <div class="baseline-ring-core">
+                    <svg width="20" height="20" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M4 15 L9 15 L11 10 L14 20 L17 13 L19 16 L26 16"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="baseline-text">
+                  <h2 id="baseline-empty-title" class="baseline-title">Собираем ваш baseline</h2>
+                  <p class="baseline-sub">Учимся вашему пульсу — первые HRV-инсайты ~через 36 часов</p>
+                </div>
+              </div>
+
+              <div class="baseline-progress-row" role="progressbar" aria-label="Калибровка baseline 25 процентов" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="baseline-progress-track" aria-hidden="true">
+                  <div class="baseline-progress-fill"></div>
+                </div>
+                <span class="baseline-progress-label">25%</span>
+              </div>
+
+              <div class="baseline-foot">
+                <span class="baseline-hours"><strong>12 ч</strong> / 48 ч собрано</span>
+                <a href="#" class="baseline-link" aria-label="Что такое baseline?">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="7" cy="7" r="5.5"/>
+                    <path d="M7 4.5 V7.5"/>
+                    <circle cx="7" cy="9.5" r="0.5" fill="currentColor"/>
+                  </svg>
+                  Что такое baseline?
+                </a>
+              </div>
+            </article>
+
+            <!-- 2. Stats stack · 3 full-width widgets in empty mode (Revision 1: stacked, не grid) -->
+            <div class="stats-stack" aria-label="Показатели сегодня">
+
+              <!-- HRV -->
+              <article class="stat-card" aria-labelledby="empty-stat-hrv">
+                <div class="stat-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12 H7 L9 7 L12 17 L15 10 L17 13 H21"/>
+                  </svg>
+                </div>
+                <div class="stat-body">
+                  <div id="empty-stat-hrv" class="stat-label">HRV сегодня</div>
+                  <div class="stat-row">
+                    <span class="stat-value placeholder" aria-label="Данные ещё собираются">—</span>
+                    <span class="stat-sub">Собираем данные</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Шаги -->
+              <article class="stat-card" aria-labelledby="empty-stat-steps">
+                <div class="stat-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 4 C5 7, 5 11, 7 13 L9 19 L12 18 L11 12 C13 10, 14 7, 13 4 Z"/>
+                    <circle cx="17" cy="9" r="1.5"/>
+                  </svg>
+                </div>
+                <div class="stat-body">
+                  <div id="empty-stat-steps" class="stat-label">Шаги сегодня</div>
+                  <div class="stat-row">
+                    <span class="stat-value num">0</span>
+                    <span class="stat-sub num">0 / 6 000</span>
+                  </div>
+                  <div class="stat-mini-bar" aria-hidden="true">
+                    <div class="stat-mini-bar-fill empty"></div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Сон (consistency с Home f1) -->
+              <article class="stat-card" aria-labelledby="empty-stat-sleep">
+                <div class="stat-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 14.5 A8 8 0 0 1 9.5 5 A6.5 6.5 0 1 0 19 14.5 Z"/>
+                  </svg>
+                </div>
+                <div class="stat-body">
+                  <div id="empty-stat-sleep" class="stat-label">Сон прошлой ночью</div>
+                  <div class="stat-row">
+                    <span class="stat-value placeholder" aria-label="Данные после первой ночи">—</span>
+                    <span class="stat-sub">Данные после первой ночи</span>
+                  </div>
+                </div>
+              </article>
+
+            </div>
+
+            <!-- 3. Training empty card -->
+            <article class="card training-empty" aria-labelledby="training-empty-title">
+              <div class="training-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="17" cy="5" r="2"/>
+                  <path d="M4 19l3-4 4 2 2-5 4 4-2 3"/>
+                  <path d="M8 12l3-3 3 3"/>
+                </svg>
+              </div>
+              <div class="training-body">
+                <h3 id="training-empty-title" class="training-title">Тренировок ещё нет</h3>
+                <p class="training-desc">Запустите первую — увидите зоны пульса и темп</p>
+                <button class="training-cta" aria-label="Начать первую тренировку">Начать первую тренировку</button>
+              </div>
+            </article>
+
+            <!-- 4. Health Sharing preview row (empty) -->
+            <article class="card hs-preview-row" aria-labelledby="hs-preview-title">
+              <div class="hs-preview-left">
+                <div class="hs-preview-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="8" cy="9" r="3"/>
+                    <path d="M2 18a6 6 0 0 1 12 0"/>
+                    <circle cx="16" cy="7" r="2.5"/>
+                    <path d="M13 13a4 4 0 0 1 7 3"/>
+                  </svg>
+                </div>
+                <div class="hs-preview-text">
+                  <div id="hs-preview-title" class="hs-preview-title">Health Sharing</div>
+                  <div class="hs-preview-sub">Никого не подключено</div>
+                </div>
+              </div>
+              <a href="#" class="hs-preview-link" aria-label="Добавить опекаемого">+ Добавить</a>
+            </article>
+
+          </div>
+
+          <!-- Tab-bar — Дом active, HS visible -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab active" aria-current="page" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 11.5 L12 4 L21 11.5"/>
+                <path d="M5 10.5 V20 H19 V10.5"/>
+              </svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h10"/>
+              </svg>
+              История
+            </button>
+            <button class="tab" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="8" cy="9" r="3"/>
+                <path d="M2 19a6 6 0 0 1 12 0"/>
+                <circle cx="16" cy="7" r="2.5"/>
+                <path d="M13 13a4 4 0 0 1 7 3.5"/>
+              </svg>
+              Health Sharing
+            </button>
+            <button class="tab" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.6"/>
+                <circle cx="12" cy="12" r="1.6"/>
+                <circle cx="19" cy="12" r="1.6"/>
+              </svg>
+              Ещё
+            </button>
+          </nav>
+
+        </section>
+      </div>
+
+
+      <!-- ============================================== -->
+      <!-- ЭКРАН 11 · HEALTH SHARING · EMPTY (NO CONTACTS) -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 11</strong> · HEALTH SHARING · EMPTY (NO CONTACTS)</div>
+
+        <section class="device-frame" aria-label="Health Sharing — пустой экран, никого не подключено">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:50</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App-bar title -->
+          <div class="app-bar-title">Health Sharing</div>
+
+          <!-- Body -->
+          <div class="hs-body">
+
+            <!-- Illustration: 3 abstract figures + heartbeat line connecting them.
+                 Wine accent on central pulse; bevel-tones for silhouettes.
+                 NO stock, NO emoji, NO photo. Geometric abstraction with semantic load
+                 (silhouettes = people; pulse = "shared health"). -->
+            <div class="hs-illustration-wrap" aria-hidden="true">
+              <svg class="hs-illustration" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Силуэты трёх людей, соединённых линией пульса">
+                <!-- Background soft halos behind each figure -->
+                <circle cx="42" cy="74" r="30" fill="#faf8f3"/>
+                <circle cx="158" cy="78" r="32" fill="#faf8f3"/>
+                <circle cx="100" cy="60" r="42" fill="#fdf2f8"/>
+
+                <!-- Left silhouette — smaller, lighter (backgrounded) -->
+                <g transform="translate(26, 44)">
+                  <circle cx="16" cy="12" r="9" fill="#d4cfc0"/>
+                  <path d="M2 50 C2 32, 30 32, 30 50 L30 62 L2 62 Z" fill="#d4cfc0"/>
+                </g>
+
+                <!-- Right silhouette — medium, mid-tone -->
+                <g transform="translate(138, 42)">
+                  <circle cx="18" cy="13" r="10" fill="#c8c1b0"/>
+                  <path d="M2 54 C2 34, 34 34, 34 54 L34 66 L2 66 Z" fill="#c8c1b0"/>
+                </g>
+
+                <!-- Center silhouette — largest, foreground, darker bevel -->
+                <g transform="translate(76, 22)">
+                  <circle cx="24" cy="18" r="14" fill="#a8a094"/>
+                  <path d="M2 72 C2 46, 46 46, 46 72 L46 90 L2 90 Z" fill="#a8a094"/>
+                </g>
+
+                <!-- Pulse line — smooth ECG-style across the bottom, connecting all 3 figures.
+                     Geometric peaks for "heartbeat" semantics, but with cubic curves for organic feel. -->
+                <path d="M6 108
+                         L36 108
+                         C 40 108, 42 108, 44 108
+                         L 50 108
+                         L 54 96
+                         L 60 120
+                         L 66 84
+                         L 72 124
+                         L 78 100
+                         L 88 100
+                         L 96 86
+                         L 102 122
+                         L 108 92
+                         L 114 116
+                         L 120 100
+                         L 130 100
+                         L 136 92
+                         L 142 116
+                         L 148 88
+                         L 154 118
+                         L 160 100
+                         L 194 100"
+                      fill="none"
+                      stroke="#831843"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"/>
+
+                <!-- Heart pulse-node at apex over center figure -->
+                <circle cx="102" cy="122" r="3" fill="#831843"/>
+                <circle cx="102" cy="122" r="6" fill="none" stroke="#831843" stroke-width="1" opacity="0.35"/>
+
+                <!-- Baseline ground line — subtle, sits behind pulse -->
+                <line x1="6" y1="132" x2="194" y2="132" stroke="#e8e4d8" stroke-width="1"/>
+              </svg>
+            </div>
+
+            <h1 class="hs-title">Подключите близких</h1>
+            <p class="hs-sub">
+              Получайте алерты, если кто-то упал, и видите ключевые показатели — пульс, шаги, давление.
+            </p>
+
+            <!-- Value-prop bullets -->
+            <div class="hs-bullets" aria-label="Что даёт Health Sharing">
+
+              <div class="hs-bullet-row">
+                <div class="hs-bullet-check" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3.5 9.5 L7 13 L14.5 5"/>
+                  </svg>
+                </div>
+                <span class="hs-bullet-text">Алерты о падениях за <span class="num">10</span> секунд</span>
+              </div>
+
+              <div class="hs-bullet-row">
+                <div class="hs-bullet-check" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3.5 9.5 L7 13 L14.5 5"/>
+                  </svg>
+                </div>
+                <span class="hs-bullet-text">Дневной обзор пульса и шагов</span>
+              </div>
+
+              <div class="hs-bullet-row">
+                <div class="hs-bullet-check" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3.5 9.5 L7 13 L14.5 5"/>
+                  </svg>
+                </div>
+                <span class="hs-bullet-text">Никаких других данных — только то, чем поделились</span>
+              </div>
+
+            </div>
+
+            <div class="hs-spacer"></div>
+
+            <!-- CTAs -->
+            <div class="hs-cta-stack">
+              <button class="hs-cta" aria-label="Добавить опекаемого">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M9 3 V15 M3 9 H15"/>
+                </svg>
+                Добавить опекаемого
+              </button>
+              <button class="hs-text-link" aria-label="Как это работает?">Как это работает?</button>
+            </div>
+
+          </div>
+
+          <!-- Tab-bar — Health Sharing active -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 11.5 L12 4 L21 11.5"/>
+                <path d="M5 10.5 V20 H19 V10.5"/>
+              </svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h10"/>
+              </svg>
+              История
+            </button>
+            <button class="tab active" aria-current="page" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="8" cy="9" r="3"/>
+                <path d="M2 19a6 6 0 0 1 12 0"/>
+                <circle cx="16" cy="7" r="2.5"/>
+                <path d="M13 13a4 4 0 0 1 7 3.5"/>
+              </svg>
+              Health Sharing
+            </button>
+            <button class="tab" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.6"/>
+                <circle cx="12" cy="12" r="1.6"/>
+                <circle cx="19" cy="12" r="1.6"/>
+              </svg>
+              Ещё
+            </button>
+          </nav>
+
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

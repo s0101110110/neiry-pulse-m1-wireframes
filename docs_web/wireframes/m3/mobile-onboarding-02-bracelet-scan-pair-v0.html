@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Mobile Onboarding 02 · Bracelet Scan + Pairing · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      /* shadcn light tokens + warm tint (Bevel-leaning) — identical to onboarding-01 */
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;            /* Neiry wine — PROTECTED */
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --destructive: #b91c1c;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame — same dimensions/bezel as onboarding-01 */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    /* Status bar */
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    /* App bar — progress dots (identical to onboarding-01) */
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card);
+      gap: 8px;
+    }
+    .progress-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border-strong);
+      transition: background 200ms ease, width 200ms ease;
+    }
+    .progress-dot.active {
+      background: var(--primary);
+      width: 20px;
+      border-radius: 3px;
+    }
+
+    /* Buttons (link-style only used here, no primary CTA on these screens) */
+    .btn-text {
+      background: transparent;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 15px;
+      font-family: 'Space Grotesk', sans-serif;
+      border: none;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: color 160ms ease, background 160ms ease;
+    }
+    .btn-text:hover { color: #6b1238; background: var(--primary-soft); }
+    .btn-text:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* ============ SCREEN 3 · BRACELET SCAN ============ */
+    .scan-body {
+      flex: 1;
+      min-height: 0;
+      background: var(--card);
+      display: flex;
+      flex-direction: column;
+      padding: 8px 24px 28px;
+    }
+
+    .scan-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 28px;
+    }
+
+    /* Sonar — concentric pulse rings emanating from center */
+    .sonar-wrap {
+      position: relative;
+      width: 168px;
+      height: 168px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sonar-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80px;
+      height: 80px;
+      margin-top: -40px;
+      margin-left: -40px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      opacity: 0;
+      transform: scale(0.5);
+      animation: sonar-pulse 1800ms cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    }
+    .sonar-ring.r2 { animation-delay: 600ms; }
+    .sonar-ring.r3 { animation-delay: 1200ms; }
+
+    @keyframes sonar-pulse {
+      0%   { transform: scale(0.5); opacity: 0; }
+      20%  { opacity: 0.55; }
+      100% { transform: scale(2.1); opacity: 0; }
+    }
+
+    .sonar-core {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border-radius: 22px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px -10px rgba(131, 24, 67, 0.45);
+      z-index: 2;
+    }
+
+    .scan-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.015em;
+      color: var(--foreground);
+      text-align: center;
+      margin-top: 22px;
+      line-height: 1.15;
+    }
+    .scan-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1.45;
+      color: var(--muted-foreground);
+      text-align: center;
+      margin-top: 10px;
+      max-width: 300px;
+    }
+
+    /* Detected device list — no eyebrow label needed (single-item, self-evident after hero) */
+    .scan-list-wrap { padding-top: 32px; }
+    .device-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--card-warm);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      cursor: pointer;
+      transition: border-color 160ms ease, transform 160ms ease-out, background 160ms ease;
+    }
+    .device-card:hover {
+      border-color: var(--primary);
+      background: var(--card);
+    }
+    .device-card:active { transform: scale(0.99); }
+    .device-card:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .device-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .device-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .device-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      line-height: 1.2;
+    }
+    .device-name .serial {
+      font-family: 'Geist Mono', monospace;
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--muted-foreground);
+      margin-left: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+    .device-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      color: var(--muted-foreground);
+      line-height: 1.2;
+    }
+    .signal-bars {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 10px;
+    }
+    .signal-bars span {
+      width: 2.5px;
+      background: var(--success);
+      border-radius: 1px;
+    }
+    .signal-bars span:nth-child(1) { height: 4px; }
+    .signal-bars span:nth-child(2) { height: 6px; }
+    .signal-bars span:nth-child(3) { height: 8px; }
+    .signal-bars span:nth-child(4) { height: 10px; }
+    .meta-dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--border-strong);
+    }
+    .device-chev {
+      color: var(--muted-foreground);
+      flex-shrink: 0;
+    }
+
+    /* Scan footer */
+    .scan-spacer { flex: 1; min-height: 16px; }
+    .scan-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .scan-helper-link {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 14px;
+      font-family: 'Space Grotesk', sans-serif;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background 160ms ease;
+    }
+    .scan-helper-link:hover { background: var(--primary-soft); }
+    .scan-helper-link:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .scan-disclaimer {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      line-height: 1.5;
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+
+    /* ============ SCREEN 4 · BRACELET PAIRING ============ */
+    .pair-body {
+      flex: 1;
+      min-height: 0;
+      background: var(--card);
+      display: flex;
+      flex-direction: column;
+      padding: 8px 24px 28px;
+    }
+
+    .pair-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 16px;
+    }
+
+    .pair-ring-wrap {
+      position: relative;
+      width: 144px;
+      height: 144px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pair-ring-svg {
+      position: absolute;
+      inset: 0;
+      transform: rotate(-90deg);
+    }
+    .pair-ring-bg {
+      stroke: var(--muted);
+      stroke-width: 6;
+      fill: none;
+    }
+    .pair-ring-fg {
+      stroke: var(--primary);
+      stroke-width: 6;
+      fill: none;
+      stroke-linecap: round;
+      stroke-dasharray: 32 100;
+      stroke-dashoffset: 0;
+      animation: pair-ring-spin 1400ms linear infinite;
+    }
+    @keyframes pair-ring-spin {
+      0%   { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: -100; }
+    }
+    .pair-ring-core {
+      width: 76px;
+      height: 76px;
+      border-radius: 20px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .pair-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.015em;
+      color: var(--foreground);
+      text-align: center;
+      margin-top: 22px;
+      line-height: 1.15;
+    }
+    .pair-serial {
+      font-family: 'Geist Mono', monospace;
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--muted-foreground);
+      text-align: center;
+      margin-top: 8px;
+      letter-spacing: 0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Progress steps */
+    .pair-steps {
+      display: flex;
+      flex-direction: column;
+      padding-top: 32px;
+    }
+    .pair-step-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .pair-step-row:last-child { border-bottom: none; }
+    .step-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-icon.done {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+    .step-icon.active {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+    .step-icon.pending {
+      background: var(--muted);
+      color: var(--muted-foreground);
+      border: 1px solid var(--border-strong);
+    }
+    .spinner-arc {
+      animation: spinner-rotate 1400ms linear infinite;
+      transform-origin: center;
+    }
+    @keyframes spinner-rotate {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .pair-step-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .pair-step-row.done .pair-step-text { color: var(--foreground); }
+    .pair-step-row.active .pair-step-text { color: var(--foreground); font-weight: 600; }
+    .pair-step-row.pending .pair-step-text { color: var(--muted-foreground); }
+
+    .pair-spacer { flex: 1; min-height: 16px; }
+
+    .pair-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .pair-disclaimer {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      line-height: 1.5;
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+
+    /* Page chrome — identical to onboarding-01 */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px;
+      gap: 24px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .frames-row {
+      display: flex;
+      gap: 56px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .sonar-ring { animation: none; opacity: 0; }
+      .pair-ring-fg { animation: none; stroke-dasharray: 100 100; }
+      .spinner-arc { animation: none; }
+      .device-card:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Neiry Pulse · Mobile Onboarding 02 · Bracelet Scan + Pairing · v0 · 390×844</div>
+
+    <div class="frames-row">
+
+      <!-- ============================================== -->
+      <!-- SCREEN 3 · BRACELET SCAN                       -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 3</strong> · BRACELET SCAN</div>
+
+        <section class="device-frame" aria-label="Bracelet Scan — поиск браслета Neiry поблизости">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar — onboarding progress 2 of 4 -->
+          <div class="app-bar" role="progressbar" aria-label="Шаг 2 из 4 онбординга" aria-valuenow="2" aria-valuemin="1" aria-valuemax="4">
+            <span class="progress-dot active" aria-hidden="true"></span>
+            <span class="progress-dot active" aria-hidden="true"></span>
+            <span class="progress-dot" aria-hidden="true"></span>
+            <span class="progress-dot" aria-hidden="true"></span>
+          </div>
+
+          <!-- Body -->
+          <div class="scan-body">
+
+            <!-- Hero with sonar -->
+            <div class="scan-hero">
+              <div class="sonar-wrap" aria-hidden="true">
+                <span class="sonar-ring r1"></span>
+                <span class="sonar-ring r2"></span>
+                <span class="sonar-ring r3"></span>
+                <div class="sonar-core">
+                  <!-- Bluetooth rune ᛒ — same glyph as Permission BT -->
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 13 L26 27 L20 32 L20 8 L26 13 L14 27"/>
+                  </svg>
+                </div>
+              </div>
+
+              <h1 class="scan-title">Ищем браслет</h1>
+              <p class="scan-sub">
+                Включите ваш Neiry-браслет — нажмите кнопку питания на 3 секунды, пока не загорится индикатор.
+              </p>
+            </div>
+
+            <!-- Detected device list -->
+            <div class="scan-list-wrap">
+            <div class="device-card" role="button" tabindex="0" aria-label="Подключить Neiry Vitro A1B2, сильный сигнал, 2 метра">
+              <div class="device-icon" aria-hidden="true">
+                <!-- Bracelet glyph: watch with strap -->
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="6" y="7" width="12" height="10" rx="2.5"/>
+                  <path d="M9 7 L9.5 4 L14.5 4 L15 7"/>
+                  <path d="M9 17 L9.5 20 L14.5 20 L15 17"/>
+                  <circle cx="12" cy="12" r="1.6"/>
+                </svg>
+              </div>
+              <div class="device-body">
+                <div class="device-name">Neiry Vitro<span class="serial">#A1B2</span></div>
+                <div class="device-meta">
+                  <span class="signal-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+                  <span>Сильный сигнал</span>
+                  <span class="meta-dot" aria-hidden="true"></span>
+                  <span>2 м</span>
+                </div>
+              </div>
+              <svg class="device-chev" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6.5 4 L11.5 9 L6.5 14"/>
+              </svg>
+            </div>
+            </div>
+
+            <!-- Spacer pushes footer to bottom -->
+            <div class="scan-spacer"></div>
+
+            <!-- Footer -->
+            <div class="scan-footer">
+              <a href="#" class="scan-helper-link" tabindex="0">Не вижу свой браслет?</a>
+              <p class="scan-disclaimer">Сканирование займёт до 10 секунд</p>
+            </div>
+
+          </div>
+        </section>
+      </div>
+
+
+      <!-- ============================================== -->
+      <!-- SCREEN 4 · BRACELET PAIRING                    -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 4</strong> · BRACELET PAIRING</div>
+
+        <section class="device-frame" aria-label="Bracelet Pairing — соединение с браслетом Neiry Vitro">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar — onboarding progress 3 of 4 -->
+          <div class="app-bar" role="progressbar" aria-label="Шаг 3 из 4 онбординга" aria-valuenow="3" aria-valuemin="1" aria-valuemax="4">
+            <span class="progress-dot active" aria-hidden="true"></span>
+            <span class="progress-dot active" aria-hidden="true"></span>
+            <span class="progress-dot active" aria-hidden="true"></span>
+            <span class="progress-dot" aria-hidden="true"></span>
+          </div>
+
+          <!-- Body -->
+          <div class="pair-body">
+
+            <!-- Hero: circular indeterminate ring + bracelet glyph -->
+            <div class="pair-hero">
+              <div class="pair-ring-wrap" aria-hidden="true">
+                <svg class="pair-ring-svg" viewBox="0 0 100 100">
+                  <circle class="pair-ring-bg" cx="50" cy="50" r="46" pathLength="100"/>
+                  <circle class="pair-ring-fg" cx="50" cy="50" r="46" pathLength="100"/>
+                </svg>
+                <div class="pair-ring-core">
+                  <!-- Bracelet glyph (slightly larger) -->
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="6" y="7" width="12" height="10" rx="2.5"/>
+                    <path d="M9 7 L9.5 4 L14.5 4 L15 7"/>
+                    <path d="M9 17 L9.5 20 L14.5 20 L15 17"/>
+                    <circle cx="12" cy="12" r="1.6"/>
+                  </svg>
+                </div>
+              </div>
+
+              <h1 class="pair-title">Подключаемся к Neiry Vitro</h1>
+              <p class="pair-serial">#A1B2</p>
+            </div>
+
+            <!-- Progress steps -->
+            <div class="pair-steps" aria-label="Этапы подключения">
+
+              <div class="pair-step-row done" aria-current="false">
+                <span class="step-icon done" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3.5 9.5 L7 13 L14.5 5"/>
+                  </svg>
+                </span>
+                <span class="pair-step-text">Связь установлена</span>
+              </div>
+
+              <div class="pair-step-row active" aria-current="step">
+                <span class="step-icon active" aria-hidden="true">
+                  <svg class="spinner-arc" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                    <path d="M12 3 A9 9 0 0 1 21 12" />
+                  </svg>
+                </span>
+                <span class="pair-step-text">Проверяем версию прошивки</span>
+              </div>
+
+              <div class="pair-step-row pending" aria-current="false">
+                <span class="step-icon pending" aria-hidden="true"></span>
+                <span class="pair-step-text">Привязка к вашему аккаунту</span>
+              </div>
+
+            </div>
+
+            <!-- Spacer pushes footer to bottom -->
+            <div class="pair-spacer"></div>
+
+            <!-- Footer -->
+            <div class="pair-footer">
+              <button class="btn-text" aria-label="Отменить подключение">Отменить</button>
+              <p class="pair-disclaimer">Не выключайте браслет — подключение занимает до 20 секунд</p>
+            </div>
+
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

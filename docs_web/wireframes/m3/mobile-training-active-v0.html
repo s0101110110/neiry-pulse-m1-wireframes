@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Mobile Training Active · v0 · 3 swipe pages</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --warning: #d97706;
+      --destructive: #b91c1c;
+      --zone-inactive: #f5f2eb;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+    .hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: #fafaf9;
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: #fafaf9;
+    }
+
+    /* App-bar (sticky on every page) */
+    .app-bar-active {
+      flex-shrink: 0;
+      height: 52px;
+      padding: 0 14px 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fafaf9;
+      border-bottom: 1px solid var(--border);
+    }
+    .app-bar-active .left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      background: var(--destructive);
+      border-radius: 50%;
+      animation: pulse-red 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-red {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.85); }
+    }
+    .session-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--foreground);
+    }
+    .session-timer {
+      font-family: 'Geist Mono', monospace;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+      color: var(--foreground);
+      margin-left: 6px;
+    }
+    .btn-stop {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 10px;
+      background: var(--destructive);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      border: none;
+      transition: transform 140ms ease-out, background 140ms ease;
+    }
+    .btn-stop:hover { background: #991b1b; }
+    .btn-stop:active { transform: scale(0.97); }
+    .btn-stop:focus-visible {
+      outline: 2px solid var(--destructive);
+      outline-offset: 2px;
+    }
+
+    /* Pagination dots */
+    .pagination {
+      flex-shrink: 0;
+      padding: 10px 0 6px;
+      background: #fafaf9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border-strong);
+      transition: all 200ms ease;
+    }
+    .dot.active {
+      background: var(--primary);
+      width: 20px;
+      border-radius: 4px;
+    }
+    .page-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .page-label .sep { opacity: 0.5; margin: 0 6px; }
+
+    /* Page content (flex-1) */
+    .page-content {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fafaf9;
+      overflow: hidden;
+    }
+
+    /* Zones strip — sticky at bottom */
+    .zones-strip {
+      flex-shrink: 0;
+      display: flex;
+      gap: 4px;
+      padding: 14px 16px 18px;
+      background: #fafaf9;
+      border-top: 1px solid var(--border);
+    }
+    .zone-cell {
+      flex: 1;
+      height: 52px;
+      border-radius: 8px;
+      background: var(--zone-inactive);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      transition: background 200ms ease;
+    }
+    .zone-cell .z-lbl {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .zone-cell .z-pct {
+      font-family: 'Geist Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+    }
+    .zone-cell.active {
+      background: var(--primary);
+    }
+    .zone-cell.active .z-lbl { color: rgba(255,255,255,0.78); }
+    .zone-cell.active .z-pct { color: #fff; }
+
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    /* ============================================ */
+    /* PAGE 1 — Big HR                              */
+    /* ============================================ */
+    .p1-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 8px 20px 0;
+    }
+    .p1-hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 0;
+    }
+    .p1-hr-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 112px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+      animation: hr-pulse 1.4s ease-in-out infinite;
+      transform-origin: center;
+    }
+    @keyframes hr-pulse {
+      0%, 100% { transform: scale(1); }
+      18% { transform: scale(1.025); }
+      36% { transform: scale(1); }
+    }
+    .p1-hr-unit {
+      font-family: 'Geist Mono', monospace;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      margin-left: 2px;
+    }
+    .p1-zone-chip {
+      display: inline-block;
+      padding: 5px 14px;
+      background: var(--primary);
+      color: #fff;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 12px;
+      margin-top: 4px;
+    }
+    .p1-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      padding: 14px 0 18px;
+      border-top: 1px solid var(--border);
+    }
+    .p1-meta-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .p1-meta-cell .v {
+      font-family: 'Geist Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--foreground);
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .p1-meta-cell .l {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    /* ============================================ */
+    /* PAGE 2 — GPS Map                             */
+    /* ============================================ */
+    .p2-map {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #efe9da 0%, #e2dccb 60%, #d4cfc0 100%);
+    }
+    .p2-map::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 32px, rgba(155,146,125,0.14) 32px, rgba(155,146,125,0.14) 33px),
+        repeating-linear-gradient(90deg, transparent, transparent 32px, rgba(155,146,125,0.14) 32px, rgba(155,146,125,0.14) 33px);
+    }
+    /* Route SVG fits 390px wide map */
+    .p2-route {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .p2-route-path {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 6px rgba(131,24,67,0.35));
+    }
+    .p2-route-start {
+      fill: var(--primary);
+    }
+    .p2-route-end-outer {
+      fill: #fff;
+      stroke: var(--primary);
+      stroke-width: 3.5;
+    }
+    .p2-route-end-inner {
+      fill: var(--primary);
+    }
+    .p2-km-marker {
+      position: absolute;
+      background: #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--foreground);
+      box-shadow: 0 4px 12px rgba(20,20,20,0.18), 0 1px 2px rgba(20,20,20,0.1);
+      letter-spacing: -0.01em;
+    }
+    .p2-km-marker::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid #fff;
+    }
+    .p2-scale {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(255,255,255,0.92);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted-foreground);
+      letter-spacing: 0.04em;
+      backdrop-filter: blur(4px);
+    }
+    .p2-recenter {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 40px;
+      height: 40px;
+      background: #fff;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(20,20,20,0.15);
+      cursor: pointer;
+      border: none;
+    }
+    .p2-recenter:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .p2-bottom-strip {
+      flex-shrink: 0;
+      background: #fafaf9;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 6px;
+    }
+    .p2-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .p2-stat .v {
+      font-family: 'Geist Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .p2-stat .l {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .p2-stat-sep {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+    }
+
+    /* ============================================ */
+    /* PAGE 3 — Session details                     */
+    /* ============================================ */
+    .p3-body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 14px 20px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .p3-body::-webkit-scrollbar { display: none; }
+
+    .p3-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    /* Goal card */
+    .p3-goal-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .p3-goal-row .current {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+      color: var(--primary);
+    }
+    .p3-goal-row .target {
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+    }
+    .p3-progress-bar {
+      margin-top: 10px;
+      height: 5px;
+      background: var(--zone-inactive);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+    .p3-progress-bar svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .p3-progress-bar .bar-line {
+      stroke: var(--primary);
+      stroke-width: 5;
+      stroke-linecap: butt;
+      stroke-dasharray: 46.8 100;
+    }
+    .p3-progress-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    .p3-progress-meta span {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--muted-foreground);
+    }
+
+    /* Sparkline card */
+    .p3-spark {
+      width: 100%;
+      height: 56px;
+      display: block;
+      margin-top: 10px;
+    }
+    .p3-spark-line {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .p3-spark-area {
+      fill: var(--primary);
+      opacity: 0.08;
+    }
+    .p3-spark-dot { fill: var(--primary); }
+
+    .p3-spark-axis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .p3-spark-axis-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .p3-spark-axis-cell .l {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .p3-spark-axis-cell .v {
+      font-family: 'Geist Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Splits card */
+    .p3-split-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+    .p3-split-row + .p3-split-row { border-top: 1px solid var(--border); }
+    .p3-split-row .km {
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+    }
+    .p3-split-row .time {
+      font-family: 'Geist Mono', monospace;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .p3-split-row .delta {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .p3-split-row .delta.faster { color: var(--success); }
+    .p3-split-row .delta.slower { color: var(--warning); }
+
+    /* Page chrome */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px 16px;
+      gap: 24px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .page-title .pill {
+      display: inline-block;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      background: var(--primary-soft);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-left: 8px;
+      text-transform: uppercase;
+    }
+    .frames-row {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pulse-dot, .p1-hr-num { animation: none; }
+      .btn-stop:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">
+      Neiry Pulse · Mobile Training Active · v0 · 3 swipe pages · 390×844
+      <span class="pill">A layout · Big HR Dominant</span>
+    </div>
+
+    <div class="frames-row">
+
+      <!-- =========================================== -->
+      <!-- PAGE 1 — Big HR + Zones (default)           -->
+      <!-- =========================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>PAGE 1</strong> · Зоны / Пульс (default)</div>
+
+        <section class="device-frame" aria-label="Активная тренировка — страница 1, пульс и зоны">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar with timer + STOP (sticky) -->
+          <div class="app-bar-active">
+            <div class="left">
+              <span class="pulse-dot" aria-hidden="true"></span>
+              <span class="session-label">Бег</span>
+              <span class="session-timer" aria-label="Длительность 12 минут 43 секунды">00:12:43</span>
+            </div>
+            <button class="btn-stop" aria-label="Остановить тренировку">STOP</button>
+          </div>
+
+          <!-- Pagination dots + label -->
+          <div class="pagination">
+            <div class="dots" role="tablist" aria-label="Свайп между страницами">
+              <span class="dot active" role="tab" aria-selected="true" aria-label="Страница 1 — Зоны"></span>
+              <span class="dot" role="tab" aria-selected="false" aria-label="Страница 2 — Детали"></span>
+              <span class="dot" role="tab" aria-selected="false" aria-label="Страница 3 — Карта"></span>
+            </div>
+            <div class="page-label"><span>1 / 3</span><span class="sep">·</span><span>Зоны</span></div>
+          </div>
+
+          <!-- Page 1 content -->
+          <div class="page-content">
+            <div class="p1-body">
+              <div class="p1-hero">
+                <span class="eyebrow">Пульс</span>
+                <div style="display:flex; align-items:baseline;">
+                  <span class="p1-hr-num">156</span>
+                  <span class="p1-hr-unit">bpm</span>
+                </div>
+                <span class="p1-zone-chip">Zone 3 · Tempo</span>
+              </div>
+              <div class="p1-meta">
+                <div class="p1-meta-cell">
+                  <span class="v">2.34</span>
+                  <span class="l">км</span>
+                </div>
+                <div class="p1-meta-cell">
+                  <span class="v">5:24</span>
+                  <span class="l">мин/км</span>
+                </div>
+                <div class="p1-meta-cell">
+                  <span class="v">186</span>
+                  <span class="l">ккал</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zones strip (sticky bottom) -->
+          <div class="zones-strip">
+            <div class="zone-cell"><span class="z-lbl">Z1</span><span class="z-pct">3%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z2</span><span class="z-pct">28%</span></div>
+            <div class="zone-cell active" aria-label="Зона 3 активная — 52 процента времени"><span class="z-lbl">Z3</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
+          </div>
+        </section>
+      </div>
+
+
+      <!-- =========================================== -->
+      <!-- PAGE 2 — Session Details                    -->
+      <!-- =========================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>PAGE 2</strong> · Детали сессии</div>
+
+        <section class="device-frame" aria-label="Активная тренировка — страница 2, детали сессии">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <div class="app-bar-active">
+            <div class="left">
+              <span class="pulse-dot" aria-hidden="true"></span>
+              <span class="session-label">Бег</span>
+              <span class="session-timer">00:12:43</span>
+            </div>
+            <button class="btn-stop" aria-label="Остановить тренировку">STOP</button>
+          </div>
+
+          <div class="pagination">
+            <div class="dots" role="tablist" aria-label="Свайп между страницами">
+              <span class="dot" role="tab" aria-selected="false" aria-label="Страница 1 — Зоны"></span>
+              <span class="dot active" role="tab" aria-selected="true" aria-label="Страница 2 — Детали"></span>
+              <span class="dot" role="tab" aria-selected="false" aria-label="Страница 3 — Карта"></span>
+            </div>
+            <div class="page-label"><span>2 / 3</span><span class="sep">·</span><span>Детали</span></div>
+          </div>
+
+          <div class="page-content">
+            <div class="p3-body">
+
+              <!-- Goal card -->
+              <div class="p3-card">
+                <div class="p3-goal-row">
+                  <div>
+                    <div class="eyebrow">Цель · 5 км</div>
+                    <div style="display:flex; align-items:baseline; gap:6px; margin-top:2px;">
+                      <span class="current">2.34</span>
+                      <span class="target">/ 5.00 км</span>
+                    </div>
+                  </div>
+                  <div style="text-align:right;">
+                    <div class="eyebrow">Прогресс</div>
+                    <div style="margin-top:2px;">
+                      <span class="mono" style="font-size:18px; font-weight:700; color:var(--primary);">47</span><span class="mono" style="font-size:13px; color:var(--muted-foreground);">%</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="p3-progress-bar" aria-label="47% от цели">
+                  <svg viewBox="0 0 100 5" preserveAspectRatio="none">
+                    <line x1="0" y1="2.5" x2="100" y2="2.5" stroke="#f5f2eb" stroke-width="5"/>
+                    <line x1="0" y1="2.5" x2="100" y2="2.5"
+                          class="bar-line"
+                          pathLength="100"/>
+                  </svg>
+                </div>
+                <div class="p3-progress-meta">
+                  <span>осталось 2.66 км</span>
+                  <span>~14:23 при текущем темпе</span>
+                </div>
+              </div>
+
+              <!-- Pace sparkline card -->
+              <div class="p3-card">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <span class="eyebrow">Темп по минутам</span>
+                  <span class="mono" style="font-size:10px; color:var(--success); letter-spacing:0.06em; font-weight:600;">тренд ↑</span>
+                </div>
+                <svg class="p3-spark" viewBox="0 0 300 56" preserveAspectRatio="none">
+                  <!-- Area under curve -->
+                  <path class="p3-spark-area"
+                        pathLength="100"
+                        d="M0,42 L25,38 L50,40 L75,32 L100,30 L125,26 L150,22 L175,18 L200,20 L225,14 L250,16 L275,12 L300,10 L300,56 L0,56 Z"/>
+                  <!-- Line -->
+                  <path class="p3-spark-line"
+                        pathLength="100"
+                        d="M0,42 L25,38 L50,40 L75,32 L100,30 L125,26 L150,22 L175,18 L200,20 L225,14 L250,16 L275,12 L300,10"/>
+                  <!-- Last point -->
+                  <circle class="p3-spark-dot" cx="300" cy="10" r="3.5"/>
+                </svg>
+                <div class="p3-spark-axis">
+                  <div class="p3-spark-axis-cell">
+                    <span class="l">Текущий</span>
+                    <span class="v" style="color:var(--primary);">5:24</span>
+                  </div>
+                  <div class="p3-spark-axis-cell">
+                    <span class="l">Средний</span>
+                    <span class="v">5:38</span>
+                  </div>
+                  <div class="p3-spark-axis-cell">
+                    <span class="l">Лучший</span>
+                    <span class="v">5:12</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Splits card -->
+              <div class="p3-card">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                  <span class="eyebrow">Сплиты по км</span>
+                  <span class="mono" style="font-size:9px; color:var(--muted-foreground); letter-spacing:0.06em;">2 из 5</span>
+                </div>
+                <div class="p3-split-row">
+                  <span class="km">КМ 1</span>
+                  <span class="time">5:38</span>
+                  <span class="delta" style="color:var(--muted-foreground);">baseline</span>
+                </div>
+                <div class="p3-split-row">
+                  <span class="km">КМ 2</span>
+                  <span class="time">5:18</span>
+                  <span class="delta faster">−0:20 быстрее</span>
+                </div>
+                <div class="p3-split-row" style="opacity:0.45;">
+                  <span class="km">КМ 3</span>
+                  <span class="time">— : —</span>
+                  <span class="delta">в процессе…</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Zones strip (consistency) -->
+          <div class="zones-strip">
+            <div class="zone-cell"><span class="z-lbl">Z1</span><span class="z-pct">3%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z2</span><span class="z-pct">28%</span></div>
+            <div class="zone-cell active"><span class="z-lbl">Z3</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
+          </div>
+        </section>
+      </div>
+
+
+      <!-- =========================================== -->
+      <!-- PAGE 3 — GPS Map                            -->
+      <!-- =========================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>PAGE 3</strong> · GPS Карта</div>
+
+        <section class="device-frame" aria-label="Активная тренировка — страница 3, карта GPS">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <div class="app-bar-active">
+            <div class="left">
+              <span class="pulse-dot" aria-hidden="true"></span>
+              <span class="session-label">Бег</span>
+              <span class="session-timer">00:12:43</span>
+            </div>
+            <button class="btn-stop" aria-label="Остановить тренировку">STOP</button>
+          </div>
+
+          <div class="pagination">
+            <div class="dots" role="tablist" aria-label="Свайп между страницами">
+              <span class="dot" role="tab" aria-selected="false" aria-label="Страница 1 — Зоны"></span>
+              <span class="dot" role="tab" aria-selected="false" aria-label="Страница 2 — Детали"></span>
+              <span class="dot active" role="tab" aria-selected="true" aria-label="Страница 3 — Карта"></span>
+            </div>
+            <div class="page-label"><span>3 / 3</span><span class="sep">·</span><span>Карта</span></div>
+          </div>
+
+          <div class="page-content">
+            <div class="p2-map" role="img" aria-label="Карта маршрута бега, пройдено 2,34 км">
+
+              <!-- Route SVG (faked path) -->
+              <svg class="p2-route" viewBox="0 0 390 540" preserveAspectRatio="xMidYMid slice">
+                <!-- Route polyline -->
+                <path class="p2-route-path"
+                      d="M 60 440 C 120 380, 90 320, 150 280 S 240 240, 200 180 S 290 150, 320 110" />
+                <!-- Start point -->
+                <circle class="p2-route-start" cx="60" cy="440" r="7"/>
+                <circle cx="60" cy="440" r="13" fill="#831843" opacity="0.18"/>
+                <!-- End point (current position) -->
+                <circle class="p2-route-end-outer" cx="320" cy="110" r="9"/>
+                <circle class="p2-route-end-inner" cx="320" cy="110" r="3.5"/>
+              </svg>
+
+              <!-- km marker -->
+              <div class="p2-km-marker" style="top: 36%; left: 38%;">2.34 км</div>
+
+              <!-- Re-center button -->
+              <button class="p2-recenter" aria-label="Центрировать карту по моему положению">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#831843" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="10" cy="10" r="6"/>
+                  <path d="M10 2v2M10 16v2M18 10h-2M4 10H2"/>
+                  <circle cx="10" cy="10" r="1.5" fill="#831843"/>
+                </svg>
+              </button>
+
+              <!-- Scale -->
+              <div class="p2-scale">200 м</div>
+            </div>
+
+            <!-- Bottom compact stats strip -->
+            <div class="p2-bottom-strip">
+              <div class="p2-stat">
+                <span class="v">2.34</span>
+                <span class="l">км</span>
+              </div>
+              <span class="p2-stat-sep" aria-hidden="true"></span>
+              <div class="p2-stat">
+                <span class="v">5:24</span>
+                <span class="l">мин/км</span>
+              </div>
+              <span class="p2-stat-sep" aria-hidden="true"></span>
+              <div class="p2-stat">
+                <span class="v" style="color: var(--primary);">156</span>
+                <span class="l">bpm</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zones strip (consistency) -->
+          <div class="zones-strip">
+            <div class="zone-cell"><span class="z-lbl">Z1</span><span class="z-pct">3%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z2</span><span class="z-pct">28%</span></div>
+            <div class="zone-cell active"><span class="z-lbl">Z3</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

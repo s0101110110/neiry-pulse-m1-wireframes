@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Mobile Onboarding 03 · Permission Notifications + Calibrating Day 1 · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      /* shadcn light tokens + warm tint (Bevel-leaning) — identical to Home / Onboarding-01 / -02 */
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;            /* Neiry wine — PROTECTED */
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --destructive: #b91c1c;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+    .hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame — identical with prior onboarding */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    /* Status bar */
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    /* App bar — progress dots variant (Notifications screen) */
+    .app-bar-progress {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card);
+      gap: 8px;
+    }
+    .progress-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border-strong);
+      transition: background 200ms ease, width 200ms ease;
+    }
+    .progress-dot.active {
+      background: var(--primary);
+      width: 20px;
+      border-radius: 3px;
+    }
+
+    /* App bar — Home variant (Calibrating screen) */
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid transparent;
+    }
+
+    /* Eyebrow */
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    /* Buttons */
+    .btn {
+      border-radius: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 160ms ease-out, background 160ms ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+      width: 100%;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .btn-primary {
+      height: 56px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-weight: 700;
+      font-size: 17px;
+    }
+    .btn-primary:hover { background: #6b1238; }
+    .btn-text {
+      height: 44px;
+      background: transparent;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .btn-text:hover { color: #6b1238; }
+
+    /* ============ SCREEN 5 · PERMISSION · NOTIFICATIONS ============ */
+    .permission-body {
+      flex: 1;
+      min-height: 0;
+      background: var(--card);
+      display: flex;
+      flex-direction: column;
+      padding: 16px 24px 32px;
+    }
+
+    .perm-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+    }
+    .perm-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 22px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px -10px rgba(131, 24, 67, 0.45);
+    }
+    .perm-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.015em;
+      color: var(--foreground);
+      text-align: center;
+      margin-top: 24px;
+      line-height: 1.15;
+    }
+    .perm-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1.45;
+      color: var(--muted-foreground);
+      text-align: center;
+      margin-top: 10px;
+      max-width: 296px;
+    }
+
+    .perm-checks {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 28px 4px 0;
+    }
+    .perm-check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .check-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      color: var(--primary);
+      margin-top: 1px;
+    }
+    .perm-check-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1.4;
+      color: var(--foreground);
+    }
+
+    .perm-spacer { flex: 1; min-height: 12px; }
+
+    .perm-cta-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .perm-disclaimer {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      line-height: 1.5;
+      color: var(--muted-foreground);
+      text-align: center;
+      padding-top: 12px;
+    }
+
+    /* ============ SCREEN 6 · CALIBRATING · DAY 1 ============ */
+    /* Feed scroll — identical to Home */
+    .feed {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--background);
+      padding: 12px 16px 88px 16px;
+    }
+    .feed::-webkit-scrollbar { display: none; }
+
+    /* Cards — identical with Home */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .card-warm { background: var(--card-warm); }
+
+    /* Calibrating hero card */
+    .calib-card {
+      padding: 18px 18px 20px;
+    }
+    .calib-hero-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      padding-top: 0;
+    }
+    .calib-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      opacity: 0.85;
+    }
+
+    /* Calibrating ring — rotating arc, 30% of circumference, wine
+       Slower than BT-pair pulse (1400ms) — this is a "long process", not "active search".
+       Total rotation: 3000ms linear infinite. */
+    .calib-ring-wrap {
+      position: relative;
+      width: 112px;
+      height: 112px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 12px;
+    }
+    .calib-ring-svg {
+      position: absolute;
+      inset: 0;
+      transform: rotate(-90deg);
+      animation: calib-ring-rotate 3000ms linear infinite;
+      transform-origin: center;
+    }
+    .calib-ring-bg {
+      stroke: var(--muted);
+      stroke-width: 5;
+      fill: none;
+    }
+    .calib-ring-fg {
+      stroke: var(--primary);
+      stroke-width: 5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-dasharray: 30 100;
+    }
+    @keyframes calib-ring-rotate {
+      0%   { transform: rotate(-90deg); }
+      100% { transform: rotate(270deg); }
+    }
+    .calib-ring-core {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .calib-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.015em;
+      color: var(--foreground);
+      text-align: center;
+      margin-top: 16px;
+      line-height: 1.2;
+    }
+    .calib-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--muted-foreground);
+      text-align: center;
+      margin-top: 8px;
+      max-width: 260px;
+    }
+
+    .calib-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px -2px 12px;
+    }
+
+    .calib-status-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .calib-status-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      color: var(--foreground);
+    }
+    .calib-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .calib-status-dot.success { background: var(--success); }
+    .calib-status-dot.primary { background: var(--primary); }
+    .calib-status-row .label-muted { color: var(--muted-foreground); }
+
+    /* Progress bar (calibrating) */
+    .calib-progress-wrap {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .calib-progress-track {
+      flex: 1;
+      height: 6px;
+      background: var(--muted);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .calib-progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 3px;
+      width: 30%;
+      animation: calib-progress-grow 1200ms cubic-bezier(0.16, 1, 0.3, 1) 200ms 1 both;
+      transform-origin: left center;
+    }
+    @keyframes calib-progress-grow {
+      0%   { width: 0%; }
+      100% { width: 30%; }
+    }
+    .calib-progress-pct {
+      font-family: 'Geist Mono', monospace;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+      min-width: 32px;
+      text-align: right;
+    }
+
+    .calib-learn-link {
+      display: block;
+      margin: 14px auto 0;
+      text-align: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--primary);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      width: fit-content;
+    }
+    .calib-learn-link:hover { background: var(--primary-soft); }
+    .calib-learn-link:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* Supporting rows (inline list) */
+    .support-list {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 6px 16px;
+      margin-top: 12px;
+    }
+    .support-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .support-row:last-child { border-bottom: none; }
+    .support-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .support-body { flex: 1; min-width: 0; }
+    .support-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--foreground);
+      line-height: 1.25;
+    }
+    .support-desc {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      color: var(--muted-foreground);
+      line-height: 1.4;
+      margin-top: 2px;
+    }
+
+    /* Tab-bar — identical to Home */
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 8px 16px 8px;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .tab-icon { width: 24px; height: 24px; display: block; }
+    .tab.active { color: var(--primary); }
+    .tab.active .tab-icon { stroke: var(--primary); }
+    .tab:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    /* Page chrome */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px;
+      gap: 24px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .frames-row {
+      display: flex;
+      gap: 56px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .calib-ring-svg { animation: none; }
+      .calib-progress-fill { animation: none; width: 30%; }
+      .btn:active { transform: none; }
+    }
+  
+    /* === BASELINE MODAL (Screen 7) === */
+    .baseline-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 10, 9, 0.45);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      z-index: 50;
+      animation: overlay-fade-in 240ms ease-out both;
+    }
+    @keyframes overlay-fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .baseline-sheet {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      background: var(--card);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      padding: 14px 24px 28px 24px;
+      z-index: 60;
+      box-shadow: 0 -8px 32px -4px rgba(12, 10, 9, 0.25);
+      animation: sheet-slide-up 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes sheet-slide-up {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .baseline-sheet-handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border-strong);
+      margin: 0 auto 16px auto;
+    }
+    .baseline-sheet-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--muted);
+      color: var(--foreground);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .baseline-sheet-close:hover { background: #e8e2d4; }
+    .baseline-sheet-close:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .baseline-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .baseline-sheet-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      margin-bottom: 16px;
+    }
+    .baseline-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .baseline-body p {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.55;
+      color: var(--foreground);
+    }
+    .baseline-body p strong {
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .baseline-points {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 14px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+    .baseline-point {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.45;
+      color: var(--foreground);
+    }
+    .baseline-point-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      margin-top: 7px;
+      flex-shrink: 0;
+    }
+    .baseline-cta {
+      width: 100%;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.01em;
+      border: none;
+      cursor: pointer;
+      transition: background 140ms ease, transform 140ms ease-out;
+    }
+    .baseline-cta:hover { background: #6b1238; }
+    .baseline-cta:active { transform: scale(0.985); }
+    .baseline-cta:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 4px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .baseline-overlay, .baseline-sheet { animation: none !important; }
+    }
+
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Neiry Pulse · Mobile Onboarding 03 · Permission Notifications + Calibrating Day 1 · v0 · 390×844</div>
+
+    <div class="frames-row">
+
+      <!-- ============================================== -->
+      <!-- SCREEN 5 · PERMISSION · NOTIFICATIONS          -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 5</strong> · PERMISSION · NOTIFICATIONS</div>
+
+        <section class="device-frame" aria-label="Permission — запрос разрешения уведомлений">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar — onboarding progress 4 of 4 -->
+          <div class="app-bar-progress" role="progressbar" aria-label="Шаг 4 из 4 онбординга" aria-valuenow="4" aria-valuemin="1" aria-valuemax="4">
+            <span class="progress-dot active" aria-hidden="true"></span>
+            <span class="progress-dot active" aria-hidden="true"></span>
+            <span class="progress-dot active" aria-hidden="true"></span>
+            <span class="progress-dot active" aria-hidden="true"></span>
+          </div>
+
+          <!-- Body -->
+          <div class="permission-body">
+
+            <!-- Hero -->
+            <div class="perm-hero">
+              <div class="perm-icon" aria-hidden="true">
+                <!-- Bell glyph — outlined, consistent с notification-bell в Home app-bar.
+                     ViewBox shifted -2px vertically для оптического центрирования (bell тяжелее низом). -->
+                <svg width="42" height="42" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M30 25 H10 L12.5 22 V15.5 a7.5 7.5 0 0 1 15 0 V22 L30 25 z"/>
+                  <path d="M16.5 28.5 a3.5 3.5 0 0 0 7 0"/>
+                </svg>
+              </div>
+
+              <h1 class="perm-title">Будем на связи</h1>
+              <p class="perm-sub">
+                Уведомления помогут вовремя узнать о HRV-инсайтах и предупредить близких, если станет плохо.
+              </p>
+            </div>
+
+            <!-- Transparency checks -->
+            <div class="perm-checks" aria-label="Что мы шлём в уведомлениях">
+
+              <div class="perm-check-row">
+                <svg class="check-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3.5 9.5 L7 13 L14.5 5"/>
+                </svg>
+                <span class="perm-check-text">HRV-инсайт каждое утро</span>
+              </div>
+
+              <div class="perm-check-row">
+                <svg class="check-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3.5 9.5 L7 13 L14.5 5"/>
+                </svg>
+                <span class="perm-check-text">Напоминания о тренировке</span>
+              </div>
+
+              <div class="perm-check-row">
+                <svg class="check-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3.5 9.5 L7 13 L14.5 5"/>
+                </svg>
+                <span class="perm-check-text">Алерт при падении — отправим вашему опекуну</span>
+              </div>
+
+            </div>
+
+            <!-- Spacer pushes CTA to bottom -->
+            <div class="perm-spacer"></div>
+
+            <!-- CTAs + disclaimer -->
+            <div class="perm-cta-stack">
+              <button class="btn btn-primary" aria-label="Разрешить уведомления">Разрешить уведомления</button>
+              <button class="btn btn-text" aria-label="Не сейчас">Не сейчас</button>
+              <p class="perm-disclaimer">Изменить разрешение можно в Настройках iPhone</p>
+            </div>
+
+          </div>
+        </section>
+      </div>
+
+
+      <!-- ============================================== -->
+      <!-- SCREEN 6 · CALIBRATING · DAY 1                 -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 6</strong> · CALIBRATING</div>
+
+        <section class="device-frame" aria-label="Главный экран в режиме калибровки baseline — Day 1">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar (Home-style) — logo + bell (notifications enabled) + avatar -->
+          <div class="app-bar">
+            <div class="flex items-center gap-2">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="9.5" stroke="#831843" stroke-width="1.6"/>
+                <path d="M6 11 L9 8 L11 14 L13 9 L16 11" stroke="#831843" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+              <span style="font-family:'Space Grotesk'; font-weight:600; font-size:16px; letter-spacing:-0.01em;">Neiry Pulse</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button aria-label="Уведомления" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 14H4l1.5-1.8V8.5a4.5 4.5 0 0 1 9 0v3.7L16 14z"/><path d="M8 17a2 2 0 0 0 4 0"/></svg>
+              </button>
+              <button aria-label="Профиль" class="w-9 h-9 rounded-full bg-stone-200 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]" style="font-family:'Space Grotesk'; font-weight:600; font-size:13px; color:#57534e;">КЛ</button>
+            </div>
+          </div>
+
+          <!-- Feed -->
+          <div class="feed">
+
+            <!-- 1. Calibrating hero card (replaces HRV) -->
+            <article class="card card-warm calib-card mb-3" aria-labelledby="calib-title">
+              <div class="calib-hero-row">
+                <div class="calib-eyebrow">КАЛИБРОВКА</div>
+
+                <div class="calib-ring-wrap" aria-hidden="true">
+                  <svg class="calib-ring-svg" viewBox="0 0 100 100">
+                    <circle class="calib-ring-bg" cx="50" cy="50" r="46" pathLength="100"/>
+                    <circle class="calib-ring-fg" cx="50" cy="50" r="46" pathLength="100"/>
+                  </svg>
+                  <div class="calib-ring-core">
+                    <!-- Heart-rate wave glyph — same family as brand wave-knot -->
+                    <svg width="26" height="26" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M4 15 L9 15 L11 10 L14 20 L17 13 L19 16 L26 16"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <h2 id="calib-title" class="calib-title">Собираем ваш baseline</h2>
+                <p class="calib-sub">Первые HRV-инсайты появятся через 24–48 часов ношения</p>
+              </div>
+
+              <div class="calib-divider" aria-hidden="true"></div>
+
+              <div class="calib-status-rows" aria-label="Статус калибровки">
+                <div class="calib-status-row">
+                  <span class="calib-status-dot success" aria-hidden="true"></span>
+                  <span>Браслет подключён</span>
+                  <span class="label-muted">·</span>
+                  <span class="mono label-muted" style="font-size:12px;">батарея 87%</span>
+                </div>
+                <div class="calib-status-row">
+                  <span class="calib-status-dot primary" aria-hidden="true"></span>
+                  <span>Собрано</span>
+                  <span class="mono" style="font-size:12px;">14ч 32м</span>
+                  <span class="label-muted">из 48ч</span>
+                </div>
+              </div>
+
+              <div class="calib-progress-wrap" role="progressbar" aria-label="Прогресс калибровки 30 процентов" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">
+                <div class="calib-progress-track" aria-hidden="true">
+                  <div class="calib-progress-fill"></div>
+                </div>
+                <span class="calib-progress-pct">30%</span>
+              </div>
+
+              <a href="#" class="calib-learn-link">Что такое baseline?</a>
+            </article>
+
+            <!-- 2. Supporting rows — inline list (3 tips) -->
+            <div class="support-list" aria-label="Советы по носке во время калибровки">
+              <div class="support-row">
+                <div class="support-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="10" cy="10" r="6.5"/>
+                    <path d="M10 6 V10 L13 12"/>
+                  </svg>
+                </div>
+                <div class="support-body">
+                  <div class="support-title">Носите 24/7</div>
+                  <div class="support-desc">Браслет должен быть на руке всё время — включая сон</div>
+                </div>
+              </div>
+
+              <div class="support-row">
+                <div class="support-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 12.5A6.5 6.5 0 0 1 7.5 4a6.5 6.5 0 1 0 8.5 8.5z"/>
+                  </svg>
+                </div>
+                <div class="support-body">
+                  <div class="support-title">Спите с ним</div>
+                  <div class="support-desc">Ночное HRV — основа baseline, без него точность ниже</div>
+                </div>
+              </div>
+
+              <div class="support-row">
+                <div class="support-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="13" cy="4" r="1.8"/>
+                    <path d="M5 18l3-5 3 1 1-4 3 3-1 5"/>
+                    <path d="M8 10l3-3 3 3"/>
+                  </svg>
+                </div>
+                <div class="support-body">
+                  <div class="support-title">Не снимайте на тренировке</div>
+                  <div class="support-desc">Данные о нагрузке улучшают точность калибровки</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Sleep card placeholder — same demo data card as Home (consistency) -->
+            <article class="card mt-3" style="padding:12px 16px;" aria-labelledby="sleep-label-calib">
+              <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; margin-bottom:10px; background:var(--warning-soft); border:1px solid #f5d9a8; border-radius:8px;" role="note" aria-label="Демо-данные, реальный сон скоро">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#b45309" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;">
+                  <path d="M8 1.5 L14.5 13 L1.5 13 Z"/>
+                  <path d="M8 6 V9"/>
+                  <circle cx="8" cy="11" r="0.6" fill="#b45309"/>
+                </svg>
+                <span style="font-family:'Space Grotesk'; font-weight:600; font-size:14px; line-height:1.3; color:#b45309;">
+                  Demo data — real sleep tracking coming soon
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div style="width:36px; height:36px; border-radius:10px; background:var(--muted); display:flex; align-items:center; justify-content:center;">
+                    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#78716c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 12.5A6.5 6.5 0 0 1 7.5 4a6.5 6.5 0 1 0 8.5 8.5z"/></svg>
+                  </div>
+                  <div>
+                    <div id="sleep-label-calib" style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; color:var(--foreground);">Сон прошлой ночью</div>
+                    <div class="mt-0.5">
+                      <span class="mono" style="font-size:16px; font-weight:600;">7ч 42м</span>
+                      <span class="mono" style="font-size:11px; color:var(--muted-foreground); margin-left:8px;">22% / 15% / 63%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- Bottom tab-bar — unified format (Revision 1: HS added, retroactive) — Дом active -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab active" aria-current="page" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 11.5 L12 4 L21 11.5"/>
+                <path d="M5 10.5 V20 H19 V10.5"/>
+              </svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h10"/>
+              </svg>
+              История
+            </button>
+            <button class="tab" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="8" cy="9" r="3"/>
+                <path d="M2 19a6 6 0 0 1 12 0"/>
+                <circle cx="16" cy="7" r="2.5"/>
+                <path d="M13 13a4 4 0 0 1 7 3.5"/>
+              </svg>
+              Health Sharing
+            </button>
+            <button class="tab" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.6"/>
+                <circle cx="12" cy="12" r="1.6"/>
+                <circle cx="19" cy="12" r="1.6"/>
+              </svg>
+              Ещё
+            </button>
+          </nav>
+
+        </section>
+      </div>
+
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 7</strong> · BASELINE МОДАЛКА</div>
+
+        <section class="device-frame" aria-label="Калибровка с открытой модалкой Что такое baseline">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar (Home-style) — logo + bell (notifications enabled) + avatar -->
+          <div class="app-bar">
+            <div class="flex items-center gap-2">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="9.5" stroke="#831843" stroke-width="1.6"/>
+                <path d="M6 11 L9 8 L11 14 L13 9 L16 11" stroke="#831843" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+              <span style="font-family:'Space Grotesk'; font-weight:600; font-size:16px; letter-spacing:-0.01em;">Neiry Pulse</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button aria-label="Уведомления" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 14H4l1.5-1.8V8.5a4.5 4.5 0 0 1 9 0v3.7L16 14z"/><path d="M8 17a2 2 0 0 0 4 0"/></svg>
+              </button>
+              <button aria-label="Профиль" class="w-9 h-9 rounded-full bg-stone-200 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]" style="font-family:'Space Grotesk'; font-weight:600; font-size:13px; color:#57534e;">КЛ</button>
+            </div>
+          </div>
+
+          <!-- Feed -->
+          <div class="feed">
+
+            <!-- 1. Calibrating hero card (replaces HRV) -->
+            <article class="card card-warm calib-card mb-3" aria-labelledby="calib-title">
+              <div class="calib-hero-row">
+                <div class="calib-eyebrow">КАЛИБРОВКА</div>
+
+                <div class="calib-ring-wrap" aria-hidden="true">
+                  <svg class="calib-ring-svg" viewBox="0 0 100 100">
+                    <circle class="calib-ring-bg" cx="50" cy="50" r="46" pathLength="100"/>
+                    <circle class="calib-ring-fg" cx="50" cy="50" r="46" pathLength="100"/>
+                  </svg>
+                  <div class="calib-ring-core">
+                    <!-- Heart-rate wave glyph — same family as brand wave-knot -->
+                    <svg width="26" height="26" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M4 15 L9 15 L11 10 L14 20 L17 13 L19 16 L26 16"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <h2 id="calib-title" class="calib-title">Собираем ваш baseline</h2>
+                <p class="calib-sub">Первые HRV-инсайты появятся через 24–48 часов ношения</p>
+              </div>
+
+              <div class="calib-divider" aria-hidden="true"></div>
+
+              <div class="calib-status-rows" aria-label="Статус калибровки">
+                <div class="calib-status-row">
+                  <span class="calib-status-dot success" aria-hidden="true"></span>
+                  <span>Браслет подключён</span>
+                  <span class="label-muted">·</span>
+                  <span class="mono label-muted" style="font-size:12px;">батарея 87%</span>
+                </div>
+                <div class="calib-status-row">
+                  <span class="calib-status-dot primary" aria-hidden="true"></span>
+                  <span>Собрано</span>
+                  <span class="mono" style="font-size:12px;">14ч 32м</span>
+                  <span class="label-muted">из 48ч</span>
+                </div>
+              </div>
+
+              <div class="calib-progress-wrap" role="progressbar" aria-label="Прогресс калибровки 30 процентов" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">
+                <div class="calib-progress-track" aria-hidden="true">
+                  <div class="calib-progress-fill"></div>
+                </div>
+                <span class="calib-progress-pct">30%</span>
+              </div>
+
+              <a href="#" class="calib-learn-link">Что такое baseline?</a>
+            </article>
+
+            <!-- 2. Supporting rows — inline list (3 tips) -->
+            <div class="support-list" aria-label="Советы по носке во время калибровки">
+              <div class="support-row">
+                <div class="support-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="10" cy="10" r="6.5"/>
+                    <path d="M10 6 V10 L13 12"/>
+                  </svg>
+                </div>
+                <div class="support-body">
+                  <div class="support-title">Носите 24/7</div>
+                  <div class="support-desc">Браслет должен быть на руке всё время — включая сон</div>
+                </div>
+              </div>
+
+              <div class="support-row">
+                <div class="support-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 12.5A6.5 6.5 0 0 1 7.5 4a6.5 6.5 0 1 0 8.5 8.5z"/>
+                  </svg>
+                </div>
+                <div class="support-body">
+                  <div class="support-title">Спите с ним</div>
+                  <div class="support-desc">Ночное HRV — основа baseline, без него точность ниже</div>
+                </div>
+              </div>
+
+              <div class="support-row">
+                <div class="support-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="13" cy="4" r="1.8"/>
+                    <path d="M5 18l3-5 3 1 1-4 3 3-1 5"/>
+                    <path d="M8 10l3-3 3 3"/>
+                  </svg>
+                </div>
+                <div class="support-body">
+                  <div class="support-title">Не снимайте на тренировке</div>
+                  <div class="support-desc">Данные о нагрузке улучшают точность калибровки</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Sleep card placeholder — same demo data card as Home (consistency) -->
+            <article class="card mt-3" style="padding:12px 16px;" aria-labelledby="sleep-label-calib">
+              <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; margin-bottom:10px; background:var(--warning-soft); border:1px solid #f5d9a8; border-radius:8px;" role="note" aria-label="Демо-данные, реальный сон скоро">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#b45309" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;">
+                  <path d="M8 1.5 L14.5 13 L1.5 13 Z"/>
+                  <path d="M8 6 V9"/>
+                  <circle cx="8" cy="11" r="0.6" fill="#b45309"/>
+                </svg>
+                <span style="font-family:'Space Grotesk'; font-weight:600; font-size:14px; line-height:1.3; color:#b45309;">
+                  Demo data — real sleep tracking coming soon
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div style="width:36px; height:36px; border-radius:10px; background:var(--muted); display:flex; align-items:center; justify-content:center;">
+                    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#78716c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 12.5A6.5 6.5 0 0 1 7.5 4a6.5 6.5 0 1 0 8.5 8.5z"/></svg>
+                  </div>
+                  <div>
+                    <div id="sleep-label-calib" style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; color:var(--foreground);">Сон прошлой ночью</div>
+                    <div class="mt-0.5">
+                      <span class="mono" style="font-size:16px; font-weight:600;">7ч 42м</span>
+                      <span class="mono" style="font-size:11px; color:var(--muted-foreground); margin-left:8px;">22% / 15% / 63%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- Bottom tab-bar — unified format (Revision 1: HS added, retroactive) — Дом active -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab active" aria-current="page" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 11.5 L12 4 L21 11.5"/>
+                <path d="M5 10.5 V20 H19 V10.5"/>
+              </svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h10"/>
+              </svg>
+              История
+            </button>
+            <button class="tab" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="8" cy="9" r="3"/>
+                <path d="M2 19a6 6 0 0 1 12 0"/>
+                <circle cx="16" cy="7" r="2.5"/>
+                <path d="M13 13a4 4 0 0 1 7 3.5"/>
+              </svg>
+              Health Sharing
+            </button>
+            <button class="tab" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.6"/>
+                <circle cx="12" cy="12" r="1.6"/>
+                <circle cx="19" cy="12" r="1.6"/>
+              </svg>
+              Ещё
+            </button>
+          </nav>
+
+        
+
+          <!-- ============ OVERLAY + BOTTOM SHEET MODAL ============ -->
+          <div class="baseline-overlay" aria-hidden="true"></div>
+
+          <div class="baseline-sheet" role="dialog" aria-modal="true" aria-labelledby="baseline-modal-title">
+            <div class="baseline-sheet-handle" aria-hidden="true"></div>
+
+            <button class="baseline-sheet-close" aria-label="Закрыть">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <path d="M3 3 L11 11 M11 3 L3 11"/>
+              </svg>
+            </button>
+
+            <div class="baseline-eyebrow">КАК ЭТО РАБОТАЕТ</div>
+            <h3 id="baseline-modal-title" class="baseline-sheet-title">Что такое baseline?</h3>
+
+            <div class="baseline-body">
+              <p><strong>Baseline</strong> — ваш «нормальный» уровень HRV за обычные дни. Без него мы не знаем, +12% — это много для вас или просто шум.</p>
+              <p>Браслет 24–48 часов измеряет ваш пульс в покое и во сне. Из этих данных мы выводим вашу личную норму.</p>
+              <p>После калибровки приложение начинает показывать <strong>относительные дельты</strong> — «+15% к среднему», «−8% к неделе» и т.п.</p>
+            </div>
+
+            <div class="baseline-points">
+              <div class="baseline-point">
+                <span class="baseline-point-dot" aria-hidden="true"></span>
+                <span>Учитывает ваш возраст, ритм жизни и физическую форму</span>
+              </div>
+              <div class="baseline-point">
+                <span class="baseline-point-dot" aria-hidden="true"></span>
+                <span>Обновляется каждые 30 дней автоматически</span>
+              </div>
+              <div class="baseline-point">
+                <span class="baseline-point-dot" aria-hidden="true"></span>
+                <span>Никаких других пользователей — только ваши данные</span>
+              </div>
+            </div>
+
+            <button class="baseline-cta">Понятно</button>
+          </div>
+
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

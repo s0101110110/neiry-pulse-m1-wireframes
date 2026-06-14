@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Health Sharing · E2E 5 screens · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      /* shadcn light tokens + warm tint (Bevel-leaning) — copied 1:1 from mobile-home-f1-v0.html */
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;             /* Neiry wine — PROTECTED */
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;             /* alert-orange — NEW for Detail-view alert */
+      --warning-soft: #fdf3e1;
+      --warning-strong: #b45309;
+      --destructive: #b91c1c;
+      --beige-warm: #f5f2eb;
+      --beige-strong: #efe9da;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+    .hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+      line-height: 1;
+    }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame — 1:1 with mobile-home */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+    .status-bar-dark {
+      color: #ffffff;
+      background: transparent;
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 6;
+    }
+
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid transparent;
+    }
+    .app-bar-dark {
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(6px);
+      color: #ffffff;
+      position: absolute;
+      top: 44px; left: 0; right: 0;
+      z-index: 6;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .feed {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--background);
+      padding: 12px 16px 88px 16px;
+    }
+    .feed::-webkit-scrollbar { display: none; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .card-warm { background: var(--card-warm); }
+
+    .chip-success {
+      background: var(--success-soft);
+      color: #4d7c0f;
+      font-family: 'Geist Mono', monospace;
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .chip-warning {
+      background: var(--warning-soft);
+      color: var(--warning-strong);
+      font-family: 'Geist Mono', monospace;
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    .btn {
+      height: 48px;
+      border-radius: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 140ms ease-out, background 140ms ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+      width: 100%;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+    .btn-primary:hover { background: #6b1238; }
+    .btn-outline {
+      background: var(--card);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .btn-big {
+      height: 56px;
+      font-size: 16px;
+      border-radius: 14px;
+    }
+
+    /* Tab-bar */
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 8px 16px 8px;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .tab-icon { width: 24px; height: 24px; display: block; }
+    .tab.active { color: var(--primary); }
+    .tab.active .tab-icon { stroke: var(--primary); }
+
+    /* Avatar circle initials */
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+    }
+    .avatar-warning {
+      background: var(--warning-soft);
+      color: var(--warning-strong);
+    }
+    .avatar-success {
+      background: var(--success-soft);
+      color: #4d7c0f;
+    }
+    .avatar-lg {
+      width: 80px; height: 80px; font-size: 26px;
+    }
+    .avatar-sm {
+      width: 32px; height: 32px; font-size: 11px;
+    }
+
+    /* Status dot */
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 999px;
+      flex-shrink: 0;
+      display: inline-block;
+    }
+    .dot-success { background: var(--success); box-shadow: 0 0 0 3px var(--success-soft); }
+    .dot-warning { background: var(--warning); box-shadow: 0 0 0 3px var(--warning-soft); }
+    .dot-muted { background: #d4cfc0; }
+
+    /* Person row */
+    .person-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 120ms ease, transform 120ms ease;
+    }
+    .person-row:hover { background: var(--card-warm); }
+    .person-row:active { transform: scale(0.995); }
+
+    /* Sparkline */
+    .sparkline { width: 100%; height: 44px; display: block; }
+    .spark-line {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .spark-line-warning { stroke: var(--warning); }
+    .spark-area { fill: var(--primary); opacity: 0.08; }
+    .spark-area-warning { fill: var(--warning); opacity: 0.10; }
+    .spark-dot { fill: var(--primary); }
+    .spark-dot-warning { fill: var(--warning); }
+
+    /* Page chrome */
+    .page-chrome {
+      min-height: 100vh;
+      padding: 32px 24px 64px 24px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .page-sub {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.06em;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    /* Frames strip — horizontal scroll if not fit */
+    .frames-strip {
+      display: flex;
+      gap: 28px;
+      padding: 16px 8px 32px 8px;
+      overflow-x: auto;
+      align-items: flex-start;
+      justify-content: flex-start;
+      scroll-snap-type: x mandatory;
+    }
+    .frame-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      scroll-snap-align: start;
+      flex-shrink: 0;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      padding: 4px 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+      margin-right: 8px;
+    }
+
+    /* --- QR code mock (stylized 12×12) --- */
+    .qr-card {
+      width: 280px;
+      height: 280px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow:
+        0 1px 3px rgba(12,10,9,0.06),
+        0 8px 24px -8px rgba(12,10,9,0.10);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      position: relative;
+    }
+    .qr-grid {
+      width: 232px; height: 232px;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(12, 1fr);
+      gap: 2px;
+      position: relative;
+    }
+    .qr-cell {
+      background: #0c0a09;
+      border-radius: 2px;
+    }
+    .qr-cell.empty { background: transparent; }
+    .qr-finder {
+      position: absolute;
+      width: 56px; height: 56px;
+      border: 6px solid #0c0a09;
+      background: #ffffff;
+      border-radius: 6px;
+    }
+    .qr-finder::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      background: #0c0a09;
+      border-radius: 2px;
+    }
+    .qr-center-logo {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px; height: 44px;
+      background: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 6px #ffffff;
+    }
+
+    /* --- Camera-view mock --- */
+    .camera-view {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 25%, rgba(70,70,90,0.55) 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 75%, rgba(60,40,55,0.45) 0%, transparent 55%),
+        linear-gradient(180deg, #0a0a0d 0%, #14121a 50%, #0c0a10 100%);
+      overflow: hidden;
+    }
+    .camera-noise {
+      position: absolute;
+      inset: 0;
+      opacity: 0.18;
+      mix-blend-mode: overlay;
+      background-image:
+        radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1px),
+        radial-gradient(rgba(255,255,255,0.10) 1px, transparent 1px);
+      background-size: 3px 3px, 7px 7px;
+      background-position: 0 0, 1px 2px;
+    }
+    .camera-room-shapes {
+      position: absolute;
+      inset: 0;
+      opacity: 0.35;
+    }
+    .scan-target {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 240px; height: 240px;
+    }
+    .corner {
+      position: absolute;
+      width: 30px; height: 30px;
+      border: 4px solid var(--primary);
+    }
+    .corner.tl { top: 0; left: 0; border-right: none; border-bottom: none; border-top-left-radius: 4px; }
+    .corner.tr { top: 0; right: 0; border-left: none; border-bottom: none; border-top-right-radius: 4px; }
+    .corner.bl { bottom: 0; left: 0; border-right: none; border-top: none; border-bottom-left-radius: 4px; }
+    .corner.br { bottom: 0; right: 0; border-left: none; border-top: none; border-bottom-right-radius: 4px; }
+
+    .scan-target-glow {
+      position: absolute;
+      inset: -6px;
+      border-radius: 12px;
+      box-shadow: 0 0 0 1px rgba(131,24,67,0.35), 0 0 40px rgba(131,24,67,0.30);
+      pointer-events: none;
+    }
+
+    /* Success ✓ big circle */
+    .success-ring {
+      width: 96px; height: 96px;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      box-shadow:
+        0 0 0 10px var(--primary-soft),
+        0 12px 32px -8px rgba(131,24,67,0.40);
+    }
+
+    /* Toggle */
+    .toggle {
+      width: 40px; height: 24px;
+      border-radius: 999px;
+      background: var(--primary);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .toggle::after {
+      content: "";
+      position: absolute;
+      top: 3px; left: 19px;
+      width: 18px; height: 18px;
+      border-radius: 999px;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .toggle.off { background: #d4cfc0; }
+    .toggle.off::after { left: 3px; }
+
+    /* Permission row */
+    .perm-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+    }
+    .check-pill {
+      width: 20px; height: 20px;
+      border-radius: 6px;
+      background: var(--success);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Dark bottom panel for Scan QR */
+    .scan-bottom {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      background: rgba(10, 10, 14, 0.86);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      padding: 16px 20px 24px 20px;
+      color: #ffffff;
+      z-index: 5;
+    }
+
+    /* Detail-view chip "alert" */
+    .alert-banner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--warning-soft);
+      border: 1px solid #f5d9a8;
+      border-radius: 10px;
+      color: var(--warning-strong);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.01em;
+    }
+
+    /* HRV mini metric block (3-col row in Detail) */
+    .metric-cell {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      min-height: 64px;
+    }
+    .metric-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      margin-bottom: 4px;
+    }
+    .metric-val {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+      color: var(--foreground);
+      line-height: 1.1;
+    }
+    .metric-sub {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      color: var(--muted-foreground);
+      margin-top: 2px;
+    }
+
+    /* Alert feed row */
+    .alert-row {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      align-items: flex-start;
+    }
+    .alert-row + .alert-row { border-top: 1px dashed var(--border); }
+
+    /* Sub-screen scroll for screen 5 (long) */
+    .feed-detail { padding-bottom: 100px; }
+
+    /* Bottom-sheet (visualized at bottom of screen 1 for choice context — collapsed) — we keep visual hint via CTA only */
+
+    /* Section header */
+    .sect-h {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      padding: 16px 4px 8px 4px;
+    }
+
+    /* Hero hint card on Main */
+    .hint-card {
+      background: linear-gradient(180deg, #fdf2f8 0%, #faf8f3 100%);
+      border: 1px solid #f3d4e0;
+      border-radius: 14px;
+      padding: 14px 14px 14px 14px;
+    }
+
+    /* List of empty illustration */
+    .qr-empty-illustration {
+      width: 88px; height: 88px;
+      border-radius: 22px;
+      background: var(--primary-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
+    /* Timer chip */
+    .timer-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 999px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Manual call destructive link */
+    .text-destructive {
+      color: var(--destructive);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      background: none;
+      border: none;
+      padding: 12px 0;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Screen 4 wrap — full-screen modal style without tabbar */
+    .modal-feed {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--background);
+      padding: 24px 20px 32px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Neiry Pulse · Health Sharing v0 · E2E 5 screens · 390×844</div>
+    <div class="page-sub">M3 v2.6 · AC-1.10 · 2026-06-13</div>
+
+    <div class="frames-strip">
+
+      <!-- ============================================== -->
+      <!-- ЭКРАН 1 · MAIN — список добавленных людей       -->
+      <!-- ============================================== -->
+      <div class="frame-wrap">
+        <div class="frame-caption"><strong>ЭКРАН 1</strong>MAIN · список людей</div>
+
+        <section class="device-frame" aria-label="Health Sharing — Main">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar -->
+          <div class="app-bar">
+            <button aria-label="Назад" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l-6 6 6 6"/></svg>
+            </button>
+            <span style="font-family:'Space Grotesk'; font-weight:700; font-size:17px; letter-spacing:-0.01em;">Health Sharing</span>
+            <button aria-label="Что это" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M10 6v.01M10 9.5v4.5"/></svg>
+            </button>
+          </div>
+
+          <!-- Feed -->
+          <div class="feed">
+            <!-- Hero hint -->
+            <div class="hint-card mb-3">
+              <p style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; line-height:1.45; color:#5a1f3e;">
+                Делитесь HRV-данными с тренером, опекуном или близкими — безопасно через QR-код.
+              </p>
+            </div>
+
+            <!-- CTA -->
+            <button class="btn btn-primary btn-big" aria-label="Добавить человека">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="6" height="6" rx="1"/>
+                <rect x="11" y="3" width="6" height="6" rx="1"/>
+                <rect x="3" y="11" width="6" height="6" rx="1"/>
+                <path d="M13 11v6M11 14h6"/>
+              </svg>
+              Добавить человека
+            </button>
+
+            <!-- OUTGOING — Я делюсь данными с -->
+            <div class="sect-h">Я делюсь данными с</div>
+            <div class="person-row" aria-label="Иван П., тренер">
+              <div class="avatar">ИП</div>
+              <div class="flex-1 min-w-0">
+                <div style="font-family:'Space Grotesk'; font-weight:600; font-size:14px; color:var(--foreground);">Тренер Иван П.</div>
+                <div class="mono" style="font-size:10px; color:var(--muted-foreground); margin-top:2px;">С 03.06.2026 · 12 дней</div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="dot dot-success" aria-label="активно"></span>
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="#a8a29e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l5 5-5 5"/></svg>
+              </div>
+            </div>
+
+            <!-- INCOMING — Я вижу данные -->
+            <div class="sect-h">Я вижу данные</div>
+            <div class="person-row" aria-label="Мама, 67 лет, alert HRV">
+              <div class="avatar avatar-warning">МА</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <span style="font-family:'Space Grotesk'; font-weight:600; font-size:14px; color:var(--foreground);">Мама · 67 лет</span>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#d97706" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M8 1.5 L14.5 13 L1.5 13 Z"/>
+                    <path d="M8 6 V9"/>
+                    <circle cx="8" cy="11" r="0.6" fill="#d97706"/>
+                  </svg>
+                </div>
+                <div class="mono" style="font-size:11px; color:var(--warning-strong); margin-top:2px; font-weight:600;">
+                  HRV 38 ms · ↓ −5% сегодня
+                </div>
+                <div class="mono" style="font-size:9px; color:var(--muted-foreground); margin-top:1px;">12:42 последние данные</div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="dot dot-warning" aria-label="alert"></span>
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="#a8a29e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l5 5-5 5"/></svg>
+              </div>
+            </div>
+
+            <!-- Footer note -->
+            <p class="mono" style="font-size:9px; color:var(--muted-foreground); text-align:center; padding:20px 8px 0 8px; letter-spacing:0.04em;">
+              Доступ к данным можно отозвать в любой момент
+            </p>
+          </div>
+
+          <!-- Tab-bar — unified format (Revision 1: HS added, retroactive) — Health Sharing active -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+              История
+            </button>
+            <button class="tab active" aria-current="page" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="3"/><path d="M2 19a6 6 0 0 1 12 0"/><circle cx="16" cy="7" r="2.5"/><path d="M13 13a4 4 0 0 1 7 3.5"/></svg>
+              Health Sharing
+            </button>
+            <button class="tab" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- ЭКРАН 2 · GENERATE QR (юзер A)                 -->
+      <!-- ============================================== -->
+      <div class="frame-wrap">
+        <div class="frame-caption"><strong>ЭКРАН 2</strong>GENERATE QR · юзер A</div>
+
+        <section class="device-frame" aria-label="Health Sharing — Generate QR">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <div class="app-bar">
+            <button aria-label="Назад" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l-6 6 6 6"/></svg>
+            </button>
+            <span style="font-family:'Space Grotesk'; font-weight:700; font-size:17px; letter-spacing:-0.01em;">Поделиться данными</span>
+            <span class="w-9 h-9" aria-hidden="true"></span>
+          </div>
+
+          <div class="feed">
+            <!-- Hero -->
+            <div class="text-center mt-2 mb-4">
+              <h2 style="font-family:'Space Grotesk'; font-weight:600; font-size:20px; letter-spacing:-0.01em; line-height:1.25; color:var(--foreground);">
+                Покажите этот QR-код
+              </h2>
+              <p style="font-size:14px; line-height:1.4; color:var(--muted-foreground); margin:6px 16px 0 16px;">
+                Тренер или опекун отсканирует его в своём приложении
+              </p>
+            </div>
+
+            <!-- QR card -->
+            <div class="qr-card">
+              <div class="qr-grid" aria-label="QR-код для шеринга (мок)">
+                <!-- 12x12 stylized cells, generated pattern -->
+                <!-- Row 1 -->
+                <div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div>
+                <!-- Row 2 -->
+                <div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div>
+                <!-- Row 3 -->
+                <div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div>
+                <!-- Row 4 -->
+                <div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div>
+                <!-- Row 5 -->
+                <div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div>
+                <!-- Row 6 -->
+                <div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div>
+                <!-- Row 7 -->
+                <div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div>
+                <!-- Row 8 -->
+                <div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div>
+                <!-- Row 9 -->
+                <div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div>
+                <!-- Row 10 -->
+                <div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div>
+                <!-- Row 11 -->
+                <div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div>
+                <!-- Row 12 -->
+                <div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell empty"></div><div class="qr-cell"></div><div class="qr-cell empty"></div><div class="qr-cell"></div>
+
+                <!-- 3 finder squares (positional markers) -->
+                <div class="qr-finder" style="top:0; left:0;"></div>
+                <div class="qr-finder" style="top:0; right:0;"></div>
+                <div class="qr-finder" style="bottom:0; left:0;"></div>
+
+                <!-- Center logo: wine ❤ NEIRY -->
+                <div class="qr-center-logo" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <path d="M11 18s-6-3.8-6-8.2C5 7.1 7.1 5 9.7 5c1 0 2 .5 2.5 1.2C12.8 5.5 13.8 5 14.8 5 17.4 5 19.5 7.1 19.5 9.8c0 4.4-6 8.2-6 8.2H11z" fill="#ffffff" transform="translate(-1.5 -1)"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Timer + validity -->
+            <div class="flex flex-col items-center mt-3 gap-1">
+              <div class="timer-chip">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="6" r="5"/><path d="M6 3.5V6l1.8 1.5"/></svg>
+                <span>4:32 осталось</span>
+              </div>
+              <span class="mono" style="font-size:9px; color:var(--muted-foreground); letter-spacing:0.06em;">QR ДЕЙСТВИТЕЛЕН 5 МИНУТ</span>
+            </div>
+
+            <!-- Permission section -->
+            <div class="card mt-4 mb-3" style="padding:14px 16px;">
+              <div style="font-family:'Space Grotesk'; font-weight:600; font-size:13px; color:var(--foreground); margin-bottom:6px;">Что они увидят</div>
+              <div class="perm-row">
+                <span class="check-pill" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg>
+                </span>
+                <span style="font-size:13px; color:var(--foreground);">HRV (дельты день / неделя)</span>
+              </div>
+              <div class="perm-row">
+                <span class="check-pill" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg>
+                </span>
+                <span style="font-size:13px; color:var(--foreground);">Текущий пульс</span>
+              </div>
+              <div class="perm-row">
+                <span class="check-pill" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg>
+                </span>
+                <span style="font-size:13px; color:var(--foreground);">Уведомления о падении (alert)</span>
+              </div>
+              <p class="mono" style="font-size:9px; color:var(--muted-foreground); margin-top:6px; letter-spacing:0.04em;">
+                Доступ можно отозвать в любой момент
+              </p>
+            </div>
+
+            <!-- Secondary CTA -->
+            <button class="btn btn-outline" aria-label="Скопировать ссылку">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="8" height="8" rx="1.5"/>
+                <path d="M5.5 5.5h-1A1.5 1.5 0 0 0 3 7v6a1.5 1.5 0 0 0 1.5 1.5H10A1.5 1.5 0 0 0 11.5 13v-1"/>
+              </svg>
+              Скопировать ссылку
+            </button>
+            <p style="font-size:12px; color:var(--muted-foreground); text-align:center; margin-top:8px;">
+              или отправь ссылку через мессенджер
+            </p>
+          </div>
+
+          <!-- Tab-bar — unified format (Revision 1: HS added, retroactive) — Health Sharing active -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+              История
+            </button>
+            <button class="tab active" aria-current="page" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="3"/><path d="M2 19a6 6 0 0 1 12 0"/><circle cx="16" cy="7" r="2.5"/><path d="M13 13a4 4 0 0 1 7 3.5"/></svg>
+              Health Sharing
+            </button>
+            <button class="tab" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- ЭКРАН 3 · SCAN QR (юзер B, camera view)        -->
+      <!-- ============================================== -->
+      <div class="frame-wrap">
+        <div class="frame-caption"><strong>ЭКРАН 3</strong>SCAN QR · юзер B</div>
+
+        <section class="device-frame" aria-label="Health Sharing — Scan QR" style="background:#0a0a0d;">
+          <div class="device-notch" aria-hidden="true" style="z-index:30;"></div>
+
+          <!-- Camera view (background) -->
+          <div class="camera-view" aria-hidden="true">
+            <div class="camera-noise"></div>
+            <svg class="camera-room-shapes" viewBox="0 0 390 844" preserveAspectRatio="none" aria-hidden="true">
+              <!-- imitate dim furniture silhouettes -->
+              <rect x="30" y="120" width="120" height="180" rx="12" fill="#1c1a26" opacity="0.6"/>
+              <rect x="190" y="200" width="180" height="240" rx="14" fill="#15131c" opacity="0.7"/>
+              <ellipse cx="320" cy="120" rx="50" ry="30" fill="#1a1822" opacity="0.5"/>
+              <rect x="60" y="600" width="280" height="120" rx="20" fill="#11101a" opacity="0.6"/>
+            </svg>
+          </div>
+
+          <!-- Status bar over dark -->
+          <div class="status-bar status-bar-dark" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.6"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.5"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar dark overlay -->
+          <div class="app-bar app-bar-dark">
+            <button aria-label="Закрыть" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5l10 10M15 5l-10 10"/></svg>
+            </button>
+            <span style="font-family:'Space Grotesk'; font-weight:600; font-size:17px; color:#ffffff;">Сканировать QR</span>
+            <button aria-label="Помощь" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M10 6v.01M10 9.5v4.5"/></svg>
+            </button>
+          </div>
+
+          <!-- Scan target -->
+          <div class="scan-target" aria-label="Цель сканирования">
+            <div class="scan-target-glow" aria-hidden="true"></div>
+            <span class="corner tl"></span>
+            <span class="corner tr"></span>
+            <span class="corner bl"></span>
+            <span class="corner br"></span>
+          </div>
+
+          <!-- Hint text -->
+          <div style="position:absolute; left:0; right:0; top:60%; text-align:center; z-index:5;">
+            <p style="font-family:'Space Grotesk'; font-weight:500; font-size:15px; color:#ffffff; letter-spacing:0.01em;">
+              Наведите камеру на QR-код
+            </p>
+            <p class="mono" style="font-size:10px; color:rgba(255,255,255,0.6); letter-spacing:0.08em; margin-top:6px;">
+              ПОИСК…
+            </p>
+          </div>
+
+          <!-- Bottom dark panel -->
+          <div class="scan-bottom">
+            <div class="flex items-center justify-between" style="margin-bottom:14px;">
+              <div class="flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M10 2v3M10 15v3M3.5 10h-1.5M17.5 10h-1.5M5.3 5.3 L4.2 4.2M14.7 14.7 L15.8 15.8M5.3 14.7 L4.2 15.8M14.7 5.3 L15.8 4.2"/>
+                  <circle cx="10" cy="10" r="3.5"/>
+                </svg>
+                <span style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; color:#ffffff;">Фонарик</span>
+              </div>
+              <div class="toggle off" aria-label="фонарик выключен"></div>
+            </div>
+
+            <button class="btn" style="background:transparent; color:#ffffff; border-color:rgba(255,255,255,0.30); margin-bottom:8px;" aria-label="Загрузить из галереи">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2.5" y="3.5" width="15" height="13" rx="2"/>
+                <circle cx="7" cy="8" r="1.5"/>
+                <path d="M3 14l4-4 3 3 3-3 4 4"/>
+              </svg>
+              Загрузить из галереи
+            </button>
+
+            <button style="background:none; border:none; color:#ffffff; padding:10px 0; width:100%; font-family:'Space Grotesk'; font-weight:500; font-size:14px; cursor:pointer; opacity:0.85;" aria-label="Ввести код вручную">
+              Ввести код вручную
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- ЭКРАН 4 · CONNECTION SUCCESS                   -->
+      <!-- ============================================== -->
+      <div class="frame-wrap">
+        <div class="frame-caption"><strong>ЭКРАН 4</strong>CONNECTION SUCCESS</div>
+
+        <section class="device-frame" aria-label="Health Sharing — Connection Success">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- Modal-feed (no app-bar / no tab-bar — full success screen) -->
+          <div class="modal-feed">
+            <!-- Top close placeholder for symmetry -->
+            <div class="flex justify-end" style="margin-bottom:16px;">
+              <button aria-label="Закрыть" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#78716c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5l10 10M15 5l-10 10"/></svg>
+              </button>
+            </div>
+
+            <!-- Hero center -->
+            <div class="text-center" style="margin-top:24px;">
+              <div class="success-ring" aria-hidden="true">
+                <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 22 L19 29 L33 14"/>
+                </svg>
+              </div>
+              <h1 class="hero-num" style="font-size:32px; margin-top:24px; color:var(--foreground);">Готово!</h1>
+              <p style="font-family:'Space Grotesk'; font-weight:500; font-size:16px; line-height:1.4; color:var(--foreground); margin:8px 16px 0 16px;">
+                Вы добавлены к Тренеру Ивану П.
+              </p>
+              <p style="font-size:13px; line-height:1.45; color:var(--muted-foreground); margin:8px 24px 0 24px;">
+                Иван увидит ваш HRV, пульс и уведомления при падении
+              </p>
+            </div>
+
+            <!-- Avatar showcase -->
+            <div class="card-warm card text-center" style="margin:28px 0 24px 0; padding:20px 16px;">
+              <div class="avatar avatar-lg" style="margin:0 auto 12px auto;">ИП</div>
+              <div style="font-family:'Space Grotesk'; font-weight:600; font-size:18px; color:var(--foreground);">Иван П.</div>
+              <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:4px; letter-spacing:0.04em;">
+                ТРЕНЕР · С 13.06.2026
+              </div>
+            </div>
+
+            <!-- Spacer -->
+            <div style="flex:1;"></div>
+
+            <!-- CTA -->
+            <button class="btn btn-primary btn-big" aria-label="Готово">Готово</button>
+            <button style="background:none; border:none; color:var(--primary); padding:14px 0; width:100%; font-family:'Space Grotesk'; font-weight:600; font-size:14px; cursor:pointer;" aria-label="Добавить ещё одного">
+              Добавить ещё одного человека
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- ЭКРАН 5 · DETAIL-VIEW PERSON (Мама alert)      -->
+      <!-- ============================================== -->
+      <div class="frame-wrap">
+        <div class="frame-caption"><strong>ЭКРАН 5</strong>DETAIL · Мама · alert</div>
+
+        <section class="device-frame" aria-label="Health Sharing — Detail Person">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar with avatar + name -->
+          <div class="app-bar">
+            <button aria-label="Назад" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l-6 6 6 6"/></svg>
+            </button>
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-sm avatar-warning">МА</div>
+              <span style="font-family:'Space Grotesk'; font-weight:700; font-size:15px; letter-spacing:-0.01em;">Мама · 67 лет</span>
+            </div>
+            <button aria-label="Меню" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="10" cy="5" r="1.5"/><circle cx="10" cy="10" r="1.5"/><circle cx="10" cy="15" r="1.5"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Feed (long, scrollable) -->
+          <div class="feed feed-detail">
+
+            <!-- Hero status card — alert orange HRV -->
+            <article class="card mb-3" style="padding:18px; border-color:#f5d9a8; background:#fffcf6;">
+              <div class="flex items-center justify-between">
+                <span class="eyebrow">HRV сейчас</span>
+                <span class="chip-success" aria-label="активно сейчас">
+                  <span class="dot dot-success" style="width:6px; height:6px; box-shadow:none;"></span>
+                  Сейчас активна
+                </span>
+              </div>
+              <div class="flex items-baseline gap-3 mt-2">
+                <span class="hero-num" style="font-size:48px; color:var(--warning);">38</span>
+                <span class="mono" style="font-size:14px; color:var(--warning-strong); font-weight:600;">ms</span>
+              </div>
+              <div class="mono mt-1" style="font-size:11px; color:var(--warning-strong); font-weight:600;">
+                ↓ −5% к вчера &nbsp;·&nbsp; ↓ −12% к неделе
+              </div>
+              <div class="alert-banner mt-3">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M8 1.5 L14.5 13 L1.5 13 Z"/>
+                  <path d="M8 6 V9"/>
+                  <circle cx="8" cy="11" r="0.6" fill="currentColor"/>
+                </svg>
+                <span>Состояние ухудшилось — рекомендуем связаться</span>
+              </div>
+            </article>
+
+            <!-- 3-col metrics -->
+            <div class="grid grid-cols-3 gap-2 mb-3">
+              <div class="metric-cell">
+                <div class="metric-label">Пульс</div>
+                <div class="metric-val num">78</div>
+                <div class="metric-sub">bpm · сейчас</div>
+              </div>
+              <div class="metric-cell">
+                <div class="metric-label">Шаги</div>
+                <div class="metric-val num">3,420</div>
+                <div class="metric-sub">за сегодня</div>
+              </div>
+              <div class="metric-cell">
+                <div class="metric-label">Активность</div>
+                <div class="metric-val num" style="font-size:16px;">12:42</div>
+                <div class="metric-sub">последняя</div>
+              </div>
+            </div>
+
+            <!-- Sparkline 7d HRV -->
+            <article class="card mb-3">
+              <div class="flex items-center justify-between">
+                <span class="eyebrow">HRV · 7 дней</span>
+                <span class="mono" style="font-size:10px; color:var(--warning-strong); font-weight:600;">тренд ↓</span>
+              </div>
+              <svg class="sparkline mt-2" viewBox="0 0 320 44" preserveAspectRatio="none">
+                <path class="spark-area spark-area-warning"
+                      pathLength="100"
+                      d="M0,8 L46,12 L92,10 L137,18 L183,20 L228,28 L274,30 L320,34 L320,44 L0,44 Z"/>
+                <path class="spark-line spark-line-warning"
+                      pathLength="100"
+                      d="M0,8 L46,12 L92,10 L137,18 L183,20 L228,28 L274,30 L320,34"/>
+                <circle class="spark-dot spark-dot-warning" cx="320" cy="34" r="3"/>
+              </svg>
+              <div class="flex items-center justify-between mt-1">
+                <span class="mono" style="font-size:9px; color:var(--muted-foreground); letter-spacing:0.06em;">СРЕДНИЙ 41 ms</span>
+                <span class="mono" style="font-size:9px; color:var(--warning-strong); font-weight:600;">↓ −8%</span>
+              </div>
+            </article>
+
+            <!-- Alerts feed -->
+            <article class="card mb-3" style="padding:14px 16px;">
+              <div style="font-family:'Space Grotesk'; font-weight:600; font-size:13px; color:var(--foreground); margin-bottom:8px;">
+                Уведомления
+              </div>
+              <div class="alert-row">
+                <span class="mono" style="font-size:10px; color:var(--muted-foreground); width:36px; flex-shrink:0; padding-top:2px;">12:42</span>
+                <span class="dot dot-warning" style="margin-top:6px;"></span>
+                <div style="font-size:12px; line-height:1.4; color:var(--foreground); flex:1;">
+                  <span style="font-weight:600;">Возможное падение</span>
+                  <span class="mono" style="font-size:9px; color:var(--success); margin-left:6px; letter-spacing:0.06em; font-weight:600;">RESOLVED</span>
+                </div>
+              </div>
+              <div class="alert-row">
+                <span class="mono" style="font-size:10px; color:var(--muted-foreground); width:36px; flex-shrink:0; padding-top:2px;">09:15</span>
+                <span class="dot dot-success" style="margin-top:6px;"></span>
+                <div style="font-size:12px; line-height:1.4; color:var(--foreground); flex:1;">
+                  Утренняя активность — 1,200 шагов
+                </div>
+              </div>
+              <div class="alert-row">
+                <span class="mono" style="font-size:10px; color:var(--muted-foreground); width:36px; flex-shrink:0; padding-top:2px;">03:30</span>
+                <span class="dot dot-warning" style="margin-top:6px;"></span>
+                <div style="font-size:12px; line-height:1.4; color:var(--foreground); flex:1;">
+                  Пик стресса HRV — ночь
+                </div>
+              </div>
+            </article>
+
+            <!-- Permissions / settings -->
+            <div class="sect-h" style="padding-left:4px;">Разрешения</div>
+            <article class="card mb-3" style="padding:8px 16px;">
+              <div class="flex items-center justify-between" style="padding:10px 0; border-bottom:1px solid var(--border);">
+                <span style="font-size:13px; color:var(--foreground); font-family:'Space Grotesk'; font-weight:500;">HRV-данные</span>
+                <div class="toggle" aria-label="включено"></div>
+              </div>
+              <div class="flex items-center justify-between" style="padding:10px 0; border-bottom:1px solid var(--border);">
+                <span style="font-size:13px; color:var(--foreground); font-family:'Space Grotesk'; font-weight:500;">Уведомления о падении</span>
+                <div class="toggle" aria-label="включено"></div>
+              </div>
+              <div class="flex items-center justify-between" style="padding:10px 0;">
+                <span style="font-size:13px; color:var(--foreground); font-family:'Space Grotesk'; font-weight:500;">Push-уведомления</span>
+                <div class="toggle" aria-label="включено"></div>
+              </div>
+            </article>
+
+            <!-- Call CTA + destructive -->
+            <button class="btn btn-outline" aria-label="Позвонить">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 3.5C3 8.7 7.3 13 12.5 13c.4 0 .8 0 1.2-.1l-1.7-2.2a1 1 0 0 0-1.2-.3l-1.5.6c-1.3-.7-2.4-1.8-3.1-3.1l.6-1.5a1 1 0 0 0-.3-1.2L4.1 2.3C4 2.7 4 3.1 4 3.5z"/>
+              </svg>
+              Позвонить
+            </button>
+            <button class="text-destructive" aria-label="Отозвать доступ">Отозвать доступ</button>
+          </div>
+
+          <!-- Tab-bar — unified format (Revision 1: HS added, retroactive) — Health Sharing active -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+              История
+            </button>
+            <button class="tab active" aria-current="page" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="3"/><path d="M2 19a6 6 0 0 1 12 0"/><circle cx="16" cy="7" r="2.5"/><path d="M13 13a4 4 0 0 1 7 3.5"/></svg>
+              Health Sharing
+            </button>
+            <button class="tab" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>
