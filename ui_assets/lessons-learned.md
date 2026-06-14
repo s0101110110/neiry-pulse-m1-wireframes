@@ -245,6 +245,31 @@ Retroactive cleanup НЕ опционален — каждая inconsistency в 
 
 В этой итерации обновлён `mobile-home-f1-v0.html` (последний файл без HS-tab). Остальные Ф1 mobile файлы уже унифицированы.
 
+## 2026-06-15 — Alert-banner stacking pattern: stale-data state требует cascade muted
+
+Проблема: при BT-disconnect banner естественно muted'ить только HRV-card (метрика «о которой banner»), а Шаги/Сон оставить foreground. Это логически неверно — шагомер тоже на браслете, значит при disconnect все live-метрики с браслета заморожены. Sleep — единственный «исторический» виджет (вчерашняя ночь, уже синхронизировано).
+
+**Правило для stale-state cascade на disconnect-banner экранах:**
+1. **Выявить источник live-данных каждого виджета** — что приходит с браслета прямо сейчас (HRV, Шаги, Heart Rate, Activity Zones), что уже синхронизировано как история (Sleep прошлой ночи, последние workouts).
+2. **Все live-source виджеты идут в `is-stale`** state: muted value (`var(--border-strong)` weight 500), muted progress bar, sub-метка «до HH:MM» в alert-orange-strong (`#b45309`), card-bg warm (`var(--card-warm)`).
+3. **Исторические виджеты остаются foreground** — Sleep вчерашней ночи валидно даже если браслет ушёл сейчас.
+4. **Stale-marker (clock 16px top-right)** — только на head-метрике, к которой банер референяит. На остальных stale-cards достаточно muted-value + warm-bg. Два clock-маркера = visual clutter.
+5. **Stale-strip над cards** (orange dot + uppercase mono «ПОСЛЕДНИЕ ДАННЫЕ · 9:48 (2 МИН НАЗАД)») — explicit timestamp boundary между «alive» и «frozen» зоной feed.
+
+Иначе пользователь видит «HRV сломан, остальное норм» — а в реальности всё, что live с браслета, заморожено. Frosen-data UX-cue должен быть консистентным.
+
+## 2026-06-15 — Snooze pattern для charging-low: «Напомнить через N ч» вместо dismiss
+
+Проблема: на charging-low warning естественно дать secondary CTA «Скрыть» / «Понятно». Это permanent dismiss — banner исчезает, пользователь забыл, ночью браслет разрядился, утром нет HRV → upset.
+
+**Правило для non-critical reminder banners (charging-low, app-update available, sync-pending):**
+1. Primary CTA — actionable («Как зарядить?» / «Обновить» / «Синхронизировать»).
+2. Secondary CTA — `snooze` с конкретным интервалом («Напомнить через 1 ч»), НЕ permanent dismiss («Скрыть» / «Игнорировать»).
+3. Время snooze — context-aware: для charging «1 ч» = мягко, для critical «15 мин» = настойчиво.
+4. Permanent dismiss разрешён ТОЛЬКО для информационных banners (notifications-onboarding-tip), где non-action consequence близка к нулю.
+
+UX-следствие: snooze сохраняет состояние «надо что-то сделать» в сознании пользователя без раздражения. Permanent dismiss = «я обещаю не показать опять» — продукт не должен давать такого обещания для metric-affecting состояний.
+
 ## 2026-06-14 (Revision 2 hotfix) — Header = single source of truth между empty и loaded variants
 
 Проблема: при создании empty-state экрана `mobile-onboarding-05-empty-states-v0.html` я **пересоздал app-bar markup с нуля**, копируя только видимую часть DOM из `mobile-home-f1-v0.html` (logo SVG + button'ы), НО **забыл подключить `<script src="https://cdn.tailwindcss.com"></script>`** в `<head>`. Markup app-bar использует Tailwind-классы (`flex items-center gap-2`, `w-9 h-9`, `rounded-full`, `bg-stone-200`, `hover:bg-stone-100`) — без runtime'а они мёртвые. Результат: logo не центровался вертикально (flexbox не работал), icon-buttons выглядели как «коробки с border» (нет round + размер + bg). PM это поймал на финальном ревью A5.
