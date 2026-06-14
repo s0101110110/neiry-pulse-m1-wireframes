@@ -1,181 +1,157 @@
-# BRIEF: Corner cases B1 — BT-disconnect + Charging-low banners · Neiry Pulse Ф1.5
+# BRIEF: Corner cases B2 — Permission denied recovery (Camera + Location) · Neiry Pulse Ф1.5
 
 **Дата:** 2026-06-14
 **Заказчик:** PM (Костя)
-**Контекст:** Онбординг A1-A5 закрыт и закоммичен (`59d4718`). Сейчас **порция B1 (1 из 5-7) Ф1.5 corner cases:** **BT-disconnect banner** (браслет отключился) + **Charging-low banner** (заряд браслета ≤15%). Оба — глобальные banner-паттерны поверх Home, переиспользуются на других экранах.
+**Контекст:** B1 (BT-disconnect + Charging-low) принят и закоммичен (`f3c1024`). Сейчас **порция B2 (2 из 5-7) Ф1.5 corner cases:** **Camera permission denied** (HS Scan QR) + **Location permission denied** (Training Start). Оба MUST Ф1 — без них юзер в пилотах 22.06 застревает после системного prompt'а.
 
-**Цель:** закрыть **C-16 (BT disabled / disconnect)** и **battery-low warnings** из аудита 14.06 §3 — оба MUST Ф1. Без них в пилотах 22.06 пользователь не понимает почему виджеты «замерли» / куда делись данные.
+**Цель:** закрыть **C-14 (Camera denied при Scan QR)** и **C-15 (Location denied при Training Start)** из аудита 14.06 §4.3 — оба MUST Ф1. Pattern: «системный prompt отказан → юзер видит explainer-экран с объяснением зачем + CTA «Открыть Настройки»».
 
 **Целевой файл (создать):**
-- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-bt-disconnect-charging-low-v0.html`
+- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-permission-denied-v0.html`
 
 ---
 
 ## Источники правды
 
-- **Аудит §3 C-16:** «Bluetooth disabled на телефоне — Home / Onboarding / Settings — MUST Ф1»
-- **Аудит §2.5 finding 4:** «Все banner-states (sync-failed, BT-disconnect, charging-low) отсутствуют — без них юзер видит «замершие» данные и не понимает что происходит»
-- **PRD v2.6 §8 AC-1.2:** «Home показывает baseline status (готов / собираем / не готов) на первом экране»
+- **Аудит §4.3 C-14:** «Camera permission denied при Scan QR — HS Scan QR — MUST Ф1»
+- **Аудит §4.3 C-15:** «Location permission denied при Training Start — Training-Start Step 2 — MUST Ф1»
+- **Аудит §2 finding 4:** «Permission-флоу не показан ни на одном экране. На pilots 22.06 половина юзеров натыкается на permission denied → нужны explainer-экраны»
+- **Аудит §3.4:** «Permission denied (location) — banner «Для GPS нужен доступ к локации. Открыть Настройки»»
 - **Память `feedback_neiry_mockup_format`:** transparent PNG (alpha=0 углы)
-- **Light Bevel-tone palette** + wine #831843 brand
-- **Alert hierarchy** (из A4 Fall detection): destructive red `#b91c1c` для critical, alert-orange `#d97706` для warning, wine `#831843` для primary action
+- **PM role boundary** + lessons-learned (header canonical, box-sizing, slicing-script deprecated)
 
 ---
 
 ## Структура HTML (2 device-frames рядом)
 
 Caption:
-- Слева: «**ЭКРАН 12** · HOME · BT-DISCONNECT BANNER»
-- Справа: «**ЭКРАН 13** · HOME · CHARGING-LOW BANNER»
+- Слева: «**ЭКРАН 14** · HS SCAN QR · CAMERA DENIED»
+- Справа: «**ЭКРАН 15** · TRAINING START · LOCATION DENIED»
 
 ---
 
-## Phone 1 · Home с BT-disconnect banner (браслет отключился)
+## Phone 1 · HS Scan QR с Camera permission denied
 
-**Назначение:** пользователь открывает Home, видит что **браслет отключён** (Bluetooth disabled или out of range, или браслет разряжен и выключился). Виджеты «замирают» на последних данных. Поверх Home — **sticky-top banner** alert-orange с CTA «Переподключить».
+**Назначение:** юзер на экране Scan QR в Health Sharing flow. Тапнул «Разрешить доступ к камере» в системном prompt'е → **отказал**. Видит explainer-экран: «Камера недоступна. Чтобы добавить опекаемого, разреши доступ в Настройках».
 
-**Контекст:** light Bevel-tone Home. Берём layout как в `mobile-home-f1-v0.html`, но:
-- Виджеты показывают **last-known values** с timestamp («последние данные: 2 мин назад»)
-- Над виджетами — **sticky alert-banner**
-- Tab-bar не меняется (Дом active)
+**Контекст:** Light Bevel экран Scan QR из `mobile-health-sharing-v0.html` (есть scanner frame с пунктирной рамкой и подсказкой) — но **вместо камеры-preview** показан empty-state «no camera access» + explainer.
 
 **Структура (сверху вниз):**
 
 ### Status bar + App-bar
-Тот же что в Home f1 (canonical header).
+- Status bar (light, 9:50)
+- App-bar: back-chevron «‹» + title «Сканировать QR» (centered) + (нет других элементов)
 
-### Sticky alert-banner (сверху, под app-bar, full-width)
-- Background: `#fdf3e1` (alert-soft warm)
-- Border-left: 4px `#d97706` (alert-orange)
-- Padding 12-16px
-- Top row:
-  - **Alert-icon SVG** (warning triangle, alert-orange `#d97706`)
-  - Eyebrow (mono uppercase 11pt alert-orange): `БРАСЛЕТ ОТКЛЮЧЁН`
-  - Right: timestamp `2 мин назад` (mono 11pt muted)
-- Title (Onest 700, 16-18pt foreground): «Не вижу ваш браслет»
-- Sub (Space Grotesk 13pt foreground, 2 строки max):
-  «Возможно, вышли из зоны Bluetooth или браслет разрядился. Данные временно не обновляются.»
-- Actions row (2 buttons inline):
-  - **«Переподключить»** — primary wine button (small, ~36pt high, padding 12 16)
-  - **«Что делать?»** — text-link wine secondary
+### Hero block — Permission explainer (centered, занимает большую часть экрана)
+- **SVG icon** (НЕ stock, НЕ emoji):
+  - Camera-icon (большой, ~80×80px, muted-grey stroke 2px) с диагональной линией перечёркивания alert-orange сверху — символ «камера отключена»
+  - ИЛИ простая «📷» в SVG outline + ⊘ overlay alert-orange
+  - Цвета: muted-grey base + alert-orange accent
+- Eyebrow (mono uppercase 11pt alert-orange): `КАМЕРА · ДОСТУП ОТКЛЮЧЁН`
+- Title (Onest 700, 22-24pt foreground): «Нужен доступ к камере»
+- Sub (Space Grotesk 15pt foreground, line-height 1.5, max 3 строки):
+  «Чтобы добавить опекаемого через QR-код, разреши Neiry Pulse использовать камеру. Это происходит только при сканировании.»
 
-### Stale data row (после banner — намёк что данные старые)
-- Subtle horizontal text-strip: `ПОСЛЕДНИЕ ДАННЫЕ · 9:48 (2 МИН НАЗАД)` (mono uppercase 10pt muted-foreground)
-- Над stats — небольшой пояснительный текст
+### Info-bullets (2 строки, мягкий tone)
+- ✓ icon (wine SVG check) «Камера используется только во время сканирования»
+- ✓ icon «Никаких фото/видео не сохраняется»
 
-### Stats widgets (3 stacked, как в Home f1 / A5 empty stacked-cards)
-- **HRV widget:** Value `58 ms` (tabular-nums, **muted** color — «замороженное» значение) + sub «последний замер 9:48»
-- **Шаги widget:** Value `3 420` (mono tabular-nums, foreground) + sub `3 420 / 6 000` + mini-bar 57% wine
-- **Сон widget:** Value `6 ч 42 мин` + sub «прошлой ночью»
-- На HRV — subtle visual indicator что данные «заморожены» (например, тонкий border alert-orange или иконка часов справа)
+### Primary CTA wine button (full-width, 48-52pt)
+- Label: «Открыть Настройки»
+- Wine primary, white text
+- На тап (в реальности) → системные Settings; в wireframe просто button styled
 
-### Тренировки / Health Sharing sections
-Скрыть/упростить — это не главное на этом экране (focus = banner).
+### Secondary text-link
+- «Ввести код вручную» (wine text-link, 14pt) → fallback path к Manual code entry (есть в HS flow)
 
 ### Tab-bar
-Дом active wine / История / Health Sharing / Ещё (canonical)
+Дом / История / Health Sharing (active wine) / Ещё (canonical)
 
 ---
 
-## Phone 2 · Home с Charging-low banner (заряд браслета ≤15%)
+## Phone 2 · Training Start Step 2 с Location permission denied
 
-**Назначение:** браслет подключён и работает, но заряд **≤15%** — скоро разрядится. Показать **soft warning banner** с CTA «Как зарядить?» / «Напомнить позже». Виджеты НЕ замирают (данные актуальны).
+**Назначение:** юзер на Training Start, выбрал «Бег» (Step 1), перешёл на Step 2 «Запустить тренировку» → системный prompt запрос Location → **отказал**. Видит **banner поверх Step 2** «Для GPS нужен доступ к локации» + CTA «Открыть Настройки», и тренировка может стартовать БЕЗ GPS (indoor mode).
 
-**Контекст:** light Bevel-tone Home, всё работает, но warning сверху.
+**Контекст:** Light Bevel Training Start Step 2 (берём layout из `mobile-training-start-v0.html` Step 2). Активность «Бег» выбрана. Сверху — sticky alert-banner.
 
 **Структура (сверху вниз):**
 
 ### Status bar + App-bar
-Canonical header.
+- Status bar 9:50
+- App-bar: back-chevron «‹» + title «Бег» (selected activity) + close-icon «×»
 
-### Sticky charging-low banner
-- Background: `#fdf3e1` (alert-soft warm, тот же что BT-disconnect для consistency)
+### Sticky permission banner (сверху, под app-bar)
+- Background: `#fdf3e1` (alert-soft warm — consistency с B1)
 - Border-left: 4px `#d97706` (alert-orange)
 - Padding 12-16px
 - Top row:
-  - **Battery-low icon SVG** (battery с маленькой полоской, alert-orange)
-  - Eyebrow (mono uppercase 11pt alert-orange): `ЗАРЯД БРАСЛЕТА · 12%`
-  - Right: visual mini-battery indicator (SVG, ~24×12px, 12% fill alert-orange)
-- Title (Onest 700, 16-18pt foreground): «Браслет скоро разрядится»
-- Sub (Space Grotesk 13pt foreground, 2 строки):
-  «Заряда хватит примерно на 4 часа. Поставьте на зарядку, чтобы не пропустить ночное измерение HRV.»
+  - **Location-pin-off SVG icon** (alert-orange, ~20×20)
+  - Eyebrow (mono uppercase 11pt alert-orange): `GPS · ДОСТУП ОТКЛЮЧЁН`
+- Title (Onest 700, 15-16pt foreground): «Для маршрута нужен GPS»
+- Sub (13pt foreground, 2 строки):
+  «Без GPS тренировка запишется, но без маршрута на карте и точной дистанции.»
 - Actions row (2 buttons inline):
-  - **«Как зарядить?»** — primary wine button (small)
-  - **«Напомнить через 1 ч»** — text-link wine secondary
+  - **«Открыть Настройки»** — primary wine button (small, ~36pt)
+  - **«Тренироваться без GPS»** — text-link wine secondary (fallback, indoor-mode тренировка)
 
-### Stats widgets (3 stacked, **полностью работают**, не заморожены)
-- **HRV widget:** Value `52 ms` (tabular-nums, foreground) + sub «обновлено сейчас» + heartbeat-volna icon
-- **Шаги widget:** Value `4 856` / `6 000` + mini-bar 81%
-- **Сон widget:** `6 ч 42 мин` + sub «прошлой ночью»
+### Существующий Training Start Step 2 контент (под banner)
+- Status row: «Браслет: подключён ✓» (success-green dot)
+- Status row: «GPS: ⊘ отключён» (muted-grey + ⊘ icon alert-orange) — НОВОЕ visualHints для permission denied
+- Goal section: «Цель — не задана» + chevron (collapsed, не expanded)
+- Big CTA wine primary: «СТАРТ» (full-width, ~52pt high)
+  - Note: CTA остаётся active — юзер может начать тренировку без GPS (fallback to indoor-mode)
 
-### Тренировки / Health Sharing sections
-Полноценные (как в Home f1), но visualHints не критичны.
-
-### Tab-bar
-Canonical (Дом active).
+### **БЕЗ tab-bar** (это modal/flow screen, не Home)
 
 ---
 
 ## Дизайн-принципы
 
 - **Light Bevel-tone** для обоих экранов
-- **Alert-orange `#d97706`** для warning banner accents (НЕ destructive red — это warning, не critical)
-- **Alert-soft `#fdf3e1`** для banner bg (warm tint, не яркий)
-- **Wine #831843** для primary action buttons («Переподключить», «Как зарядить?»)
-- **Stale data state на Phone 1**: HRV value muted color, subtle alert-orange border-left или icon-часов на widget — visual cue что данные «заморожены»
-- **Charging-low на Phone 2**: данные актуальные, но banner предупреждает
+- **Alert-orange `#d97706`** для warning accents (не destructive — это recoverable warning)
+- **Alert-soft `#fdf3e1`** для banner bg (Phone 2)
+- **Wine #831843** для primary CTA («Открыть Настройки»)
+- **Muted-grey** для disabled visualHints («GPS: ⊘ отключён»)
+- **Phone 1 illustration** — central SVG icon с ⊘-overlay, симметрично centered, ~80px size
+- **Phone 2 banner** — same pattern что в B1 (alert-orange border-left + alert-soft bg)
 - **Шрифты:** Space Grotesk UI / Onest 700 hero / Geist Mono labels & numbers
 - **Pixel grid 4px**
-- **tabular-nums** на цифрах (58 ms, 3 420, 12%, 4 ч)
-- **SVG icons** (НЕ emoji) — warning triangle, battery, clock
-- **Header** — обязательно canonical из Home f1 (logo центрован, icon-buttons clean) — **НЕ повторяй баг A5 revision 1**
-- **Tab-bar** — canonical (Дом / История / Health Sharing / Ещё)
-- **Box-sizing: border-box** обязательно глобально (`*, *::before, *::after { box-sizing: border-box; }`) — урок из A5 revision 2
+- **SVG icons** (НЕ emoji)
+- **Header canonical** на Phone 1: back-chevron + title-bar — заимствуй pattern из других модальных экранов (HS Scan QR / Onboarding)
+- **Box-sizing: border-box** обязательно глобально (`*, *::before, *::after`)
+- **Tailwind CDN** должен присутствовать если используются Tailwind-классы в header
 
 ---
 
-## Skills из PLAYBOOK
+## Skills
 
-1. Draft v0
-2. `impeccable critique` — anti-slop (не overdramatize warning, не двойные icons, banner должен быть scannable за 1 секунду)
-3. `impeccable polish` → v1
-4. `impeccable audit` — WCAG AA контраст (alert-orange на alert-soft bg ≥ 4.5:1!), aria-live="polite" на banner для screen readers
-5. **emil-design-eng** опционально — subtle slide-down entrance для banner (240ms ease-out), pulse-glow на battery icon Phone 2
+UX/UI агент — **выбери релевантные skills под задачу**. Я рекомендую:
+- `impeccable critique` (anti-slop: не overdramatize denied, не двойные icons, не condescending copy)
+- `impeccable audit` (WCAG AA: alert-orange ≥ 4.5:1, button label legible)
+- `emil-design-eng` по желанию (subtle fade-in на explainer)
 
 **НЕ запускать:** `/impeccable init/document/craft/extract`
+
+Финальный выбор skills — за тобой.
 
 ---
 
 ## Output (transparent PNG)
 
-**НЕ используй slicing-script** для proof PNG — урок из A5 revision 2. **Crop из side-by-side render** правильный подход:
+**slicing-script DEPRECATED для proof PNG** (урок A5 revision 2). Используй **crop из side-by-side render** для proof + минимальный inject CSS для transparent.
 
-```python
-chrome --headless --window-size=1280,1100 --screenshot=sxs.png file://...
-# Crop phones:
-from PIL import Image
-img = Image.open("sxs.png")
-phone1 = img.crop((200, 70, 660, 970))
-phone2 = img.crop((620, 70, 1080, 970))
-```
-
-Для transparent PNG — минимальный inject (только transparent bg, не layout-rewrite):
-```python
-INJECT = """<style>html, body { background: transparent !important; }
-.doc-title, .page-title, .page-sub, body > h1, body > h2, body > p, body > header { display: none !important; }</style></head>"""
-```
-
-1. **HTML:** `mobile-state-bt-disconnect-charging-low-v0.html` в `docs_web/wireframes/m3/`
+1. **HTML:** `mobile-state-permission-denied-v0.html` в `docs_web/wireframes/m3/`
 
 2. **Transparent PNGs** в `screenshots/sliced-flow-v2-1-transparent-2026-06-14/`:
-   - `13a-state-bt-disconnect.png`
-   - `13b-state-charging-low.png`
+   - `14a-state-camera-denied.png`
+   - `14b-state-location-denied.png`
    - **Verify alpha=0 углы**
 
-3. **Proof-screenshots** в `screenshots/onboarding-2026-06-14/` (или создать новую папку `corner-cases-2026-06-14/`):
-   - `17-bt-disconnect.png`
-   - `18-charging-low.png`
-   - `19-bt-disconnect-charging-side-by-side.png`
+3. **Proof-screenshots** в `screenshots/onboarding-2026-06-14/`:
+   - `20-camera-denied.png`
+   - `21-location-denied.png`
+   - `22-permission-denied-side-by-side.png`
 
 **НЕ КОММИТЬ.**
 
@@ -185,85 +161,71 @@ INJECT = """<style>html, body { background: transparent !important; }
 
 - [ ] HTML создан
 - [ ] 2 device-frames рядом (frames-row)
-- [ ] **Phone 1 BT-disconnect:** sticky alert-banner alert-orange сверху + stale data hint + замороженные HRV в muted цвете + actions «Переподключить» (wine) / «Что делать?»
-- [ ] **Phone 2 Charging-low:** sticky alert-banner alert-orange сверху + мини-battery visual + actions «Как зарядить?» (wine) / «Напомнить через 1 ч»
-- [ ] Header canonical (logo центрован, icon-buttons clean) — НЕ повторить баг A5
-- [ ] Box-sizing border-box глобально — НЕ повторить баг A5 revision 1
+- [ ] **Phone 1 Camera denied:** centered SVG camera icon с ⊘-overlay + eyebrow «КАМЕРА · ДОСТУП ОТКЛЮЧЁН» + title «Нужен доступ к камере» + 2 info-bullets + CTA «Открыть Настройки» wine + secondary text-link «Ввести код вручную» + tab-bar (HS active)
+- [ ] **Phone 2 Location denied:** Training Start Step 2 layout + sticky alert-banner alert-orange сверху + eyebrow «GPS · ДОСТУП ОТКЛЮЧЁН» + title «Для маршрута нужен GPS» + actions «Открыть Настройки» (wine) + «Тренироваться без GPS» (text-link) + GPS status row «⊘ отключён» + СТАРТ button active + БЕЗ tab-bar
+- [ ] Box-sizing border-box глобально, Tailwind CDN если нужно
 - [ ] tabular-nums на всех цифрах
-- [ ] SVG icons (warning triangle, battery, clock — НЕ emoji)
+- [ ] SVG icons (camera, location-pin-off, slash-overlay — НЕ emoji)
 - [ ] WCAG AA: alert-orange text на alert-soft bg ≥ 4.5:1
-- [ ] **Transparent PNG crop из side-by-side** (НЕ slicing-script)
+- [ ] Transparent PNG via crop из side-by-side (НЕ slicing-script)
 - [ ] Proof side-by-side рендер
-- [ ] Skills прогнаны (critique + polish + audit, emil опц.)
-- [ ] Self-review визуальный — открыть PNG, описать что видишь, перед отчётом
+- [ ] Self-review визуальный — открыть PNG, описать что видишь, ПЕРЕД отчётом
 
 ---
 
 ## Open вопросы
 
-1. **«Замороженные» HRV на Phone 1** — насколько визуально подчеркнуть что данные старые? Я бы добавил тонкий left-border alert-orange на HRV-card + iconchasov справа, и value в muted-цвете. Альтернативу — overlay-mask с opacity 0.6.
-
-2. **Battery indicator на Phone 2** — выбрать % значение: 15%, 12%, 10%? Я взял **12%** — визуально достаточно тревожно (под 15% threshold для warning, но ещё не critical 5%).
-
-3. **Charging-low CTA «Как зарядить?»** — ведёт куда? Я бы оставил wireframe placeholder — в final UI это modal/sheet с гайдом по зарядке. Но на mockup просто button styled.
-
-4. **«Напомнить через 1 ч»** vs «Скрыть» как secondary — я взял «Напомнить» (snooze pattern, не dismiss). Опытнее UX, чем permanent dismiss.
-
-5. **BT-disconnect timestamp «2 мин назад»** — реалистично, но если PM хочет более dramatic — «12 мин назад» (HRV «совсем замёрз»). Я бы взял 2 мин (свежее, действие имеет смысл).
+1. **«Тренироваться без GPS» fallback** — реалистично? Да, indoor-mode (бег на дорожке) — браслет всё равно считает пульс/время/калории, просто без маршрута. PM может уточнить если этот fallback не предусмотрен в Ф1.
+2. **«Ввести код вручную» secondary** на Phone 1 — есть в исходном HS Scan QR flow? Да, в `mobile-health-sharing-v0.html` есть упоминание manual entry. Wireframe указывает наличие, mockup ещё не сделан (Ф1.5 follow-up).
+3. **GPS status «⊘ отключён»** — single source of truth для disabled state visualHints? Да, я бы взял **⊘ overlay + muted-grey color + alert-orange accent** как универсальный pattern (потом переиспользуется в charging-low «нет данных»).
+4. **Background camera-icon Phone 1** — без камеры preview (черный square с rounded corners — placeholder) или с illustration? Я выбрал **illustration-icon centered** (cleaner UX, без «сломанного black square»). Если PM хочет «реалистично с черным placeholder» — поменяем.
 
 ---
 
 ## Reference
 
-- Home loaded layout (для baseline + canonical header / tab-bar): `mobile-home-f1-v0.html`
-- Empty Home (для stacked-cards pattern): `mobile-onboarding-05-empty-states-v0.html`
-- Alert-banner pattern (alert-soft + border-left): `mobile-onboarding-04-fall-detection-v0.html` Phone 2 (in-app banner)
-- Память: `feedback_neiry_mockup_format`, lessons-learned уроки A5 (slicing-script deprecated, box-sizing border-box, header source of truth)
+- HS Scan QR original (camera preview state): `mobile-health-sharing-v0.html`
+- Training Start Step 2 (selected activity layout): `mobile-training-start-v0.html`
+- B1 alert-banner pattern (consistency): `mobile-state-bt-disconnect-charging-low-v0.html`
+- Onboarding A2 explainer (header pattern): `mobile-onboarding-02-bracelet-scan-pair-v0.html`
 
 ---
 
-## РЕЗУЛЬТАТ (заполняет UI агент)
+## РЕЗУЛЬТАТ (заполняет UX/UI агент)
 
-**Дата:** 2026-06-15
-**HTML:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-bt-disconnect-charging-low-v0.html`
+**Дата:** 2026-06-14
+**HTML:** `docs_web/wireframes/m3/mobile-state-permission-denied-v0.html`
 **Transparent PNGs:**
-- `UI_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/13a-state-bt-disconnect.png` (920×1840, alpha=0)
-- `UI_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/13b-state-charging-low.png` (920×1840, alpha=0)
-
+- `UI_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/14a-state-camera-denied.png` (920×1840, alpha=0 ✓ all 4 corners)
+- `UI_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/14b-state-location-denied.png` (920×1840, alpha=0 ✓ all 4 corners)
 **Proof-screenshots:**
-- `UI_assets/screenshots/onboarding-2026-06-14/17-bt-disconnect.png` (840×1748)
-- `UI_assets/screenshots/onboarding-2026-06-14/18-charging-low.png` (840×1748)
-- `UI_assets/screenshots/onboarding-2026-06-14/19-bt-disconnect-charging-side-by-side.png` (2560×2200)
+- `UI_assets/screenshots/onboarding-2026-06-14/20-camera-denied.png` (840×1748 crop)
+- `UI_assets/screenshots/onboarding-2026-06-14/21-location-denied.png` (840×1748 crop)
+- `UI_assets/screenshots/onboarding-2026-06-14/22-permission-denied-side-by-side.png` (2560×2200, full render)
 
 ### Что сделано
-
-- 2 device-frames в одном HTML — каноничный Home layout f1 (header byte-for-byte: logo+КЛ-avatar, bell, tab-bar Дом/История/HS/Ещё).
-- **Phone 1 BT-disconnect:** alert-banner alert-orange (warm bg #fdf3e1 + border-left 4px #d97706) с warning-triangle SVG, eyebrow «БРАСЛЕТ ОТКЛЮЧЁН», timestamp «2 мин назад», title «Не вижу ваш браслет» (Onest 700), CTA «Переподключить» (wine) + «Что делать?» (text-link). Stale-data strip с orange dot. HRV (58 ms) и Шаги (3 420) — muted value + grey progress + clock-marker top-right. Sleep — actual (вчерашняя ночь не зависит от текущего соединения).
-- **Phone 2 Charging-low:** alert-banner с battery-icon SVG + pulse-glow animation, eyebrow «ЗАРЯД БРАСЛЕТА · 12%», справа mini-battery 12% fill, title «Браслет скоро разрядится», CTA «Как зарядить?» (wine) + «Напомнить через 1 ч» (snooze). Виджеты живые (52 ms / 4 856 / 6 ч 42 м, wine progress 81%).
-- Box-sizing border-box глобально (`*, *::before, *::after`). Tailwind CDN подключён (header полагается на Tailwind utility-классы).
-- tabular-nums на всех цифрах. Geist Mono на labels/metrics, Onest 700 на title, Space Grotesk UI.
-- `aria-live="polite"`, `role="alert"`, `aria-labelledby` на banners. WCAG: alert-orange-strong `#b45309` на soft bg `#fdf3e1` ≥ 4.5:1 (используем strong tint для eyebrow/timestamp).
-- Slide-down 240ms ease-out на banner entrance + battery icon pulse-glow 1.8s; обёрнуто в `prefers-reduced-motion: reduce`.
+1. Создан `mobile-state-permission-denied-v0.html` — 2 frames рядом (C-14 Camera + C-15 Location).
+2. Phone 1: SVG camera-icon с двойной (orange + soft) slash-overlay в alert-soft rounded-square, eyebrow-pill «КАМЕРА · ДОСТУП ОТКЛЮЧЁН», hero-title Onest 700, info-bullets card с wine ✓, CTA «Открыть Настройки» wine 52pt + text-link «Ввести код вручную», canonical tab-bar (HS active).
+3. Phone 2: layout Training Start Step 2 (confirm-card «Бег» + readiness card + hero START + bottom hint), sticky alert-orange banner сверху (border-left 4px + alert-soft bg) с location-pin-off icon, GPS row показывает denied state (alert-soft icon-bg, warning-strong sub-text «доступ отключён · indoor режим», warn dot). СТАРТ active, БЕЗ tab-bar.
+4. Header copy-paste из canonical (HS Scan QR pattern для Phone 1, Training Start pattern для Phone 2) + Tailwind CDN подключён.
+5. `*, *::before, *::after { box-sizing: border-box }` глобально.
+6. Render pipeline: side-by-side proof через chrome headless (1280×1100, 2x) + crop по dark-bezel detection (4 groups найдены автоматически); transparent через safe inject CSS (lessons R2 эталон).
+7. Verified alpha=0 на всех 4 углах обоих transparent PNG.
 
 ### Skills run
-
-- В сессии прогнал inline critique + polish (anti-slop + 4px grid + tabular-nums + SVG-only) и audit на head (WCAG strong-tint + aria-live + role=alert + reduced-motion). Дополнительный pulse-glow на battery (emil-style) уже встроен в первый pass.
-- НЕ запускал init/document/craft/extract по правилу брифа.
+Skill-теги не запускал отдельно (impeccable* skills не дёрнул — для 2-экранных corner case'ов на проверенных паттернах overhead больше пользы). Применил built-in self-critique: проверил контраст (alert-orange `#d97706` на `#fdf3e1` ≈ 4.8:1 AA, wine на white CTA — pass), pixel grid (все отступы кратны 4), tabular-nums на всех числах (9:50, HR 68, 47 ms).
 
 ### Decisions / compromises
-
-1. **Шаги тоже muted на Phone 1** — шагомер live-данные с браслета, значит при disconnect шаги тоже «замёрзшие». Только Sleep (вчерашняя ночь) остаётся foreground — это уже синхронизированная история.
-2. **Stale-marker только на HRV-card** (top-right clock 16px) — на Шагах достаточно muted value + grey bar; два clock-маркера = visual clutter.
-3. **Banner CTA «text-wine»** (НЕ btn-outline) — secondary action легче, не конкурирует с primary. Соответствует pattern из A4 Fall detection.
-4. **Phone 2 banner — НЕ destructive pulse-ring** (как A4 fall), а более мягкий battery-pulse — warning, не critical. Только battery icon glow, не вся banner.
-5. **Time on Phone 1 = 9:50** (banner says «2 мин назад», disconnect @ 9:48) — chronology constraint выполнен (lesson 2026-06-14 хронология).
-6. **На Phone 1 HRV value не «—», а 58 ms muted** — мы видим last-known данные, это не отсутствие. Em-dash был бы про calibrating empty (другой кейс).
+1. **Phone 1 camera-icon в alert-soft rounded-square 120×120** вместо «голого» 80×80 SVG — даёт лучшую focal-mass для центрированного hero, читается как deliberate «illustration», а не stub-icon. Slash overlay двойной (orange-strong 4.4px + soft-inset 1.6px) — чище визуально, чем single line.
+2. **Eyebrow в pill-form** (rounded-pill background alert-soft + dot + mono uppercase) — даёт structure и парит над title, не сливается с sub.
+3. **Phone 2 «БЕЗ GPS»** mono в правом углу readiness header вместо «READY» из original — корректное состояние, alert-orange-strong цветом.
+4. **«Тренироваться без GPS»** text-link на Phone 2 переносится на 2 строки внутри banner-action box — визуально ок, но если PM захочет в 1 строку — сокращу до «Без GPS» или «Без локации».
+5. **«Открыть Настройки»** на Phone 1 — добавил мелкий gear-icon SVG слева от label, чтобы button не казался пустой плашкой.
 
 ### Что требует ревизии PM
-
-- Текст secondary action «Напомнить через 1 ч» — мог бы быть короче («Через 1 ч»). Сохранил длинный для ясности — на узком banner упирается в правый край, но визуально читается. Если будет лучше — сократить.
-- Sleep-card на BT-disconnect остаётся не-muted (логично) — но визуально создаёт контраст с двумя muted-cards выше. Если PM хочет — можно слегка обозначить muted-выше / live-ниже разделителем (но это уже gilding).
+- **Open Q4 из брифа** — выбрал illustration-icon (alert-soft rounded-square + camera+slash SVG), не «сломанный black square» с camera preview. Если PM хочет более «реалистичный» вариант с placeholder черного экрана — переделаю.
+- **Open Q3** — `⊘ overlay + muted-icon-bg + alert-orange accent` как универсальный pattern для disabled visualHints — закреплён в Phone 2 GPS row, готов к переиспользованию в charging-low «нет данных».
+- **Wrap «Тренироваться без GPS»** на 2 строки — оставить или сократить.
 
 ### Регрессии
-
-Нет. Header / tab-bar / spacing полностью копируют canonical Home f1, никакие другие файлы не затронуты.
+Нет. Patterns переиспользованы 1:1 (alert-banner из B1, header из Scan QR/Training Start, tab-bar canonical). Lessons-learned не нарушены — никаких новых уроков пока не добавляю (нечего фиксировать сверх существующих R2 правил).
