@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1440" />
+<title>Neiry Pulse — Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: hsl(240 10% 3.9%);
+    --card: hsl(240 10% 6%);
+    --card-2: hsl(240 8% 9%);
+    --muted: hsl(240 3.7% 15.9%);
+    --border: hsl(240 3.7% 18%);
+    --fg: hsl(0 0% 98%);
+    --fg-mute: hsl(240 5% 64.9%);
+    --fg-dim: hsl(240 5% 45%);
+    --wine: hsl(336 76% 45%);
+    --wine-deep: hsl(336 76% 33%);
+    --wine-hover: hsl(336 76% 52%);
+    --bio-hrv: hsl(195 90% 55%);
+    --bio-low: hsl(151 100% 45%);
+    --bio-mid: hsl(42 100% 50%);
+    --bio-high: hsl(348 100% 54%);
+    --ecg: hsl(151 100% 55%);
+    --sans: 'Space Grotesk', system-ui, sans-serif;
+    --display: 'Onest', 'Space Grotesk', system-ui, sans-serif;
+    --mono: 'Geist Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  body { padding: 64px 48px 120px; max-width: 1440px; margin: 0 auto; }
+
+  .eyebrow { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase; color: var(--fg-mute); }
+  .section { margin-top: 96px; }
+  .section:first-child { margin-top: 0; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 32px; }
+  .section-head h2 { font-family: var(--display); font-size: 40px; font-weight: 600; letter-spacing: -1px; line-height: 1.15; }
+  .section-head .meta { color: var(--fg-dim); font-size: 12px; }
+
+  /* --- HERO --- */
+  .hero { padding: 48px 0 24px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .hero .brand { font-family: var(--mono); font-size: 12px; letter-spacing: 0.8px; text-transform: uppercase; color: var(--wine); }
+  .hero h1 { font-family: var(--display); font-size: 72px; font-weight: 600; letter-spacing: -2.5px; line-height: 1.05; margin-top: 16px; }
+  .hero h1 em { font-style: normal; color: var(--wine); }
+  .hero p { color: var(--fg-mute); font-size: 18px; line-height: 1.5; margin-top: 24px; max-width: 720px; }
+  .hero-meta { display: flex; gap: 32px; margin-top: 32px; font-family: var(--mono); font-size: 12px; color: var(--fg-dim); }
+  .hero-meta span strong { color: var(--fg); font-weight: 500; display: block; margin-top: 4px; font-size: 14px; }
+
+  /* --- COLORS --- */
+  .palette { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .swatch { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .swatch .chip { height: 88px; border-radius: 8px; margin-bottom: 12px; }
+  .swatch .name { font-size: 13px; font-weight: 500; }
+  .swatch .hex { font-family: var(--mono); font-size: 11px; color: var(--fg-mute); margin-top: 2px; }
+  .swatch .role { font-size: 11px; color: var(--fg-dim); margin-top: 6px; line-height: 1.3; }
+
+  .group-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--fg-mute); margin: 32px 0 12px; }
+
+  /* --- TYPOGRAPHY --- */
+  .type-row { display: grid; grid-template-columns: 200px 1fr; gap: 32px; align-items: baseline; padding: 24px 0; border-bottom: 1px solid var(--border); }
+  .type-meta { font-family: var(--mono); font-size: 11px; color: var(--fg-mute); line-height: 1.6; }
+  .type-meta strong { color: var(--fg); font-weight: 500; display: block; font-size: 13px; margin-bottom: 4px; }
+  .type-sample.kiosk { font-family: var(--display); font-size: 180px; font-weight: 600; letter-spacing: -6px; line-height: 1; }
+  .type-sample.metric-xl { font-family: var(--mono); font-size: 128px; font-weight: 500; letter-spacing: -3px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .type-sample.metric-lg { font-family: var(--mono); font-size: 64px; font-weight: 500; letter-spacing: -1.5px; font-variant-numeric: tabular-nums; }
+  .type-sample.metric-md { font-family: var(--mono); font-size: 32px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .type-sample.display-xl { font-family: var(--display); font-size: 56px; font-weight: 600; letter-spacing: -1.8px; }
+  .type-sample.display-lg { font-family: var(--display); font-size: 40px; font-weight: 600; letter-spacing: -1px; }
+  .type-sample.headline { font-family: var(--sans); font-size: 24px; font-weight: 600; letter-spacing: -0.4px; }
+  .type-sample.body { font-family: var(--sans); font-size: 14px; }
+  .type-sample.caption { font-family: var(--sans); font-size: 12px; color: var(--fg-mute); }
+
+  /* --- COMPONENTS --- */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .demo-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--fg-dim); margin-bottom: 12px; }
+
+  /* Kiosk demo */
+  .kiosk-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 48px;
+    align-items: center;
+  }
+  .kiosk-num {
+    font-family: var(--mono);
+    font-size: 180px;
+    font-weight: 500;
+    line-height: 0.9;
+    letter-spacing: -6px;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg);
+  }
+  .kiosk-num .unit { font-family: var(--sans); font-size: 28px; color: var(--fg-mute); margin-left: 12px; font-weight: 500; letter-spacing: 0; }
+  .kiosk-label { font-family: var(--mono); font-size: 13px; letter-spacing: 0.8px; text-transform: uppercase; color: var(--fg-mute); margin-bottom: 8px; }
+  .gauge-wrap { width: 260px; height: 260px; position: relative; }
+
+  /* Dashboard KPI */
+  .kpi {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .kpi .lbl { font-size: 12px; color: var(--fg-mute); letter-spacing: 0.2px; }
+  .kpi .val { font-family: var(--mono); font-size: 32px; font-weight: 500; margin-top: 8px; font-variant-numeric: tabular-nums; letter-spacing: -0.5px; }
+  .kpi .delta { display: inline-flex; gap: 4px; align-items: center; margin-left: 8px; font-size: 12px; color: var(--bio-low); font-family: var(--mono); }
+  .kpi .delta.neg { color: var(--bio-high); }
+  .kpi .spark { margin-top: 12px; height: 32px; }
+
+  /* Buttons */
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn { font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 10px 16px; border-radius: 8px; border: 0; cursor: pointer; }
+  .btn-primary { background: var(--wine); color: var(--fg); }
+  .btn-primary:hover { background: var(--wine-hover); }
+  .btn-secondary { background: var(--muted); color: var(--fg); }
+  .btn-ghost { background: transparent; color: var(--fg-mute); }
+  .btn-outline { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+
+  /* Badges */
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-family: var(--sans); }
+  .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .badge-low { background: hsl(151 100% 45% / 0.15); color: var(--bio-low); }
+  .badge-mid { background: hsl(42 100% 50% / 0.15); color: var(--bio-mid); }
+  .badge-high { background: hsl(348 100% 54% / 0.15); color: var(--bio-high); }
+
+  /* Input */
+  .input {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--fg);
+    font-family: var(--sans);
+    font-size: 14px;
+    width: 100%;
+  }
+  .input:focus { outline: none; border-color: var(--wine); box-shadow: 0 0 0 3px hsl(336 76% 45% / 0.2); }
+
+  /* Tabs */
+  .tabs { display: inline-flex; gap: 4px; padding: 4px; background: var(--card); border-radius: 10px; border: 1px solid var(--border); }
+  .tab { font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 8px 14px; border-radius: 8px; background: transparent; color: var(--fg-mute); cursor: pointer; border: 0; }
+  .tab.active { background: var(--muted); color: var(--fg); }
+
+  /* Table */
+  .table { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; border-collapse: collapse; }
+  .table th { text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 500; letter-spacing: 0.4px; text-transform: uppercase; color: var(--fg-mute); border-bottom: 1px solid var(--border); }
+  .table td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--border); }
+  .table tr:last-child td { border-bottom: 0; }
+  .table .name { font-weight: 500; }
+  .table .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* ECG */
+  .ecg-strip { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .ecg-strip svg { width: 100%; height: 80px; display: block; }
+
+  /* Spacing demo */
+  .spacing-row { display: grid; grid-template-columns: 60px 1fr 80px; gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .spacing-name { font-family: var(--mono); font-size: 12px; color: var(--fg-mute); }
+  .spacing-bar { height: 16px; background: var(--wine); border-radius: 4px; }
+  .spacing-val { font-family: var(--mono); font-size: 12px; color: var(--fg); text-align: right; }
+
+  /* Footer principles */
+  .principles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .principle { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .principle .num { font-family: var(--mono); font-size: 11px; color: var(--wine); letter-spacing: 0.6px; }
+  .principle h4 { font-family: var(--sans); font-size: 16px; font-weight: 600; margin: 8px 0; }
+  .principle p { color: var(--fg-mute); font-size: 13px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="brand">Neiry Pulse · Design System · v0.alpha · 2026-06-04</div>
+  <h1>Био-интерфейс, в котором единственный цвет — это <em>пульс</em>.</h1>
+  <p>Три поверхности — выставочный стенд, корпоративный дашборд, мобильное приложение — собраны на одном тёмном полотне, единственном брендовом акценте wine и моноширинных цифрах, которые не прыгают при обновлении биометрии.</p>
+  <div class="hero-meta">
+    <span>Brand accent <strong style="color: var(--wine)">#831843 wine</strong></span>
+    <span>Display <strong>Onest 600</strong></span>
+    <span>UI <strong>Space Grotesk 400/500</strong></span>
+    <span>Metrics <strong>Geist Mono · tnum</strong></span>
+    <span>Grid <strong>4px base</strong></span>
+  </div>
+</header>
+
+<!-- COLORS -->
+<section class="section">
+  <div class="section-head">
+    <h2>Цвет</h2>
+    <div class="meta">wine — единственный chromatic accent · bio-палитра — служебная</div>
+  </div>
+
+  <div class="group-title">Brand & Accent</div>
+  <div class="palette">
+    <div class="swatch"><div class="chip" style="background: hsl(336 76% 33%)"></div><div class="name">Wine Primary</div><div class="hex">#831843 · hsl(336 76% 33%)</div><div class="role">Single chromatic accent. CTA, focus, бренд-знак.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(336 76% 45%)"></div><div class="name">Wine on Dark</div><div class="hex">hsl(336 76% 45%)</div><div class="role">Wine на тёмном фоне (контраст +).</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(336 76% 52%)"></div><div class="name">Wine Hover</div><div class="hex">hsl(336 76% 52%)</div><div class="role">Hover-state primary.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(336 76% 33%); opacity: 0.2"></div><div class="name">Wine Tint</div><div class="hex">wine / 20%</div><div class="role">Focus-ring, soft fill.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(336 76% 28%)"></div><div class="name">Wine Pressed</div><div class="hex">hsl(336 76% 28%)</div><div class="role">Active-state.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(0 0% 98%); border: 1px solid var(--border)"></div><div class="name">Wine Foreground</div><div class="hex">hsl(0 0% 98%)</div><div class="role">Текст на wine — почти белый.</div></div>
+  </div>
+
+  <div class="group-title">Surface (Dark — primary)</div>
+  <div class="palette">
+    <div class="swatch"><div class="chip" style="background: hsl(240 10% 3.9%); border: 1px solid var(--border)"></div><div class="name">Background</div><div class="hex">hsl(240 10% 3.9%)</div><div class="role">Главное полотно.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(240 10% 6%); border: 1px solid var(--border)"></div><div class="name">Card</div><div class="hex">hsl(240 10% 6%)</div><div class="role">KPI, kiosk-блоки, side-panel.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(240 8% 9%); border: 1px solid var(--border)"></div><div class="name">Card Hover</div><div class="hex">hsl(240 8% 9%)</div><div class="role">Подсветка строки таблицы.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(240 3.7% 15.9%)"></div><div class="name">Muted</div><div class="hex">hsl(240 3.7% 15.9%)</div><div class="role">Secondary buttons, active tab.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(240 3.7% 18%)"></div><div class="name">Border</div><div class="hex">hsl(240 3.7% 18%)</div><div class="role">Hairline 1px. Никаких shadows.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(240 5% 64.9%)"></div><div class="name">Muted FG</div><div class="hex">hsl(240 5% 64.9%)</div><div class="role">Подписи, единицы (BPM, мс).</div></div>
+  </div>
+
+  <div class="group-title">Bio (служебная палитра биометрик)</div>
+  <div class="palette">
+    <div class="swatch"><div class="chip" style="background: hsl(336 76% 45%)"></div><div class="name">Bio · Pulse / HR</div><div class="hex">wine</div><div class="role">Тот же wine. Бренд = главная метрика.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(195 90% 55%)"></div><div class="name">Bio · HRV</div><div class="hex">hsl(195 90% 55%)</div><div class="role">Вариабельность.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(151 100% 45%)"></div><div class="name">Stress · Low</div><div class="hex">#00E676</div><div class="role">NSI зелёная зона.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(42 100% 50%)"></div><div class="name">Stress · Mid</div><div class="hex">#FFB300</div><div class="role">Пограничная зона.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(348 100% 54%)"></div><div class="name">Stress · High</div><div class="hex">#FF1744</div><div class="role">Критическая зона.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(151 100% 55%)"></div><div class="name">ECG Trace</div><div class="hex">hsl(151 100% 55%)</div><div class="role">Линия ЭКГ на kiosk-плашке.</div></div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="section">
+  <div class="section-head">
+    <h2>Типографика</h2>
+    <div class="meta">Onest · Space Grotesk · Geist Mono · tabular nums везде, где цифра живая</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta"><strong>display-kiosk</strong>Onest 600<br>180 / 1.0 / -6px<br>Kiosk главная метрика</div>
+    <div class="type-sample kiosk">78</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><strong>metric-xl</strong>Geist Mono 500<br>128 / 1.0 / -3px<br>Kiosk вторичная метрика · tnum</div>
+    <div class="type-sample metric-xl">42<span style="font-family: var(--sans); font-size: 24px; color: var(--fg-mute); margin-left: 12px; letter-spacing: 0">мс</span></div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><strong>metric-lg</strong>Geist Mono 500<br>64 / 1.0 / -1.5px<br>Drill-down side-panel</div>
+    <div class="type-sample metric-lg">312</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><strong>metric-md</strong>Geist Mono 500<br>32 / 1.1<br>Dashboard KPI цифра</div>
+    <div class="type-sample metric-md">68 bpm</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><strong>display-xl</strong>Onest 600<br>56 / 1.1 / -1.8px<br>Mobile hero</div>
+    <div class="type-sample display-xl">Привет, Алексей</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><strong>display-lg</strong>Onest 600<br>40 / 1.15 / -1px<br>Section opener</div>
+    <div class="type-sample display-lg">Сегодня в команде</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><strong>headline</strong>Space Grotesk 600<br>24 / 1.25 / -0.4px<br>Tab heading, screen title</div>
+    <div class="type-sample headline">Спорт · 12 сотрудников онлайн</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><strong>body</strong>Space Grotesk 400<br>14 / 1.5<br>Default</div>
+    <div class="type-sample body">Двухступенчатый фильтр R-R интервалов — медианный 20% и перцентильный 5/95% — отрезает артефакты движения и удерживает базовую линию пульса в реальном времени.</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><strong>caption</strong>Space Grotesk 400<br>12 / 1.4 / 0.1px<br>Подписи, единицы</div>
+    <div class="type-sample caption">обновлено 12 секунд назад · BPM · последние 30 минут</div>
+  </div>
+</section>
+
+<!-- SPACING -->
+<section class="section">
+  <div class="section-head">
+    <h2>Сетка и отступы</h2>
+    <div class="meta">4px base · никаких 18/22/30px</div>
+  </div>
+  <div style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 32px;">
+    <div class="spacing-row"><div class="spacing-name">space-1</div><div><div class="spacing-bar" style="width: 4px"></div></div><div class="spacing-val">4px</div></div>
+    <div class="spacing-row"><div class="spacing-name">space-2</div><div><div class="spacing-bar" style="width: 8px"></div></div><div class="spacing-val">8px</div></div>
+    <div class="spacing-row"><div class="spacing-name">space-3</div><div><div class="spacing-bar" style="width: 12px"></div></div><div class="spacing-val">12px</div></div>
+    <div class="spacing-row"><div class="spacing-name">space-4</div><div><div class="spacing-bar" style="width: 16px"></div></div><div class="spacing-val">16px</div></div>
+    <div class="spacing-row"><div class="spacing-name">space-6</div><div><div class="spacing-bar" style="width: 24px"></div></div><div class="spacing-val">24px · gutter карточек</div></div>
+    <div class="spacing-row"><div class="spacing-name">space-8</div><div><div class="spacing-bar" style="width: 32px"></div></div><div class="spacing-val">32px</div></div>
+    <div class="spacing-row"><div class="spacing-name">space-12</div><div><div class="spacing-bar" style="width: 48px"></div></div><div class="spacing-val">48px · kiosk padding</div></div>
+    <div class="spacing-row"><div class="spacing-name">space-16</div><div><div class="spacing-bar" style="width: 64px"></div></div><div class="spacing-val">64px · kiosk gap</div></div>
+    <div class="spacing-row" style="border-bottom: 0"><div class="spacing-name">section</div><div><div class="spacing-bar" style="width: 120px"></div></div><div class="spacing-val">120px · section gap</div></div>
+  </div>
+</section>
+
+<!-- KIOSK -->
+<section class="section">
+  <div class="section-head">
+    <h2>Kiosk · стенд 1920×1080</h2>
+    <div class="meta">читается с 1.5–2м · tabular nums · layered SVG-gauge · ECG-плашка</div>
+  </div>
+
+  <div class="demo-label">Главная метрика — пульс</div>
+  <div class="kiosk-card">
+    <div>
+      <div class="kiosk-label">Heart Rate · Алексей</div>
+      <div class="kiosk-num">78<span class="unit">bpm</span></div>
+      <div style="display: flex; gap: 12px; margin-top: 24px;">
+        <span class="badge badge-low">Stress Low · NSI 28</span>
+        <span style="font-family: var(--mono); font-size: 13px; color: var(--fg-mute);">HRV 42мс · zone Z2</span>
+      </div>
+    </div>
+    <div class="gauge-wrap">
+      <svg viewBox="0 0 260 260" width="260" height="260">
+        <circle cx="130" cy="130" r="110" fill="none" stroke="hsl(240 3.7% 15.9%)" stroke-width="12" />
+        <circle cx="130" cy="130" r="110" fill="none" stroke="hsl(151 100% 45%)" stroke-width="12" stroke-linecap="round" stroke-dasharray="691" stroke-dashoffset="207" transform="rotate(-90 130 130)" />
+        <circle cx="130" cy="130" r="86" fill="none" stroke="hsl(240 3.7% 15.9%)" stroke-width="10" />
+        <circle cx="130" cy="130" r="86" fill="none" stroke="hsl(336 76% 45%)" stroke-width="10" stroke-linecap="round" stroke-dasharray="540" stroke-dashoffset="180" transform="rotate(-90 130 130)" />
+        <text x="130" y="135" text-anchor="middle" font-family="Geist Mono" font-size="48" font-weight="500" fill="hsl(0 0% 98%)" style="font-variant-numeric: tabular-nums;">78</text>
+        <text x="130" y="158" text-anchor="middle" font-family="Space Grotesk" font-size="11" letter-spacing="1" fill="hsl(240 5% 64.9%)">BPM</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="demo-label" style="margin-top: 32px;">ECG-плашка · fake live</div>
+  <div class="ecg-strip">
+    <svg viewBox="0 0 800 80" preserveAspectRatio="none">
+      <path d="M 0 40 L 60 40 L 70 38 L 80 42 L 90 40 L 140 40 L 145 28 L 150 52 L 155 10 L 160 70 L 165 40 L 220 40 L 230 38 L 240 42 L 250 40 L 310 40 L 315 28 L 320 52 L 325 10 L 330 70 L 335 40 L 400 40 L 410 38 L 420 42 L 430 40 L 490 40 L 495 28 L 500 52 L 505 10 L 510 70 L 515 40 L 580 40 L 590 38 L 600 42 L 610 40 L 670 40 L 675 28 L 680 52 L 685 10 L 690 70 L 695 40 L 800 40" fill="none" stroke="hsl(151 100% 55%)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+    </svg>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section class="section">
+  <div class="section-head">
+    <h2>Dashboard · corporate 1440+</h2>
+    <div class="meta">три таба · KPI-strip · таблица с sparkline · drill-down side-panel</div>
+  </div>
+
+  <div class="demo-label">Табы</div>
+  <div class="tabs">
+    <button class="tab active">Спорт</button>
+    <button class="tab">Офис</button>
+    <button class="tab">Драйверы</button>
+  </div>
+
+  <div class="demo-label" style="margin-top: 32px;">KPI-strip — 4 в строке</div>
+  <div class="grid-4">
+    <div class="kpi">
+      <div class="lbl">Средний пульс</div>
+      <div class="val">68<span class="delta">↓ 3%</span></div>
+      <svg class="spark" viewBox="0 0 200 32" preserveAspectRatio="none"><path d="M 0 20 L 20 18 L 40 22 L 60 16 L 80 14 L 100 18 L 120 12 L 140 10 L 160 14 L 180 8 L 200 12" fill="none" stroke="hsl(336 76% 45%)" stroke-width="1.5" /></svg>
+    </div>
+    <div class="kpi">
+      <div class="lbl">HRV команды</div>
+      <div class="val">52<span class="delta">↑ 8%</span></div>
+      <svg class="spark" viewBox="0 0 200 32" preserveAspectRatio="none"><path d="M 0 24 L 20 22 L 40 20 L 60 18 L 80 16 L 100 14 L 120 12 L 140 14 L 160 10 L 180 8 L 200 6" fill="none" stroke="hsl(195 90% 55%)" stroke-width="1.5" /></svg>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Стресс-индекс</div>
+      <div class="val">31<span class="delta">↓ 12%</span></div>
+      <svg class="spark" viewBox="0 0 200 32" preserveAspectRatio="none"><path d="M 0 8 L 20 12 L 40 10 L 60 14 L 80 18 L 100 16 L 120 20 L 140 18 L 160 22 L 180 24 L 200 22" fill="none" stroke="hsl(151 100% 45%)" stroke-width="1.5" /></svg>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Восстановление</div>
+      <div class="val">84<span class="delta neg">↓ 4%</span></div>
+      <svg class="spark" viewBox="0 0 200 32" preserveAspectRatio="none"><path d="M 0 8 L 20 10 L 40 12 L 60 14 L 80 12 L 100 16 L 120 18 L 140 20 L 160 18 L 180 22 L 200 24" fill="none" stroke="hsl(42 100% 50%)" stroke-width="1.5" /></svg>
+    </div>
+  </div>
+
+  <div class="demo-label" style="margin-top: 32px;">Таблица сотрудников</div>
+  <table class="table">
+    <thead>
+      <tr><th>Сотрудник</th><th>BPM</th><th>HRV</th><th>Стресс</th><th>Тренд</th><th>Статус</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="name">Алексей М.</td><td class="num">68</td><td class="num">52 мс</td><td class="num">28</td><td><svg width="100" height="20" viewBox="0 0 100 20"><path d="M 0 14 L 20 10 L 40 12 L 60 6 L 80 8 L 100 4" fill="none" stroke="hsl(151 100% 45%)" stroke-width="1.5" /></svg></td><td><span class="badge badge-low">Low</span></td></tr>
+      <tr><td class="name">Константин Д.</td><td class="num">74</td><td class="num">38 мс</td><td class="num">54</td><td><svg width="100" height="20" viewBox="0 0 100 20"><path d="M 0 6 L 20 8 L 40 10 L 60 12 L 80 14 L 100 16" fill="none" stroke="hsl(42 100% 50%)" stroke-width="1.5" /></svg></td><td><span class="badge badge-mid">Mid</span></td></tr>
+      <tr><td class="name">Никита П.</td><td class="num">82</td><td class="num">28 мс</td><td class="num">76</td><td><svg width="100" height="20" viewBox="0 0 100 20"><path d="M 0 14 L 20 10 L 40 12 L 60 8 L 80 4 L 100 2" fill="none" stroke="hsl(348 100% 54%)" stroke-width="1.5" /></svg></td><td><span class="badge badge-high">High</span></td></tr>
+      <tr><td class="name">Кирилл В.</td><td class="num">65</td><td class="num">58 мс</td><td class="num">22</td><td><svg width="100" height="20" viewBox="0 0 100 20"><path d="M 0 14 L 20 12 L 40 14 L 60 10 L 80 8 L 100 10" fill="none" stroke="hsl(151 100% 45%)" stroke-width="1.5" /></svg></td><td><span class="badge badge-low">Low</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- CONTROLS -->
+<section class="section">
+  <div class="section-head">
+    <h2>Контролы</h2>
+    <div class="meta">кнопки, бейджи, инпут · wine — только на primary CTA</div>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <div class="demo-label">Кнопки</div>
+      <div class="btn-row" style="margin-bottom: 16px;">
+        <button class="btn btn-primary">Начать тест</button>
+        <button class="btn btn-secondary">Подключить браслет</button>
+        <button class="btn btn-outline">Отмена</button>
+        <button class="btn btn-ghost">Позже</button>
+      </div>
+      <div class="demo-label" style="margin-top: 24px;">Статусы стресса</div>
+      <div class="btn-row">
+        <span class="badge badge-low">Low · NSI 28</span>
+        <span class="badge badge-mid">Mid · NSI 54</span>
+        <span class="badge badge-high">High · NSI 76</span>
+      </div>
+    </div>
+    <div>
+      <div class="demo-label">Инпут</div>
+      <input class="input" placeholder="Введите имя для теста" />
+      <div class="demo-label" style="margin-top: 16px;">Инпут в фокусе</div>
+      <input class="input" value="Алексей" autofocus style="border-color: var(--wine); box-shadow: 0 0 0 3px hsl(336 76% 45% / 0.2);" />
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section class="section">
+  <div class="section-head">
+    <h2>Принципы</h2>
+    <div class="meta">что соблюдаем и что не делаем никогда</div>
+  </div>
+  <div class="principles">
+    <div class="principle"><div class="num">01</div><h4>Wine — единственный chromatic accent</h4><p>Никаких вторых брендовых hue. Bio-палитра — служебная семантика (пульс, HRV, стресс), не декор.</p></div>
+    <div class="principle"><div class="num">02</div><h4>Tabular nums на живых метриках</h4><p>Geist Mono с font-feature-settings: 'tnum' 1. Пульс не должен прыгать при смене 78→79.</p></div>
+    <div class="principle"><div class="num">03</div><h4>Hairline-borders, не shadows</h4><p>Иерархия через surface ladder background → card → muted. Нулевые decorative shadows.</p></div>
+    <div class="principle"><div class="num">04</div><h4>4px grid строго</h4><p>Все отступы кратны 4. Никаких 18px / 22px / 30px. Перед commit — арифметика пикселей.</p></div>
+    <div class="principle"><div class="num">05</div><h4>Dark-first, light — паритет</h4><p>Wine остаётся wine в обеих темах. Surface ladder параллельна. Mobile = Android + iOS.</p></div>
+    <div class="principle"><div class="num">06</div><h4>Skills — подсказка, не закон</h4><p>Источник истины — этот DESIGN.md + ui-kit.html. Если skill советует тёплую палитру / убрать tnum — игнорируем.</p></div>
+  </div>
+</section>
+
+<footer style="margin-top: 96px; padding-top: 32px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--fg-dim); font-size: 12px; font-family: var(--mono);">
+  <span>Neiry Pulse Design System · v0.alpha · draft for PM acceptance</span>
+  <span>04.06.2026</span>
+</footer>
+
+</body>
+</html>

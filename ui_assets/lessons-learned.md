@@ -64,3 +64,183 @@ _Читать перед началом каждой сессии._
 ## 2026-05-27 — main overflow в kiosk = flex-1 min-h-0, не height calc (R5 lessons)
 Проблема: в drilldown я задал `.main-content { height: calc(1080px - 64px) }` с magic-числом высоты header. При смене header на 86px main всё ещё рассчитывал высоту от 64px — empty-state Bayevsky плитка выходила за низ stage на 1512×945.
 Правило: внутри `#kiosk-stage` все секции используют flex-семантику: header/banner = `shrink-0`, main = `flex-1 min-h-0 overflow-hidden`. Никаких `height: calc(VIEWPORT - HEADER_HEIGHT)` — height пересчитается автоматически при смене размеров header. min-h-0 обязателен (без него flex-child игнорирует overflow children).
+
+## 2026-06-14 — Phone-mockups PM-у только в transparent PNG (незыблемое правило)
+Проблема: на двух итерациях flow-плаката композитный PNG (несколько phones в одном файле) показывал «слипшиеся» экраны без чётких границ. Также PNG с light-фоном создавал двойную карточку (card-in-card) при размещении на bevel-tone плакате — критическое замечание `impeccable critique`.
+Правило (zero-tolerance): когда PM просит phone-mockups для плаката/презентации/документа — **каждый экран = отдельный transparent PNG (RGBA с alpha=0 углами)**, содержащий ТОЛЬКО phone-bezel + интерфейс. Никакой подложки, никакого page-chrome (page-title / .page-sub / frame-caption), никакого outer drop-shadow.
+
+**Эталонный скрипт slicing** (Python markup-parsing — НЕ JS-injection): `/tmp/slice_phones_transparent.py`. Алгоритм:
+1. Найти все `<div class="frame-with-caption">` или `<div class="frame-wrap">` blocks через regex+brace-tracking (поддержка вложенных div).
+2. Surgically удалить все блоки кроме target_idx — html переменная с одним оставшимся frame.
+3. CSS-injection перед `</head>`:
+   - `html, body { background: transparent !important; }`
+   - `.page-title, .page-sub, .frame-caption, body > h1/h2/p/header, .footer, .meta-bar { display: none !important; }`
+   - `.frames-row, .frames-strip { display: flex; justify-content: center; width: 460px; height: 920px; padding: 0; overflow: visible; scroll-snap-type: none !important; }`
+   - `.device-frame { box-shadow: 0 0 0 10px #1a1814, 0 0 0 11px #2a2620 !important; }` — keep ONLY bezel rings, REMOVE outer drop-shadow.
+4. Headless Chrome: `--default-background-color=00000000 --window-size=460,920 --screenshot=out.png file://...html`.
+5. Verify alpha: Python PIL `img.getpixel((0,0)) == (0,0,0,0)`.
+
+**Эталонная папка качества:** `UI_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/` — 14 phones из Ф1.
+
+**Anti-patterns (НЕ делать):**
+- ❌ Composite-PNG нескольких phones в одном файле (слипание блоков на плакате)
+- ❌ White card-wrapper в plakat вокруг phone (card-in-card → critique flag)
+- ❌ Outer drop-shadow на bezel в самом PNG (компонуется на стороне layout если нужна)
+- ❌ Видимые .page-sub / .page-title / footer-meta в screenshot'е
+
+## 2026-06-14 — Fall detection A4 (хронология + dark-glass contrast)
+
+### Проблема 1 — Хронологический баг status-bar
+При создании flow «push на lock screen → opened in-app» легко поставить одно и то же время в status-bar обоих phones (9:42 / 9:42) при тексте «3 минуты назад» в in-app alert. Это **внутренняя нестыковка хронологии** — критику ловит на раз.
+
+**Правило:** для любого многоэкранного flow с относительными метками («3 минуты назад», «N секунд назад») — status-bar следующего экрана = status-bar предыдущего + delta. Push @ 9:42 → opened in 3 min → status-bar 9:45 + sub-text «3 минуты назад». Каждое относительное время — это **constraint на следующий status-bar**.
+
+### Проблема 2 — Wine `#831843` НЕ работает на dark glass push card
+Pure wine `#831843` на `rgba(40, 40, 42, 0.78)` имеет contrast < 4.5:1 — не проходит AA для text. Использовать pure wine в push-action нельзя.
+
+**Правило:** для action labels на dark frosted glass (iOS lock-screen pattern) — wine-tinted-light `#f9a8c5` (~7.5:1, AA+ для small text). Сохраняет «winenes» бренда, читается на любой dark backdrop. **Любой brand color на dark glass нужно ВСЕГДА проверять contrast** — не предполагать что «бренд = можно».
+
+### Проблема 3 — Alert-color overload (color fatigue)
+В alert-banner с destructive-red фоном + warning-orange stat values + warning-orange mini-row HRV icon + warning-orange HRV value создаётся «всё кричит одним цветом» — eye теряет hierarchy. Critique flag: «multiple severity peaks on one screen».
+
+**Правило color-coding hierarchy (зафиксировать):**
+1. **Один severity peak per screen** — топ-level severity (e.g. destructive red в banner-eyebrow + title + CTA + border).
+2. **Intermediate metrics** в alert-orange `#d97706` — только в **values**, иконки и labels оставляем muted.
+3. **Positive states (success green)** — точечно, маленькими dots, не блок цвета. На alert-screen зелёный — это «оазис спокойствия», должен быть minimal.
+4. Если на одном экране 3+ alert-color чанков (red title + orange stat + orange row + orange value), последовательно депрессировать второстепенные: row-icon → muted, stat-icon → muted, оставить цвет только в самом значении.
+
+### Проблема 4 — Lock-screen flat vs gradient depth
+Pure `#1c1c1e` flat фон на lock-screen выглядит плоско, ненатурально для iOS 17+ depth-aware backgrounds.
+
+**Правило:** для lock-screen mockup — лёгкий radial-gradient от верх-центра `#2a2a2e` → `#1c1c1e` → углы `#131315`. Это симулирует iOS depth без необходимости photo-blur placeholder. **Без depth — лочный экран читается как «выключенный»**, а нам нужен «лочный включённый с push».
+
+## 2026-06-14 — iOS notification stack: порядок по ВРЕМЕНИ, не по priority
+Проблема: при моделировании множественных уведомлений на iOS lock-screen легко поставить «важное» (Neiry Pulse alert о падении) сверху, а второстепенное (missed call) — снизу, по subjective priority дизайнера. Это **неверно** — iOS складывает notifications по chronological order, не по app-priority.
+
+**Правило:** native iOS lock-screen stack:
+- **Сверху** — более старое (earlier timestamp). Внизу — самое недавнее (recent).
+- Если в Ф1 при детекции падения произошли два события (GBand «звонок из коробки» 9:41 → push Neiry Pulse 9:42), на lock-screen:
+  - `[ Telephone · Папа · 9:41 ]` — выше (старше)
+  - `[ Neiry Pulse · alert · 9:42 ]` — ниже (новее, ближе к нижнему краю экрана)
+- App-priority НЕ перетасовывает порядок — `severity ≠ visual position`. Если хочется приоритезировать визуально — это делается через **expanded preview** (расширенная карточка для самого приоритетного notification), но stack-order остаётся хронологическим.
+
+**Следствие для frosted-bg consistency:** оба cards используют ТОТ ЖЕ frosted bg `rgba(40,40,42,0.78)` — не выделять «важное» отдельным цветом. iOS-native pattern = единый glass effect, разница в семантике передаётся icon-color (зелёный telephone vs wine Neiry icon) и payload (Title + body), не background.
+
+**Следствие для GBand integration:** на любом mockup Ф1 fall-event-flow на стороне опекуна сначала показываем missed call (GBand direct call — PRD v2.6 §3 / R-017 alt), потом push с деталями. Без missed call card flow читается неполно — опекун не понимает, что «звонок из коробки» вообще был.
+
+## 2026-06-14 — Empty states A5: «calibrating» Home empty ≠ standalone Calibrating screen
+
+Проблема: при делегировании Home first-run empty естественно скопировать большой calibration hero (112px rotating ring + status rows + support-list) из `mobile-onboarding-03-notifications-calibrating-v0.html`. Это даёт ощущение «отдельный standalone calibrating screen», а не Home в feed-формате.
+
+**Правило:** Home empty — это **по-прежнему Home** с feed-карточками, не standalone calibrating screen. Calibration hero должен быть **одной из card'ов в feed**, не whole-screen. Конкретные параметры:
+- **Ring 68px** (НЕ 112px standalone) — inline с текстом, slimmer presence
+- **Layout row-style** (ring слева + текст справа), НЕ centered column
+- **БЕЗ status rows про «батарея 87% / собрано 14ч 32м»** — это бэк-данные standalone screen
+- **БЕЗ support-list (3 tips «носите 24/7 / спите с ним»)** — это уже было в onboarding-03, не дублируем
+- **С progress-bar + footer «12 ч / 48 ч собрано» + text-link** — компактно, для signature калибровки
+- Под этой card идут другие feed-cards (stats-row, training, HS preview) — Home продолжается, не обрывается
+
+Иначе экран читается как «Calibrating Mode replaced Home», а нам нужно «Home работает, но без данных пока».
+
+## 2026-06-14 — Empty SVG illustration: 3 правила против stock-feel
+
+Проблема: empty-state illustration легко скатывается в stock-look (символический человечек + heart-emoji) или в overly-cute geometric (3 circles + smile). Bevel-tone palette даёт мало hex'ов для tonal variation, поэтому illustration выходит «mono-color stamp».
+
+**Правило для SVG empty illustrations (bevel + wine):**
+1. **Tonal asymmetry** — никогда не делать все объекты одного цвета. Для bevel: разносить figures по 3 уровням opacity/tone (`#d4cfc0` → `#c8c1b0` → `#a8a094` для background → mid → foreground). Это создаёт depth без 3D-rendering.
+2. **Size asymmetry** — центральная фигура заметно больше (×1.4-1.6) чем фланговые. Симметрия одинаковых фигур = «штамп».
+3. **Wine accent ровно один** — pulse-node / connection-line / glyph, не размазывать wine по нескольким элементам. Один accent = focal point; два accent'a → конкурируют, теряют semantic load.
+
+**Анти-pattern:** ECG-path с zigzag-углами без curve (тип ломаной): выглядит «sharp/cartoon». Использовать cubic-Bezier или mix straight + curve для organic feel.
+
+**Aria:** SVG illustration в empty-state обязательно `role="img" + aria-label="осмысленное описание"` — screen-reader user поймёт что показано вместо «image».
+
+## 2026-06-14 — Stat-widget em-dash placeholder: «calibrating» vs «broken»
+
+Проблема: em-dash `—` placeholder в stat-widget без visual cue считывается как «сломано» / «no data ever» / «device offline». На empty Home это критично — пользователь только что купил продукт, любая неоднозначность = «зачем я заплатил».
+
+**Правило:** для em-dash placeholder, когда данные **ещё калибруются** (НЕ permanently missing):
+- Color: `var(--border-strong)` (не полный grey, не полный foreground — visually quiet but not «failed»)
+- **Subtle infinite opacity pulse** 2.4s ease-in-out (0.5 ↔ 1.0) — signals «system is alive, data is coming». Wrap в `prefers-reduced-motion: reduce`.
+- Обязательный `.stat-sub` под em-dash объясняющий **когда** появятся данные: «Собираем данные», «После первой ночи», «через 24 часа». Без этого пользователь не знает таймайн.
+- Для **валидного нуля** (шаги: пользователь буквально не двигался) — НЕ placeholder color, foreground 100%, без pulse animation. 0 шагов = реальное «0», а не «—».
+
+Различие placeholder vs valid-zero load-bearing для UX: первое говорит «мы калибруемся», второе говорит «ваш результат сегодня».
+
+## 2026-06-14 (Revision 1) — Empty state widget layout = mirror of loaded layout
+
+Проблема: первая итерация empty Home f1 положила 3 widget'а (HRV / Шаги / Сон) в `grid grid-cols-3`. В реальном loaded Home f1 widget'ы стоят stacked full-width одна под другой. PM сразу заметил inconsistency: «empty layout отличается от loaded → grid даёт мелкий текст, плохо читается».
+
+**Правило:** **empty state widget layout НИКОГДА не должен отличаться от loaded-варианта.** Если в loaded используются stacked-cards, в empty тоже stacked (только value заменён на placeholder контент: `—` + «Собираем данные»). Если loaded — 2-колонный, empty 2-колонный. Если grid — grid.
+
+Почему: пользователь, который сегодня видит empty, завтра увидит loaded. Если layout прыгает (grid → stack), это разрыв ментальной модели и UX-шок «приложение перестроилось без меня».
+
+Mechanical check: открыть loaded-варианты feed-карточек, выписать grammar (stack/grid/dimensions/padding), точно повторить в empty с заменой только value-content. НЕ изобретать новый layout для empty.
+
+## 2026-06-14 (Revision 2) — Tab-bar требует явный padding-bottom на body выше его
+
+Проблема: при `position: absolute; bottom: 0; height: 76px` tab-bar накладывается поверх content-area внутри device-frame. Если внутренний body (`.hs-body` / `.feed` / любой scroll-container) имеет `padding-bottom < 76 + comfort_gap`, нижний контент (CTA, последняя card, footer-link) визуально упирается в tab-bar или обрезается.
+
+**Правило:** для ЛЮБОГО scroll-container внутри device-frame с tab-bar (position:absolute):
+- `padding-bottom: 100px` (= tab-bar height 76px + 24px breathing gap)
+- НЕ полагаться на `flex-spacer` или `padding-bottom: 24px` — это не учитывает tab-bar overlap
+- Если меняется tab-bar height — обновить ВСЕ scroll-container padding-bottom одновременно (mechanical: grep по `padding.*bottom` или `padding: .* .* (Xpx)` где X < tab-bar.height + 24)
+
+Mechanical check: открыть screenshot, измерить расстояние bottom-edge последнего CTA до top-edge tab-bar. Должно быть ≥ 16px (минимум для touch target separation). Если меньше — фикс padding-bottom.
+
+## 2026-06-14 (Revision 2) — Flex spacer без max-height = «дыра» в empty state
+
+Проблема: `flex: 1; min-height: 12px` без `max-height` на промежуточном spacer'е растягивается на ВСЁ свободное пространство в flex-column container'е. В empty state, где content (illustration + heading + sub + bullets) занимает только ~50% screen height, spacer создаёт 200-300px «дыру» между bullets и CTA — выглядит как «не дозалитая страница».
+
+**Правило для flex-spacer'ов в empty/sparse layouts:**
+- `flex: 0 1 32px; min-height: 12px; max-height: 40px` — ограниченный spacer, не растягивающийся бесконечно
+- ИЛИ удалить spacer и использовать `margin-top: auto` на CTA-block — flex-magic прижмёт CTA к bottom без визуального вакуума
+- Лучше второй вариант (margin-top:auto) — он более идиоматичен для flex и не вводит дополнительный DOM-node
+
+Visual heuristic: если в empty state между content-mass и action-CTA visible gap > 120px (на 844px screen) — что-то с layout. Либо content слишком short и нужно добавить mid-element, либо spacer/flex-distribution ломается.
+
+## 2026-06-14 (Revision 2) — Slicing-script с inject CSS ломает single-phone layout
+
+Проблема: `UI_assets/skills/scripts/slice_phones_transparent.py` для transparent PNG делал агрессивный inject CSS, который менял `.frames-row` display/dimensions и затрагивал внутреннюю геометрию `.hs-body` / `.device-frame`. Это **ломало visual layout** одиночного phone — CTA выезжал за bezel или обрезался tab-bar'ом, хотя в side-by-side render тот же HTML рендерился корректно.
+
+**Правило:** для **proof PNG** (визуальное подтверждение для PM на flow-overview) — НЕ использовать slicing single-phone через layout-breaking inject CSS. Вместо этого:
+1. **Side-by-side render оригинального HTML** через chrome --headless --window-size=1280,1100 — layout не ломается, всё рендерится как в браузере
+2. **Crop из side-by-side через PIL** — detect bezel columns/rows по dark-pixel scan, crop phone1 и phone2 в отдельные PNG
+3. Этот подход даёт ground-truth для визуального ревью
+
+Для **transparent PNG** (для composition на плакате/презентации) можно продолжать использовать inject CSS, НО:
+- НЕ менять `.hs-body`, `.feed`, `.tabbar`, `.frames-row` внутренней геометрии
+- Менять ТОЛЬКО outer chrome (background transparent, .page-title display:none, frame-caption display:none, hide N-th frame-with-caption)
+- НЕ менять box-shadow device-frame radically (можно убрать outer drop-shadow, оставить bezel rings)
+
+**Anti-pattern:** inject `.frames-row { width: 460px; height: 920px; padding: 0; overflow: visible; scroll-snap-type: none !important }` — это ломает реальный layout, особенно если `.frames-row` влияет на inner flex-distribution.
+
+Эталонный safe inject (Revision 2):
+```html
+<style>
+html, body { background: transparent !important; }
+.page-chrome { background: transparent !important; padding: 0 !important; min-height: auto !important; gap: 0 !important; }
+.page-title, .frame-caption { display: none !important; }
+.frames-row { display: flex !important; gap: 0 !important; padding: 16px !important; justify-content: flex-start !important; }
+.frame-with-caption:nth-of-type(2) { display: none !important; }  /* hide other phone */
+.frame-with-caption { gap: 0 !important; }
+.device-frame { box-shadow: 0 0 0 10px #1a1814, 0 0 0 11px #2a2620 !important; }  /* keep ONLY bezel rings */
+</style>
+```
+
+**Scripts:** `/tmp/render_a5_transparent.py` — эталонный safe transparent slicing. `/tmp/crop_a5_r2.py` — эталонный proof PNG crop из side-by-side.
+
+## 2026-06-14 (Revision 1) — Tab-bar = single source of truth, retroactive фиксы обязательны
+
+Проблема: новые экраны (Health Sharing E2E + Empty States) ввели 4-tab bar «Дом / История / Health Sharing / Ещё». Старый `mobile-home-f1-v0.html` (Ф1 baseline) до сих пор имел 4-tab «Главная / Тренировка / История / Ещё» — БЕЗ HS вкладки. Получалась inconsistency: пользователь на Home не видел HS-tab, потом на HS-screen видел tab-bar с HS active, на других screens обратно tab-bar разный.
+
+**Правило:** tab-bar — **single source of truth для ВСЕХ Ф1 screens**. Когда вводится новый tab (как HS появился позже Home f1):
+1. Найти ВСЕ screens с tab-bar grep'ом `class="tabbar"` или `nav .*tab`
+2. Обновить tab-bar блок в каждом файле (footer/bottom-nav) одновременно с новой фичей — НЕ откладывать
+3. Сохранить визуальную грамматику: те же иконки SVG, те же label'ы, те же size, тот же active-state wine
+4. **Не трогать логику screens** — менять ТОЛЬКО tab-bar block, остальное оставлять как есть
+5. Если есть «modal/flow» screens без tab-bar (training-start, training-active, onboarding 01-04) — это OK, не добавлять им tab-bar
+
+Retroactive cleanup НЕ опционален — каждая inconsistency в tab-bar = сломанная навигация в восприятии пользователя.
+
+В этой итерации обновлён `mobile-home-f1-v0.html` (последний файл без HS-tab). Остальные Ф1 mobile файлы уже унифицированы.
