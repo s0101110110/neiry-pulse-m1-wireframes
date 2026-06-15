@@ -1,239 +1,294 @@
-# BRIEF: Batch revision B-порций (B2/B3/B4/B7) · Neiry Pulse Ф1.5
+# BRIEF: C1 — Profile edit + HRV detail + HRV explainer modal · Neiry Pulse Ф1
 
 **Дата:** 2026-06-14
 **Заказчик:** PM (Костя)
-**Контекст:** Все 7 порций B1-B7 закоммичены и запушены в origin/main. PM провёл ревизию open questions агентов и зафиксировал 5 правок в 4 файлах. Batch revision: одной волной обновить все 4 HTML + перегенерировать proof и transparent PNG.
+**Контекст:** A1-A5 онбординг + B1-B7 corner cases + batch revision закоммичены и запушены (`085e23f`). PM выявил 2 missing screen-категории: Profile edit (нет mockup'а где юзер вводит личные данные) и HRV detail view (AC-1.4 требует «3 числа + график 30 дней + tap → объяснение»).
 
-**Принцип:** Минимальные точечные правки, не ломать existing layout. Соблюдать все ранее установленные правила (canonical header, box-sizing border-box, Tailwind CDN, slicing-script DEPRECATED → crop из side-by-side).
+**Цель:** закрыть оба gap'а в одной порции **C1** (новая категория — НЕ corner cases). 3 device-frames:
+- Phone 1: Profile edit (полный набор полей)
+- Phone 2: HRV detail view (whoop-style 30-day chart)
+- Phone 3: HRV explainer modal-overlay поверх Phone 2
 
----
-
-## Правка 1 (B2 · Phone 2 Location denied)
-
-**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-permission-denied-v0.html`
-
-**Phone 2 (Location denied) — sticky alert-orange banner actions:**
-
-1. **«Тренироваться без GPS»** → **«Без GPS»** (сокращение, одна строка вместо двух)
-2. Primary CTA **«Открыть Настройки»** → **«Настройки»** (короче)
-
-Никаких других правок на этом screen. Phone 1 (Camera denied) — не трогать.
+**Целевой файл (создать):**
+- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-profile-hrv-detail-v0.html`
 
 ---
 
-## Правка 2 (B3 · Phone 2 Auto-pause)
+## Источники правды
 
-**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-training-active-corner-cases-v0.html`
-
-**Phone 2 (Auto-pause) — app-bar timer:**
-
-Сейчас: `PAUSED · 12:43` (wine bg, без типа активности)
-Нужно: **`БЕГ · PAUSED · 12:43`** — вернуть тип активности в app-bar timer pill. Сохранить wine bg + monospace + tabular-nums.
-
-Никаких других правок. Phone 1 (STOP confirm) и Phone 3 (GPS lost) — не трогать.
+- **PRD v2.6 §8 AC-1.4:** «HRV экран: 3 числа (today / week avg / month avg) + график 30 дней + tap → объяснение» — MUST Ф1
+- **Whoop competitive reference** (`knowledge-base/competitive-design/whoop.md`):
+  - Hero metric ~70pt readable at arm's length
+  - 30-day line chart + baseline horizontal line + daily dots
+  - Progressive disclosure (overview → trends → deep data)
+  - Whoop colors: dark BG + spring green accent. **Для Neiry: Light Bevel base + wine accent** (НЕ копируем dark wholesale)
+- **Память `feedback_neiry_mockup_format`:** transparent PNG (alpha=0 углы)
+- **Reference (existing):**
+  - `mobile-home-f1-v0.html` — Home с HRV widget (canonical header + tab-bar)
+  - `mobile-settings-v0.html` — Settings (canonical entry point для Profile)
+  - `mobile-onboarding-03-notifications-calibrating-v0.html` Phone 3 — Baseline modal (pattern для HRV explainer modal-overlay)
 
 ---
 
-## Правка 3 (B4 · Phone 1 End-of-session) — 2 саб-правки + новый Phone 3
+## Структура HTML (3 device-frames рядом)
 
-**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-end-of-session-bracelet-disconnect-v0.html`
+Caption:
+- «**ЭКРАН 28** · PROFILE · EDIT»
+- «**ЭКРАН 29** · HRV · DETAIL VIEW»
+- «**ЭКРАН 30** · HRV · EXPLAINER MODAL»
 
-### 3a. Phone 1: title «Молодец!» → «Финиш!»
+---
 
-Сейчас hero title: «Молодец!» (Onest 700 32-36pt). Заменить на **«Финиш!»** — нейтральнее, не condescending для serious пилотов Лиги Героев. Всё остальное на screen остаётся.
+## Phone 1 · Profile edit (полный набор)
 
-### 3b. ДОБАВИТЬ новый Phone 3: Close confirm modal
+**Назначение:** юзер в Settings → Профиль → Редактировать. Видит form со всеми личными данными. Save → возврат в Settings.
 
-Добавить **третий device-frame** в файл (был 2, станет 3). Caption: **«ЭКРАН 21 · END-OF-SESSION · CLOSE CONFIRM»**
+**Контекст:** Light Bevel form-screen. Доступ через tab «Ещё» → раздел «Профиль» → edit.
 
-**Назначение:** юзер тапнул close × на End-of-session screen без save. Видит confirm modal: «Закрыть без сохранения? Тренировка будет утеряна.»
+**Структура (сверху вниз):**
+
+### Status bar + App-bar
+- Status bar 9:55
+- App-bar: back-chevron «‹» + title «Профиль» (centered) + «Сохранить» text-link wine top-right
+
+### Avatar block (top zone, centered)
+- Circular avatar 96-100px (border-radius 50%, soft bevel-border)
+- Placeholder/photo: muted-grey gradient circle с initials «КЛ» (Onest 700 28pt foreground)
+- Под avatar: text-link wine 13pt «Изменить фото» (camera-icon SVG)
+
+### Form fields (stacked, label-above-input pattern)
+Каждое поле: label (mono uppercase 11pt muted) + input/value (Space Grotesk 16pt foreground), divider thin border-bottom
+
+1. **Имя** — input «Костя Леонов»
+2. **Email** — input «kostya@neiry.com» (muted-grey readonly indicator)
+3. **Дата рождения** — date picker placeholder «12 марта 1989» (chevron «›» right indicating tap-to-edit)
+4. **Пол** — segment control (3 options): «Мужской» selected wine / «Женский» / «Другое»
+5. **Рост** — input numeric «178 см» (tabular-nums)
+6. **Вес** — input numeric «76 кг» (tabular-nums)
+7. **Цели** — chevron `›` right с preview «Шаги 6 000 · 4 тренировки/нед» (collapsed section, tap → expanded modal)
+
+### Connected device section (под form)
+- Section title (mono uppercase 11pt muted): `БРАСЛЕТ`
+- Card: «VIGOR-XYZ123» (semibold) + sub «подключён · уровень заряда 87%» (mono 12pt muted, success-green dot) + chevron `›` (tap → device settings)
+
+### Bottom (footer-area)
+- Text-link destructive red «Удалить аккаунт» (14pt, под form, padding 24)
+
+### Tab-bar
+Дом / История / Health Sharing / Ещё (active wine) — canonical
+
+---
+
+## Phone 2 · HRV detail view (whoop-style 30-day chart)
+
+**Назначение:** юзер тапнул HRV widget на Home → попал в detail view. Видит quick stats + 30-day chart + actionable advice.
+
+**Контекст:** Light Bevel + wine accent. Inspired by Whoop, но adapted to Neiry palette.
+
+**Структура (сверху вниз):**
+
+### Status bar + App-bar
+- Status bar 9:55
+- App-bar: back-chevron «‹» + title «HRV» (centered) + ⓘ info-icon SVG top-right (tap → opens Phone 3 explainer modal)
+
+### Hero block (centered, top zone)
+- Eyebrow (mono uppercase wine 11pt): `СЕГОДНЯ · 9:48`
+- Hero number: **«52»** (Onest 700 96pt foreground, tabular-nums) + label «**ms**» (Space Grotesk 16pt muted, inline)
+- Delta strip ниже: 
+  - «**+8%** к среднему за неделю» (mono 12pt, success-green wine `#831843` для positive)
+  - «**+12%** к baseline» (mono 12pt, success-green)
+  - Если delta negative — alert-orange
+
+### 30-day line chart (whoop-style)
+- Container: full-width card, padding 16-20, border-radius 16, Bevel-soft bg
+- Title row: `30 ДНЕЙ` (mono uppercase 11pt muted) + right toggle pills «**30Д**» wine selected / «7Д» / «Год» (tap to switch range)
+- Chart area: height ~140-160px
+- **Y-axis:** 3 ticks (~30 / ~50 / ~70 ms, mono 10pt muted-foreground, right-aligned text)
+- **X-axis:** 5 ticks (даты, mono 10pt muted, например «15.05 / 22.05 / 29.05 / 05.06 / 12.06»)
+- **Line:** smooth wine line connecting 30 daily points
+- **Baseline horizontal line:** dashed muted-grey at ~47 ms (label «baseline 47 ms» right side, 10pt mono muted)
+- **Daily dots:** small wine circles на line (radius 3-4px), today's dot — larger wine-filled с ring (radius 6px) + tooltip-label «52 ms»
+- **Area fill** под line: wine soft (rgba 4-5% opacity) — для visualHints volume
+
+### 3-metric strip (под chart)
+3 carded values inline (gap 8, equal width):
+- **СЕГОДНЯ** `52` ms (semibold)
+- **СРЕД. НЕДЕЛЯ** `48` ms (regular)
+- **СРЕД. МЕСЯЦ** `45` ms (regular)
+Каждая ячейка: card light Bevel, padding 12, border-radius 12, label mono 10pt muted + value Onest 700 24pt + unit mono 11pt muted
+
+### Insight card (контекстная рекомендация)
+- Card light Bevel + wine accent border-left 3px
+- Icon: heart-pulse SVG (wine, 20×20)
+- Title (semibold 14pt): «HRV выше нормы»
+- Sub (Space Grotesk 13pt foreground, 2 строки):
+  «Хорошая neuro-vegetative balance. Можно интенсивную тренировку или recovery-фокус.»
+
+### Bottom (опц., text-link)
+- «Узнать больше про HRV» (wine text-link 14pt, ⓘ icon) → opens Phone 3 modal
+
+### Tab-bar
+Дом (active wine) / История / Health Sharing / Ещё (canonical) — это nested screen из Home tab
+
+---
+
+## Phone 3 · HRV explainer modal-overlay (поверх Phone 2)
+
+**Назначение:** юзер тапнул ⓘ icon в app-bar или text-link «Узнать больше про HRV» — видит **bottom-sheet** с объяснением что такое HRV, как читать дельты, зачем baseline.
+
+**Контекст:** Phone 2 visible сверху (chart, hero, etc.) + semi-transparent overlay rgba(12, 10, 9, 0.45) + bottom-sheet card 70-75% screen снизу.
 
 **Структура:**
-- Background: End-of-session Phone 1 dimmed (rgba(12, 10, 9, 0.55) overlay) — те же 4 stats cards + sparkline + actions visible но dimmed
-- Centered modal-card (width ~320px, white, padding 24, border-radius 20, box-shadow):
-  - **Trash-icon SVG** (centered top, ~48×48, destructive red `#b91c1c`)
-  - Eyebrow (mono uppercase destructive red 11pt): `БЕЗВОЗВРАТНОЕ ДЕЙСТВИЕ`
-  - Title (Onest 700 22pt): «Закрыть без сохранения?»
-  - Sub (Space Grotesk 14pt foreground, line-height 1.5):
-    «Тренировка **5.20 км · 28:04** не сохранится в Историю. Это действие нельзя отменить.»
-  - 2 actions stacked:
-    - **«Удалить тренировку»** — destructive red `#b91c1c` primary CTA (48pt height, white text, trash-icon)
-    - **«Сохранить»** — wine secondary CTA (40pt, или text-link wine, на выбор)
-    - **«Отмена»** — text-link wine ниже (40pt) — closes modal, возвращает на End-of-session
 
-**Note:** этот же паттерн уже есть в B5 (`mobile-state-session-detail-edge-cases-v0.html` Delete confirm) — заимствуй CSS и структуру.
+### Background (dimmed Phone 2)
+- Phone 2 layout visible но dimmed через overlay rgba 0.45
 
-Phone 2 (Bracelet disconnect mid-session) — не трогать.
+### Bottom-sheet (70-75% screen снизу)
+- Background: white card
+- Border-top-radius 24px
+- Padding 20-24px, padding-bottom 32
+- Sheet handle на top (40×4px rounded, muted-grey)
+- Close × top-right (small, muted)
+- Eyebrow (mono uppercase wine 11pt): `КАК ЭТО РАБОТАЕТ`
+- Title (Onest 700 22pt foreground): «Что такое HRV?»
 
----
+### Explainer body (2-3 параграфа)
+- Para 1 (Space Grotesk 14pt foreground, line-height 1.5):
+  «**HRV** (heart rate variability) — это вариабельность интервалов между ударами сердца, в миллисекундах. Чем выше — тем лучше нервная система отдохнула и готова к нагрузке.»
+- Para 2:
+  «Мы измеряем HRV каждое утро после пробуждения. Сравниваем с вашим личным baseline (среднее за 30 дней).»
 
-## Правка 4 (B7 · Phone 1 HS Scan failed)
+### «Как читать график» bullets section (3 строки)
+Под title section `КАК ЧИТАТЬ ГРАФИК` (mono uppercase 11pt muted):
+- ▲ icon (success-green) «**+10% и выше** к baseline — отличное восстановление»
+- ● icon (wine) «**±10%** к baseline — норма»
+- ▼ icon (alert-orange) «**−10% и ниже** — стресс или недосып»
 
-**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-hs-edge-cases-v0.html`
+### Divider thin border
 
-**Phone 1 (HS Scan failed) — убрать дубликат:**
+### Disclaimer
+Sub-section (12pt muted, 2 строки):
+«**Не медицинская диагностика.** HRV меняется от множества факторов: сон, тренировки, кофе, алкоголь, стресс. Если стабильно низкие значения — обратитесь к врачу.»
 
-Сейчас:
-- Scanner frame в центре: ⊘ icon + label **«QR НЕДЕЙСТВИТЕЛЕН»** (внутри dashed frame)
-- Error info-block ниже: eyebrow **«QR · НЕ РАСПОЗНАН»** + title + sub
-
-**Правка:** убрать **eyebrow «QR · НЕ РАСПОЗНАН»** из error info-block. Оставить только label «QR НЕДЕЙСТВИТЕЛЕН» в scanner frame. Title «Не удалось добавить опекаемого» остаётся главным.
-
-После правки error info-block: title + sub + actions (без eyebrow).
-
----
-
-## Правка 5 (B7 · Phone 2 HS Role onboarding)
-
-**Целевой файл:** тот же `mobile-state-hs-edge-cases-v0.html`
-
-**Phone 2 — illustration: 2 силуэта → 3 силуэта**
-
-Сейчас: 2 силуэта (один меньше = Папа крупнее, опекун меньше) с heartbeat line wine между.
-
-**Правка:** **3 силуэта** (как в A5 `mobile-onboarding-05-empty-states-v0.html` HS empty SVG illustration) с heartbeat-волной между ними. Композиция: например подопечный в центре крупнее + 2 опекуна по бокам меньше, или 3 равных силуэта в треугольной композиции. Цветовая палитра как в A5: wine accent + bevel-tones + muted greys.
-
-Семантика: один опекаемый делится с **группой опекунов** (более realistic для HS — 2-3 опекуна типично).
-
-Никаких других правок на Phone 2.
+### Primary CTA wine
+- Full-width 48pt: «Понятно»
+- Wine primary, white text
 
 ---
 
-## Дизайн-правила (соблюдать)
+## Дизайн-принципы
 
+- **Light Bevel-tone** для всех 3 экранов
+- **Wine `#831843`** для primary CTA / accent / hero number / daily dots / today marker
+- **Success-green** (`#65a30d`) для positive delta (+8% к среднему) + ▲ icon
+- **Alert-orange** (`#d97706`) для negative delta + ▼ icon
+- **Muted-grey** для baseline dashed line + axis labels + secondary text
 - **Box-sizing border-box** глобально (`*, *::before, *::after`)
-- **Tailwind CDN** если используется в header
-- **Header canonical** — НЕ менять
+- **Tailwind CDN**
+- **Header canonical** — back-chevron + title-bar pattern (НЕ Home canonical с logo/bell/avatar — это nested screen)
 - **Шрифты:** Space Grotesk UI / Onest 700 hero / Geist Mono labels & numbers
-- **tabular-nums** на цифрах (12:43, 5.20, 28:04, etc.)
-- **SVG icons** (НЕ emoji)
-- **Phone-bezel:** `box-shadow: 0 0 0 10px #1a1814, 0 0 0 11px #2a2620`
+- **Pixel grid 4px**
+- **tabular-nums** на всех цифрах (52, 48, 45, 47, 178, 76, 87, 12.03.1989)
+- **SVG icons** (НЕ emoji): heart-pulse, info-circle, chevron-right, camera, arrow-up-trend, arrow-down-trend, baseline-mark, close
 
 ---
 
 ## Skills
 
-UX/UI агент — выбирай сам. Рекомендую `impeccable critique` для:
-- Phone 3 B4 (new close confirm) — destructive hierarchy, stats wording
-- B7 Phone 1 — нет ли visual gap после удаления eyebrow (compactness)
-- B7 Phone 2 — illustration composition (3 силуэта не overcrowded)
+UX/UI агент — выбирай сам. Особое внимание:
+- Chart proportions — высота / ширина / line-thickness / dot-size readable but not overcrowded
+- Profile form readability — label/value contrast WCAG AA
+- Modal explainer не overcrowded (2-3 параграфа max)
+
+**НЕ запускать:** init/document/craft/extract.
 
 ---
 
-## Output
+## Output (transparent PNG)
 
-**slicing-script DEPRECATED** — crop из side-by-side render (правило A5).
+**slicing-script DEPRECATED** — crop из 3-phone side-by-side render (window-size ~1900×1100).
 
-### B2 file
-- Update HTML
-- Regen: `14a-state-camera-denied.png` (transparent — не должен измениться), `14b-state-location-denied.png` (transparent), `20-camera-denied.png` (proof), `21-location-denied.png` (proof), `22-permission-denied-side-by-side.png` (proof)
-- Только PNG где есть изменения (Phone 2): `14b`, `21`, `22`
+1. **HTML:** `mobile-profile-hrv-detail-v0.html` в `docs_web/wireframes/m3/`
 
-### B3 file
-- Update HTML
-- Regen: `15a-state-stop-confirm.png` (transparent — без изменений), `15b-state-auto-pause.png` (transparent — изменён), `15c-state-gps-lost.png` (transparent — без изменений), `23-stop-confirm.png` (proof — без изм), `24-auto-pause.png` (proof — изменён), `25-gps-lost.png` (proof — без изм), `26-training-corner-cases-side-by-side.png` (proof — изменён)
-- Только: `15b`, `24`, `26`
+2. **Transparent PNGs** в `screenshots/sliced-flow-v2-1-transparent-2026-06-14/`:
+   - `20a-profile-edit.png`
+   - `20b-hrv-detail.png`
+   - `20c-hrv-explainer-modal.png`
+   - Verify alpha=0 углы
 
-### B4 file (структурное изменение — 3 phones вместо 2)
-- Update HTML — добавить Phone 3 (close confirm)
-- Regen ALL: `16a-state-end-of-session.png` (transparent — изменён title), `16b-state-bracelet-disconnect-training.png` (transparent — без изм), новый `16c-state-close-confirm.png` (transparent), `27-end-of-session.png` (proof — изменён), `28-bracelet-disconnect-training.png` (proof — без изм), новый `29-close-confirm.png` (proof — новый), `30-end-bracelet-side-by-side.png` (proof — 3-phone wide теперь, перерендер)
+3. **Proof-screenshots** в `screenshots/onboarding-2026-06-14/`:
+   - `40-profile-edit.png`
+   - `41-hrv-detail.png`
+   - `42-hrv-explainer-modal.png`
+   - `43-profile-hrv-side-by-side.png` (3-phone wide)
 
-  **ВНИМАНИЕ к нумерации proof:** существующий `29-end-bracelet-side-by-side.png` сейчас в `onboarding-2026-06-14/`. Новый close confirm proof заменит/сдвинется. Рекомендую:
-  - `27-end-of-session.png` → перерендер (title «Финиш!»)
-  - `28-bracelet-disconnect-training.png` → без изм
-  - `29-close-confirm.png` → **новый** (заменит старый `29-end-bracelet-side-by-side.png`)
-  - `30-end-bracelet-close-side-by-side.png` → **новый** (3-phone wide)
-  - Старый `29-end-bracelet-side-by-side.png` → удалить или переименовать в `29-OLD-side-by-side.png`
-  
-  Pick одно из:
-  - (a) Просто перерендерить `29-end-bracelet-side-by-side.png` как 3-phone (название не точное, но coherence preserved)
-  - (b) Добавить новый `29-close-confirm.png` + переименовать SxS в `30-end-bracelet-close-side-by-side.png`
-  
-  Я предпочитаю (b).
-
-### B7 file
-- Update HTML
-- Regen ALL (оба phones изменены):
-  - `19a-state-hs-scan-failed.png` (transparent), `19b-state-hs-role-onboarding.png` (transparent)
-  - `37-hs-scan-failed.png` (proof), `38-hs-role-onboarding.png` (proof), `39-hs-edge-cases-side-by-side.png` (proof)
-
-**НЕ КОММИТЬ** — это сделает PM-агент после акцепта.
+**НЕ КОММИТЬ.**
 
 ---
 
 ## Acceptance criteria
 
-- [ ] B2 — «Без GPS» + «Настройки» в Phone 2 actions
-- [ ] B3 — `БЕГ · PAUSED · 12:43` в Phone 2 app-bar timer pill
-- [ ] B4 — Phone 1 «Финиш!» + Phone 3 close confirm modal (новый device-frame)
-- [ ] B7 — Phone 1 без eyebrow «QR · НЕ РАСПОЗНАН»; Phone 2 illustration 3 силуэта
-- [ ] PNG regenerated по списку выше
-- [ ] Self-review визуальный — открыть updated PNGs через Read tool, описать что изменилось
+- [ ] HTML создан с 3 device-frames рядом
+- [ ] **Phone 1 Profile edit:** back + title «Профиль» + «Сохранить» top-right + avatar 96px + 7 form fields (Имя / Email / DOB / Пол / Рост / Вес / Цели chevron) + Connected braclet card + «Удалить аккаунт» text-link destructive внизу + tab-bar «Ещё» active
+- [ ] **Phone 2 HRV detail:** back + «HRV» + ⓘ icon + hero «52 ms» (96pt) + delta strip (+8% wine / +12% baseline) + 30-day chart (range toggle / Y-axis / X-axis / smooth wine line / dashed baseline / daily dots / today highlight / area fill) + 3-metric strip (today/week/month) + insight card + tab-bar «Дом» active
+- [ ] **Phone 3 HRV explainer:** Phone 2 dimmed + bottom-sheet 70-75% (sheet handle + close × + eyebrow + title «Что такое HRV?» + 2 paragraph explainer + 3 bullets «как читать» + disclaimer + wine CTA «Понятно»)
+- [ ] Whoop-style line chart (30-day, line + baseline + dots + today highlight)
+- [ ] Box-sizing border-box, Tailwind CDN
+- [ ] WCAG AA contrast на all
+- [ ] Transparent PNG via crop из 3-phone side-by-side
+- [ ] Self-review визуальный ПЕРЕД отчётом — открыть все 3 proof PNG
+
+---
+
+## Open вопросы
+
+1. **Profile DOB display** — «12 марта 1989» (formatted) или «12.03.1989» (mono numeric)? Я выбрал **formatted** (humanizing), но если PM хочет consistent с mono цифрами — поменяем.
+2. **Profile: добавить blood type / chronic illness?** Эти поля упоминались в PRD для Ф2 onboarding (вопросник). Сейчас НЕ добавляем — это будет в Ф2 detailed onboarding. Если PM хочет — добавить ниже Цели.
+3. **HRV chart range toggle** — 30Д / 7Д / Год — какие три? Whoop использует 30D / 6M / 1Y. Я бы взял **30Д / 7Д / Год** (русифицированные сокращения, 30Д default).
+4. **Insight card копи** — «HRV выше нормы» + сов «Хорошая neuro-vegetative balance» — может звучать слишком technically. Альтернатива: «Отличное восстановление» + «Хорошо отдохнули — можете тренироваться интенсивно». PM может уточнить.
+5. **Connected braclet card на Profile** — действительно нужен здесь или в Settings? Я бы оставил здесь как preview (юзер видит сразу свой gear), full management в Settings.
 
 ---
 
 ## Reference
 
-- B5 close confirm modal pattern (для B4 Phone 3): `mobile-state-session-detail-edge-cases-v0.html` Delete confirm
-- A5 illustration 3 силуэта (для B7 Phone 2): `mobile-onboarding-05-empty-states-v0.html`
-- Существующие файлы НЕ трогать кроме указанных 4
+- Whoop HRV pattern: `knowledge-base/competitive-design/whoop.md` (30-day line chart + baseline + dots + progressive disclosure)
+- Home f1 (canonical for HRV widget entry-point): `mobile-home-f1-v0.html`
+- Settings (canonical Profile entry-point): `mobile-settings-v0.html`
+- Baseline modal pattern (для HRV explainer): `mobile-onboarding-03-notifications-calibrating-v0.html` Phone 3
 
 ---
 
 ## РЕЗУЛЬТАТ (заполняет UX/UI агент)
 
 **Дата:** 2026-06-15
-**Файлы изменены (4 HTML):**
-- `docs_web/wireframes/m3/mobile-state-permission-denied-v0.html` (B2)
-- `docs_web/wireframes/m3/mobile-state-training-active-corner-cases-v0.html` (B3)
-- `docs_web/wireframes/m3/mobile-state-end-of-session-bracelet-disconnect-v0.html` (B4 — добавлен Phone 3 + CSS модальной)
-- `docs_web/wireframes/m3/mobile-state-hs-edge-cases-v0.html` (B7)
-
-**PNGs регенерированы (16):**
-- Transparent (6): `14b-state-location-denied.png`, `15b-state-auto-pause.png`, `16a-state-end-of-session.png`, `16c-state-close-confirm.png` (новый), `19a-state-hs-scan-failed.png`, `19b-state-hs-role-onboarding.png`
-- Proof side-by-side (4): `22-permission-denied-side-by-side.png`, `26-training-corner-cases-side-by-side.png`, `30-end-bracelet-close-side-by-side.png` (новый, 3-phone), `39-hs-edge-cases-side-by-side.png`
-- Proof per-phone (6): `20-camera-denied.png`, `21-location-denied.png`, `23-stop-confirm.png`, `24-auto-pause.png`, `25-gps-lost.png`, `27-end-of-session.png`, `28-bracelet-disconnect-training.png`, `29-close-confirm.png` (новый), `37-hs-scan-failed.png`, `38-hs-role-onboarding.png`
-- Удалён: `29-end-bracelet-side-by-side.png` (был 2-phone, заменён на 30-end-bracelet-close-side-by-side.png)
+**HTML:** `docs_web/wireframes/m3/mobile-profile-hrv-detail-v0.html` (3 device-frames в одном файле)
+**Transparent PNGs:** `UI_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/{20a-profile-edit, 20b-hrv-detail, 20c-hrv-explainer-modal}.png` (420×874, alpha=0 верифицирован)
+**Proof-screenshots:** `UI_assets/screenshots/onboarding-2026-06-14/{40-profile-edit, 41-hrv-detail, 42-hrv-explainer-modal, 43-profile-hrv-side-by-side}.png`
 
 ### Что сделано
+- **Phone 1 Profile edit:** App-bar nested (back ‹ + центрированный «Профиль» + wine «Сохранить»), avatar 96px с initials «КЛ» + camera-link «Изменить фото», 7 form-fields (Имя, Email readonly-tag, DOB chevron, Пол segment с wine «Мужской», Рост 178 см, Вес 76 кг, Цели chevron + preview), Bracelet card (VIGOR-XYZ123, success-green dot, заряд 87%), destructive «Удалить аккаунт» внизу, tab-bar «Ещё» active.
+- **Phone 2 HRV detail:** Hero «52 ms» Onest 96pt + eyebrow «СЕГОДНЯ · 9:48» + delta strip («+8% к среднему» / «+12% к baseline»). 30-day SVG line chart с baseline 47ms dashed, area fill wine-soft, daily dots, today highlight (ring + filled + dark tooltip «52 ms»), range pills (7Д / 30Д wine active / Год), Y-axis 70/50/30, X-axis 5 dates. 3-metric strip (52/48/45 ms). Insight card с heart-pulse SVG и border-left wine. Tab «Дом» active.
+- **Phone 3 HRV explainer modal:** Phone 2 dimmed (filter brightness 0.92 saturate 0.92) + dim-overlay rgba(12,10,9,0.45) + bottom-sheet (handle, close ×, eyebrow «КАК ЭТО РАБОТАЕТ», Onest title «Что такое HRV?», 2 параграфа с wine bold для HRV/baseline, 3 bullets ▲green/●wine/▼orange, disclaimer, wine CTA «Понятно»).
 
-**B2** (Phone 2 Location denied): «Тренироваться без GPS» → «Без GPS», «Открыть Настройки» → «Настройки». Banner стал визуально компактнее, обе actions помещаются на одну строку.
+### Skills run
+Skills из доступных явно не запускал — задача линейная (single-HTML + render). Использовал собственный rendering pipeline на базе lessons-learned (paired-bezel detection из B3 lessons + safe transparent CSS-inject из R2). Не использовал `init/document/craft/extract` (соблюдение правила).
 
-**B3** (Phone 2 Auto-pause): app-bar timer pill `PAUSED · 12:43` → `БЕГ · PAUSED 12:43` (восстановлен тип активности + wine bg + monospace tabular-nums preserved).
+### Decisions / compromises
+- **DOB formatted («12 марта 1989»)** — humanizing, не mono-numeric. PM выбор из open-вопроса.
+- **Range pills:** «7Д / 30Д / Год» (30Д default selected) — соответствие предпочтениям из брифа.
+- **Insight copy:** «HRV выше нормы» + «Хорошо отдохнули — можно интенсивную тренировку или recovery-фокус» (более human-readable вариант из брифа, не «neuro-vegetative balance»).
+- **Bracelet card на Profile** оставлен как preview — соответствует решению из open-вопроса.
+- **Modal sheet** не fixed-height 70-75%, а grown-by-content (≈57% screen). Это даёт более компактный sheet с правильным reading rhythm, не пустое пространство. Если PM хочет fixed-75% — поменяем `max-height: 75%` + `padding-bottom` увеличим.
+- **Dim overlay** покрывает body-scroll but не status/app-bar (R2 modal-stacking lesson: app-bar visible-but-dimmed). На Phone 3 это даёт визуальный context «вы в HRV экране, открыт modal», а не «full-screen takeover».
+- **Today dot tooltip** — рисую как пиктограмма (dark rect + 52ms текст + pointer) внутри SVG, чтобы не выходить за viewBox. Проверено: рендерится корректно.
 
-**B4 sub-edit 1** (Phone 1): hero title «Молодец!» → «Финиш!» (нейтральнее для пилотов Лиги Героев, конфетти и stat-cards сохранены).
+### Что требует ревизии PM
+1. **Profile edit fold:** на 844px viewport «Удалить аккаунт» + Bracelet card требуют scroll. Если PM хочет всё одним кадром — сжать form padding (12→8px) или убрать «Цели» в Bracelet section.
+2. **Insight card copy** — «recovery-фокус» содержит English-слово. Можно русифицировать в «лёгкая восстановительная тренировка» если PM требует full-Russian.
+3. **Modal height 70-75% vs grown-by-content** — мой выбор content-grown даёт ~57%; если PM строго хочет 70-75%, поправим max-height fixed.
+4. **Email readonly visual** — выбран pattern `kostya@neiry.com` + small READONLY mono-tag. Альтернатива — серый «not-allowed» cursor + lock-icon. PM подтверждает.
+5. **Delta-strip иконки** — оба триangle вверх зелёные (positive). При negative delta переключатся на ▼ alert-orange — но текущий экран only positive states.
 
-**B4 sub-edit 2** (новый Phone 3 — Close confirm modal): добавлен device-frame ЭКРАН 21 с background End-of-session dimmed (`.end-body-dimmed` filter brightness 0.85 saturate 0.85) + centered `.close-modal` (320×auto, white, border-radius 20). Заимствован pattern из B5 Delete confirm: trash-icon 56×56 в destructive-soft (`#fef2f2`), eyebrow mono red «БЕЗВОЗВРАТНОЕ ДЕЙСТВИЕ», title Onest 700 22pt «Закрыть без сохранения?», sub с inline-stat «5.20 км · 28:04», 3 actions stacked (destructive-red «Удалить тренировку» + wine «Сохранить» + text-link «Отмена»). `dim-overlay` rgba(12,10,9,0.55) внутри device-frame z-index 30. Стили модальной подняты один раз в `<style>`, не inline.
-
-**B7 sub-edit 1** (Phone 1): убран eyebrow «QR · не распознан» из error info-block. Title «Не удалось добавить опекаемого» теперь load-bearing primary. Single label «QR НЕДЕЙСТВИТЕЛЕН» остаётся в scanner-frame.
-
-**B7 sub-edit 2** (Phone 2): illustration 2 силуэта → 3 силуэта (pattern из A5 HS empty). Композиция треугольная: центральный (подопечный, Папа) `#a8a094` 14r круг, левый/правый (опекуны) `#d4cfc0`/`#c8c1b0` 9-10r — clear size + tonal asymmetry. ECG-pulse wine `#831843` соединяет всех троих. Halos `#fdf2f8`/`#faf8f3` за фигурами. `.role-illust-wrap` height обновлён 132 → 140px.
-
-**Skills run:** не запускались отдельно, но self-review-mode mental-check выполнен на каждом из 5 экранов (см. Self-review).
-
-**Rendering scripts:** написаны 2 скрипта в `/tmp/`:
-- `render_revision5_transparent.py` — safe inject CSS per-phone (hide other `.frame-with-caption`, не трогать `.frames-row` геометрию)
-- `render_revision5_proof.py` — side-by-side render через Chrome headless, затем PIL crop по bezel-detection (threshold dark<50, gap-merge<12, min-run 4)
-
-### Self-review
-
-1. **21-location-denied.png (B2):** banner стал явно компактнее. «Настройки» wine primary-sm + «Без GPS» text-link wine — обе кнопки на одной строке, нет переноса в 2 строки. Hierarchy сохранена. Activity card «Бег» + Readiness card видны ниже, hero CTA «Начать тренировку» виден в bottom. PASS.
-
-2. **24-auto-pause.png (B3):** app-bar pill отображает `БЕГ · PAUSED 12:43` — wine bg, белый текст, dot слева. Visual confirmation что это не generic «paused», а конкретно «Бег paused». STOP button справа. Bottom-sheet с PAUSE-icon + «АВТО-ПАУЗА · 30 СЕК БЕЗ ДВИЖЕНИЯ» + title + «Продолжить» + «Завершить». Behind sheet: frozen HR `150` muted text. PASS.
-
-3. **27-end-of-session.png (B4 Phone 1):** Title «Финиш!» в Onest 700 ~32pt с confetti dots вокруг. Eyebrow «ТРЕНИРОВКА ЗАВЕРШЕНА» wine + sub «Бег · 14 июня, 9:53» mono. 4 stats cards 2×2 grid (Дистанция 5.20 км, Длительность 28:04, Средний пульс 142 bpm, Калории 186 ккал). Sparkline с областью. Wine CTA «Сохранить тренировку» + text-link «Удалить». Корректный pattern без «condescending» «Молодец». PASS.
-
-4. **29-close-confirm.png (B4 Phone 3):** dim overlay (visible darkening) над фоном End-of-session. Modal centered: trash-icon 28×28 (destructive red) в pink-soft 56×56 wrap. Eyebrow «БЕЗВОЗВРАТНОЕ ДЕЙСТВИЕ» mono red. Title «Закрыть без сохранения?» Onest 700 22pt в 2 строки (центр). Sub «Тренировка 5.20 км · 28:04 не сохранится в Историю. Это действие нельзя отменить.» с inline-mono stat — bold, foreground. Actions stack: destructive red «Удалить тренировку» (с trash-icon) + wine «Сохранить» + text-link «Отмена». Visual destructive-hierarchy чёткая: red ≫ wine ≫ link. PASS.
-
-5. **37-hs-scan-failed.png (B7 Phone 1):** Scanner-frame с dashed orange 2px border + ⊘ icon 64×64 + label «QR НЕДЕЙСТВИТЕЛЕН» внутри (canonical error state). Error info-block alert-soft bg + border-left orange — title «Не удалось добавить опекаемого» сразу первой строкой, без eyebrow. Sub-copy объясняет «QR-код устарел или принадлежит другой системе». Compactness: gap между frame и info-block норм, нет visual hole от удалённого eyebrow (т.к. title margin: 0 0 6px 0). CTAs «Попробовать ещё раз» + «Ввести код вручную». Tab-bar внизу с HS active. PASS.
-
-6. **38-hs-role-onboarding.png (B7 Phone 2):** Illustration shows 3 силуэта в треугольной композиции: центральный (Папа) явно крупнее, темнее, halo pink (`#fdf2f8`); 2 фланговых (опекуны) меньше, светлее, halo bevel (`#faf8f3`). ECG-pulse wine line сверху по диагонали через всех троих, pulse-node на apex над центром. Не overcrowded — фигуры читаются раздельно, есть air между ними. Halo overlaps создают depth. Ниже: «Вы подключились» (wine eyebrow), «Вы видите Папу», 4 ✓ rows + 1 ⊘ row, privacy hint, CTA. PASS.
-
-### Регрессии / неожиданности
-
-- **`.role-illust-wrap` height был 132px**, новый SVG 140px — обновлён wrapper до 140px чтобы fix overflow. Внутри `.role-body` layout остался без изменений.
-- **Side-by-side render для B4** дал 3-phone правильно с первого раза (window-size 1900×1100 — те же координаты что и в B3).
-- **Старый `29-end-bracelet-side-by-side.png`** удалён в скрипте (он был 2-phone wide, заменён на новый 3-phone wide `30-end-bracelet-close-side-by-side.png`).
-- В `lessons-learned.md` добавлено 2 новых урока: (а) скрытый дубликат eyebrow + inline-label (single-source-of-truth для status statement), (б) технические координаты добавления Phone к existing N-phone setup + PNG-renaming convention.
-
-**НЕ закоммичено — ждём acceptance от PM.**
+### Регрессии
+Нет — новый файл, не трогал existing canonical. Tab-bar в обоих phones (1, 2) — byte-for-byte copy из Home f1 / Settings. Modal pattern — copy из onboarding-03 baseline-sheet.

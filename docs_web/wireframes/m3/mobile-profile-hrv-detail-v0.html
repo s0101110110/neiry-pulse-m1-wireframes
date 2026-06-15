@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Mobile Profile + HRV detail + Explainer · C1 · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      /* shadcn light tokens — 1:1 с canonical m3 */
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --destructive: #b91c1c;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Number rendering */
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+    .hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame — canonical */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    /* App-bar — nested screen pattern: back + centered title + right action */
+    .app-bar-nested {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 8px;
+      display: grid;
+      grid-template-columns: 64px 1fr 80px;
+      align-items: center;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+    .app-bar-back {
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 50%;
+      color: var(--foreground);
+    }
+    .app-bar-back:hover { background: var(--card-warm); }
+    .app-bar-back:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .app-bar-title {
+      text-align: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+    }
+    .app-bar-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 10px;
+    }
+    .app-bar-action {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--primary);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 8px 6px;
+      letter-spacing: 0.01em;
+    }
+    .app-bar-action:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+    .app-bar-icon-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      color: var(--foreground);
+    }
+    .app-bar-icon-btn:hover { background: var(--card-warm); }
+    .app-bar-icon-btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* Scroll body */
+    .body-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--background);
+      padding: 0 0 100px 0; /* clears tabbar 76 + 24 */
+    }
+    .body-scroll::-webkit-scrollbar { display: none; }
+
+    /* ============= PROFILE EDIT ============= */
+    .profile-top {
+      background: var(--card);
+      padding: 20px 16px 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .avatar-96 {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e8e2d4 0%, #d4cfc0 100%);
+      color: #57534e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 28px;
+      letter-spacing: -0.01em;
+      flex-shrink: 0;
+      box-shadow: inset 0 0 0 1px rgba(12,10,9,0.04), 0 1px 2px rgba(12,10,9,0.04);
+    }
+    .change-photo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--primary);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .change-photo-link:hover { background: var(--primary-soft); }
+
+    .form-section {
+      background: var(--card);
+      margin: 12px 0 0 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .form-row {
+      padding: 12px 16px 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .form-row:last-child { border-bottom: 0; }
+    .form-row-h {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .form-row-h:last-child { border-bottom: 0; }
+    .form-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .form-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      color: var(--foreground);
+      letter-spacing: -0.005em;
+    }
+    .form-value.readonly { color: var(--muted-foreground); }
+    .readonly-tag {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--muted-foreground);
+      padding: 2px 6px;
+      background: var(--muted);
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-left: 6px;
+      vertical-align: 2px;
+    }
+    .form-value-h {
+      flex: 1;
+      min-width: 0;
+    }
+    .form-h-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      margin-bottom: 3px;
+    }
+    .form-h-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      color: var(--foreground);
+    }
+    .form-h-preview {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      color: var(--muted-foreground);
+      margin-top: 3px;
+      letter-spacing: 0.01em;
+    }
+    .form-chevron {
+      flex-shrink: 0;
+      color: var(--border-strong);
+      display: flex;
+      align-items: center;
+    }
+
+    /* Segment control — пол */
+    .segment {
+      display: flex;
+      gap: 0;
+      background: var(--muted);
+      border-radius: 10px;
+      padding: 3px;
+      margin-top: 6px;
+    }
+    .segment-opt {
+      flex: 1;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--muted-foreground);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 8px 6px;
+      border-radius: 7px;
+      transition: background 140ms ease, color 140ms ease;
+    }
+    .segment-opt.active {
+      background: var(--primary);
+      color: var(--primary-foreground);
+      box-shadow: 0 1px 2px rgba(131, 24, 67, 0.16);
+    }
+    .segment-opt:not(.active):hover { color: var(--foreground); }
+
+    /* Connected bracelet card */
+    .braclet-section {
+      padding: 16px 16px 4px 16px;
+    }
+    .section-h {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      margin: 0 0 8px 4px;
+    }
+    .braclet-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: background 140ms ease;
+    }
+    .braclet-card:hover { background: var(--card-warm); }
+    .braclet-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .braclet-info { flex: 1; min-width: 0; }
+    .braclet-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--foreground);
+      letter-spacing: -0.005em;
+    }
+    .braclet-sub {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      color: var(--muted-foreground);
+      margin-top: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.01em;
+    }
+    .braclet-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      flex-shrink: 0;
+    }
+    .braclet-pct {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    /* Destructive */
+    .destructive-link {
+      margin: 24px 16px 0 16px;
+      padding: 14px;
+      width: calc(100% - 32px);
+      text-align: center;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--destructive);
+      letter-spacing: 0.01em;
+      border-radius: 10px;
+    }
+    .destructive-link:hover { background: rgba(185, 28, 28, 0.05); }
+
+    /* ============= HRV DETAIL ============= */
+    .hrv-hero {
+      padding: 24px 20px 12px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      background: var(--card);
+    }
+    .hrv-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+    .hrv-hero-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .hrv-hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 96px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+    .hrv-hero-unit {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 16px;
+      color: var(--muted-foreground);
+    }
+    .hrv-delta-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .hrv-delta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted-foreground);
+    }
+    .hrv-delta-val {
+      font-weight: 700;
+      color: var(--success);
+      font-variant-numeric: tabular-nums;
+    }
+    .hrv-delta-sep {
+      width: 1px;
+      height: 12px;
+      background: var(--border-strong);
+    }
+
+    /* Chart card */
+    .chart-card {
+      margin: 16px 16px 0 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 14px 14px 14px;
+    }
+    .chart-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .chart-card-title {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .range-pills {
+      display: inline-flex;
+      gap: 0;
+      background: var(--muted);
+      border-radius: 8px;
+      padding: 2px;
+    }
+    .range-pill {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--muted-foreground);
+      padding: 4px 9px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 140ms ease, color 140ms ease;
+    }
+    .range-pill.active {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    .chart-svg-wrap {
+      position: relative;
+      width: 100%;
+    }
+    .chart-svg {
+      width: 100%;
+      height: 160px;
+      display: block;
+    }
+    .chart-y-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      fill: var(--muted-foreground);
+      letter-spacing: 0.04em;
+    }
+    .chart-x-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      fill: var(--muted-foreground);
+      letter-spacing: 0.04em;
+    }
+    .chart-grid-line {
+      stroke: var(--border);
+      stroke-width: 1;
+      stroke-dasharray: 0;
+    }
+    .chart-baseline {
+      stroke: var(--border-strong);
+      stroke-width: 1;
+      stroke-dasharray: 3 3;
+      fill: none;
+    }
+    .chart-baseline-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      fill: var(--muted-foreground);
+      letter-spacing: 0.04em;
+    }
+    .chart-area {
+      fill: var(--primary);
+      opacity: 0.06;
+    }
+    .chart-line {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .chart-dot {
+      fill: var(--primary);
+      opacity: 0.85;
+    }
+    .chart-dot-today {
+      fill: var(--primary);
+    }
+    .chart-dot-today-ring {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 1.5;
+      opacity: 0.32;
+    }
+    .chart-tooltip-rect {
+      fill: var(--foreground);
+    }
+    .chart-tooltip-text {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      fill: #ffffff;
+      letter-spacing: 0.02em;
+    }
+
+    /* 3-metric strip */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin: 12px 16px 0 16px;
+    }
+    .metric-cell {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 10px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
+    }
+    .metric-cell-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .metric-cell-val-row {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .metric-cell-val {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .metric-cell-val.dim {
+      color: var(--muted-foreground);
+      font-weight: 600;
+    }
+    .metric-cell-unit {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      color: var(--muted-foreground);
+    }
+
+    /* Insight card */
+    .insight-card {
+      margin: 16px 16px 0 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary);
+      border-radius: 12px;
+      padding: 14px 14px 14px 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .insight-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .insight-body { flex: 1; min-width: 0; }
+    .insight-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--foreground);
+      letter-spacing: -0.005em;
+    }
+    .insight-sub {
+      margin-top: 4px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--muted-foreground);
+    }
+
+    .learn-more-link {
+      margin: 16px 16px 0 16px;
+      width: calc(100% - 32px);
+      padding: 10px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--primary);
+      border-radius: 8px;
+      letter-spacing: 0.01em;
+    }
+    .learn-more-link:hover { background: var(--primary-soft); }
+
+    /* Tab-bar — canonical */
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 8px 16px 8px;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .tab-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+    .tab.active { color: var(--primary); }
+    .tab.active .tab-icon { stroke: var(--primary); }
+
+    /* ============= MODAL OVERLAY (Phone 3) ============= */
+    .dim-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 10, 9, 0.45);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      z-index: 50;
+    }
+    .sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--card);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      padding: 14px 22px 26px 22px;
+      z-index: 60;
+      box-shadow: 0 -8px 32px -4px rgba(12, 10, 9, 0.25);
+      max-height: 75%;
+      display: flex;
+      flex-direction: column;
+    }
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border-strong);
+      margin: 0 auto 14px auto;
+    }
+    .sheet-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--muted);
+      color: var(--foreground);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .sheet-close:hover { background: #e8e2d4; }
+    .sheet-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .sheet-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      margin-bottom: 14px;
+    }
+    .sheet-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .sheet-body p {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--foreground);
+    }
+    .sheet-body p strong {
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .sheet-bullets-h {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      margin: 6px 0 10px 0;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .sheet-bullets {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .sheet-bullet {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--foreground);
+    }
+    .sheet-bullet strong {
+      font-weight: 700;
+      font-family: 'Geist Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    .sheet-bullet-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .sheet-disclaimer {
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11.5px;
+      line-height: 1.5;
+      color: var(--muted-foreground);
+      margin-bottom: 14px;
+    }
+    .sheet-disclaimer strong {
+      font-weight: 700;
+      color: var(--foreground);
+    }
+    .sheet-cta {
+      height: 48px;
+      width: 100%;
+      border-radius: 12px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+    }
+    .sheet-cta:hover { background: #6b1238; }
+
+    /* Background dim helper for Phone 3 children */
+    .is-dimmed {
+      filter: brightness(0.92) saturate(0.92);
+    }
+
+    /* Page chrome */
+    .page-chrome {
+      min-height: 100vh;
+      padding: 32px 16px;
+      background: var(--background);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .frames-row {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: nowrap;
+      padding: 16px 0 24px 0;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Neiry Pulse · Mobile · C1 · Profile edit + HRV detail + Explainer · 3×(390×844)</div>
+
+    <div class="frames-row">
+
+      <!-- ===================== PHONE 1 — PROFILE EDIT ===================== -->
+      <div class="frame-with-caption">
+        <section class="device-frame" aria-label="Профиль — редактирование">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:55</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App-bar nested -->
+          <div class="app-bar-nested">
+            <button class="app-bar-back" aria-label="Назад">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13.5 5 L7 11 L13.5 17"/>
+              </svg>
+            </button>
+            <div class="app-bar-title">Профиль</div>
+            <div class="app-bar-right">
+              <button class="app-bar-action">Сохранить</button>
+            </div>
+          </div>
+
+          <div class="body-scroll">
+            <!-- Avatar block -->
+            <div class="profile-top">
+              <div class="avatar-96" aria-label="Аватар Костя Леонов">КЛ</div>
+              <button class="change-photo-link">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M2 5.5 L4 5.5 L5 4 L9 4 L10 5.5 L12 5.5 L12 11 L2 11 Z"/>
+                  <circle cx="7" cy="7.8" r="1.8"/>
+                </svg>
+                Изменить фото
+              </button>
+            </div>
+
+            <!-- Form section (Имя/Email) -->
+            <div class="form-section">
+              <div class="form-row">
+                <div class="form-label">Имя</div>
+                <div class="form-value">Костя Леонов</div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">Email</div>
+                <div>
+                  <span class="form-value readonly mono">kostya@neiry.com</span>
+                  <span class="readonly-tag">readonly</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Date + Gender -->
+            <div class="form-section">
+              <div class="form-row-h">
+                <div class="form-value-h">
+                  <div class="form-h-label">Дата рождения</div>
+                  <div class="form-h-value">12 марта 1989</div>
+                </div>
+                <div class="form-chevron">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 4 L12 9 L7 14"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">Пол</div>
+                <div class="segment" role="radiogroup" aria-label="Пол">
+                  <button class="segment-opt active" role="radio" aria-checked="true">Мужской</button>
+                  <button class="segment-opt" role="radio" aria-checked="false">Женский</button>
+                  <button class="segment-opt" role="radio" aria-checked="false">Другое</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Height + Weight -->
+            <div class="form-section">
+              <div class="form-row-h">
+                <div class="form-value-h">
+                  <div class="form-h-label">Рост</div>
+                  <div class="form-h-value mono num">178 см</div>
+                </div>
+                <div class="form-chevron">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 4 L12 9 L7 14"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="form-row-h">
+                <div class="form-value-h">
+                  <div class="form-h-label">Вес</div>
+                  <div class="form-h-value mono num">76 кг</div>
+                </div>
+                <div class="form-chevron">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 4 L12 9 L7 14"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="form-row-h">
+                <div class="form-value-h">
+                  <div class="form-h-label">Цели</div>
+                  <div class="form-h-preview mono"><span class="num">6 000</span> шагов · <span class="num">4</span> тренировки/нед</div>
+                </div>
+                <div class="form-chevron">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 4 L12 9 L7 14"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bracelet -->
+            <div class="braclet-section">
+              <h3 class="section-h">Браслет</h3>
+              <div class="braclet-card" role="button" tabindex="0" aria-label="Браслет VIGOR-XYZ123, подключён, заряд 87%">
+                <div class="braclet-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="7" width="14" height="8" rx="2"/>
+                    <path d="M7 7 V5 H15 V7 M7 15 V17 H15 V15"/>
+                    <path d="M8.5 11 H10 L11 9 L12 13 L13 11 H13.5" stroke="#831843"/>
+                  </svg>
+                </div>
+                <div class="braclet-info">
+                  <div class="braclet-name mono">VIGOR-XYZ123</div>
+                  <div class="braclet-sub">
+                    <span class="braclet-dot" aria-hidden="true"></span>
+                    подключён · заряд <span class="braclet-pct num">87%</span>
+                  </div>
+                </div>
+                <div class="form-chevron">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 4 L12 9 L7 14"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Destructive -->
+            <button class="destructive-link">Удалить аккаунт</button>
+          </div>
+
+          <!-- Tab-bar — Ещё active -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 11.5 L12 4 L21 11.5"/>
+                <path d="M5 10.5 V20 H19 V10.5"/>
+              </svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h10"/>
+              </svg>
+              История
+            </button>
+            <button class="tab" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="8" cy="9" r="3"/>
+                <path d="M2 19a6 6 0 0 1 12 0"/>
+                <circle cx="16" cy="7" r="2.5"/>
+                <path d="M13 13a4 4 0 0 1 7 3.5"/>
+              </svg>
+              Health Sharing
+            </button>
+            <button class="tab active" aria-current="page" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.6"/>
+                <circle cx="12" cy="12" r="1.6"/>
+                <circle cx="19" cy="12" r="1.6"/>
+              </svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+        <div class="frame-caption"><strong>ЭКРАН 28</strong> · PROFILE · EDIT</div>
+      </div>
+
+      <!-- ===================== PHONE 2 — HRV DETAIL ===================== -->
+      <div class="frame-with-caption">
+        <section class="device-frame" aria-label="HRV — детальный вид">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:55</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App-bar nested -->
+          <div class="app-bar-nested">
+            <button class="app-bar-back" aria-label="Назад">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13.5 5 L7 11 L13.5 17"/>
+              </svg>
+            </button>
+            <div class="app-bar-title">HRV</div>
+            <div class="app-bar-right">
+              <button class="app-bar-icon-btn" aria-label="Что такое HRV?">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8.5"/>
+                  <path d="M11 7.2 V7.5"/>
+                  <path d="M11 10 V15"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="body-scroll">
+
+            <!-- Hero -->
+            <div class="hrv-hero">
+              <div class="hrv-eyebrow">СЕГОДНЯ · 9:48</div>
+              <div class="hrv-hero-row">
+                <span class="hrv-hero-num">52</span>
+                <span class="hrv-hero-unit">ms</span>
+              </div>
+              <div class="hrv-delta-strip">
+                <span class="hrv-delta">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true" style="color:var(--success);"><path d="M5 1.5 L8.5 6.5 L1.5 6.5 Z"/></svg>
+                  <span class="hrv-delta-val num">+8%</span>
+                  <span>к среднему за неделю</span>
+                </span>
+                <span class="hrv-delta-sep" aria-hidden="true"></span>
+                <span class="hrv-delta">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true" style="color:var(--success);"><path d="M5 1.5 L8.5 6.5 L1.5 6.5 Z"/></svg>
+                  <span class="hrv-delta-val num">+12%</span>
+                  <span>к baseline</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Chart card -->
+            <div class="chart-card">
+              <div class="chart-card-head">
+                <span class="chart-card-title">30 дней</span>
+                <div class="range-pills" role="tablist">
+                  <button class="range-pill" role="tab">7Д</button>
+                  <button class="range-pill active" role="tab" aria-selected="true">30Д</button>
+                  <button class="range-pill" role="tab">Год</button>
+                </div>
+              </div>
+
+              <div class="chart-svg-wrap">
+                <!-- SVG chart 358×160 (interior width) — viewBox 360 160 -->
+                <svg class="chart-svg" viewBox="0 0 360 160" preserveAspectRatio="none" aria-label="HRV график за 30 дней">
+                  <!-- Y-axis grid lines (3 ticks: 70, 50, 30 ms). Plot area: x=32-352, y=8-130 -->
+                  <line class="chart-grid-line" x1="32" y1="14" x2="352" y2="14"/>
+                  <line class="chart-grid-line" x1="32" y1="68" x2="352" y2="68"/>
+                  <line class="chart-grid-line" x1="32" y1="122" x2="352" y2="122"/>
+
+                  <!-- Y labels -->
+                  <text class="chart-y-label" x="26" y="17" text-anchor="end">70</text>
+                  <text class="chart-y-label" x="26" y="71" text-anchor="end">50</text>
+                  <text class="chart-y-label" x="26" y="125" text-anchor="end">30</text>
+
+                  <!-- Baseline dashed at 47 ms: y = 14 + ((70-47)/40)*108 = 14 + 0.575*108 = 76.1 -->
+                  <line class="chart-baseline" x1="32" y1="76" x2="352" y2="76"/>
+                  <text class="chart-baseline-label" x="352" y="73" text-anchor="end">baseline 47 ms</text>
+
+                  <!-- Area under line — 30 points mapped: x from 32..352 step ~11, y from values 40..56 -->
+                  <!-- Generated path for 30 days: values [40,42,41,44,43,45,42,46,44,47,45,48,46,49,47,48,46,49,50,48,49,51,49,52,50,51,49,52,50,52] -->
+                  <path class="chart-area"
+                    d="M32,95 L43.03,89.6 L54.07,92.3 L65.10,84.2 L76.14,86.9 L87.17,81.5 L98.21,89.6 L109.24,78.8 L120.28,84.2 L131.31,76.1 L142.34,81.5 L153.38,73.4 L164.41,78.8 L175.45,70.7 L186.48,76.1 L197.52,73.4 L208.55,78.8 L219.59,70.7 L230.62,68 L241.66,73.4 L252.69,70.7 L263.72,65.3 L274.76,70.7 L285.79,62.6 L296.83,68 L307.86,65.3 L318.90,70.7 L329.93,62.6 L340.97,68 L352,62.6 L352,130 L32,130 Z"/>
+
+                  <!-- Line -->
+                  <path class="chart-line"
+                    d="M32,95 L43.03,89.6 L54.07,92.3 L65.10,84.2 L76.14,86.9 L87.17,81.5 L98.21,89.6 L109.24,78.8 L120.28,84.2 L131.31,76.1 L142.34,81.5 L153.38,73.4 L164.41,78.8 L175.45,70.7 L186.48,76.1 L197.52,73.4 L208.55,78.8 L219.59,70.7 L230.62,68 L241.66,73.4 L252.69,70.7 L263.72,65.3 L274.76,70.7 L285.79,62.6 L296.83,68 L307.86,65.3 L318.90,70.7 L329.93,62.6 L340.97,68 L352,62.6"/>
+
+                  <!-- Daily dots (radius 2) — all except last -->
+                  <circle class="chart-dot" cx="32"     cy="95"   r="2"/>
+                  <circle class="chart-dot" cx="43.03"  cy="89.6" r="2"/>
+                  <circle class="chart-dot" cx="54.07"  cy="92.3" r="2"/>
+                  <circle class="chart-dot" cx="65.10"  cy="84.2" r="2"/>
+                  <circle class="chart-dot" cx="76.14"  cy="86.9" r="2"/>
+                  <circle class="chart-dot" cx="87.17"  cy="81.5" r="2"/>
+                  <circle class="chart-dot" cx="98.21"  cy="89.6" r="2"/>
+                  <circle class="chart-dot" cx="109.24" cy="78.8" r="2"/>
+                  <circle class="chart-dot" cx="120.28" cy="84.2" r="2"/>
+                  <circle class="chart-dot" cx="131.31" cy="76.1" r="2"/>
+                  <circle class="chart-dot" cx="142.34" cy="81.5" r="2"/>
+                  <circle class="chart-dot" cx="153.38" cy="73.4" r="2"/>
+                  <circle class="chart-dot" cx="164.41" cy="78.8" r="2"/>
+                  <circle class="chart-dot" cx="175.45" cy="70.7" r="2"/>
+                  <circle class="chart-dot" cx="186.48" cy="76.1" r="2"/>
+                  <circle class="chart-dot" cx="197.52" cy="73.4" r="2"/>
+                  <circle class="chart-dot" cx="208.55" cy="78.8" r="2"/>
+                  <circle class="chart-dot" cx="219.59" cy="70.7" r="2"/>
+                  <circle class="chart-dot" cx="230.62" cy="68"   r="2"/>
+                  <circle class="chart-dot" cx="241.66" cy="73.4" r="2"/>
+                  <circle class="chart-dot" cx="252.69" cy="70.7" r="2"/>
+                  <circle class="chart-dot" cx="263.72" cy="65.3" r="2"/>
+                  <circle class="chart-dot" cx="274.76" cy="70.7" r="2"/>
+                  <circle class="chart-dot" cx="285.79" cy="62.6" r="2"/>
+                  <circle class="chart-dot" cx="296.83" cy="68"   r="2"/>
+                  <circle class="chart-dot" cx="307.86" cy="65.3" r="2"/>
+                  <circle class="chart-dot" cx="318.90" cy="70.7" r="2"/>
+                  <circle class="chart-dot" cx="329.93" cy="62.6" r="2"/>
+                  <circle class="chart-dot" cx="340.97" cy="68"   r="2"/>
+
+                  <!-- Today dot: ring + filled circle + tooltip -->
+                  <circle class="chart-dot-today-ring" cx="352" cy="62.6" r="6"/>
+                  <circle class="chart-dot-today" cx="352" cy="62.6" r="3.5"/>
+                  <!-- Tooltip -->
+                  <g transform="translate(312, 30)">
+                    <rect class="chart-tooltip-rect" x="0" y="0" width="44" height="20" rx="5"/>
+                    <text class="chart-tooltip-text" x="22" y="14" text-anchor="middle">52 ms</text>
+                    <!-- pointer -->
+                    <path d="M36 20 L40 24 L44 20 Z" class="chart-tooltip-rect"/>
+                  </g>
+
+                  <!-- X labels (5 ticks): 15.05 / 22.05 / 29.05 / 05.06 / 12.06 -->
+                  <text class="chart-x-label" x="32"  y="148" text-anchor="start">15.05</text>
+                  <text class="chart-x-label" x="112" y="148" text-anchor="middle">22.05</text>
+                  <text class="chart-x-label" x="192" y="148" text-anchor="middle">29.05</text>
+                  <text class="chart-x-label" x="272" y="148" text-anchor="middle">05.06</text>
+                  <text class="chart-x-label" x="352" y="148" text-anchor="end">12.06</text>
+                </svg>
+              </div>
+            </div>
+
+            <!-- 3-metric strip -->
+            <div class="metric-strip">
+              <div class="metric-cell">
+                <span class="metric-cell-label">Сегодня</span>
+                <div class="metric-cell-val-row">
+                  <span class="metric-cell-val num">52</span>
+                  <span class="metric-cell-unit">ms</span>
+                </div>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-cell-label">Сред. неделя</span>
+                <div class="metric-cell-val-row">
+                  <span class="metric-cell-val dim num">48</span>
+                  <span class="metric-cell-unit">ms</span>
+                </div>
+              </div>
+              <div class="metric-cell">
+                <span class="metric-cell-label">Сред. месяц</span>
+                <div class="metric-cell-val-row">
+                  <span class="metric-cell-val dim num">45</span>
+                  <span class="metric-cell-unit">ms</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Insight card -->
+            <div class="insight-card">
+              <div class="insight-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 11 H6 L8 6 L11 16 L13 9 L15 11 H20"/>
+                </svg>
+              </div>
+              <div class="insight-body">
+                <div class="insight-title">HRV выше нормы</div>
+                <div class="insight-sub">Хорошо отдохнули — можно интенсивную тренировку или recovery-фокус.</div>
+              </div>
+            </div>
+
+            <!-- Learn more link -->
+            <button class="learn-more-link">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="7" cy="7" r="5.5"/>
+                <path d="M7 4.6 V4.8"/>
+                <path d="M7 6.5 V10"/>
+              </svg>
+              Узнать больше про HRV
+            </button>
+
+          </div>
+
+          <!-- Tab-bar — Дом active -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab active" aria-current="page" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 11.5 L12 4 L21 11.5"/>
+                <path d="M5 10.5 V20 H19 V10.5"/>
+              </svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h10"/>
+              </svg>
+              История
+            </button>
+            <button class="tab" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="8" cy="9" r="3"/>
+                <path d="M2 19a6 6 0 0 1 12 0"/>
+                <circle cx="16" cy="7" r="2.5"/>
+                <path d="M13 13a4 4 0 0 1 7 3.5"/>
+              </svg>
+              Health Sharing
+            </button>
+            <button class="tab" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.6"/>
+                <circle cx="12" cy="12" r="1.6"/>
+                <circle cx="19" cy="12" r="1.6"/>
+              </svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+        <div class="frame-caption"><strong>ЭКРАН 29</strong> · HRV · DETAIL VIEW</div>
+      </div>
+
+      <!-- ===================== PHONE 3 — HRV EXPLAINER MODAL ===================== -->
+      <div class="frame-with-caption">
+        <section class="device-frame" aria-label="HRV — объяснение (модальное окно)">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar is-dimmed" aria-hidden="true">
+            <span class="num">9:55</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App-bar nested (dimmed) -->
+          <div class="app-bar-nested is-dimmed">
+            <button class="app-bar-back" aria-label="Назад" tabindex="-1" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13.5 5 L7 11 L13.5 17"/>
+              </svg>
+            </button>
+            <div class="app-bar-title">HRV</div>
+            <div class="app-bar-right">
+              <button class="app-bar-icon-btn" aria-label="Что такое HRV?" tabindex="-1" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8.5"/>
+                  <path d="M11 7.2 V7.5"/>
+                  <path d="M11 10 V15"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Body (dimmed background context — visible но dim) -->
+          <div class="body-scroll is-dimmed" aria-hidden="true">
+            <div class="hrv-hero">
+              <div class="hrv-eyebrow">СЕГОДНЯ · 9:48</div>
+              <div class="hrv-hero-row">
+                <span class="hrv-hero-num">52</span>
+                <span class="hrv-hero-unit">ms</span>
+              </div>
+              <div class="hrv-delta-strip">
+                <span class="hrv-delta">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true" style="color:var(--success);"><path d="M5 1.5 L8.5 6.5 L1.5 6.5 Z"/></svg>
+                  <span class="hrv-delta-val num">+8%</span>
+                  <span>к среднему за неделю</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-card-head">
+                <span class="chart-card-title">30 дней</span>
+                <div class="range-pills">
+                  <button class="range-pill" tabindex="-1">7Д</button>
+                  <button class="range-pill active" tabindex="-1">30Д</button>
+                  <button class="range-pill" tabindex="-1">Год</button>
+                </div>
+              </div>
+              <div class="chart-svg-wrap">
+                <svg class="chart-svg" viewBox="0 0 360 160" preserveAspectRatio="none" aria-hidden="true">
+                  <line class="chart-grid-line" x1="32" y1="14" x2="352" y2="14"/>
+                  <line class="chart-grid-line" x1="32" y1="68" x2="352" y2="68"/>
+                  <line class="chart-grid-line" x1="32" y1="122" x2="352" y2="122"/>
+                  <line class="chart-baseline" x1="32" y1="76" x2="352" y2="76"/>
+                  <path class="chart-area"
+                    d="M32,95 L43.03,89.6 L54.07,92.3 L65.10,84.2 L76.14,86.9 L87.17,81.5 L98.21,89.6 L109.24,78.8 L120.28,84.2 L131.31,76.1 L142.34,81.5 L153.38,73.4 L164.41,78.8 L175.45,70.7 L186.48,76.1 L197.52,73.4 L208.55,78.8 L219.59,70.7 L230.62,68 L241.66,73.4 L252.69,70.7 L263.72,65.3 L274.76,70.7 L285.79,62.6 L296.83,68 L307.86,65.3 L318.90,70.7 L329.93,62.6 L340.97,68 L352,62.6 L352,130 L32,130 Z"/>
+                  <path class="chart-line"
+                    d="M32,95 L43.03,89.6 L54.07,92.3 L65.10,84.2 L76.14,86.9 L87.17,81.5 L98.21,89.6 L109.24,78.8 L120.28,84.2 L131.31,76.1 L142.34,81.5 L153.38,73.4 L164.41,78.8 L175.45,70.7 L186.48,76.1 L197.52,73.4 L208.55,78.8 L219.59,70.7 L230.62,68 L241.66,73.4 L252.69,70.7 L263.72,65.3 L274.76,70.7 L285.79,62.6 L296.83,68 L307.86,65.3 L318.90,70.7 L329.93,62.6 L340.97,68 L352,62.6"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dim overlay covers everything below status/app-bar visually -->
+          <div class="dim-overlay" aria-hidden="true"></div>
+
+          <!-- Modal bottom-sheet -->
+          <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="hrv-modal-title">
+            <div class="sheet-handle" aria-hidden="true"></div>
+            <button class="sheet-close" aria-label="Закрыть">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <path d="M3 3 L11 11 M11 3 L3 11"/>
+              </svg>
+            </button>
+
+            <div class="sheet-eyebrow">Как это работает</div>
+            <h3 id="hrv-modal-title" class="sheet-title">Что такое HRV?</h3>
+
+            <div class="sheet-body">
+              <p><strong>HRV</strong> — вариабельность интервалов между ударами сердца в миллисекундах. Чем выше — тем лучше нервная система отдохнула и готова к нагрузке.</p>
+              <p>Браслет измеряет HRV каждое утро после пробуждения и сравнивает с вашим <strong>baseline</strong> (среднее за 30 дней).</p>
+            </div>
+
+            <div class="sheet-bullets-h">Как читать график</div>
+            <div class="sheet-bullets">
+              <div class="sheet-bullet">
+                <span class="sheet-bullet-icon" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" style="color:var(--success);"><path d="M7 2 L12 10 L2 10 Z"/></svg>
+                </span>
+                <span><strong>+10%</strong> и выше к baseline — отличное восстановление</span>
+              </div>
+              <div class="sheet-bullet">
+                <span class="sheet-bullet-icon" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" style="color:var(--primary);"><circle cx="7" cy="7" r="4.5"/></svg>
+                </span>
+                <span><strong>±10%</strong> к baseline — норма</span>
+              </div>
+              <div class="sheet-bullet">
+                <span class="sheet-bullet-icon" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" style="color:var(--warning);"><path d="M7 12 L12 4 L2 4 Z"/></svg>
+                </span>
+                <span><strong>−10%</strong> и ниже — стресс или недосып</span>
+              </div>
+            </div>
+
+            <div class="sheet-disclaimer">
+              <strong>Не медицинская диагностика.</strong> HRV меняется от сна, тренировок, кофе и стресса. Если стабильно низкие значения — обратитесь к врачу.
+            </div>
+
+            <button class="sheet-cta">Понятно</button>
+          </div>
+        </section>
+        <div class="frame-caption"><strong>ЭКРАН 30</strong> · HRV · EXPLAINER MODAL</div>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>
