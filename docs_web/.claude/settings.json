@@ -229,7 +229,8 @@
       "Bash(curl -s *)",
       "Bash(sips *)",
       "mcp__gdrive__search",
-      "Bash(python3 -c \"from PIL import Image; im = Image.open\\('/tmp/b3-render-2676/26-training-corner-cases-side-by-side.png'\\); print\\('size:', im.size, 'mode:', im.mode\\)\")"
+      "Bash(python3 -c \"from PIL import Image; im = Image.open\\('/tmp/b3-render-2676/26-training-corner-cases-side-by-side.png'\\); print\\('size:', im.size, 'mode:', im.mode\\)\")",
+      "Bash(python3 /tmp/render-b6-history-edge.py)"
     ],
     "additionalDirectories": [
       "/tmp",
