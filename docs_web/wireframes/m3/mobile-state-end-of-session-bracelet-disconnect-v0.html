@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · End-of-session summary + Bracelet disconnect mid-session · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Box-sizing reset — A5 R2 lesson */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --muted-foreground-strong: #57534e;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --warning-strong: #b45309;
+      --warning-border: #f5d9a8;
+      --destructive: #b91c1c;
+      --destructive-soft: #fef2f2;
+      --zone-inactive: #f5f2eb;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      margin: 0;
+    }
+
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+    .hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    /* ========== Device frame (canonical) ========== */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: #fafaf9;
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: #fafaf9;
+    }
+
+    /* =========================================================== */
+    /* PHONE 1 — END-OF-SESSION SUMMARY                            */
+    /* =========================================================== */
+
+    /* Minimal app-bar — only close × top-right */
+    .end-app-bar {
+      flex-shrink: 0;
+      height: 52px;
+      padding: 8px 12px 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      background: #fafaf9;
+    }
+    .end-close-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--muted-foreground-strong);
+      transition: background 140ms ease;
+    }
+    .end-close-btn:hover { background: var(--muted); }
+    .end-close-btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* End body */
+    .end-body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 8px 24px 28px;
+      display: flex;
+      flex-direction: column;
+      background: #fafaf9;
+      position: relative;
+    }
+    .end-body::-webkit-scrollbar { display: none; }
+
+    /* Confetti — subtle, 7 particles in top corners */
+    .confetti-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 220px;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .confetti {
+      position: absolute;
+      width: 6px;
+      height: 8px;
+      border-radius: 1.5px;
+      opacity: 0;
+      animation: confetti-fade 1200ms ease-out 200ms forwards;
+    }
+    @keyframes confetti-fade {
+      0% { opacity: 0; transform: translateY(-8px) rotate(0deg); }
+      40% { opacity: 1; }
+      100% { opacity: 0.85; transform: translateY(0) rotate(var(--rot, 18deg)); }
+    }
+    /* Left cluster */
+    .c1 { left: 8%;  top: 22px; background: var(--primary); --rot: -18deg; transform: rotate(-18deg); }
+    .c2 { left: 14%; top: 56px; background: var(--warning); --rot: 12deg; width: 5px; height: 7px; }
+    .c3 { left: 4%;  top: 86px; background: var(--primary); --rot: 28deg; width: 4px; height: 4px; border-radius: 50%; }
+    .c4 { left: 18%; top: 110px; background: var(--warning); --rot: -8deg; width: 5px; height: 5px; border-radius: 50%; }
+    /* Right cluster */
+    .c5 { right: 10%; top: 30px; background: var(--warning); --rot: 22deg; }
+    .c6 { right: 6%;  top: 70px; background: var(--primary); --rot: -14deg; width: 5px; height: 7px; }
+    .c7 { right: 16%; top: 100px; background: var(--primary); --rot: 18deg; width: 4px; height: 4px; border-radius: 50%; }
+    .c8 { right: 4%;  top: 130px; background: var(--warning); --rot: -6deg; width: 4px; height: 4px; border-radius: 50%; }
+
+    /* Hero */
+    .end-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 24px 0 28px;
+      position: relative;
+      z-index: 2;
+    }
+    .end-hero-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+    .end-hero-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 36px;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      margin: 4px 0 2px;
+      line-height: 1;
+    }
+    .end-hero-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted-foreground-strong);
+      letter-spacing: -0.005em;
+    }
+    .end-hero-sub .dot {
+      display: inline-block;
+      margin: 0 8px;
+      color: var(--border-strong);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    /* Stats grid 2×2 */
+    .end-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 4px;
+      position: relative;
+      z-index: 2;
+    }
+    .end-stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .end-stat-card .l {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .end-stat-card .row {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .end-stat-card .v {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 30px;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .end-stat-card .u {
+      font-family: 'Geist Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+    }
+
+    /* Mini sparkline card */
+    .end-spark-card {
+      margin-top: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 14px 12px;
+      position: relative;
+      z-index: 2;
+    }
+    .end-spark-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .end-spark-title {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .end-spark-range {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted-foreground-strong);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.04em;
+    }
+    .end-spark-svg {
+      width: 100%;
+      height: 64px;
+      display: block;
+    }
+    .end-spark-line {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .end-spark-area { fill: var(--primary); opacity: 0.08; }
+    .end-spark-dot { fill: var(--primary); }
+    .end-spark-yaxis {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      fill: var(--muted-foreground);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Actions */
+    .end-actions {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      z-index: 2;
+    }
+    .btn-save {
+      width: 100%;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.005em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      border: none;
+      transition: transform 140ms ease-out, background 140ms ease;
+    }
+    .btn-save:hover { background: #6b1238; }
+    .btn-save:active { transform: scale(0.99); }
+    .btn-save:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 3px;
+    }
+    .btn-delete-link {
+      width: 100%;
+      height: 40px;
+      background: none;
+      border: none;
+      color: var(--destructive);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: -0.005em;
+      cursor: pointer;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-delete-link:hover { background: rgba(185, 28, 28, 0.06); }
+    .btn-delete-link:focus-visible {
+      outline: 2px solid var(--destructive);
+      outline-offset: 2px;
+    }
+
+
+    /* =========================================================== */
+    /* PHONE 2 — TRAINING ACTIVE + BRACELET DISCONNECT BANNER      */
+    /* =========================================================== */
+
+    /* App-bar-active canonical (training-active) */
+    .app-bar-active {
+      flex-shrink: 0;
+      height: 52px;
+      padding: 0 14px 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fafaf9;
+      border-bottom: 1px solid var(--border);
+    }
+    .app-bar-active .left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      background: var(--destructive);
+      border-radius: 50%;
+      animation: pulse-red 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-red {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.85); }
+    }
+    .session-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--foreground);
+    }
+    .session-timer {
+      font-family: 'Geist Mono', monospace;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+      color: var(--foreground);
+      margin-left: 6px;
+    }
+    .btn-stop {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 10px;
+      background: var(--destructive);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      border: none;
+    }
+
+    /* Bracelet disconnect banner (canonical from B3 GPS lost) */
+    .bb-banner {
+      flex-shrink: 0;
+      background: var(--warning-soft);
+      border-bottom: 1px solid var(--warning-border);
+      border-left: 4px solid var(--warning);
+      padding: 12px 16px 14px 14px;
+      animation: banner-slide-down 280ms ease-out both;
+    }
+    @keyframes banner-slide-down {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .bb-banner-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .bb-banner-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      background: rgba(217, 119, 6, 0.14);
+      color: var(--warning);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .bb-banner-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--warning-strong);
+      flex: 1;
+      min-width: 0;
+    }
+    .bb-pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--warning);
+      animation: bb-pulse 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes bb-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.78); }
+    }
+    .bb-banner-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 1.22;
+      letter-spacing: -0.015em;
+      color: var(--foreground);
+      margin: 0 0 4px 0;
+    }
+    .bb-banner-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 12.5px;
+      line-height: 1.42;
+      color: var(--muted-foreground-strong);
+      margin: 0 0 10px 0;
+    }
+    .bb-banner-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .bb-btn-reconnect {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: -0.005em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      border: none;
+      transition: background 140ms ease;
+    }
+    .bb-btn-reconnect:hover { background: #6b1238; }
+    .bb-btn-reconnect:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .bb-btn-end {
+      height: 36px;
+      padding: 0 8px;
+      background: none;
+      border: none;
+      color: var(--destructive);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    .bb-btn-end:hover { background: rgba(185, 28, 28, 0.06); }
+    .bb-btn-end:focus-visible {
+      outline: 2px solid var(--destructive);
+      outline-offset: 2px;
+    }
+
+    /* Pagination dots */
+    .pagination {
+      flex-shrink: 0;
+      padding: 10px 0 6px;
+      background: #fafaf9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border-strong);
+      transition: all 200ms ease;
+    }
+    .dot.active {
+      background: var(--primary);
+      width: 20px;
+      border-radius: 4px;
+    }
+    .page-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .page-label .sep { opacity: 0.5; margin: 0 6px; }
+
+    /* Page content */
+    .page-content {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fafaf9;
+      overflow: hidden;
+    }
+
+    /* Page 1 — frozen HR */
+    .p1-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 8px 20px 0;
+    }
+    .p1-hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 4px 0;
+    }
+    .p1-hr-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .p1-hr-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 96px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--border-strong);
+      font-variant-numeric: tabular-nums;
+    }
+    .p1-clock-cue {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(120, 113, 108, 0.12);
+      color: var(--muted-foreground-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .p1-hr-unit {
+      font-family: 'Geist Mono', monospace;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+    }
+    .p1-frozen-sub {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--warning-strong);
+      font-variant-numeric: tabular-nums;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .p1-zone-chip {
+      display: inline-block;
+      padding: 5px 14px;
+      background: var(--border-strong);
+      color: #fff;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 12px;
+      margin-top: 8px;
+    }
+    .p1-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      padding: 14px 0 18px;
+      border-top: 1px solid var(--border);
+    }
+    .p1-meta-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .p1-meta-cell .v {
+      font-family: 'Geist Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--foreground);
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .p1-meta-cell .l {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    /* Zones strip bottom */
+    .zones-strip {
+      flex-shrink: 0;
+      display: flex;
+      gap: 4px;
+      padding: 14px 16px 18px;
+      background: #fafaf9;
+      border-top: 1px solid var(--border);
+    }
+    .zone-cell {
+      flex: 1;
+      height: 52px;
+      border-radius: 8px;
+      background: var(--zone-inactive);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+    .zone-cell .z-lbl {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .zone-cell .z-pct {
+      font-family: 'Geist Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+    }
+    /* Z3 chip greyed (frozen HR ⇒ zone not live) */
+    .zone-cell.is-frozen-active {
+      background: var(--border-strong);
+    }
+    .zone-cell.is-frozen-active .z-lbl { color: rgba(255,255,255,0.78); }
+    .zone-cell.is-frozen-active .z-pct { color: #fff; }
+
+
+    /* ========== Page chrome (caption layout) ========== */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px 16px;
+      gap: 24px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .page-title .pill {
+      display: inline-block;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      background: var(--primary-soft);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-left: 8px;
+      text-transform: uppercase;
+    }
+    .frames-row {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pulse-dot, .bb-pulse-dot, .confetti { animation: none; }
+      .btn-save:active, .btn-stop:active { transform: none; }
+      .bb-banner { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">
+      Neiry Pulse · End-of-session summary + Bracelet disconnect mid-session · v0 · 390×844
+      <span class="pill">B4 corner cases · Ф1.5</span>
+    </div>
+
+    <div class="frames-row">
+
+      <!-- =========================================== -->
+      <!-- PHONE 1 — END-OF-SESSION SUMMARY            -->
+      <!-- =========================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 19</strong> · END-OF-SESSION · SUMMARY</div>
+
+        <section class="device-frame" aria-label="Тренировка завершена — итоги">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:53</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- Minimal app-bar — only close × -->
+          <div class="end-app-bar">
+            <button class="end-close-btn" aria-label="Закрыть без сохранения">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 5 L15 15 M15 5 L5 15"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- End body -->
+          <div class="end-body">
+            <!-- Confetti -->
+            <div class="confetti-layer" aria-hidden="true">
+              <span class="confetti c1"></span>
+              <span class="confetti c2"></span>
+              <span class="confetti c3"></span>
+              <span class="confetti c4"></span>
+              <span class="confetti c5"></span>
+              <span class="confetti c6"></span>
+              <span class="confetti c7"></span>
+              <span class="confetti c8"></span>
+            </div>
+
+            <!-- Hero -->
+            <div class="end-hero">
+              <span class="end-hero-eyebrow">Тренировка завершена</span>
+              <h1 class="end-hero-title">Молодец!</h1>
+              <span class="end-hero-sub">
+                Бег<span class="dot" aria-hidden="true">·</span><span class="mono">14 июня, 9:53</span>
+              </span>
+            </div>
+
+            <!-- Stats grid 2×2 -->
+            <div class="end-stats" role="list" aria-label="Итоги тренировки">
+              <div class="end-stat-card" role="listitem">
+                <span class="l">Дистанция</span>
+                <div class="row">
+                  <span class="v">5.20</span>
+                  <span class="u">км</span>
+                </div>
+              </div>
+              <div class="end-stat-card" role="listitem">
+                <span class="l">Длительность</span>
+                <div class="row">
+                  <span class="v">28:04</span>
+                </div>
+              </div>
+              <div class="end-stat-card" role="listitem">
+                <span class="l">Средний пульс</span>
+                <div class="row">
+                  <span class="v">142</span>
+                  <span class="u">bpm</span>
+                </div>
+              </div>
+              <div class="end-stat-card" role="listitem">
+                <span class="l">Калории</span>
+                <div class="row">
+                  <span class="v">186</span>
+                  <span class="u">ккал</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mini sparkline -->
+            <div class="end-spark-card" aria-label="Пульс за тренировку">
+              <div class="end-spark-head">
+                <span class="end-spark-title">Пульс · 28 мин</span>
+                <span class="end-spark-range">120 – 168 bpm</span>
+              </div>
+              <svg class="end-spark-svg" viewBox="0 0 300 64" preserveAspectRatio="none" aria-hidden="true">
+                <!-- y axis tick lines -->
+                <line x1="0" y1="14" x2="300" y2="14" stroke="#e8e4d8" stroke-width="0.6" stroke-dasharray="2 4"/>
+                <line x1="0" y1="44" x2="300" y2="44" stroke="#e8e4d8" stroke-width="0.6" stroke-dasharray="2 4"/>
+                <!-- Area -->
+                <path class="end-spark-area"
+                      d="M0,48 L15,46 L30,42 L45,36 L60,30 L75,26 L90,24 L105,22 L120,20 L135,18 L150,16 L165,18 L180,20 L195,22 L210,24 L225,28 L240,30 L255,28 L270,26 L285,30 L300,34 L300,64 L0,64 Z"/>
+                <!-- Line -->
+                <path class="end-spark-line"
+                      d="M0,48 L15,46 L30,42 L45,36 L60,30 L75,26 L90,24 L105,22 L120,20 L135,18 L150,16 L165,18 L180,20 L195,22 L210,24 L225,28 L240,30 L255,28 L270,26 L285,30 L300,34"/>
+                <!-- End dot -->
+                <circle class="end-spark-dot" cx="300" cy="34" r="3"/>
+                <!-- Y axis labels -->
+                <text class="end-spark-yaxis" x="2" y="11">168</text>
+                <text class="end-spark-yaxis" x="2" y="42">140</text>
+              </svg>
+            </div>
+
+            <!-- Actions -->
+            <div class="end-actions">
+              <button class="btn-save" aria-label="Сохранить тренировку в историю">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3.5 2.5 H12 L14.5 5 V14.5 a1 1 0 0 1 -1 1 H3.5 a1 1 0 0 1 -1 -1 V3.5 a1 1 0 0 1 1 -1 Z"/>
+                  <path d="M5 2.5 V6 H11 V2.5"/>
+                  <rect x="5" y="9" width="7" height="6" rx="0.5"/>
+                </svg>
+                Сохранить тренировку
+              </button>
+              <button class="btn-delete-link" aria-label="Удалить тренировку">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M2.5 4 H13.5"/>
+                  <path d="M4 4 V13 a1 1 0 0 0 1 1 H11 a1 1 0 0 0 1 -1 V4"/>
+                  <path d="M6 4 V2.5 a0.5 0.5 0 0 1 0.5 -0.5 H9.5 a0.5 0.5 0 0 1 0.5 0.5 V4"/>
+                  <line x1="6.5" y1="7" x2="6.5" y2="11.5"/>
+                  <line x1="9.5" y1="7" x2="9.5" y2="11.5"/>
+                </svg>
+                Удалить
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+
+      <!-- =========================================== -->
+      <!-- PHONE 2 — BRACELET DISCONNECT MID-SESSION   -->
+      <!-- =========================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 20</strong> · TRAINING ACTIVE · BRACELET DISCONNECT</div>
+
+        <section class="device-frame" aria-label="Активная тренировка — браслет отключён, пульс заморожен">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:50</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App-bar-active (timer keeps running) -->
+          <div class="app-bar-active">
+            <div class="left">
+              <span class="pulse-dot" aria-hidden="true"></span>
+              <span class="session-label">Бег</span>
+              <span class="session-timer" aria-label="Длительность 12 минут 48 секунд">00:12:48</span>
+            </div>
+            <button class="btn-stop" aria-label="Остановить тренировку">STOP</button>
+          </div>
+
+          <!-- Bracelet disconnect banner -->
+          <div class="bb-banner" role="status" aria-live="polite">
+            <div class="bb-banner-head">
+              <span class="bb-banner-icon" aria-hidden="true">
+                <!-- bluetooth-off SVG -->
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 2 V14 L12 10.5 L4 5.5"/>
+                  <path d="M4 10.5 L8 7"/>
+                  <line x1="1.8" y1="1.8" x2="14.2" y2="14.2"/>
+                </svg>
+              </span>
+              <span class="bb-banner-eyebrow">Браслет отключён · 12:46</span>
+              <span class="bb-pulse-dot" aria-hidden="true"></span>
+            </div>
+            <p class="bb-banner-title">Не вижу ваш браслет</p>
+            <p class="bb-banner-sub">Пульс не обновляется. Время, дистанция и калории продолжают писаться.</p>
+            <div class="bb-banner-actions">
+              <button class="bb-btn-reconnect" aria-label="Переподключить браслет">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M2 7 a5 5 0 1 1 1.5 3.5"/>
+                  <path d="M2 11.5 V7.5 H6"/>
+                </svg>
+                Переподключить
+              </button>
+              <button class="bb-btn-end" aria-label="Завершить тренировку">Завершить тренировку</button>
+            </div>
+          </div>
+
+          <!-- Pagination dots -->
+          <div class="pagination">
+            <div class="dots" role="tablist" aria-label="Свайп между страницами">
+              <span class="dot active" role="tab" aria-selected="true" aria-label="Страница 1 — Зоны"></span>
+              <span class="dot" role="tab" aria-selected="false" aria-label="Страница 2 — Детали"></span>
+              <span class="dot" role="tab" aria-selected="false" aria-label="Страница 3 — Карта"></span>
+            </div>
+            <div class="page-label"><span>1 / 3</span><span class="sep">·</span><span>Зоны</span></div>
+          </div>
+
+          <!-- Page content -->
+          <div class="page-content">
+            <div class="p1-body">
+              <div class="p1-hero">
+                <span class="eyebrow" style="color: var(--warning-strong);">Пульс · заморожен</span>
+                <div class="p1-hr-row">
+                  <div style="display:flex; align-items:baseline; gap:6px;">
+                    <span class="p1-hr-num">156</span>
+                    <span class="p1-hr-unit">bpm</span>
+                  </div>
+                  <span class="p1-clock-cue" aria-hidden="true" title="Данные устарели">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="8" cy="8" r="6"/>
+                      <path d="M8 4.5 V8 L10.5 9.5"/>
+                    </svg>
+                  </span>
+                </div>
+                <span class="p1-frozen-sub">Последний замер · 12:46</span>
+                <span class="p1-zone-chip">Zone 3 · Tempo</span>
+              </div>
+              <div class="p1-meta">
+                <div class="p1-meta-cell">
+                  <span class="v">2.36</span>
+                  <span class="l">км</span>
+                </div>
+                <div class="p1-meta-cell">
+                  <span class="v">5:22</span>
+                  <span class="l">мин/км</span>
+                </div>
+                <div class="p1-meta-cell">
+                  <span class="v">186</span>
+                  <span class="l">ккал</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zones strip (Z3 greyed — frozen HR) -->
+          <div class="zones-strip">
+            <div class="zone-cell"><span class="z-lbl">Z1</span><span class="z-pct">3%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z2</span><span class="z-pct">28%</span></div>
+            <div class="zone-cell is-frozen-active" aria-label="Зона 3 заморожена"><span class="z-lbl">Z3</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

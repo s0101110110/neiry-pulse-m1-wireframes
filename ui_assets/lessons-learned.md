@@ -336,3 +336,38 @@ Coordinates 3-phone-side-by-side render (1900×1100, padding 16):
 **Альтернатива:** если Tailwind не нужен в variant'е (только кастомный CSS) — дублировать все эффективные стили app-bar в `<style>` (`.app-bar > div { display:flex; align-items:center; gap:8px }`, `.icon-btn { width:36px; height:36px; border-radius:50%; ... }`). Но это удваивает работу — проще подключить Tailwind CDN.
 
 Урок шире: **никогда не пересоздавай повторно используемый блок с нуля. Копируй markup + runtime + CSS из canonical**. Это применимо к header'у, tab-bar'у, dev-bar'у, card'ам с типовой структурой.
+
+## 2026-06-15 — Глиф `·` в Onest font fallback'ится на emoji в Chrome (B4 end-of-session)
+
+Проблема: в hero-sub строке «Бег · 14 июня, 9:53» character `·` (U+00B7 MIDDLE DOT) внутри `<span>` без explicit font-family наследует `font-family: 'Onest', sans-serif` (от родителя .end-hero-sub). Onest не содержит глиф для U+00B7 → Chrome fallback'ит на Apple Color Emoji font → рендерится как пустой grey balloon-like glyph 14×14px. Critique-flag.
+
+**Правило для middot separator в multilingual headlines:**
+1. **Всегда оборачивать `·` в `<span class="dot">` с explicit `font-family: 'Space Grotesk', sans-serif` или `'Geist Mono'`** — оба фонта содержат U+00B7 корректно.
+2. **Size — explicit (10-14px) + `color: var(--border-strong)` или muted-foreground** — middot никогда не претендует на семантику, это только разделитель.
+3. **Альтернатива:** использовать обычный `bullet •` (U+2022) с тем же подходом — но у `•` ниже частотность в русскоязычных subs, придётся объяснять глаз.
+4. **Mechanical check:** после render открыть screenshot, найти middot-separator в headline. Если выглядит как балон, эмодзи, толстая точка или вертикальная палочка — точно font-fallback. Если subtle middot между словами на baseline — OK.
+
+**Anti-pattern:** наследовать font-family от Onest hero parent — почти любой Onest mockup с separator middot будет страдать от emoji-fallback в Chrome. Это **системный** баг pre-existing в Onest font file, не локальный.
+
+Применимо ко всем future mockups с inline middot: home meta-bar, history-row meta, settings-row meta, training session-meta.
+
+## 2026-06-15 — Frozen HR ≠ Frozen Zones (bracelet vs auto-pause)
+
+Проблема: В B3 (auto-pause) все live-source данные frozen — HR + zones + meta + zone-chip. В B4 (bracelet disconnect) только HR-source данных frozen — GPS/time/cals продолжают писаться. Naive cascade «всё frozen» неверен — он коммуницирует «тренировка на паузе», а юзер не понимает почему он продолжает бежать а UI «остановился».
+
+**Правило: cascade frozen зависит от data source, не от event severity:**
+1. **Bracelet disconnect (HR-source потерян, GPS работает):**
+   - Frozen: HR-value, Z-zones chip (live zone = HR-based), zones-strip active cell
+   - Live: км (GPS), pace (GPS-derived), cals (time+motion-derived), timer
+   - Banner messaging: «Пульс не обновляется. Время, дистанция и калории продолжают писаться» — explicit user-mental-model alignment
+2. **GPS lost (location потерян, HR работает):**
+   - Frozen: км (GPS), pace, last-known-marker на карте
+   - Live: HR, zones, time, cals (time-based estimate)
+   - Banner: «Пульс и время продолжают записываться. Дистанция временно на паузе» (B3 GPS lost canonical)
+3. **Auto-pause (юзер не движется, всё на паузе):**
+   - Frozen: ALL — HR, км, pace, zones, cals
+   - Live: только timer (но он показывает elapsed, не active duration)
+4. **Manual pause:**
+   - Same as auto-pause
+
+Mechanical check: открыть source canonical training-active, выписать список widgets, для каждого определить data source (GPS/HR/time/motion-sensor). Bracelet disconnect = только HR widgets frozen. GPS lost = только GPS widgets frozen. Pause = все widgets frozen.
