@@ -270,6 +270,57 @@ Retroactive cleanup НЕ опционален — каждая inconsistency в 
 
 UX-следствие: snooze сохраняет состояние «надо что-то сделать» в сознании пользователя без раздражения. Permanent dismiss = «я обещаю не показать опять» — продукт не должен давать такого обещания для metric-affecting состояний.
 
+## 2026-06-15 — Frozen-state visualHints: cascade muted на ВСЕХ live-source compontents
+
+Проблема: при auto-pause естественно muted'ить только hero-метрику (HR 156 в Phone 2) — но Zone chip, meta-cells (км/мин-км/ккал), zones-strip остаются foreground. Это разлад: «HR заморожен, но зоны живые?» — пользователь не понимает state model.
+
+**Правило для frozen overlays (auto-pause, manual pause):**
+1. **Все live-source children идут в `is-frozen`** state одновременно: hero number (`var(--border-strong)`), zone chip (тот же tone), meta-cells .v values muted.
+2. **Zones-strip** также cascade: bg остаётся `var(--zone-inactive)`, active cell становится `var(--border-strong)` вместо `var(--primary)`. Это сохраняет zone-visual hierarchy (Z3 ещё «active») но без яркого wine.
+3. **Eyebrow label обновляется**: «Пульс» → «Пульс · заморожен» — explicit textual cue для screen-readers + visual reinforcement.
+4. **Анимация stop**: hr-pulse animation: none на is-frozen, иначе цвет muted, но scale всё ещё качает — confusing.
+
+GPS lost — частный случай (только distance frozen, HR alive). Тут cascade применяется selectively: bottom-strip distance muted + PAUSED tag, pace muted («last» tag), HR live wine. Zones-strip остаётся foreground (HR-zones продолжают апдейтиться).
+
+Mechanical check: выписать список «что приходит с браслета прямо сейчас» (HR, zones, активность) vs «что заморожено» (distance/pace/cals при pause; distance при GPS lost). Все frozen-source — `is-frozen`. Все alive-source — foreground.
+
+## 2026-06-15 — Modal overlay stacking inside device-frame (z-index hierarchy)
+
+Проблема: при создании overlay (dim-overlay, bottom-sheet) внутри `.page-content` который сам `flex: 1; overflow: hidden`, overlay'и могут (а) обрезаться по `.page-content` границе, не покрывая app-bar + zones-strip, или (б) выезжать за device-frame если положить их absolute в `.device-frame` напрямую.
+
+**Правило stacking для overlays внутри device-frame:**
+1. **Dim overlay (modal STOP):** позиционируется внутри `.page-content` с `position: absolute; inset: 0; z-index: 30`. Это покрывает ровно page content area (между app-bar и zones-strip) — app-bar и zones-strip остаются seen-but-disabled. Логично: STOP confirm живёт «над» текущей страницей, app-bar остаётся как контекст.
+2. **Bottom-sheet (Auto-pause):** аналогично внутри `.page-content`, `position: absolute; left/right/bottom: 0; z-index: 25`. Sheet поднимается из низа page-content, не закрывая app-bar и не выезжая за zones-strip (которая sticks внизу).
+3. **Banner (GPS lost):** flex-child между `.app-bar-active` и `.pagination`, не overlay. Sticky-feel за счёт `flex-shrink: 0` и `border-bottom: 1px solid warning-border`.
+
+Mechanical check: после render каждого overlay открыть screenshot:
+- Status bar visible вверху?
+- App-bar visible (тёмная плашка app-bar-active)?
+- Overlay/sheet НЕ выходит за device-frame border-radius 44px?
+- Zones-strip visible (для overlay'ев которые сидят в page-content, иначе hidden)?
+
+Если overlay должен покрыть app-bar (полноэкранный takeover) — тогда `position: absolute` относительно `.device-frame` с `z-index: 50` (выше device-notch). Но это redesign pattern, не «overlay над страницей».
+
+## 2026-06-15 — 3-phone side-by-side render — coordinates для crop из 1900×1100
+
+Проблема: при side-by-side render 3 phones (window-size 1900×1100) bezel-detection через простой `dark_col_mask` склеивает все 3 phones в один column-range, потому что outer drop-shadow + close gap (frames-row gap: 48px) даёт continuous dark pixels между phones.
+
+**Правило crop'а для 3+ phone side-by-side:**
+1. **Threshold dark должен быть строгий** (`<50`, не `<70`) — иначе drop-shadow считается bezel.
+2. **Gap-merge должен быть малым** (`<12px`, не `<40px`) — крупный merge склеит phones.
+3. **Если всё равно склеилось** (один widerange > 600px), применить **split_if_needed**: внутри range искать low-density column-gaps (>=14 consecutive non-dark) и резать по midpoints.
+4. **Padding 18-24px** вокруг bezel — иначе drop-shadow обрезается.
+
+Эталонный скрипт: `/tmp/crop_b3_phones.py` (3-phone) — работает на render 1900×1100, каждый phone ~412×866 + padding. Detected phones get crop'нуты в 448×902 файлы.
+
+Coordinates 3-phone-side-by-side render (1900×1100, padding 16):
+- Phone 1: x ~306-717
+- Phone 2: x ~744-1155
+- Phone 3: x ~1182-1593
+- Y range: 96-961 (включая device-notch)
+
+Этот ground-truth можно переиспользовать для будущих 3-phone сетов.
+
 ## 2026-06-14 (Revision 2 hotfix) — Header = single source of truth между empty и loaded variants
 
 Проблема: при создании empty-state экрана `mobile-onboarding-05-empty-states-v0.html` я **пересоздал app-bar markup с нуля**, копируя только видимую часть DOM из `mobile-home-f1-v0.html` (logo SVG + button'ы), НО **забыл подключить `<script src="https://cdn.tailwindcss.com"></script>`** в `<head>`. Markup app-bar использует Tailwind-классы (`flex items-center gap-2`, `w-9 h-9`, `rounded-full`, `bg-stone-200`, `hover:bg-stone-100`) — без runtime'а они мёртвые. Результат: logo не центровался вертикально (flexbox не работал), icon-buttons выглядели как «коробки с border» (нет round + размер + bg). PM это поймал на финальном ревью A5.

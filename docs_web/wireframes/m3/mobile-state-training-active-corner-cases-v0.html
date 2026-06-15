@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Mobile Training Active · Corner cases (STOP confirm + Auto-pause + GPS lost) · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Box-sizing reset — lesson 2026-06-14 R2 */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --muted-foreground-strong: #57534e;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --warning-strong: #b45309;
+      --warning-border: #f5d9a8;
+      --destructive: #b91c1c;
+      --destructive-soft: #fef2f2;
+      --zone-inactive: #f5f2eb;
+      --paused-bg: #4c1f33;       /* deep wine tint for paused timer pill */
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      margin: 0;
+    }
+
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+    .hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* ========== Device frame (canonical) ========== */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: #fafaf9;
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: #fafaf9;
+    }
+
+    /* ========== App-bar-active (canonical from mobile-training-active-v0) ========== */
+    .app-bar-active {
+      flex-shrink: 0;
+      height: 52px;
+      padding: 0 14px 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fafaf9;
+      border-bottom: 1px solid var(--border);
+    }
+    .app-bar-active .left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      background: var(--destructive);
+      border-radius: 50%;
+      animation: pulse-red 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-red {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.85); }
+    }
+    .session-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--foreground);
+    }
+    .session-timer {
+      font-family: 'Geist Mono', monospace;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+      color: var(--foreground);
+      margin-left: 6px;
+    }
+    .btn-stop {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 10px;
+      background: var(--destructive);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      border: none;
+      transition: transform 140ms ease-out, background 140ms ease;
+    }
+    .btn-stop:hover { background: #991b1b; }
+    .btn-stop:active { transform: scale(0.97); }
+    .btn-stop:focus-visible {
+      outline: 2px solid var(--destructive);
+      outline-offset: 2px;
+    }
+
+    /* Paused variant of app-bar (Phone 2) */
+    .paused-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: var(--paused-bg);
+      color: #fff;
+      border-radius: 999px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      font-variant-numeric: tabular-nums;
+    }
+    .paused-pill .dot {
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0.7;
+    }
+    .paused-pill .timer-num {
+      letter-spacing: -0.01em;
+      font-weight: 700;
+    }
+
+    /* ========== Pagination dots ========== */
+    .pagination {
+      flex-shrink: 0;
+      padding: 10px 0 6px;
+      background: #fafaf9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .dots { display: flex; gap: 6px; align-items: center; }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border-strong);
+      transition: all 200ms ease;
+    }
+    .dot.active {
+      background: var(--primary);
+      width: 20px;
+      border-radius: 4px;
+    }
+    .page-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .page-label .sep { opacity: 0.5; margin: 0 6px; }
+
+    .page-content {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fafaf9;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ========== Zones strip ========== */
+    .zones-strip {
+      flex-shrink: 0;
+      display: flex;
+      gap: 4px;
+      padding: 14px 16px 18px;
+      background: #fafaf9;
+      border-top: 1px solid var(--border);
+    }
+    .zone-cell {
+      flex: 1;
+      height: 52px;
+      border-radius: 8px;
+      background: var(--zone-inactive);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      transition: background 200ms ease;
+    }
+    .zone-cell .z-lbl {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .zone-cell .z-pct {
+      font-family: 'Geist Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+    }
+    .zone-cell.active { background: var(--primary); }
+    .zone-cell.active .z-lbl { color: rgba(255,255,255,0.78); }
+    .zone-cell.active .z-pct { color: #fff; }
+    .zone-cell.muted {
+      background: var(--zone-inactive);
+      opacity: 0.45;
+    }
+    .zone-cell.muted-active {
+      background: var(--border-strong);
+    }
+    .zone-cell.muted-active .z-lbl { color: rgba(255,255,255,0.85); }
+    .zone-cell.muted-active .z-pct { color: #fff; }
+
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    /* ========== Page 1 — Big HR ========== */
+    .p1-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 8px 20px 0;
+    }
+    .p1-hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 0;
+    }
+    .p1-hr-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 112px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+      animation: hr-pulse 1.4s ease-in-out infinite;
+      transform-origin: center;
+    }
+    /* Muted (frozen) HR variant for Phone 2 */
+    .p1-hr-num.is-frozen {
+      color: var(--border-strong);
+      animation: none;
+    }
+    @keyframes hr-pulse {
+      0%, 100% { transform: scale(1); }
+      18% { transform: scale(1.025); }
+      36% { transform: scale(1); }
+    }
+    .p1-hr-unit {
+      font-family: 'Geist Mono', monospace;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      margin-left: 2px;
+    }
+    .p1-zone-chip {
+      display: inline-block;
+      padding: 5px 14px;
+      background: var(--primary);
+      color: #fff;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 12px;
+      margin-top: 4px;
+    }
+    .p1-zone-chip.is-frozen {
+      background: var(--border-strong);
+      color: #fff;
+    }
+    .p1-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      padding: 14px 0 18px;
+      border-top: 1px solid var(--border);
+    }
+    .p1-meta-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .p1-meta-cell .v {
+      font-family: 'Geist Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--foreground);
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .p1-meta-cell .v.is-frozen { color: var(--border-strong); }
+    .p1-meta-cell .l {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    /* =========================================================== */
+    /* PHONE 1 — STOP CONFIRM MODAL                                */
+    /* =========================================================== */
+    .dim-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 10, 9, 0.55);
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      animation: dim-fade 220ms ease-out both;
+    }
+    @keyframes dim-fade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .stop-modal {
+      width: 100%;
+      max-width: 322px;
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.18), 0 8px 24px rgba(0,0,0,0.08);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      animation: modal-scale 240ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+    }
+    @keyframes modal-scale {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--destructive);
+      margin-bottom: 4px;
+    }
+    .modal-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      margin: 0 0 8px 0;
+    }
+    .modal-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--foreground);
+      opacity: 0.78;
+      margin: 0;
+    }
+    .modal-sub .stat {
+      font-family: 'Geist Mono', monospace;
+      font-weight: 700;
+      color: var(--foreground);
+      opacity: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .modal-stats-row {
+      display: flex;
+      gap: 8px;
+      margin: 14px 0 4px 0;
+      padding: 12px;
+      background: var(--muted);
+      border-radius: 12px;
+      justify-content: space-between;
+    }
+    .modal-stat-cell {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .modal-stat-cell .v {
+      font-family: 'Geist Mono', monospace;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--foreground);
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .modal-stat-cell .l {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .modal-stat-sep {
+      width: 1px;
+      background: var(--border);
+    }
+    .modal-actions {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .btn-destructive-full {
+      height: 48px;
+      width: 100%;
+      border-radius: 12px;
+      background: var(--destructive);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      border: none;
+      transition: transform 140ms ease-out, background 140ms ease;
+    }
+    .btn-destructive-full:hover { background: #991b1b; }
+    .btn-destructive-full:active { transform: scale(0.99); }
+    .btn-link-wine {
+      height: 40px;
+      width: 100%;
+      background: transparent;
+      color: var(--primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    .btn-link-wine:hover { background: var(--primary-soft); }
+    .btn-link-destructive {
+      height: 40px;
+      width: 100%;
+      background: transparent;
+      color: var(--destructive);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    .btn-link-destructive:hover { background: var(--destructive-soft); }
+
+    /* =========================================================== */
+    /* PHONE 2 — AUTO-PAUSE BOTTOM SHEET                           */
+    /* =========================================================== */
+    .pause-sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--card);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      box-shadow: 0 -16px 40px rgba(12, 10, 9, 0.18), 0 -4px 12px rgba(12, 10, 9, 0.08);
+      padding: 12px 24px 28px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      z-index: 25;
+      animation: sheet-slide 320ms cubic-bezier(0.22, 0.92, 0.36, 1) both;
+    }
+    @keyframes sheet-slide {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border-strong);
+      margin-bottom: 4px;
+    }
+    .pause-icon-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: var(--primary-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 4px;
+    }
+    .pause-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      text-align: center;
+    }
+    .pause-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      margin: 0;
+      text-align: center;
+    }
+    .pause-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--foreground);
+      opacity: 0.78;
+      margin: 0;
+      text-align: center;
+      max-width: 280px;
+    }
+    .pause-actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .btn-primary-full {
+      height: 48px;
+      width: 100%;
+      border-radius: 14px;
+      background: var(--primary);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      border: none;
+      transition: transform 140ms ease-out, background 140ms ease;
+    }
+    .btn-primary-full:hover { background: #6b1238; }
+    .btn-primary-full:active { transform: scale(0.99); }
+
+    /* =========================================================== */
+    /* PHONE 3 — GPS LOST BANNER + Page 3 Map                      */
+    /* =========================================================== */
+    .gps-banner {
+      flex-shrink: 0;
+      background: var(--warning-soft);
+      border-bottom: 1px solid var(--warning-border);
+      border-left: 4px solid var(--warning);
+      padding: 12px 16px 12px 14px;
+      animation: banner-slide-down 280ms ease-out both;
+    }
+    @keyframes banner-slide-down {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .gps-banner-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .gps-banner-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      background: rgba(217, 119, 6, 0.14);
+      color: var(--warning);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .gps-banner-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--warning-strong);
+      flex: 1;
+      min-width: 0;
+    }
+    .gps-pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--warning);
+      animation: gps-pulse 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes gps-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.78); }
+    }
+    .gps-banner-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 1.22;
+      letter-spacing: -0.015em;
+      color: var(--foreground);
+      margin: 0 0 4px 0;
+    }
+    .gps-banner-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 1.42;
+      color: var(--muted-foreground-strong);
+      margin: 0;
+    }
+
+    /* ========== Page 3 Map content (frozen variant) ========== */
+    .p2-map {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #efe9da 0%, #e2dccb 60%, #d4cfc0 100%);
+    }
+    .p2-map::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 32px, rgba(155,146,125,0.14) 32px, rgba(155,146,125,0.14) 33px),
+        repeating-linear-gradient(90deg, transparent, transparent 32px, rgba(155,146,125,0.14) 32px, rgba(155,146,125,0.14) 33px);
+    }
+    .p2-route {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    /* Frozen / muted route — gray instead of wine */
+    .p2-route-path-muted {
+      fill: none;
+      stroke: #9c948a;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 6 4;
+      filter: drop-shadow(0 0 4px rgba(120,113,108,0.22));
+    }
+    .p2-route-start {
+      fill: #9c948a;
+    }
+    .p2-route-end-outer-alert {
+      fill: #fff;
+      stroke: var(--warning);
+      stroke-width: 3.5;
+    }
+    .p2-scale {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(255,255,255,0.92);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted-foreground);
+      letter-spacing: 0.04em;
+      backdrop-filter: blur(4px);
+    }
+    .p2-bottom-strip {
+      flex-shrink: 0;
+      background: #fafaf9;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 6px;
+    }
+    .p2-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .p2-stat .v {
+      font-family: 'Geist Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .p2-stat .v.is-frozen { color: var(--border-strong); }
+    .p2-stat .v-paused-tag {
+      font-family: 'Geist Mono', monospace;
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--warning-strong);
+      background: var(--warning-soft);
+      padding: 2px 5px;
+      border-radius: 4px;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+    .p2-stat .l {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .p2-stat-sep {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+    }
+    .last-known-marker {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .last-known-label {
+      position: absolute;
+      transform: translate(-50%, calc(-100% - 18px));
+      background: #fff;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--warning-strong);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      box-shadow: 0 3px 10px rgba(20,20,20,0.18);
+      white-space: nowrap;
+    }
+    .last-known-label::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -4px;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 4px solid #fff;
+    }
+
+    /* ========== Page chrome ========== */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px 16px;
+      gap: 24px;
+      background: var(--background);
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .page-title .pill {
+      display: inline-block;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      background: var(--primary-soft);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-left: 8px;
+      text-transform: uppercase;
+    }
+    .frames-row {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .frame-caption .scr-num {
+      font-weight: 700;
+      color: var(--foreground);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pulse-dot,
+      .p1-hr-num,
+      .gps-pulse-dot { animation: none; }
+      .stop-modal, .pause-sheet, .gps-banner, .dim-overlay { animation: none; }
+      .btn-stop:active,
+      .btn-destructive-full:active,
+      .btn-primary-full:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">
+      Neiry Pulse · Mobile Training Active · Corner cases · v0 · 3 overlay states · 390×844
+      <span class="pill">B3 · STOP confirm + Auto-pause + GPS lost</span>
+    </div>
+
+    <div class="frames-row">
+
+      <!-- =========================================================== -->
+      <!-- PHONE 1 — STOP CONFIRM MODAL over Page 1                    -->
+      <!-- =========================================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption">
+          <span class="scr-num">ЭКРАН 16</span> · <strong>TRAINING ACTIVE</strong> · STOP CONFIRM
+        </div>
+
+        <section class="device-frame" aria-label="Активная тренировка с подтверждением остановки">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar (running session) -->
+          <div class="app-bar-active">
+            <div class="left">
+              <span class="pulse-dot" aria-hidden="true"></span>
+              <span class="session-label">Бег</span>
+              <span class="session-timer" aria-label="Длительность 12 минут 43 секунды">00:12:43</span>
+            </div>
+            <button class="btn-stop" aria-label="Остановить тренировку">STOP</button>
+          </div>
+
+          <!-- Pagination dots (page 1 active) -->
+          <div class="pagination">
+            <div class="dots" role="tablist" aria-label="Свайп между страницами">
+              <span class="dot active" role="tab" aria-selected="true"></span>
+              <span class="dot" role="tab" aria-selected="false"></span>
+              <span class="dot" role="tab" aria-selected="false"></span>
+            </div>
+            <div class="page-label"><span>1 / 3</span><span class="sep">·</span><span>Зоны</span></div>
+          </div>
+
+          <!-- Page 1 content (visible on background, dimmed by overlay) -->
+          <div class="page-content">
+            <div class="p1-body">
+              <div class="p1-hero">
+                <span class="eyebrow">Пульс</span>
+                <div style="display:flex; align-items:baseline;">
+                  <span class="p1-hr-num">156</span>
+                  <span class="p1-hr-unit">bpm</span>
+                </div>
+                <span class="p1-zone-chip">Zone 3 · Tempo</span>
+              </div>
+              <div class="p1-meta">
+                <div class="p1-meta-cell"><span class="v">2.34</span><span class="l">км</span></div>
+                <div class="p1-meta-cell"><span class="v">5:24</span><span class="l">мин/км</span></div>
+                <div class="p1-meta-cell"><span class="v">186</span><span class="l">ккал</span></div>
+              </div>
+            </div>
+
+            <!-- ===== Dim overlay + STOP confirm modal ===== -->
+            <div class="dim-overlay" role="dialog" aria-modal="true" aria-labelledby="stop-modal-title">
+              <div class="stop-modal">
+                <span class="modal-eyebrow">Подтверждение</span>
+                <h2 class="modal-title" id="stop-modal-title">Завершить тренировку?</h2>
+                <p class="modal-sub">Тренировка сохранится в Историю, время и зоны нельзя будет изменить.</p>
+
+                <div class="modal-stats-row" aria-label="Текущая статистика тренировки">
+                  <div class="modal-stat-cell">
+                    <span class="v">12:43</span>
+                    <span class="l">время</span>
+                  </div>
+                  <span class="modal-stat-sep" aria-hidden="true"></span>
+                  <div class="modal-stat-cell">
+                    <span class="v">2.34</span>
+                    <span class="l">км</span>
+                  </div>
+                  <span class="modal-stat-sep" aria-hidden="true"></span>
+                  <div class="modal-stat-cell">
+                    <span class="v">186</span>
+                    <span class="l">ккал</span>
+                  </div>
+                </div>
+
+                <div class="modal-actions">
+                  <button class="btn-destructive-full" aria-label="Завершить тренировку">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                      <rect x="3.5" y="3.5" width="9" height="9" rx="1.5"/>
+                    </svg>
+                    Завершить
+                  </button>
+                  <button class="btn-link-wine" aria-label="Продолжить тренировку">Продолжить тренировку</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zones strip (visible behind dim) -->
+          <div class="zones-strip">
+            <div class="zone-cell"><span class="z-lbl">Z1</span><span class="z-pct">3%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z2</span><span class="z-pct">28%</span></div>
+            <div class="zone-cell active"><span class="z-lbl">Z3</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
+          </div>
+        </section>
+      </div>
+
+
+      <!-- =========================================================== -->
+      <!-- PHONE 2 — AUTO-PAUSE BOTTOM SHEET over Page 1               -->
+      <!-- =========================================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption">
+          <span class="scr-num">ЭКРАН 17</span> · <strong>TRAINING ACTIVE</strong> · AUTO-PAUSE
+        </div>
+
+        <section class="device-frame" aria-label="Активная тренировка на автопаузе">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar with PAUSED pill -->
+          <div class="app-bar-active">
+            <div class="left">
+              <span class="paused-pill" aria-label="Тренировка на паузе, время заморожено на 12 минутах 43 секундах">
+                <span class="dot" aria-hidden="true"></span>
+                PAUSED
+                <span class="timer-num">12:43</span>
+              </span>
+            </div>
+            <button class="btn-stop" aria-label="Остановить тренировку">STOP</button>
+          </div>
+
+          <!-- Pagination dots -->
+          <div class="pagination">
+            <div class="dots" role="tablist">
+              <span class="dot active" role="tab" aria-selected="true"></span>
+              <span class="dot" role="tab" aria-selected="false"></span>
+              <span class="dot" role="tab" aria-selected="false"></span>
+            </div>
+            <div class="page-label"><span>1 / 3</span><span class="sep">·</span><span>Зоны</span></div>
+          </div>
+
+          <!-- Page 1 content frozen (HR muted) + bottom-sheet -->
+          <div class="page-content">
+            <div class="p1-body">
+              <div class="p1-hero">
+                <span class="eyebrow">Пульс · заморожен</span>
+                <div style="display:flex; align-items:baseline;">
+                  <span class="p1-hr-num is-frozen">156</span>
+                  <span class="p1-hr-unit">bpm</span>
+                </div>
+                <span class="p1-zone-chip is-frozen">Zone 3 · Tempo</span>
+              </div>
+              <div class="p1-meta">
+                <div class="p1-meta-cell"><span class="v is-frozen">2.34</span><span class="l">км</span></div>
+                <div class="p1-meta-cell"><span class="v is-frozen">5:24</span><span class="l">мин/км</span></div>
+                <div class="p1-meta-cell"><span class="v is-frozen">186</span><span class="l">ккал</span></div>
+              </div>
+            </div>
+
+            <!-- ===== Bottom-sheet: Auto-pause ===== -->
+            <div class="pause-sheet" role="dialog" aria-modal="false" aria-labelledby="pause-title">
+              <span class="sheet-handle" aria-hidden="true"></span>
+              <div class="pause-icon-wrap" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="#831843">
+                  <rect x="8" y="6" width="6" height="20" rx="2"/>
+                  <rect x="18" y="6" width="6" height="20" rx="2"/>
+                </svg>
+              </div>
+              <span class="pause-eyebrow">Авто-пауза · 30 сек без движения</span>
+              <h2 class="pause-title" id="pause-title">Тренировка на паузе</h2>
+              <p class="pause-sub">Мы не зафиксировали движение. Время, дистанция и калории не считаются.</p>
+
+              <div class="pause-actions">
+                <button class="btn-primary-full" aria-label="Продолжить тренировку">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path d="M4 3.2v9.6c0 .9 1 1.4 1.7.9l7.6-4.8c.7-.4.7-1.4 0-1.8L5.7 2.3c-.7-.5-1.7 0-1.7.9z"/>
+                  </svg>
+                  Продолжить
+                </button>
+                <button class="btn-link-destructive" aria-label="Завершить тренировку">Завершить</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zones strip muted (frozen) -->
+          <div class="zones-strip">
+            <div class="zone-cell muted"><span class="z-lbl">Z1</span><span class="z-pct">3%</span></div>
+            <div class="zone-cell muted"><span class="z-lbl">Z2</span><span class="z-pct">28%</span></div>
+            <div class="zone-cell muted-active"><span class="z-lbl">Z3</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell muted"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
+            <div class="zone-cell muted"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
+          </div>
+        </section>
+      </div>
+
+
+      <!-- =========================================================== -->
+      <!-- PHONE 3 — GPS LOST banner over Page 3 Map                   -->
+      <!-- =========================================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption">
+          <span class="scr-num">ЭКРАН 18</span> · <strong>TRAINING ACTIVE</strong> · GPS LOST
+        </div>
+
+        <section class="device-frame" aria-label="Активная тренировка, потерян сигнал GPS">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar (timer still running) -->
+          <div class="app-bar-active">
+            <div class="left">
+              <span class="pulse-dot" aria-hidden="true"></span>
+              <span class="session-label">Бег</span>
+              <span class="session-timer">00:12:48</span>
+            </div>
+            <button class="btn-stop" aria-label="Остановить тренировку">STOP</button>
+          </div>
+
+          <!-- ===== GPS Lost banner (sticky under app-bar) ===== -->
+          <div class="gps-banner" role="status" aria-live="polite">
+            <div class="gps-banner-head">
+              <span class="gps-banner-icon" aria-hidden="true">
+                <!-- location-pin-off SVG -->
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11.5 7.5c.5-.6.8-1.5.8-2.4 0-2.4-1.9-4.3-4.3-4.3-1 0-1.8.3-2.5.8M3.7 3.7C2.9 4.5 2.5 5.7 2.5 6.9c0 3.2 5.5 7.6 5.5 7.6s.7-.6 1.6-1.4"/>
+                  <circle cx="8" cy="5.1" r="1.2"/>
+                  <line x1="1.5" y1="1.5" x2="14.5" y2="14.5"/>
+                </svg>
+              </span>
+              <span class="gps-banner-eyebrow">GPS · Сигнал потерян</span>
+              <span class="gps-pulse-dot" aria-hidden="true"></span>
+            </div>
+            <p class="gps-banner-title">Маршрут восстановится автоматически</p>
+            <p class="gps-banner-sub">Пульс и время продолжают записываться. Дистанция временно на паузе.</p>
+          </div>
+
+          <!-- Pagination dots (page 3 active) -->
+          <div class="pagination">
+            <div class="dots" role="tablist">
+              <span class="dot" role="tab" aria-selected="false"></span>
+              <span class="dot" role="tab" aria-selected="false"></span>
+              <span class="dot active" role="tab" aria-selected="true"></span>
+            </div>
+            <div class="page-label"><span>3 / 3</span><span class="sep">·</span><span>Карта</span></div>
+          </div>
+
+          <!-- Page 3 Map content -->
+          <div class="page-content">
+            <div class="p2-map" role="img" aria-label="Карта маршрута, GPS потерян на 2,34 км">
+
+              <svg class="p2-route" viewBox="0 0 390 480" preserveAspectRatio="xMidYMid slice">
+                <!-- Muted dashed route (last known) -->
+                <path class="p2-route-path-muted"
+                      d="M 60 380 C 120 320, 90 260, 150 220 S 240 180, 200 140 S 290 110, 290 110" />
+                <!-- Start point (muted) -->
+                <circle class="p2-route-start" cx="60" cy="380" r="6"/>
+                <circle cx="60" cy="380" r="11" fill="#9c948a" opacity="0.18"/>
+                <!-- End point — alert-orange ⊘ marker (last known position) -->
+                <circle cx="290" cy="110" r="20" fill="#fdf3e1" opacity="0.95"/>
+                <circle class="p2-route-end-outer-alert" cx="290" cy="110" r="13"/>
+                <!-- slash-circle ⊘ inner glyph -->
+                <circle cx="290" cy="110" r="8" fill="none" stroke="#d97706" stroke-width="2"/>
+                <line x1="282" y1="118" x2="298" y2="102" stroke="#d97706" stroke-width="2.4" stroke-linecap="round"/>
+
+                <!-- Last known label (positioned inside SVG for accurate alignment with ⊘) -->
+                <g transform="translate(290, 78)">
+                  <rect x="-58" y="-16" width="116" height="22" rx="6" fill="#ffffff"/>
+                  <text x="0" y="-2" text-anchor="middle"
+                        font-family="Geist Mono, monospace"
+                        font-size="10"
+                        font-weight="700"
+                        letter-spacing="1"
+                        fill="#b45309"
+                        style="text-transform: uppercase;">Последняя точка</text>
+                  <polygon points="-4,6 4,6 0,10" fill="#ffffff"/>
+                </g>
+              </svg>
+
+              <!-- Scale -->
+              <div class="p2-scale">200 м</div>
+            </div>
+
+            <!-- Bottom strip: km PAUSED tag + pace muted + HR live -->
+            <div class="p2-bottom-strip">
+              <div class="p2-stat">
+                <span class="v is-frozen">2.34<span class="v-paused-tag">PAUSED</span></span>
+                <span class="l">км</span>
+              </div>
+              <span class="p2-stat-sep" aria-hidden="true"></span>
+              <div class="p2-stat">
+                <span class="v is-frozen">5:24</span>
+                <span class="l">мин/км</span>
+              </div>
+              <span class="p2-stat-sep" aria-hidden="true"></span>
+              <div class="p2-stat">
+                <span class="v" style="color: var(--primary);">156</span>
+                <span class="l">bpm</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zones strip (HR продолжает работать, поэтому not muted) -->
+          <div class="zones-strip">
+            <div class="zone-cell"><span class="z-lbl">Z1</span><span class="z-pct">3%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z2</span><span class="z-pct">28%</span></div>
+            <div class="zone-cell active"><span class="z-lbl">Z3</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
+            <div class="zone-cell"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>
