@@ -400,7 +400,7 @@
     }
     .role-illust-wrap {
       width: 200px;
-      height: 132px;
+      height: 140px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -650,7 +650,6 @@
           <!-- Body: error info-block + CTA stack -->
           <div class="hs-failed-body">
             <article class="err-block" role="alert" aria-labelledby="qr-err-title">
-              <p class="err-eyebrow">QR · не распознан</p>
               <h1 id="qr-err-title" class="err-title">Не удалось добавить опекаемого</h1>
               <p class="err-sub">
                 Этот QR-код устарел или принадлежит другой системе. Попросите ещё раз сгенерировать код в Neiry Pulse.
@@ -729,52 +728,66 @@
 
             <!-- Hero block -->
             <div class="role-hero">
-              <!-- Connection illustration: 2 silhouettes + heartbeat line (wine accent) -->
+              <!-- Connection illustration: 3 silhouettes (caregivee centered + 2 caregivers flanking) + heartbeat line (wine accent) — borrowed from A5 pattern -->
               <div class="role-illust-wrap" aria-hidden="true">
-                <svg width="200" height="132" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Силуэты двух людей, соединённых линией пульса">
-                  <!-- Soft halos behind silhouettes -->
-                  <circle cx="56" cy="58" r="38" fill="#fdf2f8"/>
-                  <circle cx="146" cy="56" r="34" fill="#faf8f3"/>
+                <svg width="200" height="140" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Силуэты трёх людей: подопечный в центре, два опекуна по бокам, соединённые линией пульса">
+                  <!-- Background soft halos behind each figure -->
+                  <circle cx="42" cy="74" r="30" fill="#faf8f3"/>
+                  <circle cx="158" cy="78" r="32" fill="#faf8f3"/>
+                  <circle cx="100" cy="60" r="42" fill="#fdf2f8"/>
 
-                  <!-- Left silhouette — larger (caregivee, "Папа") -->
-                  <g transform="translate(34, 22)">
-                    <circle cx="22" cy="14" r="12" fill="#a8a094"/>
-                    <path d="M2 64 C2 40, 42 40, 42 64 L42 80 L2 80 Z" fill="#a8a094"/>
+                  <!-- Left silhouette (опекун — User B) — smaller, lighter background tone -->
+                  <g transform="translate(26, 44)">
+                    <circle cx="16" cy="12" r="9" fill="#d4cfc0"/>
+                    <path d="M2 50 C2 32, 30 32, 30 50 L30 62 L2 62 Z" fill="#d4cfc0"/>
                   </g>
 
-                  <!-- Right silhouette — slightly smaller (user B, observer) -->
-                  <g transform="translate(122, 26)">
-                    <circle cx="20" cy="12" r="10.5" fill="#c8c1b0"/>
-                    <path d="M2 56 C2 36, 38 36, 38 56 L38 70 L2 70 Z" fill="#c8c1b0"/>
+                  <!-- Right silhouette (опекун — второй наблюдатель) — medium mid-tone -->
+                  <g transform="translate(138, 42)">
+                    <circle cx="18" cy="13" r="10" fill="#c8c1b0"/>
+                    <path d="M2 54 C2 34, 34 34, 34 54 L34 66 L2 66 Z" fill="#c8c1b0"/>
                   </g>
 
-                  <!-- Heartbeat line (wine) connecting both silhouettes across mid-band -->
-                  <path d="M8 108
-                           L52 108
-                           L58 100
-                           L66 116
-                           L74 88
-                           L82 122
-                           L90 100
-                           L100 100
-                           L108 86
-                           L116 122
-                           L124 92
-                           L132 116
-                           L140 100
-                           L192 108"
+                  <!-- Center silhouette (подопечный — Папа) — largest, foreground darker bevel -->
+                  <g transform="translate(76, 22)">
+                    <circle cx="24" cy="18" r="14" fill="#a8a094"/>
+                    <path d="M2 72 C2 46, 46 46, 46 72 L46 90 L2 90 Z" fill="#a8a094"/>
+                  </g>
+
+                  <!-- Heartbeat line (wine) across the bottom connecting all 3 figures -->
+                  <path d="M6 108
+                           L36 108
+                           L 50 108
+                           L 54 96
+                           L 60 120
+                           L 66 84
+                           L 72 124
+                           L 78 100
+                           L 88 100
+                           L 96 86
+                           L 102 122
+                           L 108 92
+                           L 114 116
+                           L 120 100
+                           L 130 100
+                           L 136 92
+                           L 142 116
+                           L 148 88
+                           L 154 118
+                           L 160 100
+                           L 194 100"
                         fill="none"
                         stroke="#831843"
                         stroke-width="2"
                         stroke-linecap="round"
                         stroke-linejoin="round"/>
 
-                  <!-- Pulse-node at apex -->
-                  <circle cx="116" cy="122" r="3" fill="#831843"/>
-                  <circle cx="116" cy="122" r="6" fill="none" stroke="#831843" stroke-width="1" opacity="0.35"/>
+                  <!-- Heart pulse-node at apex over center figure -->
+                  <circle cx="102" cy="122" r="3" fill="#831843"/>
+                  <circle cx="102" cy="122" r="6" fill="none" stroke="#831843" stroke-width="1" opacity="0.35"/>
 
-                  <!-- Baseline ground -->
-                  <line x1="8" y1="126" x2="192" y2="126" stroke="#e8e4d8" stroke-width="1"/>
+                  <!-- Baseline ground line — subtle, sits behind pulse -->
+                  <line x1="6" y1="132" x2="194" y2="132" stroke="#e8e4d8" stroke-width="1"/>
                 </svg>
               </div>
 

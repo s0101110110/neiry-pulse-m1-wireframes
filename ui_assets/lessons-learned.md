@@ -439,3 +439,23 @@ Anti-pattern: оставить scanner-frame wine + наложить orange icon
 6. **CTA с agency**: «Понятно, перейти к Папе» — «Понятно» = пользователь подтверждает, что прочитал; «к Папе» = explicit next destination, не «Готово / Продолжить» (где?).
 
 Mechanical check: open role-onboarding screen, прочитать вслух 3 секунды — должен сложиться понятный mental model «я вижу X, не вижу Y, он управляет». Если читается «всё равно непонятно что доступно» — переписать concrete rows.
+
+## 2026-06-15 (Revision 5) — Скрытый дубликат eyebrow: scanner-label + info-block-eyebrow
+
+Проблема: при моделировании error state HS Scan QR canonical pattern (B7 Phone 1) случайно ставлю **два mono-eyebrow** для одной семантики: «QR НЕДЕЙСТВИТЕЛЕН» внутри scanner-frame (большой, prominent, alert-orange) + «QR · НЕ РАСПОЗНАН» в error info-block ниже (small, mono, warning-strong). Это **double-labelling** одного и того же события — eye сначала читает scanner-label, потом дублирующий eyebrow, теряет immediacy «что title говорит мне».
+
+**Правило:** в любом screen с inline-status-label (scanner-frame label, badge на icon, pill в hero) **не дублировать тот же statement в eyebrow info-block'а ниже**. Eyebrow info-block резервируется ТОЛЬКО для добавочной семантики («время события», «severity», «sub-category»). Если eyebrow info-block повторяет inline-label — удалить, title станет load-bearing primary.
+
+Mechanical check: для каждого alert-screen открыть screenshot, прочитать labels сверху вниз. Если два mono-eyebrow подряд говорят примерно то же самое — один лишний.
+
+## 2026-06-15 (Revision 5) — 3 phones в одном файле: добавление Phone к existing 2-phone setup
+
+Проблема: добавляя Phone 3 (close confirm modal) к существующему 2-phone файлу B4 (end-of-session + bracelet disconnect), естественно скопировать Phone 1 markup целиком как background для overlay. Это дублирует 100+ строк HTML — рискованно для maintenance и нарушает single-source-of-truth.
+
+**Правило для добавления Phone N к existing N-1 layout:**
+1. **Поднять modal-styles один раз** в `<style>` (НЕ inline в Phone 3) — `.dim-overlay`, `.close-modal`, `.btn-destructive-full`, etc.
+2. **Phone 3 markup** = упрощённая копия Phone 1 (нужный context для overlay) + `aria-hidden="true"` + `tabindex="-1"` на интерактивных элементах + `.end-body-dimmed` class (filter: brightness 0.85 saturate 0.85) для visual dim cue. Без `position: absolute` overlay — modal встроен в DOM phone'а.
+3. **Proof-render координаты** для 3-phone side-by-side: window-size 1900×1100, phones at x ~306-717 / 744-1155 / 1182-1593 (ground-truth из B3). Reuse.
+4. **Backwards-compat нумерация PNG:** при добавлении 3-го экрана к 2-экранному файлу, side-by-side PNG переименовывается (например, `29-end-bracelet-side-by-side.png` → удалить, новое `30-end-bracelet-close-side-by-side.png` для 3-phone). Новый proof Phone 3 = `29-close-confirm.png`. PM-выбор (b) из brief: rename SxS, add proof.
+
+Mechanical check: после ренда proof PNG'ов посчитать визуально количество phones в side-by-side. Должно совпадать с числом `.frame-with-caption` в HTML (`grep -c "frame-with-caption" file.html`).

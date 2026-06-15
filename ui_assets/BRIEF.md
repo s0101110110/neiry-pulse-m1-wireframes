@@ -1,241 +1,239 @@
-# BRIEF: Corner cases B7 — HS edge cases (Scan failed + Role onboarding user B) · Neiry Pulse Ф1.5
+# BRIEF: Batch revision B-порций (B2/B3/B4/B7) · Neiry Pulse Ф1.5
 
 **Дата:** 2026-06-14
 **Заказчик:** PM (Костя)
-**Контекст:** B1-B6 приняты и закоммичены. **B7 — последняя порция (7 из 7) Ф1.5 corner cases.** Закроет полностью все corner-cases из аудита 14.06 §3.
+**Контекст:** Все 7 порций B1-B7 закоммичены и запушены в origin/main. PM провёл ревизию open questions агентов и зафиксировал 5 правок в 4 файлах. Batch revision: одной волной обновить все 4 HTML + перегенерировать proof и transparent PNG.
 
-**Цель:** закрыть Health Sharing edge cases:
-- **HS Scan failed** (M-15) — QR недействителен или истёк → юзер видит explainer + retry
-- **HS Role onboarding user B** (M-16) — при первом сканировании QR опекун видит роль «вы наблюдатель» с explainer что доступно
-
-**Целевой файл (создать):**
-- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-hs-edge-cases-v0.html`
+**Принцип:** Минимальные точечные правки, не ломать existing layout. Соблюдать все ранее установленные правила (canonical header, box-sizing border-box, Tailwind CDN, slicing-script DEPRECATED → crop из side-by-side).
 
 ---
 
-## Источники правды
+## Правка 1 (B2 · Phone 2 Location denied)
 
-- **Аудит §2.2 finding 2:** «Health Sharing E2E не закрывает AC-1.10 на стороне получателя (user B). Нужен empty-state «вы только наблюдаете» + onboarding role»
-- **Аудит M-15:** «HS Scan failed / camera denied — «Камера недоступна. Разреши в Настройках» / «Этот QR недействителен»»
-- **Аудит M-16:** «HS Role onboarding (user B) — при первом сканировании → «Вы видите Сергея П. как тренер / опекун. Что вы видите: HRV, пульс, шаги, fall-alert»»
-- **Reference:** `mobile-health-sharing-v0.html` (canonical HS flow + Scan QR layout)
-- **B2 Camera denied pattern** (уже сделали): `mobile-state-permission-denied-v0.html` — НЕ дублируем, B7 это OTHER scan failures (QR invalid / expired / scan timeout)
+**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-permission-denied-v0.html`
 
----
+**Phone 2 (Location denied) — sticky alert-orange banner actions:**
 
-## Структура HTML (2 device-frames рядом)
+1. **«Тренироваться без GPS»** → **«Без GPS»** (сокращение, одна строка вместо двух)
+2. Primary CTA **«Открыть Настройки»** → **«Настройки»** (короче)
 
-Caption:
-- «**ЭКРАН 26** · HS SCAN QR · INVALID/EXPIRED»
-- «**ЭКРАН 27** · HS ROLE · USER B ONBOARDING»
+Никаких других правок на этом screen. Phone 1 (Camera denied) — не трогать.
 
 ---
 
-## Phone 1 · HS Scan QR с invalid/expired QR (HS Scan failed)
+## Правка 2 (B3 · Phone 2 Auto-pause)
 
-**Назначение:** юзер сканирует QR-код — camera работает, но **QR неверный** (истёкший / искажённый / не наш). Показать explainer + retry button. **Не** Camera denied (это B2).
+**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-training-active-corner-cases-v0.html`
 
-**Контекст:** Scan QR layout (есть scanner frame с пунктирной рамкой) — но в центре scanner area показан **error overlay** с alert-orange tint.
+**Phone 2 (Auto-pause) — app-bar timer:**
 
-**Структура (сверху вниз):**
+Сейчас: `PAUSED · 12:43` (wine bg, без типа активности)
+Нужно: **`БЕГ · PAUSED · 12:43`** — вернуть тип активности в app-bar timer pill. Сохранить wine bg + monospace + tabular-nums.
 
-### Status bar + App-bar
-- Status bar 9:53
-- App-bar: back-chevron «‹» + title «Сканировать QR» (centered)
-
-### Scanner frame (top zone)
-- Темно-серый camera-preview placeholder (mimics live camera)
-- Centered scanner-rectangle dashed wine border (~240×240, rounded 16px)
-- В центре rectangle — **alert-orange ⊘ icon SVG** (large ~64×64) + **«QR недействителен»** label под icon
-
-### Error info-block (под scanner frame)
-- Background: `#fdf3e1` alert-soft + border-left 4px `#d97706` alert-orange (consistency B1/B2/B3)
-- Padding 16-20px
-- Eyebrow (mono uppercase 11pt alert-orange): `QR · НЕ РАСПОЗНАН`
-- Title (Onest 700 18pt): «Не удалось добавить опекаемого»
-- Sub (Space Grotesk 13-14pt foreground, 2-3 строки):
-  «Этот QR-код устарел или принадлежит другой системе. Попросите ещё раз сгенерировать код в Neiry Pulse.»
-
-### Actions (2 buttons stacked под error)
-- **«Попробовать ещё раз»** — wine primary CTA (48pt full-width, refresh-icon SVG)
-- **«Ввести код вручную»** — text-link wine secondary (40pt, под CTA)
-
-### Tab-bar
-Дом / История / Health Sharing (active wine) / Ещё (canonical)
+Никаких других правок. Phone 1 (STOP confirm) и Phone 3 (GPS lost) — не трогать.
 
 ---
 
-## Phone 2 · HS Role onboarding (user B видит роль наблюдателя)
+## Правка 3 (B4 · Phone 1 End-of-session) — 2 саб-правки + новый Phone 3
 
-**Назначение:** опекун (user B, например Сергей-сын для Папы) **впервые** сканирует QR от опекаемого. После Success — попадает на **Role onboarding screen** — explainer «Вы наблюдатель. Вот что вы видите». После него попадает в HS Main с подключённым подопечным.
+**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-end-of-session-bracelet-disconnect-v0.html`
 
-**Контекст:** Full-screen modal/onboarding-style. После HS Success transitional → этот screen → HS Main.
+### 3a. Phone 1: title «Молодец!» → «Финиш!»
 
-**Структура (сверху вниз):**
+Сейчас hero title: «Молодец!» (Onest 700 32-36pt). Заменить на **«Финиш!»** — нейтральнее, не condescending для serious пилотов Лиги Героев. Всё остальное на screen остаётся.
 
-### Status bar + App-bar
-- Status bar 9:54
-- App-bar: пустой левый + close-icon «×» top-right (skip, попадает в HS Main без explainer)
+### 3b. ДОБАВИТЬ новый Phone 3: Close confirm modal
 
-### Hero block (centered, top half)
-- **SVG illustration** (НЕ stock, НЕ emoji):
-  - Connection-illustration: 2 силуэта людей (один меньше, один больше) + соединительная line/heartbeat между ними (wine accent)
-  - Размер ~120-140px высота, центрирован
-- Eyebrow (mono uppercase wine 11pt): `ВЫ ПОДКЛЮЧИЛИСЬ`
-- Title (Onest 700 22-24pt foreground): «Вы видите Папу»
-- Sub (Space Grotesk 14pt foreground, line-height 1.5):
-  «Папа поделился с вами своими ключевыми показателями здоровья. Вы — наблюдатель, не можете изменять его настройки.»
+Добавить **третий device-frame** в файл (был 2, станет 3). Caption: **«ЭКРАН 21 · END-OF-SESSION · CLOSE CONFIRM»**
 
-### «Что вы видите» section (центральная, info-list)
-- Section title (semibold 13pt mono uppercase): `ЧТО ДОСТУПНО ВАМ`
-- 4-5 строк с check-icons SVG (wine) + label:
-  - ✓ Пульс сейчас и за день (HR, HRV)
-  - ✓ Шаги и активность
-  - ✓ Алерт о падении (за 10 секунд)
-  - ✓ Качество сна
-- 1 строка с ⊘-icon (muted) — что НЕ доступно:
-  - ⊘ Личные сообщения и местоположение
+**Назначение:** юзер тапнул close × на End-of-session screen без save. Видит confirm modal: «Закрыть без сохранения? Тренировка будет утеряна.»
 
-### Privacy hint card (subtle)
-- Soft Bevel surface, padding 12-16, border-radius 12
-- Lock-icon SVG (small ~16, muted)
-- Text (12pt muted): «Папа в любой момент может отключить доступ или скрыть конкретные метрики.»
+**Структура:**
+- Background: End-of-session Phone 1 dimmed (rgba(12, 10, 9, 0.55) overlay) — те же 4 stats cards + sparkline + actions visible но dimmed
+- Centered modal-card (width ~320px, white, padding 24, border-radius 20, box-shadow):
+  - **Trash-icon SVG** (centered top, ~48×48, destructive red `#b91c1c`)
+  - Eyebrow (mono uppercase destructive red 11pt): `БЕЗВОЗВРАТНОЕ ДЕЙСТВИЕ`
+  - Title (Onest 700 22pt): «Закрыть без сохранения?»
+  - Sub (Space Grotesk 14pt foreground, line-height 1.5):
+    «Тренировка **5.20 км · 28:04** не сохранится в Историю. Это действие нельзя отменить.»
+  - 2 actions stacked:
+    - **«Удалить тренировку»** — destructive red `#b91c1c` primary CTA (48pt height, white text, trash-icon)
+    - **«Сохранить»** — wine secondary CTA (40pt, или text-link wine, на выбор)
+    - **«Отмена»** — text-link wine ниже (40pt) — closes modal, возвращает на End-of-session
 
-### Primary CTA wine
-- Full-width 48pt: «Понятно, перейти к Папе»
-- Wine primary, white text, arrow-right SVG
+**Note:** этот же паттерн уже есть в B5 (`mobile-state-session-detail-edge-cases-v0.html` Delete confirm) — заимствуй CSS и структуру.
 
-### **БЕЗ tab-bar** (это onboarding-flow, не tab screen)
+Phone 2 (Bracelet disconnect mid-session) — не трогать.
 
 ---
 
-## Дизайн-принципы
+## Правка 4 (B7 · Phone 1 HS Scan failed)
 
-- **Light Bevel-tone** для обоих экранов
-- **Alert-orange `#d97706`** для QR invalid error + ⊘ icon в scanner frame
-- **Alert-soft `#fdf3e1`** для error info-block bg
-- **Wine `#831843`** для primary CTAs, check-icons, accent в illustration
+**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-hs-edge-cases-v0.html`
+
+**Phone 1 (HS Scan failed) — убрать дубликат:**
+
+Сейчас:
+- Scanner frame в центре: ⊘ icon + label **«QR НЕДЕЙСТВИТЕЛЕН»** (внутри dashed frame)
+- Error info-block ниже: eyebrow **«QR · НЕ РАСПОЗНАН»** + title + sub
+
+**Правка:** убрать **eyebrow «QR · НЕ РАСПОЗНАН»** из error info-block. Оставить только label «QR НЕДЕЙСТВИТЕЛЕН» в scanner frame. Title «Не удалось добавить опекаемого» остаётся главным.
+
+После правки error info-block: title + sub + actions (без eyebrow).
+
+---
+
+## Правка 5 (B7 · Phone 2 HS Role onboarding)
+
+**Целевой файл:** тот же `mobile-state-hs-edge-cases-v0.html`
+
+**Phone 2 — illustration: 2 силуэта → 3 силуэта**
+
+Сейчас: 2 силуэта (один меньше = Папа крупнее, опекун меньше) с heartbeat line wine между.
+
+**Правка:** **3 силуэта** (как в A5 `mobile-onboarding-05-empty-states-v0.html` HS empty SVG illustration) с heartbeat-волной между ними. Композиция: например подопечный в центре крупнее + 2 опекуна по бокам меньше, или 3 равных силуэта в треугольной композиции. Цветовая палитра как в A5: wine accent + bevel-tones + muted greys.
+
+Семантика: один опекаемый делится с **группой опекунов** (более realistic для HS — 2-3 опекуна типично).
+
+Никаких других правок на Phone 2.
+
+---
+
+## Дизайн-правила (соблюдать)
+
 - **Box-sizing border-box** глобально (`*, *::before, *::after`)
-- **Tailwind CDN** если нужно
-- **Header canonical** — заимствуй из `mobile-health-sharing-v0.html` Scan QR layout (back-chevron + title + scanner-frame)
+- **Tailwind CDN** если используется в header
+- **Header canonical** — НЕ менять
 - **Шрифты:** Space Grotesk UI / Onest 700 hero / Geist Mono labels & numbers
-- **Pixel grid 4px**
-- **SVG icons** (НЕ emoji): refresh, lock, check, ⊘ slash-circle, arrow-right, close, scan-rectangle
+- **tabular-nums** на цифрах (12:43, 5.20, 28:04, etc.)
+- **SVG icons** (НЕ emoji)
+- **Phone-bezel:** `box-shadow: 0 0 0 10px #1a1814, 0 0 0 11px #2a2620`
 
 ---
 
 ## Skills
 
-UX/UI агент — выбирай сам. Рекомендую critique + audit. Особое внимание:
-- Phone 1 error tone — НЕ обвинительный («ты сделал не так»), а helpful («это случается, давай попробуем ещё»)
-- Phone 2 role copy — clear privacy boundaries, без condescending к user B
-
-**НЕ запускать:** init/document/craft/extract.
+UX/UI агент — выбирай сам. Рекомендую `impeccable critique` для:
+- Phone 3 B4 (new close confirm) — destructive hierarchy, stats wording
+- B7 Phone 1 — нет ли visual gap после удаления eyebrow (compactness)
+- B7 Phone 2 — illustration composition (3 силуэта не overcrowded)
 
 ---
 
 ## Output
 
-**slicing-script DEPRECATED** — crop из 2-phone side-by-side.
+**slicing-script DEPRECATED** — crop из side-by-side render (правило A5).
 
-1. **HTML:** `mobile-state-hs-edge-cases-v0.html` в `docs_web/wireframes/m3/`
+### B2 file
+- Update HTML
+- Regen: `14a-state-camera-denied.png` (transparent — не должен измениться), `14b-state-location-denied.png` (transparent), `20-camera-denied.png` (proof), `21-location-denied.png` (proof), `22-permission-denied-side-by-side.png` (proof)
+- Только PNG где есть изменения (Phone 2): `14b`, `21`, `22`
 
-2. **Transparent PNGs** в `screenshots/sliced-flow-v2-1-transparent-2026-06-14/`:
-   - `19a-state-hs-scan-failed.png`
-   - `19b-state-hs-role-onboarding.png`
-   - Verify alpha=0 углы
+### B3 file
+- Update HTML
+- Regen: `15a-state-stop-confirm.png` (transparent — без изменений), `15b-state-auto-pause.png` (transparent — изменён), `15c-state-gps-lost.png` (transparent — без изменений), `23-stop-confirm.png` (proof — без изм), `24-auto-pause.png` (proof — изменён), `25-gps-lost.png` (proof — без изм), `26-training-corner-cases-side-by-side.png` (proof — изменён)
+- Только: `15b`, `24`, `26`
 
-3. **Proof-screenshots** в `screenshots/onboarding-2026-06-14/`:
-   - `37-hs-scan-failed.png`
-   - `38-hs-role-onboarding.png`
-   - `39-hs-edge-cases-side-by-side.png`
+### B4 file (структурное изменение — 3 phones вместо 2)
+- Update HTML — добавить Phone 3 (close confirm)
+- Regen ALL: `16a-state-end-of-session.png` (transparent — изменён title), `16b-state-bracelet-disconnect-training.png` (transparent — без изм), новый `16c-state-close-confirm.png` (transparent), `27-end-of-session.png` (proof — изменён), `28-bracelet-disconnect-training.png` (proof — без изм), новый `29-close-confirm.png` (proof — новый), `30-end-bracelet-side-by-side.png` (proof — 3-phone wide теперь, перерендер)
 
-**НЕ КОММИТЬ.**
+  **ВНИМАНИЕ к нумерации proof:** существующий `29-end-bracelet-side-by-side.png` сейчас в `onboarding-2026-06-14/`. Новый close confirm proof заменит/сдвинется. Рекомендую:
+  - `27-end-of-session.png` → перерендер (title «Финиш!»)
+  - `28-bracelet-disconnect-training.png` → без изм
+  - `29-close-confirm.png` → **новый** (заменит старый `29-end-bracelet-side-by-side.png`)
+  - `30-end-bracelet-close-side-by-side.png` → **новый** (3-phone wide)
+  - Старый `29-end-bracelet-side-by-side.png` → удалить или переименовать в `29-OLD-side-by-side.png`
+  
+  Pick одно из:
+  - (a) Просто перерендерить `29-end-bracelet-side-by-side.png` как 3-phone (название не точное, но coherence preserved)
+  - (b) Добавить новый `29-close-confirm.png` + переименовать SxS в `30-end-bracelet-close-side-by-side.png`
+  
+  Я предпочитаю (b).
+
+### B7 file
+- Update HTML
+- Regen ALL (оба phones изменены):
+  - `19a-state-hs-scan-failed.png` (transparent), `19b-state-hs-role-onboarding.png` (transparent)
+  - `37-hs-scan-failed.png` (proof), `38-hs-role-onboarding.png` (proof), `39-hs-edge-cases-side-by-side.png` (proof)
+
+**НЕ КОММИТЬ** — это сделает PM-агент после акцепта.
 
 ---
 
 ## Acceptance criteria
 
-- [ ] HTML создан с 2 device-frames рядом
-- [ ] **Phone 1 HS Scan failed:** scanner-frame layout + alert-orange ⊘ icon overlay в scanner area + error info-block («QR · НЕ РАСПОЗНАН» eyebrow + «Не удалось добавить опекаемого» title + sub) + wine CTA «Попробовать ещё раз» + text-link «Ввести код вручную» + tab-bar HS active
-- [ ] **Phone 2 HS Role onboarding:** close × top-right + connection illustration + eyebrow «ВЫ ПОДКЛЮЧИЛИСЬ» + title «Вы видите Папу» + sub про роль наблюдателя + section «ЧТО ДОСТУПНО ВАМ» с 4-5 check-rows + 1 ⊘-row (что не доступно) + privacy hint card с lock-icon + wine CTA «Понятно, перейти к Папе» + БЕЗ tab-bar
-- [ ] Box-sizing border-box, Tailwind CDN
-- [ ] WCAG AA: alert-orange ≥ 4.5:1, muted ≥ 4.5:1
-- [ ] Transparent PNG via crop из side-by-side
-- [ ] Self-review визуальный ПЕРЕД отчётом
-
----
-
-## Open вопросы
-
-1. **«Папу» vs «Сергея П.»** — я выбрал **«Папу»** (consistency с A4 Fall detection mockup где тоже Папа). Если PM хочет generic — «опекаемого». Альтернатива: real name «Сергея П.». Я бы оставил «Папа» — emotional + consistency.
-2. **Illustration на Phone 2** — 2 силуэта + heartbeat line или геометрическая abstract? Я выбрал **силуэты + line** (semantic match с «вы видите Папу»). UX/UI агент решает финал.
-3. **Privacy hint card** — нужен ли? Я считаю да — это важно для trust в первый момент. Если PM считает overkill — убираем.
-4. **CTA «Понятно, перейти к Папе»** — может быть длинно. Альтернативы: «Перейти к Папе», «Открыть HS». Я бы оставил «Понятно, перейти к Папе» — добавляет user agency, не просто command.
+- [ ] B2 — «Без GPS» + «Настройки» в Phone 2 actions
+- [ ] B3 — `БЕГ · PAUSED · 12:43` в Phone 2 app-bar timer pill
+- [ ] B4 — Phone 1 «Финиш!» + Phone 3 close confirm modal (новый device-frame)
+- [ ] B7 — Phone 1 без eyebrow «QR · НЕ РАСПОЗНАН»; Phone 2 illustration 3 силуэта
+- [ ] PNG regenerated по списку выше
+- [ ] Self-review визуальный — открыть updated PNGs через Read tool, описать что изменилось
 
 ---
 
 ## Reference
 
-- HS Scan QR layout: `mobile-health-sharing-v0.html`
-- B2 Camera denied (parallel pattern, НЕ дублируем): `mobile-state-permission-denied-v0.html`
-- A4 Fall detection «Папа» naming: `mobile-onboarding-04-fall-detection-v0.html`
-- A5 illustration approach: `mobile-onboarding-05-empty-states-v0.html`
+- B5 close confirm modal pattern (для B4 Phone 3): `mobile-state-session-detail-edge-cases-v0.html` Delete confirm
+- A5 illustration 3 силуэта (для B7 Phone 2): `mobile-onboarding-05-empty-states-v0.html`
+- Существующие файлы НЕ трогать кроме указанных 4
 
 ---
 
 ## РЕЗУЛЬТАТ (заполняет UX/UI агент)
 
 **Дата:** 2026-06-15
-**HTML:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-hs-edge-cases-v0.html`
-**Transparent PNGs:**
-- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/19a-state-hs-scan-failed.png` (420×874, alpha=0 corners)
-- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/19b-state-hs-role-onboarding.png` (420×874, alpha=0 corners)
+**Файлы изменены (4 HTML):**
+- `docs_web/wireframes/m3/mobile-state-permission-denied-v0.html` (B2)
+- `docs_web/wireframes/m3/mobile-state-training-active-corner-cases-v0.html` (B3)
+- `docs_web/wireframes/m3/mobile-state-end-of-session-bracelet-disconnect-v0.html` (B4 — добавлен Phone 3 + CSS модальной)
+- `docs_web/wireframes/m3/mobile-state-hs-edge-cases-v0.html` (B7)
 
-**Proof-screenshots:**
-- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/onboarding-2026-06-14/37-hs-scan-failed.png`
-- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/onboarding-2026-06-14/38-hs-role-onboarding.png`
-- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/onboarding-2026-06-14/39-hs-edge-cases-side-by-side.png`
+**PNGs регенерированы (16):**
+- Transparent (6): `14b-state-location-denied.png`, `15b-state-auto-pause.png`, `16a-state-end-of-session.png`, `16c-state-close-confirm.png` (новый), `19a-state-hs-scan-failed.png`, `19b-state-hs-role-onboarding.png`
+- Proof side-by-side (4): `22-permission-denied-side-by-side.png`, `26-training-corner-cases-side-by-side.png`, `30-end-bracelet-close-side-by-side.png` (новый, 3-phone), `39-hs-edge-cases-side-by-side.png`
+- Proof per-phone (6): `20-camera-denied.png`, `21-location-denied.png`, `23-stop-confirm.png`, `24-auto-pause.png`, `25-gps-lost.png`, `27-end-of-session.png`, `28-bracelet-disconnect-training.png`, `29-close-confirm.png` (новый), `37-hs-scan-failed.png`, `38-hs-role-onboarding.png`
+- Удалён: `29-end-bracelet-side-by-side.png` (был 2-phone, заменён на 30-end-bracelet-close-side-by-side.png)
 
 ### Что сделано
 
-**Phone 1 — HS Scan failed (QR invalid/expired):** App-bar back-chevron + title «Сканировать QR»; dim camera-view (canonical из HS Scan QR — radial gradient + noise + room silhouettes) scaled до height 330px (compact zone, освобождает место под error-block + CTA + tab-bar); dashed wine→alert-orange scanner frame 220×220 с 4 corner-brackets alert-orange `#d97706`; ⊘ slash-circle SVG 64×64 alert-orange + mono label «QR НЕДЕЙСТВИТЕЛЕН» внутри frame; error info-block alert-soft `#fdf3e1` bg + border-left 4px `#d97706` + eyebrow «QR · НЕ РАСПОЗНАН» + title «Не удалось добавить опекаемого» + sub про «устарел или принадлежит другой системе»; wine CTA «Попробовать ещё раз» + refresh-icon SVG; text-link wine «Ввести код вручную»; tab-bar HS active.
+**B2** (Phone 2 Location denied): «Тренироваться без GPS» → «Без GPS», «Открыть Настройки» → «Настройки». Banner стал визуально компактнее, обе actions помещаются на одну строку.
 
-**Phone 2 — HS Role onboarding (user B):** Close × top-right (no back); illustration 2 силуэта + heartbeat-wine line (адаптация из A5: левый силуэт больше = Папа `#a8a094`, правый меньше = user B `#c8c1b0`, soft halos primary-soft + card-warm под фигурами, wine pulse-node с outer glow); eyebrow wine «ВЫ ПОДКЛЮЧИЛИСЬ»; title Onest 700 23pt «Вы видите Папу»; sub про роль наблюдателя; section label «ЧТО ДОСТУПНО ВАМ»; 4 ✓ rows wine check-pill (Пульс HR HRV / Шаги / Алерт о падении за 10s / Качество сна) + 1 ⊘ row muted (Личные сообщения и местоположение); privacy hint card warm bg + lock-icon SVG + muted text про «Папа может отключить доступ»; wine CTA full-width «Понятно, перейти к Папе» + arrow-right SVG; БЕЗ tab-bar (onboarding-flow).
+**B3** (Phone 2 Auto-pause): app-bar timer pill `PAUSED · 12:43` → `БЕГ · PAUSED 12:43` (восстановлен тип активности + wine bg + monospace tabular-nums preserved).
 
-### Skills run
+**B4 sub-edit 1** (Phone 1): hero title «Молодец!» → «Финиш!» (нейтральнее для пилотов Лиги Героев, конфетти и stat-cards сохранены).
 
-Сама задача компактная — paint pattern уже зафиксирован B1–B6. Skills не запускал явно, но применил accumulated lessons:
-- **L 2026-06-14 box-sizing + R2 hotfix** — `*, *::before, *::after { box-sizing: border-box }` глобально
-- **L 2026-06-14 R2 tab-bar padding-bottom** — `.hs-failed-body padding-bottom: 100px` (76 tab + 24 gap)
-- **L 2026-06-14 R2 flex spacer fix** — `margin-top: auto` на `.cta-stack` (НЕ flex-1 spacer)
-- **L 2026-06-14 R2 slicing approach** — side-by-side render + PIL crop для proof + safe inject CSS для transparent (НЕ агрессивный inject)
-- **L 2026-06-14 empty illustration 3 правила** — tonal asymmetry (3 уровня bevel: `#a8a094` → `#c8c1b0` → halos), size asymmetry (Папа крупнее на 1.3×), один wine accent (heartbeat-line + pulse-node)
-- **L Alert-color hierarchy** — peak в scanner frame + error-block, в info-list muted для off-row, не «всё кричит»
+**B4 sub-edit 2** (новый Phone 3 — Close confirm modal): добавлен device-frame ЭКРАН 21 с background End-of-session dimmed (`.end-body-dimmed` filter brightness 0.85 saturate 0.85) + centered `.close-modal` (320×auto, white, border-radius 20). Заимствован pattern из B5 Delete confirm: trash-icon 56×56 в destructive-soft (`#fef2f2`), eyebrow mono red «БЕЗВОЗВРАТНОЕ ДЕЙСТВИЕ», title Onest 700 22pt «Закрыть без сохранения?», sub с inline-stat «5.20 км · 28:04», 3 actions stacked (destructive-red «Удалить тренировку» + wine «Сохранить» + text-link «Отмена»). `dim-overlay` rgba(12,10,9,0.55) внутри device-frame z-index 30. Стили модальной подняты один раз в `<style>`, не inline.
 
-### Decisions / compromises
+**B7 sub-edit 1** (Phone 1): убран eyebrow «QR · не распознан» из error info-block. Title «Не удалось добавить опекаемого» теперь load-bearing primary. Single label «QR НЕДЕЙСТВИТЕЛЕН» остаётся в scanner-frame.
 
-1. **«Папа»** — оставил выбор PM (consistency с A4 Fall detection). НЕ generic «опекаемый».
-2. **Illustration: 2 силуэта вместо 3** — A5 показывает 3 (HS empty value-prop), но для role-onboarding 1-to-1 connection нагляднее 2 силуэта (caregivee + observer). Heartbeat сохранён.
-3. **Privacy hint card оставил** — за «yes» из open-вопросов; muted tone + warm bg чтобы не конкурировать с CTA.
-4. **Scanner-zone не full-screen camera-view (как в HS Scan QR canonical)** — компактный 330px-блок, потому что под ним должен поместиться error-block + 2 CTAs + tab-bar. Decision trade-off: чуть менее «камерное» ощущение vs полный info-architecture без скролла. Pattern совпадает с B2 (camera denied тоже отказывается от full camera view).
-5. **Dashed scanner frame alert-orange** (НЕ canonical wine solid corners) — explicit «error state» signal, не позволяет принять за обычное сканирование. Внутри corners — alert-orange (`#d97706`).
-6. **CTA Phone 2 «Понятно, перейти к Папе»** оставил полный — добавляет user agency. Длина читается на 390px без переноса.
+**B7 sub-edit 2** (Phone 2): illustration 2 силуэта → 3 силуэта (pattern из A5 HS empty). Композиция треугольная: центральный (подопечный, Папа) `#a8a094` 14r круг, левый/правый (опекуны) `#d4cfc0`/`#c8c1b0` 9-10r — clear size + tonal asymmetry. ECG-pulse wine `#831843` соединяет всех троих. Halos `#fdf2f8`/`#faf8f3` за фигурами. `.role-illust-wrap` height обновлён 132 → 140px.
 
-### Что требует ревизии PM
+**Skills run:** не запускались отдельно, но self-review-mode mental-check выполнен на каждом из 5 экранов (см. Self-review).
 
-- **Tone Phone 1 «Не удалось добавить опекаемого»** — passive, не accusatory; «Этот QR-код устарел или принадлежит другой системе» — explainer что *возможно* случилось; «Попросите ещё раз сгенерировать код» — actionable, переводит в next-step. PM скажет ок?
-- **Дизайн illustration role-onboarding** — fairly minimal по плотности (2 силуэта vs 3 в A5). Если PM хочет более «inviting» иллюстрацию или другой semantic — нужно правит.
-- **«QR НЕДЕЙСТВИТЕЛЕН» label под slash-circle** — дублирование eyebrow в info-block («QR · НЕ РАСПОЗНАН»). Я оставил оба т.к. user сначала смотрит на frame (тут lable instant signal), потом читает explainer ниже. Если PM считает overkill — можно убрать в-frame label.
-- **CTA Phone 2 нижний край близок к bezel** — ≈18px gap до home-indicator зоны (iOS safe). Acceptable, но если PM хочет breathing room — добавить `padding-bottom` на role-body.
+**Rendering scripts:** написаны 2 скрипта в `/tmp/`:
+- `render_revision5_transparent.py` — safe inject CSS per-phone (hide other `.frame-with-caption`, не трогать `.frames-row` геометрию)
+- `render_revision5_proof.py` — side-by-side render через Chrome headless, затем PIL crop по bezel-detection (threshold dark<50, gap-merge<12, min-run 4)
 
-### Регрессии
+### Self-review
 
-Нет. HTML не трогает существующие файлы.
+1. **21-location-denied.png (B2):** banner стал явно компактнее. «Настройки» wine primary-sm + «Без GPS» text-link wine — обе кнопки на одной строке, нет переноса в 2 строки. Hierarchy сохранена. Activity card «Бег» + Readiness card видны ниже, hero CTA «Начать тренировку» виден в bottom. PASS.
 
-### Self-review (выполнен)
+2. **24-auto-pause.png (B3):** app-bar pill отображает `БЕГ · PAUSED 12:43` — wine bg, белый текст, dot слева. Visual confirmation что это не generic «paused», а конкретно «Бег paused». STOP button справа. Bottom-sheet с PAUSE-icon + «АВТО-ПАУЗА · 30 СЕК БЕЗ ДВИЖЕНИЯ» + title + «Продолжить» + «Завершить». Behind sheet: frozen HR `150` muted text. PASS.
 
-Открыл `37-hs-scan-failed.png` и `38-hs-role-onboarding.png` через Read tool:
-- Phone 1: status bar 9:53, app-bar with back + title; scanner zone dim с silhouettes; dashed orange frame с corners + ⊘ glyph + label; alert-soft error block; wine «Попробовать ещё раз» + refresh-icon; text-link «Ввести код вручную»; tab-bar HS active wine. **OK.**
-- Phone 2: status bar 9:54, close × top-right; illustration 2 silhouettes + heartbeat wine + pulse-node; eyebrow wine «ВЫ ПОДКЛЮЧИЛИСЬ»; title «Вы видите Папу»; sub про роль; section label uppercase; 4 ✓ rows + 1 ⊘ row; privacy card warm + lock; wine CTA «Понятно, перейти к Папе» + arrow-right. БЕЗ tab-bar. **OK.**
-- Transparent PNGs: corner alphas `[0, 0, 0, 0]` — verified.
+3. **27-end-of-session.png (B4 Phone 1):** Title «Финиш!» в Onest 700 ~32pt с confetti dots вокруг. Eyebrow «ТРЕНИРОВКА ЗАВЕРШЕНА» wine + sub «Бег · 14 июня, 9:53» mono. 4 stats cards 2×2 grid (Дистанция 5.20 км, Длительность 28:04, Средний пульс 142 bpm, Калории 186 ккал). Sparkline с областью. Wine CTA «Сохранить тренировку» + text-link «Удалить». Корректный pattern без «condescending» «Молодец». PASS.
+
+4. **29-close-confirm.png (B4 Phone 3):** dim overlay (visible darkening) над фоном End-of-session. Modal centered: trash-icon 28×28 (destructive red) в pink-soft 56×56 wrap. Eyebrow «БЕЗВОЗВРАТНОЕ ДЕЙСТВИЕ» mono red. Title «Закрыть без сохранения?» Onest 700 22pt в 2 строки (центр). Sub «Тренировка 5.20 км · 28:04 не сохранится в Историю. Это действие нельзя отменить.» с inline-mono stat — bold, foreground. Actions stack: destructive red «Удалить тренировку» (с trash-icon) + wine «Сохранить» + text-link «Отмена». Visual destructive-hierarchy чёткая: red ≫ wine ≫ link. PASS.
+
+5. **37-hs-scan-failed.png (B7 Phone 1):** Scanner-frame с dashed orange 2px border + ⊘ icon 64×64 + label «QR НЕДЕЙСТВИТЕЛЕН» внутри (canonical error state). Error info-block alert-soft bg + border-left orange — title «Не удалось добавить опекаемого» сразу первой строкой, без eyebrow. Sub-copy объясняет «QR-код устарел или принадлежит другой системе». Compactness: gap между frame и info-block норм, нет visual hole от удалённого eyebrow (т.к. title margin: 0 0 6px 0). CTAs «Попробовать ещё раз» + «Ввести код вручную». Tab-bar внизу с HS active. PASS.
+
+6. **38-hs-role-onboarding.png (B7 Phone 2):** Illustration shows 3 силуэта в треугольной композиции: центральный (Папа) явно крупнее, темнее, halo pink (`#fdf2f8`); 2 фланговых (опекуны) меньше, светлее, halo bevel (`#faf8f3`). ECG-pulse wine line сверху по диагонали через всех троих, pulse-node на apex над центром. Не overcrowded — фигуры читаются раздельно, есть air между ними. Halo overlaps создают depth. Ниже: «Вы подключились» (wine eyebrow), «Вы видите Папу», 4 ✓ rows + 1 ⊘ row, privacy hint, CTA. PASS.
+
+### Регрессии / неожиданности
+
+- **`.role-illust-wrap` height был 132px**, новый SVG 140px — обновлён wrapper до 140px чтобы fix overflow. Внутри `.role-body` layout остался без изменений.
+- **Side-by-side render для B4** дал 3-phone правильно с первого раза (window-size 1900×1100 — те же координаты что и в B3).
+- **Старый `29-end-bracelet-side-by-side.png`** удалён в скрипте (он был 2-phone wide, заменён на новый 3-phone wide `30-end-bracelet-close-side-by-side.png`).
+- В `lessons-learned.md` добавлено 2 новых урока: (а) скрытый дубликат eyebrow + inline-label (single-source-of-truth для status statement), (б) технические координаты добавления Phone к existing N-phone setup + PNG-renaming convention.
+
+**НЕ закоммичено — ждём acceptance от PM.**

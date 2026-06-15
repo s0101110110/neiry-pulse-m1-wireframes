@@ -230,7 +230,14 @@
       "Bash(sips *)",
       "mcp__gdrive__search",
       "Bash(python3 -c \"from PIL import Image; im = Image.open\\('/tmp/b3-render-2676/26-training-corner-cases-side-by-side.png'\\); print\\('size:', im.size, 'mode:', im.mode\\)\")",
-      "Bash(python3 /tmp/render-b6-history-edge.py)"
+      "Bash(python3 /tmp/render-b6-history-edge.py)",
+      "Bash(python3 render_b7_side_by_side.py)",
+      "Bash(python3 crop_b7_phones.py)",
+      "Bash(python3 render_b7_transparent.py)",
+      "Bash(python3 -c \"from PIL import Image; print\\('PIL OK'\\)\")",
+      "Bash(python3 -c \"import subprocess; print\\('subprocess OK'\\)\")",
+      "Bash(python3 /tmp/render_revision5_transparent.py)",
+      "Bash(python3 /tmp/render_revision5_proof.py)"
     ],
     "additionalDirectories": [
       "/tmp",
