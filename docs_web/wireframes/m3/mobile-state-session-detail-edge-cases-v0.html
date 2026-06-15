@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Session Detail · Edge cases (Delete confirm + Sharing in progress) · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Box-sizing reset — A5 R2 lesson */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --muted-foreground-strong: #57534e;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --warning-strong: #b45309;
+      --warning-border: #f5d9a8;
+      --destructive: #b91c1c;
+      --destructive-soft: #fef2f2;
+      --zone-inactive: #f5f2eb;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      margin: 0;
+    }
+
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+    .hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    /* B4 lesson: middot needs explicit font to avoid Onest emoji fallback */
+    .dot-sep {
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--border-strong);
+      font-weight: 500;
+      margin: 0 6px;
+    }
+
+    /* ========== Device frame (canonical) ========== */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    /* App bar (canonical from mobile-session-detail-v0.html) */
+    .app-bar {
+      flex-shrink: 0;
+      height: 56px;
+      padding: 0 12px 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--foreground);
+    }
+    .app-title-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1px;
+      padding-left: 4px;
+    }
+    .app-title-meta {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .app-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+
+    /* Scroll body of session detail (compressed canonical content) */
+    .scroll-body {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      background: var(--background);
+      padding: 14px 16px 96px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+    .scroll-body::-webkit-scrollbar { display: none; }
+
+    /* Hero summary */
+    .hero {
+      background: var(--card-warm);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .hero .label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      margin-bottom: 4px;
+    }
+    .hero .number {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 50px;
+      letter-spacing: -0.04em;
+      color: var(--primary);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .hero .unit {
+      font-family: 'Geist Mono', monospace;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      margin-left: 4px;
+    }
+    .hero .sub {
+      margin-top: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      color: var(--muted-foreground);
+      line-height: 1.4;
+    }
+    .hero .sub .mono-sub {
+      font-family: 'Geist Mono', monospace;
+      font-variant-numeric: tabular-nums;
+      color: var(--foreground);
+      font-weight: 600;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    /* 3-col stats */
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr 1px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+    .stat-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .stat-cell .v {
+      font-family: 'Geist Mono', monospace;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-cell .v.wine { color: var(--primary); }
+    .stat-cell .l {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .stat-sep {
+      height: 28px;
+      background: var(--border);
+      width: 1px;
+    }
+
+    /* GPS Map (compressed) */
+    .map-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+    }
+    .map-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px 6px 14px;
+    }
+    .map-header .title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+    }
+    .map-header .expand {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary);
+      background: none;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .map-viewport {
+      position: relative;
+      height: 140px;
+      background: linear-gradient(135deg, #efe9da 0%, #e2dccb 60%, #d4cfc0 100%);
+      overflow: hidden;
+    }
+    .map-viewport::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(155,146,125,0.14) 24px, rgba(155,146,125,0.14) 25px),
+        repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(155,146,125,0.14) 24px, rgba(155,146,125,0.14) 25px);
+    }
+    .map-route-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .route-path {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 6px rgba(131,24,67,0.32));
+    }
+    .route-start { fill: var(--primary); }
+    .route-end-outer {
+      fill: #fff;
+      stroke: var(--primary);
+      stroke-width: 3.5;
+    }
+    .route-end-inner { fill: var(--primary); }
+
+    /* Zones distribution (compressed — top 3 rows) */
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+    .zone-row {
+      display: grid;
+      grid-template-columns: 24px 1fr 50px 60px;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 0;
+    }
+    .zone-row + .zone-row {
+      border-top: 1px solid var(--border);
+    }
+    .zone-lbl {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--muted-foreground);
+    }
+    .zone-row.active .zone-lbl { color: var(--primary); }
+    .zone-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+    }
+    .zone-bar-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .zone-bar {
+      height: 4px;
+      background: var(--zone-inactive);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .zone-bar svg { width: 100%; height: 100%; display: block; }
+    .zone-pct {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .zone-row.active .zone-pct { color: var(--primary); }
+    .zone-time {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    /* Share CTA */
+    .btn-share {
+      width: 100%;
+      height: 46px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+    }
+    .btn-delete-footer {
+      display: block;
+      margin: 12px auto 0 auto;
+      background: none;
+      border: none;
+      color: var(--destructive);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      padding: 6px 16px;
+    }
+
+    /* Tab-bar */
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 8px 16px 8px;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      background: none;
+      border: none;
+    }
+    .tab-icon { width: 24px; height: 24px; display: block; }
+    .tab.active { color: var(--primary); }
+    .tab.active .tab-icon { stroke: var(--primary); }
+
+    /* =========================================================== */
+    /* SHARED — Dim overlay inside device                           */
+    /* =========================================================== */
+    .dim-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      animation: dim-fade 220ms ease-out both;
+    }
+    .dim-strong  { background: rgba(12, 10, 9, 0.55); }
+    .dim-soft    { background: rgba(12, 10, 9, 0.40); }
+
+    @keyframes dim-fade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* =========================================================== */
+    /* PHONE 1 — DELETE CONFIRM MODAL                              */
+    /* =========================================================== */
+    .delete-modal {
+      width: 100%;
+      max-width: 320px;
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.18), 0 8px 24px rgba(0,0,0,0.08);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 4px;
+      animation: modal-scale 240ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+    }
+    @keyframes modal-scale {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .delete-icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: var(--destructive-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px auto;
+    }
+    .modal-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--destructive);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .modal-eyebrow.wine { color: var(--primary); }
+    .modal-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      text-align: center;
+      margin: 0 0 8px 0;
+    }
+    .modal-title.smaller {
+      font-size: 18px;
+    }
+    .modal-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--foreground);
+      opacity: 0.78;
+      text-align: center;
+      margin: 0;
+    }
+    .modal-sub.smaller {
+      font-size: 13px;
+    }
+    .modal-sub .stat {
+      font-family: 'Geist Mono', monospace;
+      font-weight: 700;
+      color: var(--foreground);
+      opacity: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .modal-actions {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .btn-destructive-full {
+      height: 48px;
+      width: 100%;
+      border-radius: 12px;
+      background: var(--destructive);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+    }
+    .btn-link-wine {
+      height: 40px;
+      width: 100%;
+      background: transparent;
+      color: var(--primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    /* =========================================================== */
+    /* PHONE 2 — SHARING IN PROGRESS                                */
+    /* =========================================================== */
+    .sharing-card {
+      width: 100%;
+      max-width: 292px;
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.18), 0 8px 24px rgba(0,0,0,0.08);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 4px;
+      animation: modal-scale 240ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+    }
+    /* Spinner */
+    .spinner-wrap {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 14px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      animation: spinner-rotate 1.1s linear infinite;
+    }
+    .spinner circle {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 3.4;
+      stroke-linecap: round;
+      stroke-dasharray: 70 30;
+    }
+    @keyframes spinner-rotate {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Mini progress steps */
+    .progress-steps {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .progress-row .icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .progress-row .text {
+      flex: 1;
+      min-width: 0;
+    }
+    .progress-row.done .text { color: var(--foreground); }
+    .progress-row.in-progress .text { color: var(--foreground); }
+    .progress-row.pending .text { color: var(--muted-foreground); }
+    /* mini spinner inside row */
+    .mini-spinner {
+      width: 14px;
+      height: 14px;
+      animation: spinner-rotate 1.1s linear infinite;
+    }
+    .mini-spinner circle {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-dasharray: 30 16;
+    }
+    .pending-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border-strong);
+    }
+    .sharing-cancel {
+      margin-top: 18px;
+      width: 100%;
+      background: transparent;
+      color: var(--primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      height: 36px;
+      border: none;
+      border-radius: 8px;
+    }
+
+    /* ========== Page chrome ========== */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px 16px;
+      gap: 24px;
+      background: var(--background);
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .page-title .pill {
+      display: inline-block;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      background: var(--primary-soft);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-left: 8px;
+      text-transform: uppercase;
+    }
+    .frames-row {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+    .frame-caption strong { color: var(--primary); font-weight: 600; }
+    .frame-caption .scr-num { font-weight: 700; color: var(--foreground); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .spinner, .mini-spinner { animation: none; }
+      .delete-modal, .sharing-card, .dim-overlay { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">
+      Neiry Pulse · Session Detail · Edge cases · v0 · 2 overlay states · 390×844
+      <span class="pill">B5 · Delete confirm + Sharing in progress</span>
+    </div>
+
+    <div class="frames-row">
+
+      <!-- =========================================================== -->
+      <!-- PHONE 1 — DELETE CONFIRM MODAL over Session Detail          -->
+      <!-- =========================================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption">
+          <span class="scr-num">ЭКРАН 21</span> · <strong>SESSION DETAIL</strong> · DELETE CONFIRM
+        </div>
+
+        <section class="device-frame" aria-label="Детали тренировки с подтверждением удаления">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:53</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar (canonical Session Detail) -->
+          <div class="app-bar">
+            <button class="icon-btn" aria-label="Назад">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 4 L6 10 L12 16"/>
+              </svg>
+            </button>
+            <div class="app-title-wrap">
+              <span class="app-title-meta">14 июня · 9:53</span>
+              <span class="app-title">Тренировка</span>
+            </div>
+            <button class="icon-btn" aria-label="Действия">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <circle cx="10" cy="4" r="1.7"/>
+                <circle cx="10" cy="10" r="1.7"/>
+                <circle cx="10" cy="16" r="1.7"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Scroll body (compressed Session Detail) — visible behind dim -->
+          <div class="scroll-body">
+
+            <article class="hero">
+              <div class="label">Дистанция</div>
+              <div style="display:flex; align-items:baseline;">
+                <span class="number">5.20</span>
+                <span class="unit">км</span>
+              </div>
+              <div class="sub">
+                <span class="mono-sub">28:04</span> длительность <span class="dot-sep">·</span> средний темп <span class="mono-sub">5:24 /км</span>
+              </div>
+            </article>
+
+            <article class="card" aria-label="Основные показатели">
+              <div class="stats-row">
+                <div class="stat-cell">
+                  <span class="v wine">156</span>
+                  <span class="l">HR avg</span>
+                </div>
+                <div class="stat-sep" aria-hidden="true"></div>
+                <div class="stat-cell">
+                  <span class="v">5:24</span>
+                  <span class="l">темп avg</span>
+                </div>
+                <div class="stat-sep" aria-hidden="true"></div>
+                <div class="stat-cell">
+                  <span class="v">312</span>
+                  <span class="l">ккал</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="map-card" aria-label="Карта маршрута">
+              <div class="map-header">
+                <span class="title">Маршрут <span class="dot-sep">·</span> 5.20 км</span>
+                <button class="expand" aria-label="Развернуть карту">Развернуть</button>
+              </div>
+              <div class="map-viewport" role="img" aria-label="Маршрут 5.20 км">
+                <svg class="map-route-svg" viewBox="0 0 390 140" preserveAspectRatio="xMidYMid slice">
+                  <path class="route-path"
+                        d="M 50 110 C 80 96, 60 80, 110 72 S 170 84, 190 60 S 250 42, 280 56 S 330 80, 340 36" />
+                  <circle cx="50" cy="110" r="11" fill="#831843" opacity="0.18"/>
+                  <circle class="route-start" cx="50" cy="110" r="6"/>
+                  <circle class="route-end-outer" cx="340" cy="36" r="8"/>
+                  <circle class="route-end-inner" cx="340" cy="36" r="3"/>
+                </svg>
+              </div>
+            </article>
+
+            <article class="card" aria-label="Распределение по зонам">
+              <h3 class="section-title">Распределение по зонам</h3>
+
+              <div class="zone-row">
+                <span class="zone-lbl">Z2</span>
+                <span class="zone-name">Лёгкая</span>
+                <div class="zone-bar-wrap">
+                  <div class="zone-bar">
+                    <svg viewBox="0 0 100 4" preserveAspectRatio="none">
+                      <line x1="0" y1="2" x2="100" y2="2" stroke="#f5f2eb" stroke-width="4"/>
+                      <line x1="0" y1="2" x2="28" y2="2" stroke="#831843" stroke-width="4"/>
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <div class="zone-pct">28%</div>
+                  <div class="zone-time">7:51</div>
+                </div>
+              </div>
+
+              <div class="zone-row active">
+                <span class="zone-lbl">Z3</span>
+                <span class="zone-name">Темпо</span>
+                <div class="zone-bar-wrap">
+                  <div class="zone-bar">
+                    <svg viewBox="0 0 100 4" preserveAspectRatio="none">
+                      <line x1="0" y1="2" x2="100" y2="2" stroke="#f5f2eb" stroke-width="4"/>
+                      <line x1="0" y1="2" x2="52" y2="2" stroke="#831843" stroke-width="4"/>
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <div class="zone-pct">52%</div>
+                  <div class="zone-time">14:34</div>
+                </div>
+              </div>
+
+              <div class="zone-row">
+                <span class="zone-lbl">Z4</span>
+                <span class="zone-name">Порог</span>
+                <div class="zone-bar-wrap">
+                  <div class="zone-bar">
+                    <svg viewBox="0 0 100 4" preserveAspectRatio="none">
+                      <line x1="0" y1="2" x2="100" y2="2" stroke="#f5f2eb" stroke-width="4"/>
+                      <line x1="0" y1="2" x2="14" y2="2" stroke="#831843" stroke-width="4"/>
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <div class="zone-pct">14%</div>
+                  <div class="zone-time">3:55</div>
+                </div>
+              </div>
+            </article>
+
+            <article aria-label="Поделиться">
+              <button class="btn-share" aria-label="Поделиться">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M2 9 L15 2 L11 16 L8 10 Z"/>
+                </svg>
+                Поделиться
+              </button>
+              <button class="btn-delete-footer" aria-label="Удалить тренировку">Удалить тренировку</button>
+            </article>
+
+            <!-- ===== Dim overlay + Delete confirm modal ===== -->
+            <div class="dim-overlay dim-strong" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+              <div class="delete-modal">
+                <div class="delete-icon-wrap" aria-hidden="true">
+                  <!-- Trash icon (destructive red) -->
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 7h16"/>
+                    <path d="M10 11v6"/>
+                    <path d="M14 11v6"/>
+                    <path d="M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-13"/>
+                    <path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/>
+                  </svg>
+                </div>
+                <span class="modal-eyebrow">Безвозвратное действие</span>
+                <h2 class="modal-title" id="delete-modal-title">Удалить тренировку?</h2>
+                <p class="modal-sub">
+                  <span class="stat">Бег <span class="dot-sep">·</span> 5.20 км <span class="dot-sep">·</span> 28:04</span><br/>
+                  Маршрут, метрики и зоны будут стёрты. Это действие нельзя отменить.
+                </p>
+                <div class="modal-actions">
+                  <button class="btn-destructive-full" aria-label="Удалить тренировку безвозвратно">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M4 7h16"/>
+                      <path d="M10 11v6"/>
+                      <path d="M14 11v6"/>
+                      <path d="M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-13"/>
+                      <path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/>
+                    </svg>
+                    Удалить
+                  </button>
+                  <button class="btn-link-wine" aria-label="Отменить удаление">Отмена</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab-bar -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+              Дом
+            </button>
+            <button class="tab active" aria-current="page">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+              История
+            </button>
+            <button class="tab">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><path d="M2 19a6 6 0 0 1 12 0"/><circle cx="16" cy="7" r="2.5"/><path d="M13 13a4 4 0 0 1 7 3.5"/></svg>
+              Health Sharing
+            </button>
+            <button class="tab">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+      </div>
+
+
+      <!-- =========================================================== -->
+      <!-- PHONE 2 — SHARING IN PROGRESS OVERLAY                       -->
+      <!-- =========================================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption">
+          <span class="scr-num">ЭКРАН 22</span> · <strong>SESSION DETAIL</strong> · SHARING IN PROGRESS
+        </div>
+
+        <section class="device-frame" aria-label="Детали тренировки, идёт отправка">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:53</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar (canonical) -->
+          <div class="app-bar">
+            <button class="icon-btn" aria-label="Назад">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 4 L6 10 L12 16"/>
+              </svg>
+            </button>
+            <div class="app-title-wrap">
+              <span class="app-title-meta">14 июня · 9:53</span>
+              <span class="app-title">Тренировка</span>
+            </div>
+            <button class="icon-btn" aria-label="Действия">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <circle cx="10" cy="4" r="1.7"/>
+                <circle cx="10" cy="10" r="1.7"/>
+                <circle cx="10" cy="16" r="1.7"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Scroll body — same compressed Session Detail -->
+          <div class="scroll-body">
+
+            <article class="hero">
+              <div class="label">Дистанция</div>
+              <div style="display:flex; align-items:baseline;">
+                <span class="number">5.20</span>
+                <span class="unit">км</span>
+              </div>
+              <div class="sub">
+                <span class="mono-sub">28:04</span> длительность <span class="dot-sep">·</span> средний темп <span class="mono-sub">5:24 /км</span>
+              </div>
+            </article>
+
+            <article class="card" aria-label="Основные показатели">
+              <div class="stats-row">
+                <div class="stat-cell">
+                  <span class="v wine">156</span>
+                  <span class="l">HR avg</span>
+                </div>
+                <div class="stat-sep" aria-hidden="true"></div>
+                <div class="stat-cell">
+                  <span class="v">5:24</span>
+                  <span class="l">темп avg</span>
+                </div>
+                <div class="stat-sep" aria-hidden="true"></div>
+                <div class="stat-cell">
+                  <span class="v">312</span>
+                  <span class="l">ккал</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="map-card" aria-label="Карта маршрута">
+              <div class="map-header">
+                <span class="title">Маршрут <span class="dot-sep">·</span> 5.20 км</span>
+                <button class="expand">Развернуть</button>
+              </div>
+              <div class="map-viewport" role="img" aria-label="Маршрут 5.20 км">
+                <svg class="map-route-svg" viewBox="0 0 390 140" preserveAspectRatio="xMidYMid slice">
+                  <path class="route-path"
+                        d="M 50 110 C 80 96, 60 80, 110 72 S 170 84, 190 60 S 250 42, 280 56 S 330 80, 340 36" />
+                  <circle cx="50" cy="110" r="11" fill="#831843" opacity="0.18"/>
+                  <circle class="route-start" cx="50" cy="110" r="6"/>
+                  <circle class="route-end-outer" cx="340" cy="36" r="8"/>
+                  <circle class="route-end-inner" cx="340" cy="36" r="3"/>
+                </svg>
+              </div>
+            </article>
+
+            <article class="card" aria-label="Распределение по зонам">
+              <h3 class="section-title">Распределение по зонам</h3>
+
+              <div class="zone-row">
+                <span class="zone-lbl">Z2</span>
+                <span class="zone-name">Лёгкая</span>
+                <div class="zone-bar-wrap">
+                  <div class="zone-bar">
+                    <svg viewBox="0 0 100 4" preserveAspectRatio="none">
+                      <line x1="0" y1="2" x2="100" y2="2" stroke="#f5f2eb" stroke-width="4"/>
+                      <line x1="0" y1="2" x2="28" y2="2" stroke="#831843" stroke-width="4"/>
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <div class="zone-pct">28%</div>
+                  <div class="zone-time">7:51</div>
+                </div>
+              </div>
+
+              <div class="zone-row active">
+                <span class="zone-lbl">Z3</span>
+                <span class="zone-name">Темпо</span>
+                <div class="zone-bar-wrap">
+                  <div class="zone-bar">
+                    <svg viewBox="0 0 100 4" preserveAspectRatio="none">
+                      <line x1="0" y1="2" x2="100" y2="2" stroke="#f5f2eb" stroke-width="4"/>
+                      <line x1="0" y1="2" x2="52" y2="2" stroke="#831843" stroke-width="4"/>
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <div class="zone-pct">52%</div>
+                  <div class="zone-time">14:34</div>
+                </div>
+              </div>
+
+              <div class="zone-row">
+                <span class="zone-lbl">Z4</span>
+                <span class="zone-name">Порог</span>
+                <div class="zone-bar-wrap">
+                  <div class="zone-bar">
+                    <svg viewBox="0 0 100 4" preserveAspectRatio="none">
+                      <line x1="0" y1="2" x2="100" y2="2" stroke="#f5f2eb" stroke-width="4"/>
+                      <line x1="0" y1="2" x2="14" y2="2" stroke="#831843" stroke-width="4"/>
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <div class="zone-pct">14%</div>
+                  <div class="zone-time">3:55</div>
+                </div>
+              </div>
+            </article>
+
+            <article aria-label="Поделиться">
+              <button class="btn-share" aria-label="Поделиться">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M2 9 L15 2 L11 16 L8 10 Z"/>
+                </svg>
+                Поделиться
+              </button>
+              <button class="btn-delete-footer">Удалить тренировку</button>
+            </article>
+
+            <!-- ===== Soft dim overlay + Sharing in progress card ===== -->
+            <div class="dim-overlay dim-soft" role="dialog" aria-modal="true" aria-labelledby="sharing-title" aria-busy="true">
+              <div class="sharing-card">
+                <div class="spinner-wrap" aria-hidden="true">
+                  <svg class="spinner" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="16" pathLength="100"/>
+                  </svg>
+                </div>
+                <span class="modal-eyebrow wine">Отправка</span>
+                <h2 class="modal-title smaller" id="sharing-title">Делимся тренировкой…</h2>
+                <p class="modal-sub smaller" aria-live="polite">Создаём ссылку и уведомляем ваших опекунов в Health Sharing.</p>
+
+                <div class="progress-steps" aria-label="Прогресс отправки">
+                  <div class="progress-row done">
+                    <span class="icon" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#831843" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="8" cy="8" r="7" stroke="#831843" stroke-width="1.4" opacity="0.32"/>
+                        <path d="M4.5 8.2 L7 10.5 L11.5 5.8"/>
+                      </svg>
+                    </span>
+                    <span class="text">Создана ссылка</span>
+                  </div>
+                  <div class="progress-row in-progress" aria-current="step">
+                    <span class="icon" aria-hidden="true">
+                      <svg class="mini-spinner" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="6" pathLength="100"/>
+                      </svg>
+                    </span>
+                    <span class="text">Уведомляем Маму, Папу</span>
+                  </div>
+                  <div class="progress-row pending">
+                    <span class="icon" aria-hidden="true">
+                      <span class="pending-dot"></span>
+                    </span>
+                    <span class="text">QR-код готов</span>
+                  </div>
+                </div>
+
+                <button class="sharing-cancel" aria-label="Отменить отправку">Отмена</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab-bar -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+              Дом
+            </button>
+            <button class="tab active" aria-current="page">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+              История
+            </button>
+            <button class="tab">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><path d="M2 19a6 6 0 0 1 12 0"/><circle cx="16" cy="7" r="2.5"/><path d="M13 13a4 4 0 0 1 7 3.5"/></svg>
+              Health Sharing
+            </button>
+            <button class="tab">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

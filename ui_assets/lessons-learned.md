@@ -371,3 +371,44 @@ Coordinates 3-phone-side-by-side render (1900×1100, padding 16):
    - Same as auto-pause
 
 Mechanical check: открыть source canonical training-active, выписать список widgets, для каждого определить data source (GPS/HR/time/motion-sensor). Bracelet disconnect = только HR widgets frozen. GPS lost = только GPS widgets frozen. Pause = все widgets frozen.
+
+## 2026-06-15 — Dim overlay strength = function of severity (destructive vs transient)
+
+Проблема: при моделировании двух overlay'ев (Delete confirm + Sharing in progress) над одним и тем же Session Detail base, естественно поставить одинаковый dim-уровень для consistency. Это смазывает семантику — пользователь не различает «warning, обрати внимание» от «processing, подожди».
+
+**Правило для dim-overlay strength внутри device-frame:**
+1. **Destructive confirm** (delete, irreversible action, stop training): `rgba(12, 10, 9, 0.55)` — strong dim. Background читается, но focus полностью на modal. Это «вы должны принять решение прежде чем продолжать».
+2. **Transient processing** (sharing, syncing, uploading): `rgba(12, 10, 9, 0.40)` — softer dim. Background more visible — communicates «временное состояние, не warning». Это «подождите, идёт работа».
+3. **Critical alert** (battery 5%, fall detected confirm): `rgba(12, 10, 9, 0.65)` — strongest dim. Modal должен быть единственным объектом внимания.
+4. **Informational sheet** (auto-pause, GPS lost banner): нет dim — bottom-sheet или banner без overlay. Это «информация о текущем состоянии», не interrupt.
+
+Mechanical check: открыть два mockup'а рядом (Delete + Sharing в одной задаче). Если оба dim-уровня выглядят одинаково — что-то не так в семантике. Should be visibly different intensity (одна заметно темнее).
+
+## 2026-06-15 — Spinner pattern consistency across product (rotating arc, not 3-dot wave)
+
+Проблема: при добавлении нового loading-state легко взять «более премиум» spinner pattern (3-dot wave, pulsing rings, custom SVG morph). Это вносит motion-vocabulary fragmentation: onboarding-calibrating использует rotating ring, sharing-in-progress 3-dot wave, future syncing — pulsing dots. Каждый spinner ощущается как «другая часть приложения».
+
+**Правило для spinner pattern в Neiry Pulse:**
+1. **Canonical spinner = rotating arc circle** с `stroke-dasharray="70 30" pathLength=100` rotating 1.1s linear infinite. Wine `#831843` stroke на white card / wine background.
+2. **Size scale (4 уровня):** hero 40-48px (sharing card, full-screen loader), mini 14-16px (inline-row progress-step), micro 10-12px (button-loading, inline status).
+3. **НЕ вводить альтернативные patterns** (3-dot wave, pulsing rings, skeleton-shimmer) кроме как для skeleton-content loader (плейсхолдеры карточек). Skeleton — другой semantic class, не spinner.
+4. **Spinner всегда соответствует canonical animation** — никаких кастом-кейв-функций для отдельных экранов.
+5. **`prefers-reduced-motion`** обязателен: animation: none + статичный visible arc.
+
+Альтернативные patterns можно рассмотреть только для дизайн-системы целиком (R&D-decision), не per-screen.
+
+## 2026-06-15 — Progress steps в loading-state: 3 states max + explicit visual hierarchy
+
+Проблема: 4+ progress-steps в loading-card перегружают modal vertically — пользователь читает list, не processing-status. Visual hierarchy без чётких state-markers (done/in-progress/pending) превращает steps в plain bullet-list — теряется sense of progression.
+
+**Правило для mini progress-steps в loading-overlay:**
+1. **Maximum 3 шага** в visible state. Если процесс реально длиннее — collapse в «несколько следующих» или показывать через progress-bar percentage, не enumerate.
+2. **3 explicit states с разными visual cues:**
+   - **DONE:** wine check-icon 16×16 (с outline-circle opacity 0.32) + foreground text (no muted)
+   - **IN-PROGRESS:** mini rotating spinner 14×14 wine + foreground text + `aria-current="step"`
+   - **PENDING:** muted dot 6×6 (`var(--border-strong)`) + muted-foreground text
+3. **Spacing 10px gap** между rows, vertical separator (`border-top: 1px solid var(--border)` + padding-top: 14px) отделяет от sub-copy. Это даёт смысловое разделение «вы здесь читаете, ниже — реальный прогресс».
+4. **Иконки aligned by center, fixed width** (icon column 18px) — text-column flex:1. Никаких jagged left edges.
+5. **Font: Geist Mono 12pt letter-spacing 0.02em** — даёт ощущение system-status, не human-text. Согласуется с timestamp / device-status mono-pattern.
+
+Mechanical check: если кнопка «Отмена» появляется в loading-card — она ВСЕГДА bottom (после progress-steps), text-link wine, не destructive. User должен иметь option escape, но не encouraged.
