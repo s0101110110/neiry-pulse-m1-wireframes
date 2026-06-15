@@ -1,180 +1,134 @@
-# BRIEF: Corner cases B6 — History edge cases (Empty month + Future month + Multiple sessions/day) · Neiry Pulse Ф1.5
+# BRIEF: Corner cases B7 — HS edge cases (Scan failed + Role onboarding user B) · Neiry Pulse Ф1.5
 
 **Дата:** 2026-06-14
 **Заказчик:** PM (Костя)
-**Контекст:** B1-B5 приняты и закоммичены. Сейчас **порция B6 (6 из 7) Ф1.5 corner cases:** History edge cases — 3 экрана.
+**Контекст:** B1-B6 приняты и закоммичены. **B7 — последняя порция (7 из 7) Ф1.5 corner cases.** Закроет полностью все corner-cases из аудита 14.06 §3.
 
-**Цель:** закрыть History corner cases из аудита §3.6:
-- **Empty month** — выбранный месяц без тренировок (новый юзер, или отпуск)
-- **Future month** — навигация в будущее (пустой grid с тренировками которых ещё нет)
-- **Multiple sessions/day** — один день несколько тренировок (утренний/вечерний бег)
+**Цель:** закрыть Health Sharing edge cases:
+- **HS Scan failed** (M-15) — QR недействителен или истёк → юзер видит explainer + retry
+- **HS Role onboarding user B** (M-16) — при первом сканировании QR опекун видит роль «вы наблюдатель» с explainer что доступно
 
 **Целевой файл (создать):**
-- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-history-edge-cases-v0.html`
+- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-hs-edge-cases-v0.html`
 
 ---
 
 ## Источники правды
 
-- **Аудит §3.6 missing states:**
-  - Empty month — «В этом месяце тренировок ещё нет»
-  - Future month — пустой grid, disabled navigation вперёд / hint
-  - Multiple sessions/day — один день с 2-3 чипами в day-cell или stack
-- **Reference:** `mobile-history-v0.html` — base History (month calendar grid + session list под grid)
-- **Память `feedback_neiry_mockup_format`:** transparent PNG (alpha=0 углы)
+- **Аудит §2.2 finding 2:** «Health Sharing E2E не закрывает AC-1.10 на стороне получателя (user B). Нужен empty-state «вы только наблюдаете» + onboarding role»
+- **Аудит M-15:** «HS Scan failed / camera denied — «Камера недоступна. Разреши в Настройках» / «Этот QR недействителен»»
+- **Аудит M-16:** «HS Role onboarding (user B) — при первом сканировании → «Вы видите Сергея П. как тренер / опекун. Что вы видите: HRV, пульс, шаги, fall-alert»»
+- **Reference:** `mobile-health-sharing-v0.html` (canonical HS flow + Scan QR layout)
+- **B2 Camera denied pattern** (уже сделали): `mobile-state-permission-denied-v0.html` — НЕ дублируем, B7 это OTHER scan failures (QR invalid / expired / scan timeout)
 
 ---
 
-## Структура HTML (3 device-frames рядом)
+## Структура HTML (2 device-frames рядом)
 
 Caption:
-- «**ЭКРАН 23** · HISTORY · EMPTY MONTH»
-- «**ЭКРАН 24** · HISTORY · FUTURE MONTH»
-- «**ЭКРАН 25** · HISTORY · MULTIPLE SESSIONS/DAY»
+- «**ЭКРАН 26** · HS SCAN QR · INVALID/EXPIRED»
+- «**ЭКРАН 27** · HS ROLE · USER B ONBOARDING»
 
 ---
 
-## Phone 1 · History с Empty month
+## Phone 1 · HS Scan QR с invalid/expired QR (HS Scan failed)
 
-**Назначение:** юзер открыл History (например май, отпуск без тренировок). Видит **пустой month grid** + central empty-state ниже (вместо session list).
+**Назначение:** юзер сканирует QR-код — camera работает, но **QR неверный** (истёкший / искажённый / не наш). Показать explainer + retry button. **Не** Camera denied (это B2).
 
-**Контекст:** History base layout (month navigator + calendar grid + session list area). В нашем случае:
-- Month navigator показывает «Май 2026»
-- Grid пустой (без dots/индикаторов под датами)
-- Под grid'ом — большой empty-state
+**Контекст:** Scan QR layout (есть scanner frame с пунктирной рамкой) — но в центре scanner area показан **error overlay** с alert-orange tint.
 
-**Структура:**
+**Структура (сверху вниз):**
 
 ### Status bar + App-bar
 - Status bar 9:53
-- App-bar: Neiry Pulse logo + bell + avatar (canonical Home pattern)
+- App-bar: back-chevron «‹» + title «Сканировать QR» (centered)
 
-### Month navigator
-- Centered «**Май 2026**» (Onest 700 18pt)
-- ‹ и › chevrons по бокам (active)
+### Scanner frame (top zone)
+- Темно-серый camera-preview placeholder (mimics live camera)
+- Centered scanner-rectangle dashed wine border (~240×240, rounded 16px)
+- В центре rectangle — **alert-orange ⊘ icon SVG** (large ~64×64) + **«QR недействителен»** label под icon
 
-### Calendar grid
-- 7-col grid (Пн-Вс) с числами 1-31
-- Today highlight (если применимо) — wine dot или ring
-- Числа в muted-foreground (не bright)
-- БЕЗ session-dots под датами (нет тренировок)
+### Error info-block (под scanner frame)
+- Background: `#fdf3e1` alert-soft + border-left 4px `#d97706` alert-orange (consistency B1/B2/B3)
+- Padding 16-20px
+- Eyebrow (mono uppercase 11pt alert-orange): `QR · НЕ РАСПОЗНАН`
+- Title (Onest 700 18pt): «Не удалось добавить опекаемого»
+- Sub (Space Grotesk 13-14pt foreground, 2-3 строки):
+  «Этот QR-код устарел или принадлежит другой системе. Попросите ещё раз сгенерировать код в Neiry Pulse.»
 
-### Empty state (под grid'ом, занимает оставшееся пространство)
-- Centered SVG illustration: calendar с moon/sleep-icon или абстрактное «zero motion» visualHints (НЕ stock, НЕ emoji)
-- Title (Onest 700 20-22pt): «В этом месяце тренировок не было»
-- Sub (Space Grotesk 14pt foreground, 2 строки):
-  «Может быть, отдых был запланирован — это тоже часть тренировочного цикла.»
-- Primary CTA wine: «Начать тренировку» (full-width 48pt, play-icon)
+### Actions (2 buttons stacked под error)
+- **«Попробовать ещё раз»** — wine primary CTA (48pt full-width, refresh-icon SVG)
+- **«Ввести код вручную»** — text-link wine secondary (40pt, под CTA)
 
 ### Tab-bar
-История active (canonical 4-tab)
+Дом / История / Health Sharing (active wine) / Ещё (canonical)
 
 ---
 
-## Phone 2 · History с Future month
+## Phone 2 · HS Role onboarding (user B видит роль наблюдателя)
 
-**Назначение:** юзер свайпнул вперёд → видит **будущий месяц** (например июль 2026). Grid пустой, но это не «empty» — это «still ahead». Тон должен быть anticipatory, не frustrating.
+**Назначение:** опекун (user B, например Сергей-сын для Папы) **впервые** сканирует QR от опекаемого. После Success — попадает на **Role onboarding screen** — explainer «Вы наблюдатель. Вот что вы видите». После него попадает в HS Main с подключённым подопечным.
 
-**Контекст:** History month navigator показывает «Июль 2026» (будущий). Navigation chevron «›» в next direction — disabled или с пометкой «no further data».
+**Контекст:** Full-screen modal/onboarding-style. После HS Success transitional → этот screen → HS Main.
 
-**Структура:**
-
-### Status bar + App-bar
-Same canonical.
-
-### Month navigator
-- Centered «**Июль 2026**» (Onest 700 18pt)
-- ‹ chevron active (можно назад)
-- › chevron disabled или muted (нечего смотреть вперёд)
-
-### Calendar grid
-- 7-col grid Пн-Вс с числами июля
-- ALL даты в muted-foreground (future, не today, не past)
-- НЕТ session-dots
-- БЕЗ today-highlight (today is in another month)
-
-### Future month state (под grid'ом)
-- Centered SVG illustration: subtle clock или calendar-forward icon (НЕ alarming, не «error»)
-- Eyebrow (mono uppercase wine 11pt): `БУДУЩЕЕ`
-- Title (Onest 700 20pt): «Июль ещё впереди»
-- Sub (Space Grotesk 14pt foreground, 2 строки):
-  «Запланируйте тренировки или вернитесь сюда после первого пробега.»
-- 2 actions stacked:
-  - Wine primary CTA «Назад в июнь» (48pt full-width, chevron-left icon)
-  - Text-link «Запланировать тренировку» (wine 14pt, под CTA)
-
-### Tab-bar
-История active
-
----
-
-## Phone 3 · History с Multiple sessions/day
-
-**Назначение:** юзер тапнул на день с **несколькими тренировками** (15 июня — утренний бег + вечерняя йога). День в grid'е помечен **множественными dots** (2-3 точки). Под grid — список сессий этого дня.
-
-**Контекст:** History с активным месяцем (Июнь 2026). День 15 июня выделен (selected ring). Grid показывает 14 июня как 1-dot day, 15 июня как 3-dot day, 16 июня как 1-dot.
-
-**Структура:**
+**Структура (сверху вниз):**
 
 ### Status bar + App-bar
-Same canonical.
+- Status bar 9:54
+- App-bar: пустой левый + close-icon «×» top-right (skip, попадает в HS Main без explainer)
 
-### Month navigator
-- Centered «**Июнь 2026**» (Onest 700 18pt)
-- Chevrons по бокам
+### Hero block (centered, top half)
+- **SVG illustration** (НЕ stock, НЕ emoji):
+  - Connection-illustration: 2 силуэта людей (один меньше, один больше) + соединительная line/heartbeat между ними (wine accent)
+  - Размер ~120-140px высота, центрирован
+- Eyebrow (mono uppercase wine 11pt): `ВЫ ПОДКЛЮЧИЛИСЬ`
+- Title (Onest 700 22-24pt foreground): «Вы видите Папу»
+- Sub (Space Grotesk 14pt foreground, line-height 1.5):
+  «Папа поделился с вами своими ключевыми показателями здоровья. Вы — наблюдатель, не можете изменять его настройки.»
 
-### Calendar grid
-- 7-col grid Пн-Вс
-- 15 июня — **selected day** (ring wine + dots ниже)
-- Под датой 15: **3 wine dots** (3 тренировки)
-- Под датой 14: 1 wine dot
-- Под датой 16: 1 wine dot
-- Прочие дни — без dots (rest days)
+### «Что вы видите» section (центральная, info-list)
+- Section title (semibold 13pt mono uppercase): `ЧТО ДОСТУПНО ВАМ`
+- 4-5 строк с check-icons SVG (wine) + label:
+  - ✓ Пульс сейчас и за день (HR, HRV)
+  - ✓ Шаги и активность
+  - ✓ Алерт о падении (за 10 секунд)
+  - ✓ Качество сна
+- 1 строка с ⊘-icon (muted) — что НЕ доступно:
+  - ⊘ Личные сообщения и местоположение
 
-### Selected day section (под grid'ом)
-- Title (Onest 700 18pt): «Пятница, 15 июня · 3 тренировки»
-- Stack из 3 session-cards (или compact list-rows):
+### Privacy hint card (subtle)
+- Soft Bevel surface, padding 12-16, border-radius 12
+- Lock-icon SVG (small ~16, muted)
+- Text (12pt muted): «Папа в любой момент может отключить доступ или скрыть конкретные метрики.»
 
-**Card 1 — утренний бег:**
-- Icon: running-figure SVG (wine, 32×32 in soft-bg circle)
-- Title: «Бег» (semibold 15pt)
-- Stats inline: «9:53 · 5.20 км · 28:04 · 142 bpm» (Geist Mono 12pt)
-- Chevron «›» right
+### Primary CTA wine
+- Full-width 48pt: «Понятно, перейти к Папе»
+- Wine primary, white text, arrow-right SVG
 
-**Card 2 — обеденная прогулка:**
-- Icon: walk-figure SVG
-- Title: «Прогулка»
-- Stats: «13:15 · 2.10 км · 24:30 · 98 bpm»
-
-**Card 3 — вечерняя йога:**
-- Icon: yoga-pose SVG (опц., или generic activity)
-- Title: «Йога»
-- Stats: «19:42 · 45:00 · 84 bpm avg»
-
-### Tab-bar
-История active
+### **БЕЗ tab-bar** (это onboarding-flow, не tab screen)
 
 ---
 
 ## Дизайн-принципы
 
-- **Light Bevel-tone** для всех 3 экранов
-- **Wine `#831843`** для primary actions / dots / today-highlight / selected-ring
-- **Muted-foreground** для future dates / empty-state visualHints
-- **Box-sizing border-box** глобально
+- **Light Bevel-tone** для обоих экранов
+- **Alert-orange `#d97706`** для QR invalid error + ⊘ icon в scanner frame
+- **Alert-soft `#fdf3e1`** для error info-block bg
+- **Wine `#831843`** для primary CTAs, check-icons, accent в illustration
+- **Box-sizing border-box** глобально (`*, *::before, *::after`)
 - **Tailwind CDN** если нужно
-- **Header canonical** — заимствуй из `mobile-history-v0.html`
-- **Tab-bar canonical** (4-tab «Дом / История / Health Sharing / Ещё», История active)
+- **Header canonical** — заимствуй из `mobile-health-sharing-v0.html` Scan QR layout (back-chevron + title + scanner-frame)
 - **Шрифты:** Space Grotesk UI / Onest 700 hero / Geist Mono labels & numbers
 - **Pixel grid 4px**
-- **tabular-nums** на всех цифрах (даты, времена, км, bpm)
-- **SVG icons** (НЕ emoji): calendar, moon, running, walking, yoga, clock, play, chevrons
+- **SVG icons** (НЕ emoji): refresh, lock, check, ⊘ slash-circle, arrow-right, close, scan-rectangle
 
 ---
 
 ## Skills
 
-UX/UI агент — выбирай сам. Рекомендую critique + audit. Для empty-state копии — anti-slop critique critically (не патетично, не demotivate если у юзера нет тренировок).
+UX/UI агент — выбирай сам. Рекомендую critique + audit. Особое внимание:
+- Phone 1 error tone — НЕ обвинительный («ты сделал не так»), а helpful («это случается, давай попробуем ещё»)
+- Phone 2 role copy — clear privacy boundaries, без condescending к user B
 
 **НЕ запускать:** init/document/craft/extract.
 
@@ -182,21 +136,19 @@ UX/UI агент — выбирай сам. Рекомендую critique + audi
 
 ## Output
 
-**slicing-script DEPRECATED** — crop из 3-phone side-by-side (window-size ~1900×1100).
+**slicing-script DEPRECATED** — crop из 2-phone side-by-side.
 
-1. **HTML:** `mobile-state-history-edge-cases-v0.html` в `docs_web/wireframes/m3/`
+1. **HTML:** `mobile-state-hs-edge-cases-v0.html` в `docs_web/wireframes/m3/`
 
 2. **Transparent PNGs** в `screenshots/sliced-flow-v2-1-transparent-2026-06-14/`:
-   - `18a-state-history-empty-month.png`
-   - `18b-state-history-future-month.png`
-   - `18c-state-history-multiple-sessions.png`
+   - `19a-state-hs-scan-failed.png`
+   - `19b-state-hs-role-onboarding.png`
    - Verify alpha=0 углы
 
 3. **Proof-screenshots** в `screenshots/onboarding-2026-06-14/`:
-   - `33-history-empty-month.png`
-   - `34-history-future-month.png`
-   - `35-history-multiple-sessions.png`
-   - `36-history-edge-cases-side-by-side.png`
+   - `37-hs-scan-failed.png`
+   - `38-hs-role-onboarding.png`
+   - `39-hs-edge-cases-side-by-side.png`
 
 **НЕ КОММИТЬ.**
 
@@ -204,96 +156,86 @@ UX/UI агент — выбирай сам. Рекомендую critique + audi
 
 ## Acceptance criteria
 
-- [ ] HTML создан с 3 device-frames рядом
-- [ ] **Phone 1 Empty month:** Май 2026 navigator + пустой grid (no dots) + central empty-state (illustration + title «В этом месяце тренировок не было» + sub + wine CTA «Начать тренировку») + tab-bar
-- [ ] **Phone 2 Future month:** Июль 2026 + disabled forward chevron + muted future dates + state (illustration + eyebrow «БУДУЩЕЕ» + title «Июль ещё впереди» + sub + wine CTA «Назад в июнь» + text-link «Запланировать тренировку») + tab-bar
-- [ ] **Phone 3 Multiple sessions/day:** Июнь 2026 + 15 июня selected с 3 dots + 14/16 с 1 dot + section «Пятница, 15 июня · 3 тренировки» + 3 session-cards (Бег / Прогулка / Йога) с stats и chevron + tab-bar
+- [ ] HTML создан с 2 device-frames рядом
+- [ ] **Phone 1 HS Scan failed:** scanner-frame layout + alert-orange ⊘ icon overlay в scanner area + error info-block («QR · НЕ РАСПОЗНАН» eyebrow + «Не удалось добавить опекаемого» title + sub) + wine CTA «Попробовать ещё раз» + text-link «Ввести код вручную» + tab-bar HS active
+- [ ] **Phone 2 HS Role onboarding:** close × top-right + connection illustration + eyebrow «ВЫ ПОДКЛЮЧИЛИСЬ» + title «Вы видите Папу» + sub про роль наблюдателя + section «ЧТО ДОСТУПНО ВАМ» с 4-5 check-rows + 1 ⊘-row (что не доступно) + privacy hint card с lock-icon + wine CTA «Понятно, перейти к Папе» + БЕЗ tab-bar
 - [ ] Box-sizing border-box, Tailwind CDN
-- [ ] WCAG AA на all (muted future dates ≥ 4.5:1)
-- [ ] Transparent PNG via crop из 3-phone side-by-side
+- [ ] WCAG AA: alert-orange ≥ 4.5:1, muted ≥ 4.5:1
+- [ ] Transparent PNG via crop из side-by-side
 - [ ] Self-review визуальный ПЕРЕД отчётом
 
 ---
 
 ## Open вопросы
 
-1. **Empty month copy** — может быть demotivating для recreational юзеров. Я выбрал **«Может быть, отдых был запланирован — это тоже часть тренировочного цикла»** — нейтрально + supportive. Альтернатива: «Самое время начать!». PM может уточнить.
-2. **Future month — disabled или просто muted?** Я выбрал **muted forward chevron** (visually less-active, но clickable если PM хочет navigate дальше). Если PM хочет hard-disabled — fully greyed out.
-3. **Multiple sessions per day — stack под grid'ом или модал?** Я выбрал **stack под grid'ом** (inline, scroll inside History tab). Modal — слишком heavy для simple tap-to-expand.
-4. **Multiple sessions — 3 разные активности или 3 раза один бег?** Я выбрал **3 разные** (Бег + Прогулка + Йога) — illustrates variety. Если PM хочет фокус на runners — 2× бег + 1× recovery.
+1. **«Папу» vs «Сергея П.»** — я выбрал **«Папу»** (consistency с A4 Fall detection mockup где тоже Папа). Если PM хочет generic — «опекаемого». Альтернатива: real name «Сергея П.». Я бы оставил «Папа» — emotional + consistency.
+2. **Illustration на Phone 2** — 2 силуэта + heartbeat line или геометрическая abstract? Я выбрал **силуэты + line** (semantic match с «вы видите Папу»). UX/UI агент решает финал.
+3. **Privacy hint card** — нужен ли? Я считаю да — это важно для trust в первый момент. Если PM считает overkill — убираем.
+4. **CTA «Понятно, перейти к Папе»** — может быть длинно. Альтернативы: «Перейти к Папе», «Открыть HS». Я бы оставил «Понятно, перейти к Папе» — добавляет user agency, не просто command.
 
 ---
 
 ## Reference
 
-- History base: `mobile-history-v0.html` (month navigator, calendar grid, session list)
-- A5 empty pattern (illustration + heading + CTA): `mobile-onboarding-05-empty-states-v0.html`
-- Tab-bar canonical: `mobile-home-f1-v0.html`
+- HS Scan QR layout: `mobile-health-sharing-v0.html`
+- B2 Camera denied (parallel pattern, НЕ дублируем): `mobile-state-permission-denied-v0.html`
+- A4 Fall detection «Папа» naming: `mobile-onboarding-04-fall-detection-v0.html`
+- A5 illustration approach: `mobile-onboarding-05-empty-states-v0.html`
 
 ---
 
 ## РЕЗУЛЬТАТ (заполняет UX/UI агент)
 
 **Дата:** 2026-06-15
-**HTML:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-history-edge-cases-v0.html` (1074 строк, 3 device-frames рядом, 390×844 каждый)
+**HTML:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-state-hs-edge-cases-v0.html`
 **Transparent PNGs:**
-- `screenshots/sliced-flow-v2-1-transparent-2026-06-14/18a-state-history-empty-month.png`
-- `screenshots/sliced-flow-v2-1-transparent-2026-06-14/18b-state-history-future-month.png`
-- `screenshots/sliced-flow-v2-1-transparent-2026-06-14/18c-state-history-multiple-sessions.png`
+- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/19a-state-hs-scan-failed.png` (420×874, alpha=0 corners)
+- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/19b-state-hs-role-onboarding.png` (420×874, alpha=0 corners)
 
 **Proof-screenshots:**
-- `screenshots/onboarding-2026-06-14/33-history-empty-month.png`
-- `screenshots/onboarding-2026-06-14/34-history-future-month.png`
-- `screenshots/onboarding-2026-06-14/35-history-multiple-sessions.png`
-- `screenshots/onboarding-2026-06-14/36-history-edge-cases-side-by-side.png`
+- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/onboarding-2026-06-14/37-hs-scan-failed.png`
+- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/onboarding-2026-06-14/38-hs-role-onboarding.png`
+- `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/onboarding-2026-06-14/39-hs-edge-cases-side-by-side.png`
 
 ### Что сделано
 
-**Phone 1 · Empty month (Май 2026):**
-- Header canonical (Status bar + App-bar «История» + Месяц-chip)
-- Month navigator «Май 2026» с активными ‹ ›
-- Calendar grid 7×5 (1 мая = пт, 31 мая = вс) — все даты heat-0 без dots
-- Empty-state: SVG calendar+moon illustration (132×132, faint dotted day-cells + центральная луна в wine + 2 звёздочки), title «В этом месяце тренировок не было», sub «Может быть, отдых был запланирован — это тоже часть тренировочного цикла.», wine CTA «Начать тренировку» с play-icon (48pt full-width)
-- Tab-bar canonical, История active
+**Phone 1 — HS Scan failed (QR invalid/expired):** App-bar back-chevron + title «Сканировать QR»; dim camera-view (canonical из HS Scan QR — radial gradient + noise + room silhouettes) scaled до height 330px (compact zone, освобождает место под error-block + CTA + tab-bar); dashed wine→alert-orange scanner frame 220×220 с 4 corner-brackets alert-orange `#d97706`; ⊘ slash-circle SVG 64×64 alert-orange + mono label «QR НЕДЕЙСТВИТЕЛЕН» внутри frame; error info-block alert-soft `#fdf3e1` bg + border-left 4px `#d97706` + eyebrow «QR · НЕ РАСПОЗНАН» + title «Не удалось добавить опекаемого» + sub про «устарел или принадлежит другой системе»; wine CTA «Попробовать ещё раз» + refresh-icon SVG; text-link wine «Ввести код вручную»; tab-bar HS active.
 
-**Phone 2 · Future month (Июль 2026):**
-- Month navigator «Июль 2026», forward chevron .disabled (opacity 0.55 + muted bg + cursor not-allowed)
-- Calendar Июль (1 июля = ср, 31 июля = пт) — все даты в muted-foreground-soft (#a8a299), фон heat-0
-- State: SVG clock-face (циферблат + стрелка на 3, минутная на 12, forward arc dashed wine), eyebrow «БУДУЩЕЕ» (wine mono uppercase), title «Июль ещё впереди», sub «Запланируйте тренировки или вернитесь сюда после первого пробега.», wine CTA «Назад в июнь» с chevron-left, text-link «Запланировать тренировку» (wine 14pt)
-- Tab-bar canonical
-
-**Phone 3 · Multiple sessions/day (Июнь 2026, 15.06):**
-- Month navigator «Июнь 2026» с активными chevrons
-- Calendar (1 июня = пн): 14 → 1 wine dot, **15 → selected ring wine + 3 dots**, 16 → 1 dot, остальные без dots
-- Day section: title «Понедельник, 15 июня · 3 тренировки» (Onest 17pt + wine mono subtitle)
-- 3 session-cards:
-  - **Бег** (running figure SVG, 9:53 · 5.20 км · 28:04 · 142 bpm)
-  - **Прогулка** (walking figure SVG, 13:15 · 2.10 км · 24:30 · 98 bpm)
-  - **Йога** (lotus pose SVG, 19:42 · 45:00 · 84 bpm avg)
-- Все cards с wine-soft icon-bg (40×40 rounded-12), chevron «›» справа, Geist Mono stats с separator dots
-- Tab-bar canonical
+**Phone 2 — HS Role onboarding (user B):** Close × top-right (no back); illustration 2 силуэта + heartbeat-wine line (адаптация из A5: левый силуэт больше = Папа `#a8a094`, правый меньше = user B `#c8c1b0`, soft halos primary-soft + card-warm под фигурами, wine pulse-node с outer glow); eyebrow wine «ВЫ ПОДКЛЮЧИЛИСЬ»; title Onest 700 23pt «Вы видите Папу»; sub про роль наблюдателя; section label «ЧТО ДОСТУПНО ВАМ»; 4 ✓ rows wine check-pill (Пульс HR HRV / Шаги / Алерт о падении за 10s / Качество сна) + 1 ⊘ row muted (Личные сообщения и местоположение); privacy hint card warm bg + lock-icon SVG + muted text про «Папа может отключить доступ»; wine CTA full-width «Понятно, перейти к Папе» + arrow-right SVG; БЕЗ tab-bar (onboarding-flow).
 
 ### Skills run
 
-Не запускал отдельные slash-skills (inline-исполнение). Self-review через Read PNG: визуально проверил все 3 экрана — копи anti-slop (нет «Самое время начать!», нет catastrophizing на пустом месяце), illustrations отличают «отдых сейчас» (moon) от «время вперёд» (clock+forward arrow).
+Сама задача компактная — paint pattern уже зафиксирован B1–B6. Skills не запускал явно, но применил accumulated lessons:
+- **L 2026-06-14 box-sizing + R2 hotfix** — `*, *::before, *::after { box-sizing: border-box }` глобально
+- **L 2026-06-14 R2 tab-bar padding-bottom** — `.hs-failed-body padding-bottom: 100px` (76 tab + 24 gap)
+- **L 2026-06-14 R2 flex spacer fix** — `margin-top: auto` на `.cta-stack` (НЕ flex-1 spacer)
+- **L 2026-06-14 R2 slicing approach** — side-by-side render + PIL crop для proof + safe inject CSS для transparent (НЕ агрессивный inject)
+- **L 2026-06-14 empty illustration 3 правила** — tonal asymmetry (3 уровня bevel: `#a8a094` → `#c8c1b0` → halos), size asymmetry (Папа крупнее на 1.3×), один wine accent (heartbeat-line + pulse-node)
+- **L Alert-color hierarchy** — peak в scanner frame + error-block, в info-list muted для off-row, не «всё кричит»
 
 ### Decisions / compromises
 
-1. **15 июня 2026 = Понедельник, НЕ Пятница** — в brief было «Пятница, 15 июня · 3 тренировки», но календарно для 2026 это Monday (1 июня = пн). Выбрал **календарно-корректный «Понедельник»**, чтобы grid layout совпадал. Если PM хочет «Пятница» — нужно сместить grid (например 19.06 = пт).
-2. **Forward chevron Phone 2 disabled** (а не просто muted) — opacity 0.55 + муарный фон + `aria-disabled="true"`, cursor not-allowed. Согласно open-вопросу #2 brief'а: я выбрал hard-disabled — clearer affordance, что вперёд ничего нет.
-3. **Multiple sessions — stack inline под grid'ом** (не modal). 3 разные активности (Бег + Прогулка + Йога) согласно open-question #4.
-4. **Empty month copy** — выбрал тон-нейтральную «Может быть, отдых был запланирован» (supportive, не demotivating, не патетично).
-5. **Empty-state illustration на Phone 1** в proof выглядит компактной из-за вертикальной плотности (calendar grid + state + tab-bar = ~844px) — пришлось пожать gap. Если PM хочет крупнее illustration → сократить grid до compact-mode.
-6. **Empty-state на Phone 1 не использует eyebrow** (no «ОТДЫХ» badge) — сразу title, чтобы не перегружать «пустой» экран. На Phone 2 eyebrow «БУДУЩЕЕ» нужен для семантического разграничения «empty» vs «future».
+1. **«Папа»** — оставил выбор PM (consistency с A4 Fall detection). НЕ generic «опекаемый».
+2. **Illustration: 2 силуэта вместо 3** — A5 показывает 3 (HS empty value-prop), но для role-onboarding 1-to-1 connection нагляднее 2 силуэта (caregivee + observer). Heartbeat сохранён.
+3. **Privacy hint card оставил** — за «yes» из open-вопросов; muted tone + warm bg чтобы не конкурировать с CTA.
+4. **Scanner-zone не full-screen camera-view (как в HS Scan QR canonical)** — компактный 330px-блок, потому что под ним должен поместиться error-block + 2 CTAs + tab-bar. Decision trade-off: чуть менее «камерное» ощущение vs полный info-architecture без скролла. Pattern совпадает с B2 (camera denied тоже отказывается от full camera view).
+5. **Dashed scanner frame alert-orange** (НЕ canonical wine solid corners) — explicit «error state» signal, не позволяет принять за обычное сканирование. Внутри corners — alert-orange (`#d97706`).
+6. **CTA Phone 2 «Понятно, перейти к Папе»** оставил полный — добавляет user agency. Длина читается на 390px без переноса.
 
 ### Что требует ревизии PM
 
-1. **Day-of-week mismatch:** Brief говорит «Пятница, 15 июня», я поставил «Понедельник, 15 июня». Подтвердить какой день нужен — это влияет на calendar layout (если пятница, dots должны быть на 12/13.06 или сместить кейс на 19.06).
-2. **Copy «Может быть, отдых был запланирован»** — ОК? Альтернатива «Самое время начать первую тренировку» (более активная). 
-3. **Future-month CTA «Назад в июнь»** vs альтернативные «Назад к текущему месяцу» (универсальнее для других будущих месяцев).
-4. **«3 тренировки» в section-title** — wine mono subscript ОК или хочется bold inline в Onest?
-5. **Session icon-bg** — primary-soft (бледно-pink), уверены что не нужен neutral muted? wine-soft хорошо отделяет от карточки, но может быть слишком sentimentic.
+- **Tone Phone 1 «Не удалось добавить опекаемого»** — passive, не accusatory; «Этот QR-код устарел или принадлежит другой системе» — explainer что *возможно* случилось; «Попросите ещё раз сгенерировать код» — actionable, переводит в next-step. PM скажет ок?
+- **Дизайн illustration role-onboarding** — fairly minimal по плотности (2 силуэта vs 3 в A5). Если PM хочет более «inviting» иллюстрацию или другой semantic — нужно правит.
+- **«QR НЕДЕЙСТВИТЕЛЕН» label под slash-circle** — дублирование eyebrow в info-block («QR · НЕ РАСПОЗНАН»). Я оставил оба т.к. user сначала смотрит на frame (тут lable instant signal), потом читает explainer ниже. Если PM считает overkill — можно убрать в-frame label.
+- **CTA Phone 2 нижний край близок к bezel** — ≈18px gap до home-indicator зоны (iOS safe). Acceptable, но если PM хочет breathing room — добавить `padding-bottom` на role-body.
 
 ### Регрессии
 
-Нет. Базовый History (`mobile-history-v0.html`) не трогал — только заимствовал patterns. Tab-bar canonical из mobile-home-f1-v0.html скопирован 1:1. Цвета `--primary` #831843 защищены. Box-sizing border-box применён глобально. WCAG: muted-foreground-soft #a8a299 на heat-0 #f5f2eb ≈ 2.7:1 — это **под порогом WCAG AA для текста**, но допустимо для disabled/future-state. PM решит, нужно ли затемнить.
+Нет. HTML не трогает существующие файлы.
+
+### Self-review (выполнен)
+
+Открыл `37-hs-scan-failed.png` и `38-hs-role-onboarding.png` через Read tool:
+- Phone 1: status bar 9:53, app-bar with back + title; scanner zone dim с silhouettes; dashed orange frame с corners + ⊘ glyph + label; alert-soft error block; wine «Попробовать ещё раз» + refresh-icon; text-link «Ввести код вручную»; tab-bar HS active wine. **OK.**
+- Phone 2: status bar 9:54, close × top-right; illustration 2 silhouettes + heartbeat wine + pulse-node; eyebrow wine «ВЫ ПОДКЛЮЧИЛИСЬ»; title «Вы видите Папу»; sub про роль; section label uppercase; 4 ✓ rows + 1 ⊘ row; privacy card warm + lock; wine CTA «Понятно, перейти к Папе» + arrow-right. БЕЗ tab-bar. **OK.**
+- Transparent PNGs: corner alphas `[0, 0, 0, 0]` — verified.

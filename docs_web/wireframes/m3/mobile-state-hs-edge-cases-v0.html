@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Mobile · HS edge cases (Scan failed + Role onboarding user B) · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Global box-sizing — lesson 2026-06-14 R2 hotfix */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      /* shadcn light tokens + warm tint (Bevel-leaning) — copied 1:1 from mobile-home-f1-v0.html */
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;             /* Neiry wine — PROTECTED */
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;             /* alert-orange */
+      --warning-soft: #fdf3e1;
+      --warning-strong: #b45309;
+      --warning-border: #f5d9a8;
+      --destructive: #b91c1c;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* ============================================================ */
+    /* Device frame — 1:1 with mobile-home / health-sharing / B2     */
+    /* ============================================================ */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid transparent;
+    }
+    .app-bar-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+    }
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 140ms ease;
+      border: none;
+    }
+    .icon-btn:hover { background: var(--muted); }
+    .icon-btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .eyebrow-warning {
+      color: var(--warning-strong);
+    }
+
+    /* Tab-bar (canonical, copied from health-sharing) */
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 8px 16px 8px;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .tab-icon { width: 24px; height: 24px; display: block; }
+    .tab.active { color: var(--primary); }
+    .tab.active .tab-icon { stroke: var(--primary); }
+
+    /* ============================================================ */
+    /* PHONE 1 · HS SCAN QR — INVALID / EXPIRED                     */
+    /* ============================================================ */
+
+    /* Scanner zone uses dim camera-view (consistent w/ HS Scan QR canonical) */
+    .scan-zone {
+      position: relative;
+      flex-shrink: 0;
+      height: 330px;
+      background:
+        radial-gradient(ellipse at 30% 25%, rgba(70,70,90,0.55) 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 75%, rgba(60,40,55,0.45) 0%, transparent 55%),
+        linear-gradient(180deg, #0a0a0d 0%, #14121a 50%, #0c0a10 100%);
+      overflow: hidden;
+    }
+    .scan-noise {
+      position: absolute;
+      inset: 0;
+      opacity: 0.18;
+      mix-blend-mode: overlay;
+      background-image:
+        radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1px),
+        radial-gradient(rgba(255,255,255,0.10) 1px, transparent 1px);
+      background-size: 3px 3px, 7px 7px;
+      background-position: 0 0, 1px 2px;
+      pointer-events: none;
+    }
+    .scan-room {
+      position: absolute;
+      inset: 0;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    /* Dashed wine scanner frame — distinct from canonical solid corners,
+       signals "invalid" state more directly */
+    .scan-target-failed {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 220px;
+      height: 220px;
+      border: 2px dashed rgba(217, 119, 6, 0.85);
+      border-radius: 18px;
+      box-shadow:
+        0 0 0 1px rgba(217, 119, 6, 0.18),
+        0 0 40px rgba(217, 119, 6, 0.22);
+    }
+    .scan-target-failed .corner {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border: 4px solid var(--warning);
+    }
+    .scan-target-failed .corner.tl { top: -3px; left: -3px; border-right: none; border-bottom: none; border-top-left-radius: 6px; }
+    .scan-target-failed .corner.tr { top: -3px; right: -3px; border-left: none; border-bottom: none; border-top-right-radius: 6px; }
+    .scan-target-failed .corner.bl { bottom: -3px; left: -3px; border-right: none; border-top: none; border-bottom-left-radius: 6px; }
+    .scan-target-failed .corner.br { bottom: -3px; right: -3px; border-left: none; border-top: none; border-bottom-right-radius: 6px; }
+
+    .scan-failed-glyph {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, calc(-50% - 12px));
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .scan-failed-label {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fbbf73;
+      white-space: nowrap;
+    }
+
+    /* Light bevel body under scanner zone */
+    .hs-failed-body {
+      flex: 1;
+      min-height: 0;
+      background: var(--background);
+      display: flex;
+      flex-direction: column;
+      padding: 16px 20px 100px 20px; /* 100 = tab-bar 76 + 24 (lesson R2) */
+      overflow-y: auto;
+    }
+    .hs-failed-body::-webkit-scrollbar { display: none; }
+
+    /* Error info-block (alert-soft bg + border-left wine-of-alert) */
+    .err-block {
+      background: var(--warning-soft);
+      border: 1px solid var(--warning-border);
+      border-left: 4px solid var(--warning);
+      border-radius: 14px;
+      padding: 14px 16px 16px 16px;
+      box-shadow: 0 4px 14px -6px rgba(217, 119, 6, 0.16);
+    }
+    .err-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--warning-strong);
+      margin: 0 0 6px 0;
+    }
+    .err-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 1.22;
+      letter-spacing: -0.015em;
+      color: var(--foreground);
+      margin: 0 0 6px 0;
+    }
+    .err-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 13.5px;
+      line-height: 1.45;
+      color: var(--foreground);
+      opacity: 0.82;
+      margin: 0;
+    }
+
+    /* CTA stack pinned to bottom of body (above tab-bar) */
+    .cta-stack {
+      margin-top: auto;
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .btn-primary-full {
+      height: 52px;
+      width: 100%;
+      border-radius: 14px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      border: none;
+      transition: transform 140ms ease-out, background 140ms ease;
+    }
+    .btn-primary-full:hover { background: #6b1238; }
+    .btn-primary-full:active { transform: scale(0.99); }
+    .btn-primary-full:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .btn-link-wine {
+      height: 44px;
+      width: 100%;
+      background: transparent;
+      color: var(--primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    .btn-link-wine:hover { background: var(--primary-soft); }
+    .btn-link-wine:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* ============================================================ */
+    /* PHONE 2 · HS ROLE ONBOARDING (user B наблюдатель)            */
+    /* ============================================================ */
+
+    .role-body {
+      flex: 1;
+      min-height: 0;
+      background: var(--background);
+      display: flex;
+      flex-direction: column;
+      padding: 8px 24px 28px 24px;
+      overflow-y: auto;
+    }
+    .role-body::-webkit-scrollbar { display: none; }
+
+    .role-app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 12px 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      background: var(--card);
+    }
+
+    .role-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-top: 4px;
+    }
+    .role-illust-wrap {
+      width: 200px;
+      height: 132px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .role-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin: 0 0 8px 0;
+    }
+    .role-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 23px;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      margin: 0 0 10px 0;
+      max-width: 280px;
+    }
+    .role-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--foreground);
+      opacity: 0.78;
+      margin: 0;
+      max-width: 304px;
+    }
+
+    .role-section-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      margin: 22px 0 10px 0;
+    }
+    .role-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .role-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .role-row-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .role-row-icon.is-ok {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+    .role-row-icon.is-off {
+      background: var(--muted);
+      color: var(--muted-foreground);
+    }
+    .role-row-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 13.5px;
+      line-height: 1.42;
+      color: var(--foreground);
+    }
+    .role-row-text.is-off {
+      color: var(--muted-foreground);
+    }
+
+    .privacy-card {
+      margin-top: 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--card-warm);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .privacy-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      background: var(--muted);
+      color: var(--muted-foreground);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .privacy-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--muted-foreground);
+    }
+
+    .role-cta-stack {
+      margin-top: auto;
+      padding-top: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* ============================================================ */
+    /* Page chrome (side-by-side)                                   */
+    /* ============================================================ */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 24px 48px 24px;
+      gap: 24px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .page-sub {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.06em;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .frames-row {
+      display: flex;
+      gap: 56px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+      margin-right: 8px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn-primary-full:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Neiry Pulse · Mobile · HS edge cases · 390×844</div>
+    <div class="page-sub">M3 v2.6 · Ф1.5 · B7 (M-15 + M-16) · 2026-06-14</div>
+
+    <div class="frames-row">
+
+      <!-- ============================================================ -->
+      <!-- ЭКРАН 26 · HS SCAN QR · INVALID/EXPIRED                       -->
+      <!-- ============================================================ -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 26</strong>HS SCAN QR · INVALID/EXPIRED</div>
+
+        <section class="device-frame" aria-label="Сканирование QR — QR-код недействителен">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:53</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar (back-chevron + title, canonical for HS Scan QR) -->
+          <div class="app-bar">
+            <button aria-label="Назад" class="icon-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l-6 6 6 6"/></svg>
+            </button>
+            <span class="app-bar-title">Сканировать QR</span>
+            <span class="w-9 h-9" aria-hidden="true"></span>
+          </div>
+
+          <!-- Scanner zone: dim camera-view with error overlay -->
+          <div class="scan-zone" aria-label="Камера: QR-код не распознан">
+            <div class="scan-noise" aria-hidden="true"></div>
+            <svg class="scan-room" viewBox="0 0 390 330" preserveAspectRatio="none" aria-hidden="true">
+              <rect x="30" y="40" width="120" height="120" rx="12" fill="#1c1a26" opacity="0.6"/>
+              <rect x="190" y="80" width="180" height="160" rx="14" fill="#15131c" opacity="0.7"/>
+              <ellipse cx="320" cy="50" rx="50" ry="30" fill="#1a1822" opacity="0.5"/>
+              <rect x="60" y="240" width="280" height="80" rx="20" fill="#11101a" opacity="0.6"/>
+            </svg>
+
+            <!-- Scanner frame (dashed alert-orange) with error glyph -->
+            <div class="scan-target-failed" aria-hidden="true">
+              <span class="corner tl"></span>
+              <span class="corner tr"></span>
+              <span class="corner bl"></span>
+              <span class="corner br"></span>
+
+              <!-- ⊘ slash-circle SVG (alert-orange, 64×64) -->
+              <div class="scan-failed-glyph">
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="#d97706" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="32" cy="32" r="24"/>
+                  <line x1="16" y1="48" x2="48" y2="16"/>
+                </svg>
+              </div>
+
+              <span class="scan-failed-label">QR недействителен</span>
+            </div>
+          </div>
+
+          <!-- Body: error info-block + CTA stack -->
+          <div class="hs-failed-body">
+            <article class="err-block" role="alert" aria-labelledby="qr-err-title">
+              <p class="err-eyebrow">QR · не распознан</p>
+              <h1 id="qr-err-title" class="err-title">Не удалось добавить опекаемого</h1>
+              <p class="err-sub">
+                Этот QR-код устарел или принадлежит другой системе. Попросите ещё раз сгенерировать код в Neiry Pulse.
+              </p>
+            </article>
+
+            <!-- CTA stack pinned to bottom -->
+            <div class="cta-stack">
+              <button class="btn-primary-full" aria-label="Попробовать ещё раз">
+                <!-- Refresh icon SVG (clockwise circular arrow) -->
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3.5 10 A6.5 6.5 0 1 1 10 16.5"/>
+                  <path d="M10 13.5 L10 16.5 L7 16.5"/>
+                </svg>
+                Попробовать ещё раз
+              </button>
+              <button class="btn-link-wine" aria-label="Ввести код вручную">
+                Ввести код вручную
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab-bar (canonical, HS active) -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+              История
+            </button>
+            <button class="tab active" aria-current="page" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="3"/><path d="M2 19a6 6 0 0 1 12 0"/><circle cx="16" cy="7" r="2.5"/><path d="M13 13a4 4 0 0 1 7 3.5"/></svg>
+              Health Sharing
+            </button>
+            <button class="tab" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- ЭКРАН 27 · HS ROLE · USER B ONBOARDING                       -->
+      <!-- ============================================================ -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 27</strong>HS ROLE · USER B ONBOARDING</div>
+
+        <section class="device-frame" aria-label="Подключение — роль наблюдателя">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:54</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar (close × top-right; no back) -->
+          <div class="role-app-bar">
+            <button aria-label="Пропустить" class="icon-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 5l10 10M15 5l-10 10"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Body: hero + list + privacy + CTA -->
+          <div class="role-body">
+
+            <!-- Hero block -->
+            <div class="role-hero">
+              <!-- Connection illustration: 2 silhouettes + heartbeat line (wine accent) -->
+              <div class="role-illust-wrap" aria-hidden="true">
+                <svg width="200" height="132" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Силуэты двух людей, соединённых линией пульса">
+                  <!-- Soft halos behind silhouettes -->
+                  <circle cx="56" cy="58" r="38" fill="#fdf2f8"/>
+                  <circle cx="146" cy="56" r="34" fill="#faf8f3"/>
+
+                  <!-- Left silhouette — larger (caregivee, "Папа") -->
+                  <g transform="translate(34, 22)">
+                    <circle cx="22" cy="14" r="12" fill="#a8a094"/>
+                    <path d="M2 64 C2 40, 42 40, 42 64 L42 80 L2 80 Z" fill="#a8a094"/>
+                  </g>
+
+                  <!-- Right silhouette — slightly smaller (user B, observer) -->
+                  <g transform="translate(122, 26)">
+                    <circle cx="20" cy="12" r="10.5" fill="#c8c1b0"/>
+                    <path d="M2 56 C2 36, 38 36, 38 56 L38 70 L2 70 Z" fill="#c8c1b0"/>
+                  </g>
+
+                  <!-- Heartbeat line (wine) connecting both silhouettes across mid-band -->
+                  <path d="M8 108
+                           L52 108
+                           L58 100
+                           L66 116
+                           L74 88
+                           L82 122
+                           L90 100
+                           L100 100
+                           L108 86
+                           L116 122
+                           L124 92
+                           L132 116
+                           L140 100
+                           L192 108"
+                        fill="none"
+                        stroke="#831843"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"/>
+
+                  <!-- Pulse-node at apex -->
+                  <circle cx="116" cy="122" r="3" fill="#831843"/>
+                  <circle cx="116" cy="122" r="6" fill="none" stroke="#831843" stroke-width="1" opacity="0.35"/>
+
+                  <!-- Baseline ground -->
+                  <line x1="8" y1="126" x2="192" y2="126" stroke="#e8e4d8" stroke-width="1"/>
+                </svg>
+              </div>
+
+              <p class="role-eyebrow">Вы подключились</p>
+              <h1 class="role-title">Вы видите Папу</h1>
+              <p class="role-sub">
+                Папа поделился с вами своими ключевыми показателями здоровья. Вы&nbsp;— наблюдатель, не можете изменять его настройки.
+              </p>
+            </div>
+
+            <!-- Section: что доступно вам -->
+            <h2 class="role-section-label">Что доступно вам</h2>
+            <ul class="role-list" aria-label="Доступные и недоступные данные">
+
+              <li class="role-row">
+                <span class="role-row-icon is-ok" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 L6 10.5 L11 4.5"/></svg>
+                </span>
+                <span class="role-row-text">Пульс сейчас и за день <span class="mono" style="font-size:11.5px; color:var(--muted-foreground); letter-spacing:0.04em;">· HR, HRV</span></span>
+              </li>
+
+              <li class="role-row">
+                <span class="role-row-icon is-ok" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 L6 10.5 L11 4.5"/></svg>
+                </span>
+                <span class="role-row-text">Шаги и активность</span>
+              </li>
+
+              <li class="role-row">
+                <span class="role-row-icon is-ok" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 L6 10.5 L11 4.5"/></svg>
+                </span>
+                <span class="role-row-text">Алерт о падении за <span class="num">10</span> секунд</span>
+              </li>
+
+              <li class="role-row">
+                <span class="role-row-icon is-ok" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 L6 10.5 L11 4.5"/></svg>
+                </span>
+                <span class="role-row-text">Качество сна</span>
+              </li>
+
+              <li class="role-row">
+                <span class="role-row-icon is-off" aria-hidden="true">
+                  <!-- ⊘ slash-circle small -->
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="7" cy="7" r="5"/>
+                    <line x1="3.5" y1="10.5" x2="10.5" y2="3.5"/>
+                  </svg>
+                </span>
+                <span class="role-row-text is-off">Личные сообщения и местоположение</span>
+              </li>
+            </ul>
+
+            <!-- Privacy hint card -->
+            <aside class="privacy-card" aria-label="Папа управляет доступом">
+              <span class="privacy-icon" aria-hidden="true">
+                <!-- Lock icon SVG -->
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2.5" y="6.5" width="9" height="6.5" rx="1.6"/>
+                  <path d="M4.5 6.5 V4.5 A2.5 2.5 0 0 1 9.5 4.5 V6.5"/>
+                </svg>
+              </span>
+              <span class="privacy-text">
+                Папа в любой момент может отключить доступ или скрыть конкретные метрики.
+              </span>
+            </aside>
+
+            <!-- CTA pinned to bottom -->
+            <div class="role-cta-stack">
+              <button class="btn-primary-full" aria-label="Понятно, перейти к Папе">
+                Понятно, перейти к Папе
+                <!-- arrow-right icon -->
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 10 H15"/>
+                  <path d="M11 6 L15 10 L11 14"/>
+                </svg>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- БЕЗ tab-bar (это onboarding-flow, не tab screen) -->
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>
