@@ -504,6 +504,38 @@ Anti-pattern: фиксировать `height: 75%` без `auto` fallback — н
 
 Mechanical check: для любого celebration-screen с preview peek — пройти список widget'ов и для каждого ответить «эта метрика существует на этот момент времени flow'а?» Если ответ «нет» / «именно её мы будем показывать на следующем экране» — placeholder.
 
+## 2026-06-16 — Side-stripe «full-access marker» — impeccable absolute ban, alternatives
+
+Проблема: естественный паттерн для «special / full / VIP» card — добавить `border-left: 3px solid wine` как accent. На C5 я сделал это дважды: на receiver-card Папа (full-access) и на protect-card «Вы под защитой». Это **impeccable absolute ban**: «Side-stripe borders. border-left greater than 1px as a colored accent on cards, list items, callouts, or alerts. Never intentional.» AI-grammar tell, появляется в 50%+ генераций.
+
+**Правило для маркировки «special status» на card:**
+1. **Full border (1.5px solid brand)** вместо stripe — clear, contained, не выбивается на левую кромку.
+2. **Tinted background gradient** (например `linear-gradient(180deg, primary-soft 0%, card-warm 100%)`) — subtle wine identity без stripe.
+3. **Avatar / icon recolor** на brand wine — переносит accent в content, не на chrome.
+4. **Compact pill / badge** справа (`Geist Mono uppercase 9.5pt + wine bg + white fg + rounded-full`) — explicit semantic marker.
+5. **Combining 2-4 совмещает identity без cliché.** Например: full wine border + wine avatar + «ПОЛНЫЙ» pill = «Папа full access» readable, no stripe.
+
+Anti-pattern: оставлять `border-left: 3px wine` «потому что quick и visible» — это AI shortcut который impeccable critique поймает первым же проходом. Любой card с special-status треатуется через **full border + content recolor**, не через side-stripe.
+
+Применимо ко всем будущим cards: featured / pinned / premium / full-access / alert / urgent — никаких side-stripes.
+
+## 2026-06-16 — Two-way symmetry через parallel structure, не через равное количество элементов
+
+Проблема: при моделировании two-way dashboard (Я делюсь vs Со мной делятся) первый импульс — поставить равное количество rows в обоих секциях для visual balance. Но в реальной user A story 2 sharers + 1 sharer-to-me — данные асимметричны.
+
+**Правило для two-way / bidirectional UI dashboards:**
+1. **Symmetry достигается через parallel structure**, не через равный content:
+   - Те же section-header eyebrow в том же шрифте/размере/цвете
+   - Те же decorative anchors (например wine pill backplate под direction arrows)
+   - Те же sub-title fonts
+   - Те же row-card patterns
+2. **Direction arrows как visual differentiator** — ↗ (outgoing) vs ↙ (incoming) внутри одинаковых backplates. Reading rhythm: «label + arrow → list». Mirrored geometry даёт subconscious read «это другая сторона того же».
+3. **Honest data > forced symmetry.** Если sharers != receivers, не fake-добавлять placeholder rows. Структурная параллельность достаточна. Spaces между секциями + protect-card pushed к bottom (margin-top: auto) утилизирует свободное место.
+4. **Divider должен быть symmetric** — никаких асимметричных wine-overlay только-слева. Clean 1px border = единственный честный divider между bidirectional zones.
+5. **Color cue:** outgoing data = brand wine (вы инициируете), incoming alerts (Бабушка HRV ↓) = alert-orange (warning peak, single severity per screen).
+
+Mechanical check: сложить screenshot пополам по divider — обе половины должны иметь идентичную structural grammar (header height, arrow shape, sub-title position), отличие только в content density и arrow rotation.
+
 ## 2026-06-15 (Revision 5) — 3 phones в одном файле: добавление Phone к existing 2-phone setup
 
 Проблема: добавляя Phone 3 (close confirm modal) к существующему 2-phone файлу B4 (end-of-session + bracelet disconnect), естественно скопировать Phone 1 markup целиком как background для overlay. Это дублирует 100+ строк HTML — рискованно для maintenance и нарушает single-source-of-truth.

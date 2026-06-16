@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Mobile · HS Role (User A sharing + Two-way dashboard) · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Global box-sizing — lesson 2026-06-14 R2 hotfix */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --primary-soft-2: #fbe7f0;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --warning-strong: #b45309;
+      --warning-border: #f5d9a8;
+      --destructive: #b91c1c;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame — 1:1 with mobile-home */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    /* Phone 1 app-bar: back-chevron + title centered + info ⓘ */
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid transparent;
+    }
+    .app-bar-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+      flex: 1;
+      text-align: center;
+    }
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 140ms ease;
+      border: none;
+    }
+    .icon-btn:hover { background: var(--muted); }
+    .icon-btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* ============================================================ */
+    /* Tab-bar (canonical, copied 1:1 from B7)                       */
+    /* ============================================================ */
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 8px 16px 8px;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .tab-icon { width: 24px; height: 24px; display: block; }
+    .tab.active { color: var(--primary); }
+    .tab.active .tab-icon { stroke: var(--primary); }
+
+    /* ============================================================ */
+    /* PHONE 1 · SHARING ROLE («Кому я делюсь»)                      */
+    /* ============================================================ */
+
+    .sharing-body {
+      flex: 1;
+      min-height: 0;
+      background: var(--background);
+      display: flex;
+      flex-direction: column;
+      padding: 12px 20px 100px 20px;   /* 100 = tab-bar 76 + 24 (lesson R2) */
+      overflow-y: auto;
+    }
+    .sharing-body::-webkit-scrollbar { display: none; }
+
+    .sharing-hero {
+      text-align: left;
+      margin-bottom: 14px;
+    }
+    .sharing-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin: 0 0 6px 0;
+    }
+    .sharing-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      margin: 0 0 6px 0;
+    }
+    .sharing-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 13.5px;
+      line-height: 1.45;
+      color: var(--foreground);
+      opacity: 0.78;
+      margin: 0;
+    }
+
+    /* Receiver cards list */
+    .receiver-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 0 0 14px 0;
+      padding: 0;
+      list-style: none;
+    }
+    .receiver-card {
+      background: var(--card-warm);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease;
+    }
+    .receiver-card:hover {
+      background: #fff;
+      border-color: var(--border-strong);
+    }
+    .receiver-card:hover .receiver-chevron {
+      transform: translateX(2px);
+    }
+    .receiver-chevron {
+      flex-shrink: 0;
+      color: var(--muted-foreground);
+      opacity: 0.85;
+      transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .receiver-card, .receiver-chevron { transition: none; }
+      .receiver-card:hover .receiver-chevron { transform: none; }
+    }
+    /* Full-access marker: full border (no side-stripe — impeccable ban),
+       wine-tint avatar carries the accent, plus a small wine pill on the right side */
+    .receiver-card.is-full-access {
+      border: 1.5px solid var(--primary);
+      background: linear-gradient(180deg, #fdf2f8 0%, #faf8f3 100%);
+    }
+    .full-access-pill {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px 3px 7px;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #fff;
+      font-family: 'Geist Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+    .receiver-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #f0d7e3 0%, #e0bcd0 100%);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+    .receiver-card.is-full-access .receiver-avatar {
+      background: linear-gradient(135deg, #831843 0%, #5e0e30 100%);
+      color: #fff;
+    }
+    .receiver-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .receiver-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15.5px;
+      color: var(--foreground);
+      margin: 0;
+      line-height: 1.2;
+    }
+    .receiver-meta {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted-foreground);
+      margin: 3px 0 0 0;
+      line-height: 1.35;
+    }
+    /* Section: ПО УМОЛЧАНИЮ ВИДНО */
+    .access-section-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      margin: 4px 0 10px 0;
+    }
+    .access-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .access-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .access-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .access-icon.is-ok {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+    .access-icon.is-off {
+      background: var(--muted);
+      color: var(--muted-foreground);
+    }
+    .access-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 13.5px;
+      line-height: 1.42;
+      color: var(--foreground);
+    }
+    .access-text.is-off {
+      color: var(--muted-foreground);
+    }
+
+    /* Quick controls row (Пауза доступа + Удалить всех) */
+    .quick-controls {
+      margin-top: auto;
+      padding-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-wine-outline {
+      flex: 1;
+      height: 48px;
+      border-radius: 12px;
+      border: 1.5px solid var(--primary);
+      background: transparent;
+      color: var(--primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 140ms ease;
+    }
+    .btn-wine-outline:hover { background: var(--primary-soft); }
+    .btn-wine-outline:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    /* Destructive text-link — subordinate to primary outline button.
+       flex:0 + auto width + visual underline-on-hover signals "tap, but danger". */
+    .btn-link-destructive {
+      flex: 0 0 auto;
+      height: 48px;
+      padding: 0 12px;
+      background: transparent;
+      color: var(--destructive);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13.5px;
+      letter-spacing: 0.01em;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background 140ms ease, text-decoration-color 140ms ease;
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      text-underline-offset: 3px;
+    }
+    .btn-link-destructive:hover {
+      background: #fef2f2;
+      text-decoration-color: var(--destructive);
+    }
+    .btn-link-destructive:focus-visible {
+      outline: 2px solid var(--destructive);
+      outline-offset: 2px;
+    }
+
+    /* ============================================================ */
+    /* PHONE 2 · TWO-WAY DASHBOARD                                   */
+    /* ============================================================ */
+
+    .home-app-bar {
+      flex-shrink: 0;
+      height: 56px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+    }
+
+    .twoway-body {
+      flex: 1;
+      min-height: 0;
+      background: var(--background);
+      display: flex;
+      flex-direction: column;
+      padding: 14px 20px 100px 20px;
+      overflow-y: auto;
+    }
+    .twoway-body::-webkit-scrollbar { display: none; }
+
+    .twoway-hero {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+    .twoway-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin: 0 0 6px 0;
+    }
+    .twoway-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      margin: 0 0 4px 0;
+    }
+    .twoway-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--muted-foreground);
+      margin: 0;
+    }
+    .twoway-sub .num { font-weight: 600; color: var(--foreground); }
+
+    /* Direction section header (with arrow) */
+    .dir-section {
+      margin-bottom: 14px;
+    }
+    .dir-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .dir-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+    /* Arrow backplate — small wine pill that anchors direction visually (↗ vs ↙).
+       Same shape both sections, only glyph rotates → symmetric reading rhythm. */
+    .dir-arrow {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--primary-soft-2);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .dir-subtitle {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      color: var(--muted-foreground);
+      margin: 0 0 10px 0;
+      line-height: 1.4;
+    }
+
+    /* Compact person rows */
+    .person-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .person-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 12px;
+      background: var(--card-warm);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .person-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #f0d7e3 0%, #e0bcd0 100%);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .person-info { flex: 1; min-width: 0; }
+    .person-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14.5px;
+      color: var(--foreground);
+      line-height: 1.2;
+      margin: 0;
+    }
+    .person-status {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted-foreground);
+      margin: 2px 0 0 0;
+      line-height: 1.3;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--success);
+      flex-shrink: 0;
+    }
+    .person-status.is-alert {
+      color: var(--warning-strong);
+    }
+    .person-status.is-alert .status-dot {
+      background: var(--warning);
+    }
+    .person-chevron {
+      flex-shrink: 0;
+      color: var(--muted-foreground);
+      opacity: 0.85;
+    }
+
+    /* Add-more text link. Gap-expand on hover (Emil-style "lean into action"). */
+    .add-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 4px 2px;
+      background: transparent;
+      color: var(--primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.01em;
+      border: none;
+      cursor: pointer;
+      transition: gap 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .add-link:hover { gap: 10px; }
+    @media (prefers-reduced-motion: reduce) {
+      .add-link { transition: none; }
+      .add-link:hover { gap: 6px; }
+    }
+
+    /* Divider between sections — clean 1px border, symmetric (no left-anchored wine overlay). */
+    .dir-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+
+    /* Quick action card: «Вы под защитой».
+       No side-stripe (impeccable ban). Wine identity carried by icon backplate + full thin wine border. */
+    .protect-card {
+      margin-top: auto;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px;
+      background: linear-gradient(180deg, #fdf2f8 0%, #faf8f3 100%);
+      border: 1px solid var(--primary-soft-2);
+      border-radius: 14px;
+    }
+    .protect-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: var(--primary);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .protect-text {
+      flex: 1;
+    }
+    .protect-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 1.25;
+      color: var(--foreground);
+      margin: 0 0 4px 0;
+    }
+    .protect-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--muted-foreground);
+      margin: 0;
+    }
+
+    /* ============================================================ */
+    /* Page chrome (side-by-side)                                   */
+    /* ============================================================ */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 24px 48px 24px;
+      gap: 24px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .page-sub {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.06em;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .frames-row {
+      display: flex;
+      gap: 56px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+      margin-right: 8px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn-wine-outline:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Neiry Pulse · Mobile · HS Role · User A · 390×844</div>
+    <div class="page-sub">M3 v2.6 · Ф1.5 · C5 (M-17) · 2026-06-16</div>
+
+    <div class="frames-row">
+
+      <!-- ============================================================ -->
+      <!-- ЭКРАН 38 · HS ROLE · USER A SHARING («Кому я делюсь»)         -->
+      <!-- ============================================================ -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 38</strong>HS ROLE · USER A SHARING</div>
+
+        <section class="device-frame" aria-label="Список людей, которым я даю доступ к моим данным">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:55</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- App bar: back + centered title + info -->
+          <div class="app-bar">
+            <button aria-label="Назад" class="icon-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l-6 6 6 6"/></svg>
+            </button>
+            <span class="app-bar-title">Кому я делюсь</span>
+            <button aria-label="Подробнее о Health Sharing" class="icon-btn">
+              <!-- ⓘ info-circle -->
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="10" cy="10" r="7.5"/>
+                <path d="M10 9 V13.5"/>
+                <circle cx="10" cy="6.5" r="0.8" fill="#0c0a09"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Body -->
+          <div class="sharing-body">
+
+            <!-- Hero -->
+            <div class="sharing-hero">
+              <p class="sharing-eyebrow">Вы поделились с <span class="num">2</span> людьми</p>
+              <h1 class="sharing-title">Ваши близкие видят</h1>
+              <p class="sharing-sub">
+                Мама и Папа подключены как опекуны. Они получают алерты о падениях и видят дневные показатели.
+              </p>
+            </div>
+
+            <!-- Receiver cards -->
+            <ul class="receiver-list" aria-label="Подключённые опекуны">
+              <li>
+                <button class="receiver-card w-full text-left" aria-label="Мама — подключена 12 мая, видит HRV, пульс, шаги, алерт о падении">
+                  <span class="receiver-avatar" aria-hidden="true">М</span>
+                  <span class="receiver-info">
+                    <span class="receiver-name block">Мама</span>
+                    <span class="receiver-meta block">подключено <span class="num">12.05</span> · видит HRV, пульс, шаги, fall-alert</span>
+                  </span>
+                  <span class="receiver-chevron" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg>
+                  </span>
+                </button>
+              </li>
+              <li>
+                <button class="receiver-card is-full-access w-full text-left" aria-label="Папа — подключён 3 июня, имеет полный доступ ко всем метрикам">
+                  <span class="receiver-avatar" aria-hidden="true">П</span>
+                  <span class="receiver-info">
+                    <span class="receiver-name block">Папа</span>
+                    <span class="receiver-meta block">подключено <span class="num">03.06</span></span>
+                  </span>
+                  <span class="full-access-pill" aria-label="Полный доступ">Полный</span>
+                  <span class="receiver-chevron" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg>
+                  </span>
+                </button>
+              </li>
+            </ul>
+
+            <!-- Section: ПО УМОЛЧАНИЮ ВИДНО -->
+            <h2 class="access-section-label">По умолчанию видно</h2>
+            <ul class="access-list" aria-label="Какие данные доступны по умолчанию">
+              <li class="access-row">
+                <span class="access-icon is-ok" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 L6 10.5 L11 4.5"/></svg>
+                </span>
+                <span class="access-text">Пульс и HRV</span>
+              </li>
+              <li class="access-row">
+                <span class="access-icon is-ok" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 L6 10.5 L11 4.5"/></svg>
+                </span>
+                <span class="access-text">Шаги и активность</span>
+              </li>
+              <li class="access-row">
+                <span class="access-icon is-ok" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 L6 10.5 L11 4.5"/></svg>
+                </span>
+                <span class="access-text">Алерт о падении <span class="mono" style="font-size:11.5px; color:var(--muted-foreground); letter-spacing:0.02em;">· за 10 секунд</span></span>
+              </li>
+              <li class="access-row">
+                <span class="access-icon is-ok" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 L6 10.5 L11 4.5"/></svg>
+                </span>
+                <span class="access-text">Качество сна</span>
+              </li>
+              <li class="access-row">
+                <span class="access-icon is-off" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="7" cy="7" r="5"/>
+                    <line x1="3.5" y1="10.5" x2="10.5" y2="3.5"/>
+                  </svg>
+                </span>
+                <span class="access-text is-off">Личные сообщения, местоположение</span>
+              </li>
+            </ul>
+
+            <!-- Quick controls — pushed to bottom -->
+            <div class="quick-controls">
+              <button class="btn-wine-outline" aria-label="Поставить весь доступ на паузу">
+                <!-- pause icon -->
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <rect x="4" y="3" width="3" height="10" rx="1"/>
+                  <rect x="9" y="3" width="3" height="10" rx="1"/>
+                </svg>
+                Пауза доступа
+              </button>
+              <button class="btn-link-destructive" aria-label="Удалить всех получателей">Удалить всех</button>
+            </div>
+
+          </div>
+
+          <!-- Tab-bar (HS active) -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+              История
+            </button>
+            <button class="tab active" aria-current="page" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="3"/><path d="M2 19a6 6 0 0 1 12 0"/><circle cx="16" cy="7" r="2.5"/><path d="M13 13a4 4 0 0 1 7 3.5"/></svg>
+              Health Sharing
+            </button>
+            <button class="tab" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- ЭКРАН 39 · HS ROLE · TWO-WAY DASHBOARD (Я ↔ Со мной)          -->
+      <!-- ============================================================ -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 39</strong>HS · TWO-WAY DASHBOARD</div>
+
+        <section class="device-frame" aria-label="Ваша сеть здоровья: кому вы делитесь и кто делится с вами">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:55</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- Home canonical app-bar (logo + bell + avatar КЛ) -->
+          <div class="home-app-bar">
+            <div class="flex items-center gap-2">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="9.5" stroke="#831843" stroke-width="1.6"/>
+                <path d="M6 11 L9 8 L11 14 L13 9 L16 11" stroke="#831843" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+              <span style="font-family:'Space Grotesk'; font-weight:600; font-size:16px; letter-spacing:-0.01em;">Neiry Pulse</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button aria-label="Уведомления" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14H4l1.5-1.8V8.5a4.5 4.5 0 0 1 9 0v3.7L16 14z"/><path d="M8 17a2 2 0 0 0 4 0"/></svg>
+              </button>
+              <button aria-label="Профиль" class="w-9 h-9 rounded-full bg-stone-200 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]" style="font-family:'Space Grotesk'; font-weight:600; font-size:13px; color:#57534e;">КЛ</button>
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="twoway-body">
+
+            <!-- Hero -->
+            <div class="twoway-hero">
+              <p class="twoway-eyebrow">Health Sharing</p>
+              <h1 class="twoway-title">Ваша сеть здоровья</h1>
+              <p class="twoway-sub"><span class="num">2</span> + <span class="num">1</span> = <span class="num">3</span> человека связаны с вами</p>
+            </div>
+
+            <!-- Section 1: Я ДЕЛЮСЬ С ↗ -->
+            <section class="dir-section" aria-label="Я делюсь с другими">
+              <div class="dir-header">
+                <span class="dir-label">Я делюсь с</span>
+                <span class="dir-arrow" aria-hidden="true">
+                  <!-- arrow-up-right ↗ -->
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 11 L11 5"/>
+                    <path d="M6 5 H11 V10"/>
+                  </svg>
+                </span>
+              </div>
+              <p class="dir-subtitle">Они видят мои показатели</p>
+
+              <ul class="person-list" aria-label="Получатели моих данных">
+                <li class="person-row">
+                  <span class="person-avatar" aria-hidden="true">М</span>
+                  <span class="person-info">
+                    <span class="person-name block">Мама</span>
+                    <span class="person-status">
+                      <span class="status-dot" aria-hidden="true"></span>
+                      активна <span class="num">14:32</span>
+                    </span>
+                  </span>
+                  <span class="person-chevron" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg>
+                  </span>
+                </li>
+                <li class="person-row">
+                  <span class="person-avatar" aria-hidden="true">П</span>
+                  <span class="person-info">
+                    <span class="person-name block">Папа</span>
+                    <span class="person-status">
+                      <span class="status-dot" aria-hidden="true"></span>
+                      активен <span class="num">15:18</span>
+                    </span>
+                  </span>
+                  <span class="person-chevron" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg>
+                  </span>
+                </li>
+              </ul>
+
+              <button class="add-link" aria-label="Добавить ещё получателя">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                  <path d="M6 2 V10"/>
+                  <path d="M2 6 H10"/>
+                </svg>
+                Добавить ещё
+              </button>
+            </section>
+
+            <!-- Divider -->
+            <div class="dir-divider" aria-hidden="true"></div>
+
+            <!-- Section 2: СО МНОЙ ДЕЛЯТСЯ ↙ -->
+            <section class="dir-section" aria-label="Со мной делятся данными">
+              <div class="dir-header">
+                <span class="dir-label">Со мной делятся</span>
+                <span class="dir-arrow" aria-hidden="true">
+                  <!-- arrow-down-left ↙ -->
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 5 L5 11"/>
+                    <path d="M10 11 H5 V6"/>
+                  </svg>
+                </span>
+              </div>
+              <p class="dir-subtitle">Их показатели — для меня</p>
+
+              <ul class="person-list" aria-label="Те, кто делится со мной данными">
+                <li class="person-row">
+                  <span class="person-avatar" aria-hidden="true">Б</span>
+                  <span class="person-info">
+                    <span class="person-name block">Бабушка</span>
+                    <span class="person-status is-alert">
+                      <span class="status-dot" aria-hidden="true"></span>
+                      вчера <span class="num">22:15</span> · HRV
+                      <!-- inline down arrow for HRV decrease -->
+                      <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align: middle;">
+                        <path d="M6 2 V10"/>
+                        <path d="M3 7 L6 10 L9 7"/>
+                      </svg>
+                    </span>
+                  </span>
+                  <span class="person-chevron" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg>
+                  </span>
+                </li>
+              </ul>
+            </section>
+
+            <!-- Quick action card: Вы под защитой -->
+            <aside class="protect-card" aria-label="Вы под защитой">
+              <span class="protect-icon" aria-hidden="true">
+                <!-- shield-check SVG -->
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 2 L16 4 V10 C16 13.5 13 16.5 10 17.5 C7 16.5 4 13.5 4 10 V4 Z"/>
+                  <path d="M7.5 10 L9.5 12 L13 8.5"/>
+                </svg>
+              </span>
+              <div class="protect-text">
+                <h3 class="protect-title">Вы под защитой</h3>
+                <p class="protect-sub">Если упадёте — Мама и Папа получат алерт за <span class="num">10</span> секунд. Если упадёт Бабушка — вы тоже узнаете.</p>
+              </div>
+            </aside>
+
+          </div>
+
+          <!-- Tab-bar (HS active) -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+              История
+            </button>
+            <button class="tab active" aria-current="page" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="3"/><path d="M2 19a6 6 0 0 1 12 0"/><circle cx="16" cy="7" r="2.5"/><path d="M13 13a4 4 0 0 1 7 3.5"/></svg>
+              Health Sharing
+            </button>
+            <button class="tab" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>
