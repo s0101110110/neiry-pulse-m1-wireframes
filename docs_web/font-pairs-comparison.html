@@ -212,6 +212,128 @@
   .tags { display: flex; gap: 6px; margin-top: 16px; flex-wrap: wrap; }
   .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 3px 10px; border-radius: 999px; background: var(--card-warm); color: var(--ink-mute); border: 1px solid var(--border); }
   .tag-strong { background: var(--wine-tint); color: var(--wine); border-color: transparent; }
+
+  /* ========= PHONE MOCKUPS ========= */
+  .screens-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0 16px; }
+  .screens-caption { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 12px; }
+  .phone { background: #1A1815; border-radius: 36px; padding: 6px; box-shadow: 0 12px 32px rgba(26,24,21,0.10); position: relative; }
+  .phone .screen { background: #FFFFFF; border-radius: 30px; overflow: hidden; position: relative; height: 580px; display: flex; flex-direction: column; }
+
+  /* Status bar */
+  .s-statusbar { height: 26px; padding: 4px 16px 0; display: flex; justify-content: space-between; align-items: flex-start; font-size: 10px; font-weight: 600; position: relative; flex-shrink: 0; }
+  .s-statusbar::before { content: ''; position: absolute; width: 60px; height: 14px; background: #1A1815; border-radius: 14px; left: 50%; top: 6px; transform: translateX(-50%); }
+  .s-status-icons { font-size: 9px; letter-spacing: 1px; opacity: 0.85; }
+
+  /* App header */
+  .s-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px 8px; flex-shrink: 0; }
+  .s-brand { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 12px; }
+  .s-brand-mark { width: 16px; height: 16px; border-radius: 50%; background: var(--wine); position: relative; display: inline-block; }
+  .s-brand-mark::after { content: ''; position: absolute; left: 3px; top: 7px; width: 10px; height: 2px; background: white; border-radius: 1px; }
+  .s-header-icons { display: flex; align-items: center; gap: 8px; }
+  .s-icon { font-size: 13px; color: var(--ink-mute); }
+  .s-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--wine-tint); color: var(--wine); display: grid; place-items: center; font-size: 9px; font-weight: 600; }
+  .s-back-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; font-size: 13px; font-weight: 600; flex-shrink: 0; border-bottom: 1px solid var(--border); }
+
+  /* Body container */
+  .s-body { flex: 1; overflow: hidden; padding: 4px 12px 0; }
+
+  /* Cards */
+  .s-card { background: #FAFAF7; border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
+  .s-card-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .s-eyebrow { font-size: 8px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase; color: var(--ink-dim); }
+  .s-eyebrow-wine { font-size: 8px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase; color: var(--wine); }
+  .s-badge-up { background: #E5F7EE; color: var(--bio-low); padding: 2px 7px; border-radius: 999px; font-size: 9px; font-weight: 500; }
+  .s-badge-up::before { content: '▲ '; font-size: 7px; }
+  .s-ready { color: var(--bio-low); font-size: 9px; font-weight: 600; letter-spacing: 0.5px; }
+
+  /* Hero metric on home card */
+  .s-metric-line { display: flex; align-items: baseline; gap: 4px; margin: 2px 0 6px; }
+  .s-metric-num { font-size: 36px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -1.2px; color: var(--ink); }
+  .s-metric-unit { font-size: 11px; color: var(--ink-mute); }
+  .s-body-text { font-size: 10.5px; line-height: 1.45; color: var(--ink-mute); }
+  .s-heading-lg { font-size: 17px; font-weight: 700; letter-spacing: -0.4px; line-height: 1.15; margin: 6px 0 4px; }
+  .s-sparkline { width: 100%; height: 36px; margin: 8px 0 4px; display: block; }
+  .s-meta { font-size: 9px; color: var(--ink-mute); font-weight: 500; }
+
+  /* Buttons */
+  .s-buttons { display: flex; gap: 6px; margin-top: 10px; }
+  .s-btn { flex: 1; padding: 9px 4px; border-radius: 8px; font-size: 11px; font-weight: 500; text-align: center; border: 0; cursor: pointer; line-height: 1; }
+  .s-btn-primary { background: var(--wine); color: white; }
+  .s-btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--border-strong); }
+
+  /* Rows */
+  .s-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: #FAFAF7; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; }
+  .s-row-icon { width: 26px; height: 26px; border-radius: 50%; background: white; border: 1px solid var(--border); display: grid; place-items: center; font-size: 12px; flex-shrink: 0; color: var(--ink-mute); }
+  .s-row-title { font-size: 10.5px; color: var(--ink); font-weight: 500; line-height: 1.2; }
+  .s-row-sub { font-size: 9px; color: var(--ink-mute); margin-top: 2px; line-height: 1.2; }
+  .s-row-sub .s-metric-sm { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  /* Bottom nav */
+  .s-bottom-nav { display: flex; border-top: 1px solid var(--border); background: white; flex-shrink: 0; padding: 4px 0; }
+  .s-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 4px 0; font-size: 9px; color: var(--ink-dim); gap: 2px; }
+  .s-nav-item.active { color: var(--ink); font-weight: 600; }
+  .s-nav-icon { font-size: 13px; opacity: 0.7; }
+  .s-nav-item.active .s-nav-icon { opacity: 1; color: var(--wine); }
+
+  /* === Screen 2 — HRV Detail === */
+  .s-hero-section { text-align: center; padding: 8px 0 6px; }
+  .s-hero-num { font-size: 64px; font-weight: 600; letter-spacing: -2.5px; line-height: 1; font-variant-numeric: tabular-nums; margin: 4px 0; display: inline-block; }
+  .s-hero-unit { font-size: 12px; color: var(--ink-mute); margin-left: 2px; }
+  .s-hero-deltas { font-size: 8px; color: var(--bio-low); font-weight: 500; margin-top: 4px; display: flex; justify-content: center; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .s-hero-deltas .divider { color: var(--border-strong); }
+  .s-tabs { display: flex; background: #F0EDE7; border-radius: 6px; padding: 2px; gap: 1px; }
+  .s-tab { padding: 3px 7px; border-radius: 4px; font-size: 9px; color: var(--ink-mute); font-weight: 500; }
+  .s-tab.active { background: var(--wine); color: white; }
+  .s-chart { width: 100%; height: 86px; margin-top: 8px; display: block; }
+  .s-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 8px 0; }
+  .s-stat-card { background: #FAFAF7; border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; }
+  .s-stat-num { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.4px; }
+  .s-insight { display: flex; gap: 8px; padding: 10px; background: #FAFAF7; border-left: 3px solid var(--wine); border-radius: 8px; margin-top: 4px; align-items: flex-start; }
+  .s-insight-icon { width: 22px; height: 22px; border-radius: 50%; background: var(--wine-tint); color: var(--wine); display: grid; place-items: center; font-size: 10px; flex-shrink: 0; }
+  .s-insight-title { font-size: 11px; font-weight: 600; }
+  .s-insight-body { font-size: 9.5px; line-height: 1.4; color: var(--ink-mute); margin-top: 2px; }
+  .s-learn-more { text-align: center; color: var(--wine); font-size: 10px; font-weight: 600; padding: 6px; margin-top: 4px; }
+
+  /* === Screen 3 — Modal === */
+  .s-modal-bg { position: relative; flex: 1; }
+  .s-modal-bg::after { content: ''; position: absolute; inset: 0; background: rgba(26,24,21,0.45); }
+  .s-modal-dim { filter: blur(0); opacity: 0.85; pointer-events: none; }
+  .s-modal-sheet { position: absolute; left: 0; right: 0; bottom: 0; background: white; border-radius: 18px 18px 30px 30px; padding: 10px 14px 18px; max-height: 70%; overflow: hidden; z-index: 2; }
+  .s-modal-handle { width: 32px; height: 3px; background: var(--border-strong); border-radius: 999px; margin: 0 auto 8px; }
+  .s-modal-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .s-modal-close { width: 20px; height: 20px; border-radius: 50%; background: #F0EDE7; display: grid; place-items: center; font-size: 10px; color: var(--ink-mute); }
+  .s-modal-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.4px; line-height: 1.1; }
+  .s-modal-body { font-size: 10px; line-height: 1.45; color: var(--ink); margin-bottom: 6px; }
+  .s-wine-bold { color: var(--wine); font-weight: 700; }
+  .s-modal-divider { height: 1px; background: var(--border); margin: 8px 0; }
+  .s-bullets { list-style: none; padding: 0; margin: 4px 0 6px; }
+  .s-bullets li { display: flex; align-items: baseline; gap: 6px; font-size: 9.5px; margin-bottom: 4px; line-height: 1.3; }
+  .s-bull { font-size: 10px; width: 12px; flex-shrink: 0; }
+  .s-bull-up { color: var(--bio-low); }
+  .s-bull-mid { color: var(--wine); }
+  .s-bull-down { color: var(--bio-mid); }
+  .s-disclaimer { background: #FAFAF7; border-radius: 6px; padding: 8px 10px; font-size: 9px; color: var(--ink-mute); line-height: 1.4; margin: 6px 0 10px; }
+  .s-disclaimer strong { color: var(--ink); font-weight: 600; }
+  .s-modal-btn { width: 100%; padding: 11px; background: var(--wine); color: white; border-radius: 10px; font-size: 13px; font-weight: 600; border: 0; text-align: center; cursor: pointer; }
+
+  /* Per-pair font cascade for screens */
+  .pair-a, .pair-a .s-row-title, .pair-a .s-body-text, .pair-a .s-heading-lg, .pair-a .s-eyebrow, .pair-a .s-modal-body, .pair-a .s-modal-title, .pair-a .s-bullets li, .pair-a .s-disclaimer { font-family: 'Golos Text', system-ui, sans-serif; }
+  .pair-a .s-metric-num, .pair-a .s-hero-num, .pair-a .s-stat-num, .pair-a .s-metric-sm { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  .pair-b, .pair-b .s-row-title, .pair-b .s-body-text, .pair-b .s-heading-lg, .pair-b .s-eyebrow, .pair-b .s-modal-body, .pair-b .s-modal-title, .pair-b .s-bullets li, .pair-b .s-disclaimer { font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+  .pair-b .s-metric-num, .pair-b .s-hero-num, .pair-b .s-stat-num, .pair-b .s-metric-sm { font-family: 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  .pair-c, .pair-c .s-row-title, .pair-c .s-body-text, .pair-c .s-heading-lg, .pair-c .s-eyebrow, .pair-c .s-modal-body, .pair-c .s-modal-title, .pair-c .s-bullets li, .pair-c .s-disclaimer { font-family: 'Manrope', system-ui, sans-serif; }
+  .pair-c .s-metric-num, .pair-c .s-hero-num, .pair-c .s-stat-num, .pair-c .s-metric-sm { font-family: 'DM Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  .pair-d, .pair-d .s-row-title, .pair-d .s-body-text, .pair-d .s-eyebrow, .pair-d .s-modal-body, .pair-d .s-bullets li, .pair-d .s-disclaimer { font-family: 'Wix Madefor Text', system-ui, sans-serif; }
+  .pair-d .s-heading-lg, .pair-d .s-modal-title { font-family: 'Wix Madefor Display', system-ui, sans-serif; }
+  .pair-d .s-metric-num, .pair-d .s-hero-num, .pair-d .s-stat-num, .pair-d .s-metric-sm { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  /* Responsive: stack phones on narrow */
+  @media (max-width: 720px) {
+    .screens-row { grid-template-columns: 1fr; max-width: 320px; margin: 24px auto; }
+  }
 </style>
 </head>
 <body>
@@ -257,6 +379,109 @@
   </div>
 
   <div class="pair-divider"></div>
+
+  <div class="screens-caption">На реальных экранах · Home · HRV Detail · HRV Explainer</div>
+  <div class="screens-row">
+
+    <!-- Screen 1 — Home -->
+    <div class="phone"><div class="screen">
+      <div class="s-statusbar"><span>9:41</span><span class="s-status-icons">▮ ▮ ▮</span></div>
+      <div class="s-header">
+        <div class="s-brand"><span class="s-brand-mark"></span><span>Neiry Pulse</span></div>
+        <div class="s-header-icons"><span class="s-icon">🔔</span><span class="s-avatar">КЛ</span></div>
+      </div>
+      <div class="s-body">
+        <div class="s-card">
+          <div class="s-card-row"><span class="s-eyebrow">HRV сегодня</span><span class="s-badge-up">+12% к вчера</span></div>
+          <div class="s-metric-line"><span class="s-metric-num">47</span><span class="s-metric-unit">ms</span></div>
+          <p class="s-body-text">Вы набираете форму и справляетесь со стрессом лучше</p>
+        </div>
+        <div class="s-card">
+          <div class="s-card-row"><span class="s-eyebrow">Готовы тренироваться</span><span class="s-ready">READY</span></div>
+          <h3 class="s-heading-lg">Сегодня лёгкий бег</h3>
+          <p class="s-body-text">3 дня форма растёт — идеальное время для нагрузки</p>
+          <svg class="s-sparkline" viewBox="0 0 240 36" preserveAspectRatio="none"><path d="M 0 28 L 20 26 L 40 27 L 60 22 L 80 24 L 100 19 L 120 21 L 140 17 L 160 14 L 180 16 L 200 11 L 220 12 L 240 8" fill="none" stroke="#831843" stroke-width="1.5" stroke-linecap="round" /></svg>
+          <div class="s-card-row" style="margin-top:2px"><span class="s-meta">HRV · 7 дней</span><span class="s-meta" style="color:var(--bio-low)">тренд ↑</span></div>
+          <div class="s-buttons"><button class="s-btn s-btn-primary">Начать тренировку</button><button class="s-btn s-btn-outline">Подробнее</button></div>
+        </div>
+        <div class="s-row">
+          <div class="s-row-icon">🌙</div>
+          <div><div class="s-row-title">Сон прошлой ночью</div><div class="s-row-sub"><span class="s-metric-sm">7ч 42м</span> · 22% / 15% / 63%</div></div>
+        </div>
+      </div>
+      <div class="s-bottom-nav">
+        <div class="s-nav-item active"><span class="s-nav-icon">⌂</span>Дом</div>
+        <div class="s-nav-item"><span class="s-nav-icon">≡</span>История</div>
+        <div class="s-nav-item"><span class="s-nav-icon">♥</span>Sharing</div>
+        <div class="s-nav-item"><span class="s-nav-icon">⋯</span>Ещё</div>
+      </div>
+    </div></div>
+
+    <!-- Screen 2 — HRV Detail -->
+    <div class="phone"><div class="screen">
+      <div class="s-statusbar"><span>9:55</span><span class="s-status-icons">▮ ▮ ▮</span></div>
+      <div class="s-back-header"><span class="s-icon">‹</span><span>HRV</span><span class="s-icon">ⓘ</span></div>
+      <div class="s-body">
+        <div class="s-hero-section">
+          <div class="s-eyebrow-wine">Сегодня · 9:48</div>
+          <div><span class="s-hero-num">52</span><span class="s-hero-unit">ms</span></div>
+          <div class="s-hero-deltas"><span>▲ +8% к неделе</span><span class="divider">|</span><span>▲ +12% к baseline</span></div>
+        </div>
+        <div class="s-card">
+          <div class="s-card-row"><span class="s-eyebrow">30 дней</span><div class="s-tabs"><span class="s-tab">7Д</span><span class="s-tab active">30Д</span><span class="s-tab">Год</span></div></div>
+          <svg class="s-chart" viewBox="0 0 240 86" preserveAspectRatio="none">
+            <line x1="0" y1="58" x2="240" y2="58" stroke="#E8E4DE" stroke-width="1" stroke-dasharray="2,2" />
+            <path d="M 0 60 L 8 55 L 16 58 L 24 52 L 32 56 L 40 48 L 48 53 L 56 46 L 64 50 L 72 44 L 80 49 L 88 41 L 96 45 L 104 38 L 112 42 L 120 35 L 128 39 L 136 32 L 144 36 L 152 30 L 160 34 L 168 26 L 176 30 L 184 24 L 192 28 L 200 20 L 208 24 L 216 18 L 224 22 L 232 16 L 240 14" fill="none" stroke="#831843" stroke-width="1.5" stroke-linecap="round" />
+            <circle cx="240" cy="14" r="3" fill="#831843" />
+          </svg>
+        </div>
+        <div class="s-stat-grid">
+          <div class="s-stat-card"><div class="s-eyebrow">Сегодня</div><div><span class="s-stat-num">52</span><span class="s-metric-unit"> ms</span></div></div>
+          <div class="s-stat-card"><div class="s-eyebrow">Сред. неделя</div><div><span class="s-stat-num">48</span><span class="s-metric-unit"> ms</span></div></div>
+          <div class="s-stat-card"><div class="s-eyebrow">Сред. месяц</div><div><span class="s-stat-num">45</span><span class="s-metric-unit"> ms</span></div></div>
+        </div>
+        <div class="s-insight">
+          <div class="s-insight-icon">♥</div>
+          <div><div class="s-insight-title">HRV выше нормы</div><div class="s-insight-body">Хорошо отдохнули — можно интенсивную тренировку или recovery-фокус.</div></div>
+        </div>
+        <div class="s-learn-more">⊕ Узнать больше про HRV</div>
+      </div>
+      <div class="s-bottom-nav">
+        <div class="s-nav-item active"><span class="s-nav-icon">⌂</span>Дом</div>
+        <div class="s-nav-item"><span class="s-nav-icon">≡</span>История</div>
+        <div class="s-nav-item"><span class="s-nav-icon">♥</span>Sharing</div>
+        <div class="s-nav-item"><span class="s-nav-icon">⋯</span>Ещё</div>
+      </div>
+    </div></div>
+
+    <!-- Screen 3 — HRV Explainer Modal -->
+    <div class="phone"><div class="screen">
+      <div class="s-statusbar"><span>9:55</span><span class="s-status-icons">▮ ▮ ▮</span></div>
+      <div class="s-modal-bg">
+        <div class="s-modal-dim" style="padding:0 12px">
+          <div class="s-back-header"><span class="s-icon">‹</span><span>HRV</span><span class="s-icon">ⓘ</span></div>
+          <div class="s-hero-section"><div class="s-eyebrow-wine">Сегодня · 9:48</div><div><span class="s-hero-num" style="font-size:48px">52</span><span class="s-hero-unit">ms</span></div></div>
+        </div>
+        <div class="s-modal-sheet">
+          <div class="s-modal-handle"></div>
+          <div class="s-modal-row"><span class="s-eyebrow-wine">Как это работает</span><span class="s-modal-close">✕</span></div>
+          <h2 class="s-modal-title">Что такое HRV?</h2>
+          <p class="s-modal-body"><span class="s-wine-bold">HRV</span> — вариабельность интервалов между ударами сердца. Чем выше — тем лучше нервная система отдохнула.</p>
+          <p class="s-modal-body">Браслет сравнивает с вашим <span class="s-wine-bold">baseline</span> — средним за 30 дней.</p>
+          <div class="s-modal-divider"></div>
+          <div class="s-eyebrow">Как читать график</div>
+          <ul class="s-bullets">
+            <li><span class="s-bull s-bull-up">▲</span>+10% к baseline — отличное восстановление</li>
+            <li><span class="s-bull s-bull-mid">●</span>±10% к baseline — норма</li>
+            <li><span class="s-bull s-bull-down">▼</span>−10% и ниже — стресс или недосып</li>
+          </ul>
+          <div class="s-disclaimer"><strong>Не медицинская диагностика.</strong> HRV меняется от сна, тренировок, кофе.</div>
+          <button class="s-modal-btn">Понятно</button>
+        </div>
+      </div>
+    </div></div>
+
+  </div>
 
   <div class="grid-2">
     <div>
@@ -342,6 +567,106 @@
 
   <div class="pair-divider"></div>
 
+  <div class="screens-caption">На реальных экранах · Home · HRV Detail · HRV Explainer</div>
+  <div class="screens-row">
+
+    <div class="phone"><div class="screen">
+      <div class="s-statusbar"><span>9:41</span><span class="s-status-icons">▮ ▮ ▮</span></div>
+      <div class="s-header">
+        <div class="s-brand"><span class="s-brand-mark"></span><span>Neiry Pulse</span></div>
+        <div class="s-header-icons"><span class="s-icon">🔔</span><span class="s-avatar">КЛ</span></div>
+      </div>
+      <div class="s-body">
+        <div class="s-card">
+          <div class="s-card-row"><span class="s-eyebrow">HRV сегодня</span><span class="s-badge-up">+12% к вчера</span></div>
+          <div class="s-metric-line"><span class="s-metric-num">47</span><span class="s-metric-unit">ms</span></div>
+          <p class="s-body-text">Вы набираете форму и справляетесь со стрессом лучше</p>
+        </div>
+        <div class="s-card">
+          <div class="s-card-row"><span class="s-eyebrow">Готовы тренироваться</span><span class="s-ready">READY</span></div>
+          <h3 class="s-heading-lg">Сегодня лёгкий бег</h3>
+          <p class="s-body-text">3 дня форма растёт — идеальное время для нагрузки</p>
+          <svg class="s-sparkline" viewBox="0 0 240 36" preserveAspectRatio="none"><path d="M 0 28 L 20 26 L 40 27 L 60 22 L 80 24 L 100 19 L 120 21 L 140 17 L 160 14 L 180 16 L 200 11 L 220 12 L 240 8" fill="none" stroke="#831843" stroke-width="1.5" stroke-linecap="round" /></svg>
+          <div class="s-card-row" style="margin-top:2px"><span class="s-meta">HRV · 7 дней</span><span class="s-meta" style="color:var(--bio-low)">тренд ↑</span></div>
+          <div class="s-buttons"><button class="s-btn s-btn-primary">Начать тренировку</button><button class="s-btn s-btn-outline">Подробнее</button></div>
+        </div>
+        <div class="s-row">
+          <div class="s-row-icon">🌙</div>
+          <div><div class="s-row-title">Сон прошлой ночью</div><div class="s-row-sub"><span class="s-metric-sm">7ч 42м</span> · 22% / 15% / 63%</div></div>
+        </div>
+      </div>
+      <div class="s-bottom-nav">
+        <div class="s-nav-item active"><span class="s-nav-icon">⌂</span>Дом</div>
+        <div class="s-nav-item"><span class="s-nav-icon">≡</span>История</div>
+        <div class="s-nav-item"><span class="s-nav-icon">♥</span>Sharing</div>
+        <div class="s-nav-item"><span class="s-nav-icon">⋯</span>Ещё</div>
+      </div>
+    </div></div>
+
+    <div class="phone"><div class="screen">
+      <div class="s-statusbar"><span>9:55</span><span class="s-status-icons">▮ ▮ ▮</span></div>
+      <div class="s-back-header"><span class="s-icon">‹</span><span>HRV</span><span class="s-icon">ⓘ</span></div>
+      <div class="s-body">
+        <div class="s-hero-section">
+          <div class="s-eyebrow-wine">Сегодня · 9:48</div>
+          <div><span class="s-hero-num">52</span><span class="s-hero-unit">ms</span></div>
+          <div class="s-hero-deltas"><span>▲ +8% к неделе</span><span class="divider">|</span><span>▲ +12% к baseline</span></div>
+        </div>
+        <div class="s-card">
+          <div class="s-card-row"><span class="s-eyebrow">30 дней</span><div class="s-tabs"><span class="s-tab">7Д</span><span class="s-tab active">30Д</span><span class="s-tab">Год</span></div></div>
+          <svg class="s-chart" viewBox="0 0 240 86" preserveAspectRatio="none">
+            <line x1="0" y1="58" x2="240" y2="58" stroke="#E8E4DE" stroke-width="1" stroke-dasharray="2,2" />
+            <path d="M 0 60 L 8 55 L 16 58 L 24 52 L 32 56 L 40 48 L 48 53 L 56 46 L 64 50 L 72 44 L 80 49 L 88 41 L 96 45 L 104 38 L 112 42 L 120 35 L 128 39 L 136 32 L 144 36 L 152 30 L 160 34 L 168 26 L 176 30 L 184 24 L 192 28 L 200 20 L 208 24 L 216 18 L 224 22 L 232 16 L 240 14" fill="none" stroke="#831843" stroke-width="1.5" stroke-linecap="round" />
+            <circle cx="240" cy="14" r="3" fill="#831843" />
+          </svg>
+        </div>
+        <div class="s-stat-grid">
+          <div class="s-stat-card"><div class="s-eyebrow">Сегодня</div><div><span class="s-stat-num">52</span><span class="s-metric-unit"> ms</span></div></div>
+          <div class="s-stat-card"><div class="s-eyebrow">Сред. неделя</div><div><span class="s-stat-num">48</span><span class="s-metric-unit"> ms</span></div></div>
+          <div class="s-stat-card"><div class="s-eyebrow">Сред. месяц</div><div><span class="s-stat-num">45</span><span class="s-metric-unit"> ms</span></div></div>
+        </div>
+        <div class="s-insight">
+          <div class="s-insight-icon">♥</div>
+          <div><div class="s-insight-title">HRV выше нормы</div><div class="s-insight-body">Хорошо отдохнули — можно интенсивную тренировку или recovery-фокус.</div></div>
+        </div>
+        <div class="s-learn-more">⊕ Узнать больше про HRV</div>
+      </div>
+      <div class="s-bottom-nav">
+        <div class="s-nav-item active"><span class="s-nav-icon">⌂</span>Дом</div>
+        <div class="s-nav-item"><span class="s-nav-icon">≡</span>История</div>
+        <div class="s-nav-item"><span class="s-nav-icon">♥</span>Sharing</div>
+        <div class="s-nav-item"><span class="s-nav-icon">⋯</span>Ещё</div>
+      </div>
+    </div></div>
+
+    <div class="phone"><div class="screen">
+      <div class="s-statusbar"><span>9:55</span><span class="s-status-icons">▮ ▮ ▮</span></div>
+      <div class="s-modal-bg">
+        <div class="s-modal-dim" style="padding:0 12px">
+          <div class="s-back-header"><span class="s-icon">‹</span><span>HRV</span><span class="s-icon">ⓘ</span></div>
+          <div class="s-hero-section"><div class="s-eyebrow-wine">Сегодня · 9:48</div><div><span class="s-hero-num" style="font-size:48px">52</span><span class="s-hero-unit">ms</span></div></div>
+        </div>
+        <div class="s-modal-sheet">
+          <div class="s-modal-handle"></div>
+          <div class="s-modal-row"><span class="s-eyebrow-wine">Как это работает</span><span class="s-modal-close">✕</span></div>
+          <h2 class="s-modal-title">Что такое HRV?</h2>
+          <p class="s-modal-body"><span class="s-wine-bold">HRV</span> — вариабельность интервалов между ударами сердца. Чем выше — тем лучше нервная система отдохнула.</p>
+          <p class="s-modal-body">Браслет сравнивает с вашим <span class="s-wine-bold">baseline</span> — средним за 30 дней.</p>
+          <div class="s-modal-divider"></div>
+          <div class="s-eyebrow">Как читать график</div>
+          <ul class="s-bullets">
+            <li><span class="s-bull s-bull-up">▲</span>+10% к baseline — отличное восстановление</li>
+            <li><span class="s-bull s-bull-mid">●</span>±10% к baseline — норма</li>
+            <li><span class="s-bull s-bull-down">▼</span>−10% и ниже — стресс или недосып</li>
+          </ul>
+          <div class="s-disclaimer"><strong>Не медицинская диагностика.</strong> HRV меняется от сна, тренировок, кофе.</div>
+          <button class="s-modal-btn">Понятно</button>
+        </div>
+      </div>
+    </div></div>
+
+  </div>
+
   <div class="grid-2">
     <div>
       <div class="lang-tag">RU · primary</div>
@@ -426,6 +751,106 @@
 
   <div class="pair-divider"></div>
 
+  <div class="screens-caption">На реальных экранах · Home · HRV Detail · HRV Explainer</div>
+  <div class="screens-row">
+
+    <div class="phone"><div class="screen">
+      <div class="s-statusbar"><span>9:41</span><span class="s-status-icons">▮ ▮ ▮</span></div>
+      <div class="s-header">
+        <div class="s-brand"><span class="s-brand-mark"></span><span>Neiry Pulse</span></div>
+        <div class="s-header-icons"><span class="s-icon">🔔</span><span class="s-avatar">КЛ</span></div>
+      </div>
+      <div class="s-body">
+        <div class="s-card">
+          <div class="s-card-row"><span class="s-eyebrow">HRV сегодня</span><span class="s-badge-up">+12% к вчера</span></div>
+          <div class="s-metric-line"><span class="s-metric-num">47</span><span class="s-metric-unit">ms</span></div>
+          <p class="s-body-text">Вы набираете форму и справляетесь со стрессом лучше</p>
+        </div>
+        <div class="s-card">
+          <div class="s-card-row"><span class="s-eyebrow">Готовы тренироваться</span><span class="s-ready">READY</span></div>
+          <h3 class="s-heading-lg">Сегодня лёгкий бег</h3>
+          <p class="s-body-text">3 дня форма растёт — идеальное время для нагрузки</p>
+          <svg class="s-sparkline" viewBox="0 0 240 36" preserveAspectRatio="none"><path d="M 0 28 L 20 26 L 40 27 L 60 22 L 80 24 L 100 19 L 120 21 L 140 17 L 160 14 L 180 16 L 200 11 L 220 12 L 240 8" fill="none" stroke="#831843" stroke-width="1.5" stroke-linecap="round" /></svg>
+          <div class="s-card-row" style="margin-top:2px"><span class="s-meta">HRV · 7 дней</span><span class="s-meta" style="color:var(--bio-low)">тренд ↑</span></div>
+          <div class="s-buttons"><button class="s-btn s-btn-primary">Начать тренировку</button><button class="s-btn s-btn-outline">Подробнее</button></div>
+        </div>
+        <div class="s-row">
+          <div class="s-row-icon">🌙</div>
+          <div><div class="s-row-title">Сон прошлой ночью</div><div class="s-row-sub"><span class="s-metric-sm">7ч 42м</span> · 22% / 15% / 63%</div></div>
+        </div>
+      </div>
+      <div class="s-bottom-nav">
+        <div class="s-nav-item active"><span class="s-nav-icon">⌂</span>Дом</div>
+        <div class="s-nav-item"><span class="s-nav-icon">≡</span>История</div>
+        <div class="s-nav-item"><span class="s-nav-icon">♥</span>Sharing</div>
+        <div class="s-nav-item"><span class="s-nav-icon">⋯</span>Ещё</div>
+      </div>
+    </div></div>
+
+    <div class="phone"><div class="screen">
+      <div class="s-statusbar"><span>9:55</span><span class="s-status-icons">▮ ▮ ▮</span></div>
+      <div class="s-back-header"><span class="s-icon">‹</span><span>HRV</span><span class="s-icon">ⓘ</span></div>
+      <div class="s-body">
+        <div class="s-hero-section">
+          <div class="s-eyebrow-wine">Сегодня · 9:48</div>
+          <div><span class="s-hero-num">52</span><span class="s-hero-unit">ms</span></div>
+          <div class="s-hero-deltas"><span>▲ +8% к неделе</span><span class="divider">|</span><span>▲ +12% к baseline</span></div>
+        </div>
+        <div class="s-card">
+          <div class="s-card-row"><span class="s-eyebrow">30 дней</span><div class="s-tabs"><span class="s-tab">7Д</span><span class="s-tab active">30Д</span><span class="s-tab">Год</span></div></div>
+          <svg class="s-chart" viewBox="0 0 240 86" preserveAspectRatio="none">
+            <line x1="0" y1="58" x2="240" y2="58" stroke="#E8E4DE" stroke-width="1" stroke-dasharray="2,2" />
+            <path d="M 0 60 L 8 55 L 16 58 L 24 52 L 32 56 L 40 48 L 48 53 L 56 46 L 64 50 L 72 44 L 80 49 L 88 41 L 96 45 L 104 38 L 112 42 L 120 35 L 128 39 L 136 32 L 144 36 L 152 30 L 160 34 L 168 26 L 176 30 L 184 24 L 192 28 L 200 20 L 208 24 L 216 18 L 224 22 L 232 16 L 240 14" fill="none" stroke="#831843" stroke-width="1.5" stroke-linecap="round" />
+            <circle cx="240" cy="14" r="3" fill="#831843" />
+          </svg>
+        </div>
+        <div class="s-stat-grid">
+          <div class="s-stat-card"><div class="s-eyebrow">Сегодня</div><div><span class="s-stat-num">52</span><span class="s-metric-unit"> ms</span></div></div>
+          <div class="s-stat-card"><div class="s-eyebrow">Сред. неделя</div><div><span class="s-stat-num">48</span><span class="s-metric-unit"> ms</span></div></div>
+          <div class="s-stat-card"><div class="s-eyebrow">Сред. месяц</div><div><span class="s-stat-num">45</span><span class="s-metric-unit"> ms</span></div></div>
+        </div>
+        <div class="s-insight">
+          <div class="s-insight-icon">♥</div>
+          <div><div class="s-insight-title">HRV выше нормы</div><div class="s-insight-body">Хорошо отдохнули — можно интенсивную тренировку или recovery-фокус.</div></div>
+        </div>
+        <div class="s-learn-more">⊕ Узнать больше про HRV</div>
+      </div>
+      <div class="s-bottom-nav">
+        <div class="s-nav-item active"><span class="s-nav-icon">⌂</span>Дом</div>
+        <div class="s-nav-item"><span class="s-nav-icon">≡</span>История</div>
+        <div class="s-nav-item"><span class="s-nav-icon">♥</span>Sharing</div>
+        <div class="s-nav-item"><span class="s-nav-icon">⋯</span>Ещё</div>
+      </div>
+    </div></div>
+
+    <div class="phone"><div class="screen">
+      <div class="s-statusbar"><span>9:55</span><span class="s-status-icons">▮ ▮ ▮</span></div>
+      <div class="s-modal-bg">
+        <div class="s-modal-dim" style="padding:0 12px">
+          <div class="s-back-header"><span class="s-icon">‹</span><span>HRV</span><span class="s-icon">ⓘ</span></div>
+          <div class="s-hero-section"><div class="s-eyebrow-wine">Сегодня · 9:48</div><div><span class="s-hero-num" style="font-size:48px">52</span><span class="s-hero-unit">ms</span></div></div>
+        </div>
+        <div class="s-modal-sheet">
+          <div class="s-modal-handle"></div>
+          <div class="s-modal-row"><span class="s-eyebrow-wine">Как это работает</span><span class="s-modal-close">✕</span></div>
+          <h2 class="s-modal-title">Что такое HRV?</h2>
+          <p class="s-modal-body"><span class="s-wine-bold">HRV</span> — вариабельность интервалов между ударами сердца. Чем выше — тем лучше нервная система отдохнула.</p>
+          <p class="s-modal-body">Браслет сравнивает с вашим <span class="s-wine-bold">baseline</span> — средним за 30 дней.</p>
+          <div class="s-modal-divider"></div>
+          <div class="s-eyebrow">Как читать график</div>
+          <ul class="s-bullets">
+            <li><span class="s-bull s-bull-up">▲</span>+10% к baseline — отличное восстановление</li>
+            <li><span class="s-bull s-bull-mid">●</span>±10% к baseline — норма</li>
+            <li><span class="s-bull s-bull-down">▼</span>−10% и ниже — стресс или недосып</li>
+          </ul>
+          <div class="s-disclaimer"><strong>Не медицинская диагностика.</strong> HRV меняется от сна, тренировок, кофе.</div>
+          <button class="s-modal-btn">Понятно</button>
+        </div>
+      </div>
+    </div></div>
+
+  </div>
+
   <div class="grid-2">
     <div>
       <div class="lang-tag">RU · primary</div>
@@ -509,6 +934,106 @@
   </div>
 
   <div class="pair-divider"></div>
+
+  <div class="screens-caption">На реальных экранах · Home · HRV Detail · HRV Explainer</div>
+  <div class="screens-row">
+
+    <div class="phone"><div class="screen">
+      <div class="s-statusbar"><span>9:41</span><span class="s-status-icons">▮ ▮ ▮</span></div>
+      <div class="s-header">
+        <div class="s-brand"><span class="s-brand-mark"></span><span>Neiry Pulse</span></div>
+        <div class="s-header-icons"><span class="s-icon">🔔</span><span class="s-avatar">КЛ</span></div>
+      </div>
+      <div class="s-body">
+        <div class="s-card">
+          <div class="s-card-row"><span class="s-eyebrow">HRV сегодня</span><span class="s-badge-up">+12% к вчера</span></div>
+          <div class="s-metric-line"><span class="s-metric-num">47</span><span class="s-metric-unit">ms</span></div>
+          <p class="s-body-text">Вы набираете форму и справляетесь со стрессом лучше</p>
+        </div>
+        <div class="s-card">
+          <div class="s-card-row"><span class="s-eyebrow">Готовы тренироваться</span><span class="s-ready">READY</span></div>
+          <h3 class="s-heading-lg">Сегодня лёгкий бег</h3>
+          <p class="s-body-text">3 дня форма растёт — идеальное время для нагрузки</p>
+          <svg class="s-sparkline" viewBox="0 0 240 36" preserveAspectRatio="none"><path d="M 0 28 L 20 26 L 40 27 L 60 22 L 80 24 L 100 19 L 120 21 L 140 17 L 160 14 L 180 16 L 200 11 L 220 12 L 240 8" fill="none" stroke="#831843" stroke-width="1.5" stroke-linecap="round" /></svg>
+          <div class="s-card-row" style="margin-top:2px"><span class="s-meta">HRV · 7 дней</span><span class="s-meta" style="color:var(--bio-low)">тренд ↑</span></div>
+          <div class="s-buttons"><button class="s-btn s-btn-primary">Начать тренировку</button><button class="s-btn s-btn-outline">Подробнее</button></div>
+        </div>
+        <div class="s-row">
+          <div class="s-row-icon">🌙</div>
+          <div><div class="s-row-title">Сон прошлой ночью</div><div class="s-row-sub"><span class="s-metric-sm">7ч 42м</span> · 22% / 15% / 63%</div></div>
+        </div>
+      </div>
+      <div class="s-bottom-nav">
+        <div class="s-nav-item active"><span class="s-nav-icon">⌂</span>Дом</div>
+        <div class="s-nav-item"><span class="s-nav-icon">≡</span>История</div>
+        <div class="s-nav-item"><span class="s-nav-icon">♥</span>Sharing</div>
+        <div class="s-nav-item"><span class="s-nav-icon">⋯</span>Ещё</div>
+      </div>
+    </div></div>
+
+    <div class="phone"><div class="screen">
+      <div class="s-statusbar"><span>9:55</span><span class="s-status-icons">▮ ▮ ▮</span></div>
+      <div class="s-back-header"><span class="s-icon">‹</span><span>HRV</span><span class="s-icon">ⓘ</span></div>
+      <div class="s-body">
+        <div class="s-hero-section">
+          <div class="s-eyebrow-wine">Сегодня · 9:48</div>
+          <div><span class="s-hero-num">52</span><span class="s-hero-unit">ms</span></div>
+          <div class="s-hero-deltas"><span>▲ +8% к неделе</span><span class="divider">|</span><span>▲ +12% к baseline</span></div>
+        </div>
+        <div class="s-card">
+          <div class="s-card-row"><span class="s-eyebrow">30 дней</span><div class="s-tabs"><span class="s-tab">7Д</span><span class="s-tab active">30Д</span><span class="s-tab">Год</span></div></div>
+          <svg class="s-chart" viewBox="0 0 240 86" preserveAspectRatio="none">
+            <line x1="0" y1="58" x2="240" y2="58" stroke="#E8E4DE" stroke-width="1" stroke-dasharray="2,2" />
+            <path d="M 0 60 L 8 55 L 16 58 L 24 52 L 32 56 L 40 48 L 48 53 L 56 46 L 64 50 L 72 44 L 80 49 L 88 41 L 96 45 L 104 38 L 112 42 L 120 35 L 128 39 L 136 32 L 144 36 L 152 30 L 160 34 L 168 26 L 176 30 L 184 24 L 192 28 L 200 20 L 208 24 L 216 18 L 224 22 L 232 16 L 240 14" fill="none" stroke="#831843" stroke-width="1.5" stroke-linecap="round" />
+            <circle cx="240" cy="14" r="3" fill="#831843" />
+          </svg>
+        </div>
+        <div class="s-stat-grid">
+          <div class="s-stat-card"><div class="s-eyebrow">Сегодня</div><div><span class="s-stat-num">52</span><span class="s-metric-unit"> ms</span></div></div>
+          <div class="s-stat-card"><div class="s-eyebrow">Сред. неделя</div><div><span class="s-stat-num">48</span><span class="s-metric-unit"> ms</span></div></div>
+          <div class="s-stat-card"><div class="s-eyebrow">Сред. месяц</div><div><span class="s-stat-num">45</span><span class="s-metric-unit"> ms</span></div></div>
+        </div>
+        <div class="s-insight">
+          <div class="s-insight-icon">♥</div>
+          <div><div class="s-insight-title">HRV выше нормы</div><div class="s-insight-body">Хорошо отдохнули — можно интенсивную тренировку или recovery-фокус.</div></div>
+        </div>
+        <div class="s-learn-more">⊕ Узнать больше про HRV</div>
+      </div>
+      <div class="s-bottom-nav">
+        <div class="s-nav-item active"><span class="s-nav-icon">⌂</span>Дом</div>
+        <div class="s-nav-item"><span class="s-nav-icon">≡</span>История</div>
+        <div class="s-nav-item"><span class="s-nav-icon">♥</span>Sharing</div>
+        <div class="s-nav-item"><span class="s-nav-icon">⋯</span>Ещё</div>
+      </div>
+    </div></div>
+
+    <div class="phone"><div class="screen">
+      <div class="s-statusbar"><span>9:55</span><span class="s-status-icons">▮ ▮ ▮</span></div>
+      <div class="s-modal-bg">
+        <div class="s-modal-dim" style="padding:0 12px">
+          <div class="s-back-header"><span class="s-icon">‹</span><span>HRV</span><span class="s-icon">ⓘ</span></div>
+          <div class="s-hero-section"><div class="s-eyebrow-wine">Сегодня · 9:48</div><div><span class="s-hero-num" style="font-size:48px">52</span><span class="s-hero-unit">ms</span></div></div>
+        </div>
+        <div class="s-modal-sheet">
+          <div class="s-modal-handle"></div>
+          <div class="s-modal-row"><span class="s-eyebrow-wine">Как это работает</span><span class="s-modal-close">✕</span></div>
+          <h2 class="s-modal-title">Что такое HRV?</h2>
+          <p class="s-modal-body"><span class="s-wine-bold">HRV</span> — вариабельность интервалов между ударами сердца. Чем выше — тем лучше нервная система отдохнула.</p>
+          <p class="s-modal-body">Браслет сравнивает с вашим <span class="s-wine-bold">baseline</span> — средним за 30 дней.</p>
+          <div class="s-modal-divider"></div>
+          <div class="s-eyebrow">Как читать график</div>
+          <ul class="s-bullets">
+            <li><span class="s-bull s-bull-up">▲</span>+10% к baseline — отличное восстановление</li>
+            <li><span class="s-bull s-bull-mid">●</span>±10% к baseline — норма</li>
+            <li><span class="s-bull s-bull-down">▼</span>−10% и ниже — стресс или недосып</li>
+          </ul>
+          <div class="s-disclaimer"><strong>Не медицинская диагностика.</strong> HRV меняется от сна, тренировок, кофе.</div>
+          <button class="s-modal-btn">Понятно</button>
+        </div>
+      </div>
+    </div></div>
+
+  </div>
 
   <div class="grid-2">
     <div>
