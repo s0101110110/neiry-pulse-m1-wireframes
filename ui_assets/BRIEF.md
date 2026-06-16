@@ -1,163 +1,162 @@
-# BRIEF: C2 — Settings detail screens (BT pairing + Notifications + Privacy) · Neiry Pulse Ф1
+# BRIEF: C3 — Sleep detail view + Sleep explainer modal · Neiry Pulse Ф1
 
 **Дата:** 2026-06-16
 **Заказчик:** PM (Костя)
-**Контекст:** C1 закрыт (Profile + HRV detail). PM выявил оставшиеся missing screens в Settings — детальные sub-экраны, недоступные из base Settings. Сейчас **порция C2 (1 из 4)** — 3 Settings detail-экрана.
+**Контекст:** C2 закоммичено (`3b71c0a`). Сейчас **C3** — Sleep detail view (по аналогии с HRV detail, но для сна) + Sleep explainer modal.
 
-**Цель:** закрыть Settings management gaps:
-- **BT pairing edit** — управление подключёнными браслетами (replace/remove/add)
-- **Notifications detail** — toggles per type (HRV insight / training / fall-alert / sleep / weekly summary)
-- **Privacy controls** — data sharing visibility, export/delete account, HS audit log
+**Цель:** закрыть Sleep tracking screens — параллельно HRV pattern, но с дисклеймером «демо-режим» (PRD v2.6 §3 Ф1 «Sleep — демо-режим с дисклеймером»).
 
-**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-settings-detail-v0.html`
+**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-sleep-detail-v0.html`
 
 ---
 
 ## Источники правды
 
-- **PRD v2.6 §8 AC-1.2:** «Settings: подключение/отключение браслета, управление уведомлениями, privacy»
+- **PRD v2.6 §3 Ф1 (Скоуп):** «Sleep — демо-режим с дисклеймером»
+- **PRD v2.6:** Sleep НЕ полноценный production-feature в Ф1 — это **demo для investor / pilot demo**. Должен быть **видимый дисклеймер** «Демо-режим. Реальное измерение сна — Ф2.»
 - **Reference (existing):**
-  - `mobile-settings-v0.html` — base Settings (entry-point)
-  - `mobile-onboarding-02-bracelet-scan-pair-v0.html` — для BT pairing entry pattern
-  - `mobile-onboarding-03-notifications-calibrating-v0.html` Phone 1 — Notifications permission
+  - `mobile-profile-hrv-detail-v0.html` Phone 2 — HRV detail (canonical pattern для chart + insight + 3-metric strip)
+  - `mobile-profile-hrv-detail-v0.html` Phone 3 — HRV explainer modal (canonical pattern для bottom-sheet explainer)
+  - Whoop competitive: `knowledge-base/competitive-design/whoop.md` (Sleep phases visualization)
 
 ---
 
-## Структура HTML (3 device-frames рядом)
+## Структура HTML (2 device-frames рядом)
 
 Caption:
-- «**ЭКРАН 31** · SETTINGS · BT PAIRING»
-- «**ЭКРАН 32** · SETTINGS · NOTIFICATIONS»
-- «**ЭКРАН 33** · SETTINGS · PRIVACY»
+- «**ЭКРАН 34** · SLEEP · DETAIL VIEW»
+- «**ЭКРАН 35** · SLEEP · EXPLAINER MODAL»
 
 ---
 
-## Phone 1 · BT pairing edit
+## Phone 1 · Sleep detail view (whoop-style, demo-mode)
 
-**Назначение:** управление подключёнными браслетами. Юзер: тап Settings → раздел «Браслет» → видит свои спаренные устройства с детальной информацией, может add/replace/remove.
+**Назначение:** юзер тапнул Sleep widget на Home → попал в detail view. Видит quick stats прошлой ночи + chart 7 ночей + breakdown по фазам + явный дисклеймер demo-mode.
 
-**Структура:**
+**Структура (сверху вниз):**
 
 ### Status bar + App-bar
-- 9:55 / back-chevron «‹» + title «Браслет» (centered)
+- 9:55 / back-chevron «‹» + title «Сон» (centered) + ⓘ info-icon SVG top-right (tap → opens Phone 2 explainer modal)
 
-### Connected braclet section
-- Section title (mono uppercase 11pt muted): `ПОДКЛЮЧЁН`
-- **Big card** (light Bevel, padding 16-20, border-radius 16):
-  - Top row: braclet icon SVG (48×48, wine bg-soft circle) + name «VIGOR-XYZ123» (Onest 700 18pt) + success-green dot + sub «подключён»
-  - Stats grid 3-col (mono 11pt muted labels + 14pt values):
-    - **ЗАРЯД** 87% (success-green if >50% / alert-orange if <30%)
-    - **FIRMWARE** 2.1.4
-    - **ПОСЛ. SYNC** 9:52
-  - Action row (2 buttons inline):
-    - **«Переподключить»** — wine small button
-    - **«Отключить»** — text-link destructive
+### Demo-mode banner (top, прямо под app-bar)
+- **Sticky info-banner** (alert-soft `#fdf3e1` bg + border-left 4px alert-orange `#d97706`)
+- Padding 10-12px
+- info-icon SVG (alert-orange ~16) + text (Space Grotesk 12pt foreground):
+  «**Демо-режим.** Реальное измерение сна появится в обновлении.»
+- (НЕ убираемый — info-only, без actions)
 
-### Other devices section
-- Section title: `ДРУГИЕ УСТРОЙСТВА`
-- 2 list-rows (light Bevel cards, compact):
-  - «VANTA-ABC456 · последний раз 12.05.2026» (muted-grey, не active)
-  - chevron `›` правая (tap → connect)
+### Hero block (centered, top zone)
+- Eyebrow (mono uppercase wine 11pt): `ПРОШЛАЯ НОЧЬ`
+- Hero number: **«6 ч 42 мин»** (Onest 700 64-72pt foreground, tabular-nums)
+- Sub-label: «**87%** качество сна» (semibold 14pt + wine background pill)
+- Delta strip: «**+22 мин** к среднему за неделю» (mono 12pt success-green)
 
-### Add new section (CTA)
-- Card-style row с **+ icon SVG**: «Добавить новый браслет» (semibold 15pt foreground) + chevron
-- Wine accent on hover
+### Sleep phases breakdown (под hero)
+- Section title (mono uppercase 11pt muted): `ФАЗЫ`
+- **Horizontal stacked bar** (height ~40px, full-width, border-radius 8):
+  - REM segment: ~20% width, primary wine
+  - Light sleep: ~55% width, wine-soft
+  - Deep sleep: ~25% width, wine-deep `#4c1f33`
+- **Legend под bar** (3 cells inline):
+  - 🔴 REM **1 ч 22 мин** (20%)
+  - 🟣 Поверхностный **3 ч 41 мин** (55%)
+  - 🟢 Глубокий **1 ч 39 мин** (25%)
+
+### 7-night chart (whoop-style, мини)
+- Container: light Bevel card, padding 16, border-radius 16
+- Title row: `7 НОЧЕЙ` (mono uppercase 11pt muted)
+- Chart area: height ~100px
+- **Y-axis:** 3 ticks (~4ч / ~7ч / ~10ч)
+- **X-axis:** 7 ticks (Пн / Вт / Ср / Чт / Пт / Сб / **Вс** today highlighted)
+- **Bar chart:** 7 wine bars (опц., можно line с dots — на выбор UX/UI агента, pick simpler)
+- **Today's bar/dot:** larger, wine-filled, с tooltip «6 ч 42 мин»
+
+### Insight card (контекстная рекомендация)
+- Card light Bevel + wine accent border-left 3px
+- Icon: moon SVG (wine, 20×20)
+- Title (semibold 14pt): «Хороший сон»
+- Sub (Space Grotesk 13pt foreground, 2 строки):
+  «Качественное восстановление. REM-фаза в норме. Можно повышенную нагрузку.»
+
+### Bottom (text-link)
+- «Узнать больше про сон» (wine text-link 14pt, ⓘ icon) → opens Phone 2 modal
 
 ### Tab-bar
-Ещё active wine (canonical)
+Дом (active wine) / История / Health Sharing / Ещё — canonical
 
 ---
 
-## Phone 2 · Notifications detail
+## Phone 2 · Sleep explainer modal-overlay (поверх Phone 1)
 
-**Назначение:** управление **per-type notifications**. Юзер видит все типы уведомлений, может toggle on/off каждый.
+**Назначение:** юзер тапнул ⓘ icon в app-bar или text-link «Узнать больше про сон» — видит **bottom-sheet** с объяснением что такое sleep tracking, фазы, дисклеймер.
 
-**Структура:**
-
-### Status bar + App-bar
-- 9:55 / back-chevron + title «Уведомления»
-
-### Master toggle (top)
-- Row (light Bevel, padding 16):
-  - Bell-icon SVG + label «**Уведомления Neiry Pulse**» (Onest 700 16pt)
-  - Right: large toggle (ON, wine bg)
-- Sub-hint: «Получать любые уведомления» (12pt muted)
-
-### Notifications grouping (под master)
-Section title (mono uppercase 11pt muted): `ТИПЫ УВЕДОМЛЕНИЙ`
-
-5 rows (каждая: icon-32 + label + sub + toggle):
-1. **❤️ HRV-инсайт** — sub «Каждое утро в 9:00» — toggle ON
-2. **🏃 Напоминания о тренировке** — sub «За 30 мин до запланированной» — toggle ON
-3. **⚠️ Алерт о падении** — sub «Опекунам, при детекции» — toggle ON (нельзя выключить если есть HS)
-4. **🌙 Анализ сна** — sub «По утрам после > 4 ч сна» — toggle ON
-5. **📊 Еженедельная сводка** — sub «По понедельникам в 10:00» — toggle OFF
-
-### Quiet hours section
-Section title: `НЕ БЕСПОКОИТЬ`
-- Row: «**Тихие часы**» + sub «22:00 — 07:00» + chevron `›` (tap → edit hours)
-- Row: «**Выходные**» + sub «Только критичные (fall-alert)» + toggle ON
-
-### Tab-bar Ещё active
-
----
-
-## Phone 3 · Privacy controls
-
-**Назначение:** управление приватностью данных. Health Sharing audit, data export, account delete.
+**Контекст:** Phone 1 visible сверху + semi-transparent overlay rgba(12, 10, 9, 0.45) + bottom-sheet card 75% screen.
 
 **Структура:**
 
-### Status bar + App-bar
-- 9:55 / back-chevron + title «Приватность»
+### Background (dimmed Phone 1)
+- Phone 1 layout visible но dimmed
 
-### Data sharing section
-Section title: `КОМУ ВЫ ПОКАЗЫВАЕТЕ ДАННЫЕ`
+### Bottom-sheet (75% screen)
+- Background: white card
+- Border-top-radius 24px
+- Padding 20-24px, padding-bottom 32
+- Sheet handle на top (40×4px rounded, muted-grey)
+- Close × top-right
 
-- Row: avatar circle (Мама) + «Мама» + sub «HRV, шаги, fall-alert · с 12.05» + chevron `›` (tap → edit access)
-- Row: avatar (Папа) + «Папа» + sub «Все метрики · с 03.06» + chevron
-- Bottom: **Wine text-link** «+ Подключить нового» (16pt, semibold)
+### Header section
+- Eyebrow (mono uppercase wine 11pt): `КАК ЭТО РАБОТАЕТ`
+- Title (Onest 700 22pt foreground): «Как мы измеряем сон»
 
-### Privacy details section
-Section title: `ВАШИ ДАННЫЕ`
+### Explainer body (2 параграфа)
+- Para 1 (Space Grotesk 14pt foreground, line-height 1.5):
+  «**В Ф1 это демо-режим.** Сейчас показываем средние значения из научных данных, чтобы вы понимали, как будет работать функция.»
+- Para 2:
+  «**С обновления** браслет начнёт измерять ваш реальный сон через motion-sensor + HRV. Фазы (REM / Поверхностный / Глубокий) определятся по комбинации HR + движения.»
 
-3 rows (icon-24 + label + sub muted + chevron):
-- **📥 Скачать данные** — sub «JSON со всеми метриками за всё время»
-- **📤 Удалить данные** — sub «Очистить всю историю, оставить аккаунт»
-- **🚪 Удалить аккаунт** — destructive red, sub «Безвозвратно, всё стирается»
+### «Фазы сна» section (3 bullets)
+Section title `ЧТО МЫ ИЗМЕРЯЕМ` (mono uppercase 11pt muted):
+- 🔴 **REM** — фаза сновидений, восстановление мозга
+- 🟣 **Поверхностный** — переход между фазами, лёгкое пробуждение
+- 🟢 **Глубокий** — физическое восстановление, рост гормонов
 
-### Legal section (bottom)
-Section title: `ЮРИДИЧЕСКОЕ`
+### Divider thin border
 
-- Row: «**Политика конфиденциальности**» + chevron
-- Row: «**Условия использования**» + chevron
-- Row: «**Согласие на обработку**» + sub «Версия 2.6 · принято 14.06.2026» + chevron
+### Disclaimer (повторение demo-mode)
+- Sub (12pt muted, 2 строки):
+  «**Не медицинский диагноз.** Если стабильно плохой сон — обратитесь к врачу. Полноценный sleep tracking — следующее обновление.»
 
-### Tab-bar Ещё active
+### Primary CTA wine
+- Full-width 48pt: «Понятно»
+- Wine primary
 
 ---
 
 ## Дизайн-принципы
 
-- **Light Bevel-tone** для всех 3 screens
-- **Wine `#831843`** для primary actions, accent, master toggle ON
-- **Destructive red `#b91c1c`** для «Удалить аккаунт» / «Удалить данные»
-- **Success-green `#65a30d`** для active dot, success battery indicator
-- **Alert-orange `#d97706`** для low battery (<30%) warning
-- **Toggle UI:** rounded-pill style (iOS native), 51×31 size, white knob, wine bg for ON, muted-grey для OFF
-- **Box-sizing border-box** глобально (`*, *::before, *::after`)
-- **Tailwind CDN**
-- **Header canonical** — back-chevron + title-bar pattern (nested screens)
+- **Light Bevel-tone** для обоих screens
+- **Wine `#831843`** для primary CTA / chart bars / quality pill / accent
+- **Wine-soft** для Light sleep segment
+- **Wine-deep `#4c1f33`** для Deep sleep segment (визуальная глубина → ассоциация с deep)
+- **Alert-orange `#d97706`** для demo-mode banner accent
+- **Alert-soft `#fdf3e1`** для banner bg
+- **Success-green `#65a30d`** для positive delta (+22 мин)
+- **Box-sizing border-box** глобально
+- **Tailwind CDN** включён
+- **Header canonical** back-chevron + title-bar
 - **Шрифты:** Space Grotesk UI / Onest 700 hero / Geist Mono labels & numbers
 - **Pixel grid 4px**
-- **tabular-nums** на цифрах (87, 9:52, 22:00, 12.05)
-- **SVG icons** (НЕ emoji): bracelet, bell, heart, running, fall-alert-triangle, moon, chart, download, trash, door, document, chevron, plus
+- **tabular-nums** на цифрах (6 ч 42 мин, 87%, 1 ч 22 мин, +22 мин, 4ч/7ч/10ч)
+- **SVG icons** (НЕ emoji): moon (crescent), info-circle, chevron-right, close, info-banner
 
 ---
 
 ## Skills
 
-UX/UI агент — выбирай сам. Особое внимание к toggle accessibility (aria-checked) + section hierarchy не overcrowded.
+UX/UI агент — выбирай сам. Особое внимание к:
+- Demo-mode banner НЕ слишком intrusive (subtle alert-orange, не destructive red)
+- Sleep phases bar — proportions visualHints читаемы
+- Compress padding превентивно (lessons C1 + C2)
 
 **НЕ запускать:** init/document/craft/extract.
 
@@ -165,20 +164,18 @@ UX/UI агент — выбирай сам. Особое внимание к tog
 
 ## Output
 
-**slicing-script DEPRECATED** — crop из 3-phone side-by-side render.
+**slicing-script DEPRECATED** — crop из 2-phone side-by-side render.
 
-1. **HTML:** `mobile-settings-detail-v0.html` в `docs_web/wireframes/m3/`
+1. **HTML:** `mobile-sleep-detail-v0.html` в `docs_web/wireframes/m3/`
 
-2. **Transparent PNGs** в `screenshots/sliced-flow-v2-1-transparent-2026-06-14/`:
-   - `21a-settings-bt-pairing.png`
-   - `21b-settings-notifications.png`
-   - `21c-settings-privacy.png`
+2. **Transparent PNGs:**
+   - `22a-sleep-detail.png`
+   - `22b-sleep-explainer-modal.png`
 
-3. **Proof в `screenshots/onboarding-2026-06-14/`:**
-   - `44-settings-bt-pairing.png`
-   - `45-settings-notifications.png`
-   - `46-settings-privacy.png`
-   - `47-settings-detail-side-by-side.png` (3-phone wide)
+3. **Proof:**
+   - `48-sleep-detail.png`
+   - `49-sleep-explainer-modal.png`
+   - `50-sleep-side-by-side.png`
 
 **НЕ КОММИТЬ.**
 
@@ -186,32 +183,23 @@ UX/UI агент — выбирай сам. Особое внимание к tog
 
 ## Acceptance criteria
 
-- [ ] HTML создан с 3 device-frames
-- [ ] **Phone 1 BT pairing:** title «Браслет» + Connected card (VIGOR-XYZ123 + 3-col stats + actions) + Other devices (2 inactive cards) + «Добавить новый браслет» CTA + tab-bar
-- [ ] **Phone 2 Notifications:** title «Уведомления» + Master toggle + 5 per-type rows с toggles + Quiet hours section (Тихие часы + Выходные) + tab-bar
-- [ ] **Phone 3 Privacy:** title «Приватность» + Data sharing rows (Мама + Папа + Подключить нового) + Privacy details (Скачать / Удалить данные / Удалить аккаунт destructive) + Legal section + tab-bar
-- [ ] Toggle UI iOS-style (51×31, wine ON)
+- [ ] HTML создан с 2 device-frames
+- [ ] **Phone 1 Sleep detail:** back + «Сон» + ⓘ + demo-mode banner alert-orange + hero «6 ч 42 мин» + quality pill 87% + delta strip + sleep phases stacked bar + 3-cell legend (REM / Light / Deep) + 7-night chart + insight card + text-link + tab-bar
+- [ ] **Phone 2 Sleep explainer modal:** Phone 1 dimmed + bottom-sheet 75% + eyebrow + title «Как мы измеряем сон» + 2 paragraphs + 3 фазы bullets + disclaimer demo-mode + wine CTA «Понятно»
+- [ ] Demo-mode banner присутствует и читается чётко
 - [ ] Box-sizing border-box, Tailwind CDN
 - [ ] WCAG AA contrast
-- [ ] Transparent PNG via crop из 3-phone side-by-side
-- [ ] Self-review визуальный ПЕРЕД отчётом — открой все 3 proof PNG, **проверь что не обрезано** (compress если нужно как в C1 fix)
-
----
-
-## Open вопросы
-
-1. **Master toggle для всех уведомлений** — должен ли disable fall-alert? Я бы оставил **отдельный override** для fall-alert (safety-критично) — даже при master OFF, fall-alert остаётся. Можно с дисклеймером.
-2. **Quiet hours для fall-alert** — игнорируем? Да — fall-alert всегда проходит независимо от quiet hours (safety override).
-3. **Battery low warning на BT pairing screen** — добавить alert-orange visualHints если заряд <30%? Я бы добавил (consistency с B1 Charging-low banner).
-4. **Privacy: «Удалить данные» vs «Удалить аккаунт»** — разница может быть неочевидной. Я выбрал sub-text explainer для каждой. PM может уточнить или схлопнуть в один пункт.
+- [ ] Transparent PNG via crop из 2-phone side-by-side
+- [ ] Self-review визуальный — открыть оба proof PNG, проверить compactness
 
 ---
 
 ## Reference
 
-- Settings base: `mobile-settings-v0.html`
-- HS connections (для Privacy data sharing): `mobile-health-sharing-v0.html`
-- A3 Notifications permission pattern: `mobile-onboarding-03-notifications-calibrating-v0.html`
+- HRV detail pattern (для Sleep mirror): `mobile-profile-hrv-detail-v0.html` Phone 2
+- HRV explainer modal pattern: `mobile-profile-hrv-detail-v0.html` Phone 3
+- Demo-mode банер pattern: `mobile-state-bt-disconnect-charging-low-v0.html` B1 alert-orange
+- Whoop sleep phases: `knowledge-base/competitive-design/whoop.md`
 
 ---
 
