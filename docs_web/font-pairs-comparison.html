@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Font Pairs — Neiry Pulse · choose 1 of 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Wix+Madefor+Text:wght@400;500;600;700&family=Wix+Madefor+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #FAFAF7;
+    --card: #FFFFFF;
+    --card-warm: #FBF8F4;
+    --ink: #1A1815;
+    --ink-mute: #6B6660;
+    --ink-dim: #9C968E;
+    --border: #E8E4DE;
+    --border-strong: #D4CFC7;
+    --wine: #831843;
+    --wine-tint: #FBE6EE;
+    --bio-low: #00A653;
+    --bio-mid: #E89500;
+    --bio-high: #D1003C;
+    --bio-hrv: #0288A8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--ink); font-family: -apple-system, system-ui, sans-serif; -webkit-font-smoothing: antialiased; padding-bottom: 120px; }
+
+  /* Sticky nav */
+  .topnav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(250, 250, 247, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    flex-wrap: wrap;
+  }
+  .topnav-title { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; }
+  .topnav-title small { color: var(--ink-mute); font-weight: 400; margin-left: 8px; }
+  .topnav-jump { display: flex; gap: 8px; }
+  .topnav-jump a {
+    text-decoration: none; color: var(--ink); padding: 6px 12px;
+    border: 1px solid var(--border); border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500;
+    transition: all 0.15s;
+  }
+  .topnav-jump a:hover { background: var(--ink); color: var(--card); }
+
+  /* Wrapper */
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 48px 32px; }
+
+  /* Intro */
+  .intro h1 { font-family: 'Manrope', sans-serif; font-size: 36px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; }
+  .intro h1 em { font-style: normal; color: var(--wine); }
+  .intro p { color: var(--ink-mute); font-size: 16px; line-height: 1.55; margin-top: 16px; max-width: 640px; }
+  .intro .meta { margin-top: 24px; display: flex; gap: 24px; flex-wrap: wrap; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-dim); }
+  .intro .meta span strong { color: var(--ink); display: block; margin-top: 2px; font-weight: 500; font-size: 13px; }
+
+  /* Pair card */
+  .pair {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 48px;
+    margin-top: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pair-badge {
+    position: absolute; top: 24px; right: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase;
+    color: var(--ink-dim);
+    background: var(--card-warm);
+    padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--border);
+  }
+  .pair-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase;
+    color: var(--wine);
+    margin-bottom: 12px;
+  }
+  .pair-title {
+    font-size: 28px; font-weight: 700; letter-spacing: -0.6px; line-height: 1.15;
+  }
+  .pair-fonts {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-mute); font-size: 13px; margin-top: 8px;
+    display: flex; gap: 16px; flex-wrap: wrap;
+  }
+  .pair-fonts code {
+    background: var(--card-warm);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .pair-divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+  /* Sample blocks */
+  .sample-row { display: grid; grid-template-columns: 140px 1fr; gap: 24px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .sample-row:last-child { border-bottom: 0; }
+  .sample-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-dim); letter-spacing: 0.6px; text-transform: uppercase; }
+  .sample-label strong { display: block; color: var(--ink-mute); font-weight: 500; font-size: 11px; margin-bottom: 2px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+  .lang-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-dim); margin-bottom: 4px; letter-spacing: 0.6px; }
+
+  /* Component preview */
+  .demo-strip {
+    margin-top: 24px;
+    background: var(--card-warm);
+    border-radius: 16px;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 32px;
+    align-items: center;
+    border: 1px solid var(--border);
+  }
+  .demo-metric-block { text-align: left; }
+  .demo-metric-label { font-size: 12px; color: var(--ink-mute); letter-spacing: 0.2px; }
+  .demo-metric-secondary {
+    margin-top: 8px;
+    display: flex; gap: 20px;
+    font-size: 13px; color: var(--ink-mute);
+  }
+  .demo-metric-secondary span strong { color: var(--ink); margin-right: 4px; }
+
+  .demo-controls { display: flex; flex-direction: column; gap: 12px; }
+  .demo-controls-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .btn {
+    background: var(--wine); color: white;
+    padding: 10px 18px; border-radius: 10px;
+    font-size: 14px; font-weight: 500; border: 0; cursor: pointer;
+  }
+  .btn-ghost {
+    background: transparent; color: var(--ink);
+    border: 1px solid var(--border-strong);
+    padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 500;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 500;
+  }
+  .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .badge-low { background: #E5F7EE; color: var(--bio-low); }
+  .badge-mid { background: #FFF3DC; color: var(--bio-mid); }
+  .badge-high { background: #FFE2E8; color: var(--bio-high); }
+
+  /* Pros/cons */
+  .verdict { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .verdict-col h4 { font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.6px; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 12px; }
+  .verdict-col ul { list-style: none; }
+  .verdict-col li { font-size: 14px; line-height: 1.5; color: var(--ink); padding-left: 20px; position: relative; margin-bottom: 8px; }
+  .verdict-col.pros li::before { content: '+'; position: absolute; left: 0; color: var(--bio-low); font-weight: 700; }
+  .verdict-col.cons li::before { content: '−'; position: absolute; left: 0; color: var(--bio-high); font-weight: 700; }
+
+  /* ========= PAIR-SPECIFIC TYPOGRAPHY ========= */
+
+  /* Pair A — Golos Text + JetBrains Mono */
+  .pair-a .pair-title, .pair-a .sample-display, .pair-a .sample-headline, .pair-a .sample-body, .pair-a .demo-metric-label, .pair-a .demo-metric-secondary, .pair-a .btn, .pair-a .btn-ghost, .pair-a .badge, .pair-a .verdict-col li {
+    font-family: 'Golos Text', system-ui, sans-serif;
+  }
+  .pair-a .sample-display { font-size: 56px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.05; }
+  .pair-a .sample-headline { font-size: 24px; font-weight: 600; letter-spacing: -0.3px; }
+  .pair-a .sample-body { font-size: 15px; line-height: 1.55; color: var(--ink-mute); }
+  .pair-a .demo-metric-value { font-family: 'JetBrains Mono', monospace; font-size: 96px; font-weight: 500; letter-spacing: -3px; font-variant-numeric: tabular-nums; line-height: 1; }
+  .pair-a .demo-metric-secondary strong { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+  .pair-a .demo-metric-unit { font-family: 'Golos Text', sans-serif; font-size: 22px; color: var(--ink-mute); margin-left: 8px; font-weight: 500; }
+
+  /* Pair B — IBM Plex Sans + IBM Plex Mono */
+  .pair-b .pair-title, .pair-b .sample-display, .pair-b .sample-headline, .pair-b .sample-body, .pair-b .demo-metric-label, .pair-b .btn, .pair-b .btn-ghost, .pair-b .badge, .pair-b .verdict-col li {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  }
+  .pair-b .demo-metric-secondary { font-family: 'IBM Plex Sans', sans-serif; }
+  .pair-b .sample-display { font-size: 54px; font-weight: 600; letter-spacing: -1.2px; line-height: 1.05; }
+  .pair-b .sample-headline { font-size: 24px; font-weight: 600; letter-spacing: -0.3px; }
+  .pair-b .sample-body { font-size: 15px; line-height: 1.55; color: var(--ink-mute); }
+  .pair-b .demo-metric-value { font-family: 'IBM Plex Mono', monospace; font-size: 96px; font-weight: 500; letter-spacing: -2px; font-variant-numeric: tabular-nums; line-height: 1; }
+  .pair-b .demo-metric-secondary strong { font-family: 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; }
+  .pair-b .demo-metric-unit { font-family: 'IBM Plex Sans', sans-serif; font-size: 22px; color: var(--ink-mute); margin-left: 8px; font-weight: 500; }
+
+  /* Pair C — Manrope + DM Mono */
+  .pair-c .pair-title, .pair-c .sample-display, .pair-c .sample-headline, .pair-c .sample-body, .pair-c .demo-metric-label, .pair-c .demo-metric-secondary, .pair-c .btn, .pair-c .btn-ghost, .pair-c .badge, .pair-c .verdict-col li {
+    font-family: 'Manrope', system-ui, sans-serif;
+  }
+  .pair-c .sample-display { font-size: 56px; font-weight: 800; letter-spacing: -1.8px; line-height: 1.05; }
+  .pair-c .sample-headline { font-size: 24px; font-weight: 700; letter-spacing: -0.4px; }
+  .pair-c .sample-body { font-size: 15px; line-height: 1.55; color: var(--ink-mute); }
+  .pair-c .demo-metric-value { font-family: 'DM Mono', monospace; font-size: 88px; font-weight: 500; letter-spacing: -2px; font-variant-numeric: tabular-nums; line-height: 1; }
+  .pair-c .demo-metric-secondary strong { font-family: 'DM Mono', monospace; font-variant-numeric: tabular-nums; }
+  .pair-c .demo-metric-unit { font-family: 'Manrope', sans-serif; font-size: 22px; color: var(--ink-mute); margin-left: 8px; font-weight: 600; }
+
+  /* Pair D — Wix Madefor + JetBrains Mono */
+  .pair-d .pair-title, .pair-d .sample-display, .pair-d .sample-headline, .pair-d .sample-body, .pair-d .demo-metric-label, .pair-d .demo-metric-secondary, .pair-d .btn, .pair-d .btn-ghost, .pair-d .badge, .pair-d .verdict-col li {
+    font-family: 'Wix Madefor Text', system-ui, sans-serif;
+  }
+  .pair-d .sample-display { font-family: 'Wix Madefor Display', sans-serif; font-size: 56px; font-weight: 700; letter-spacing: -1.4px; line-height: 1.05; }
+  .pair-d .sample-headline { font-family: 'Wix Madefor Display', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.3px; }
+  .pair-d .sample-body { font-size: 15px; line-height: 1.55; color: var(--ink-mute); }
+  .pair-d .demo-metric-value { font-family: 'JetBrains Mono', monospace; font-size: 96px; font-weight: 500; letter-spacing: -3px; font-variant-numeric: tabular-nums; line-height: 1; }
+  .pair-d .demo-metric-secondary strong { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+  .pair-d .demo-metric-unit { font-family: 'Wix Madefor Text', sans-serif; font-size: 22px; color: var(--ink-mute); margin-left: 8px; font-weight: 500; }
+
+  /* Tags */
+  .tags { display: flex; gap: 6px; margin-top: 16px; flex-wrap: wrap; }
+  .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 3px 10px; border-radius: 999px; background: var(--card-warm); color: var(--ink-mute); border: 1px solid var(--border); }
+  .tag-strong { background: var(--wine-tint); color: var(--wine); border-color: transparent; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-title">Font Pairs · Neiry Pulse <small>выбери одну из четырёх</small></div>
+  <div class="topnav-jump">
+    <a href="#pair-a">A · Golos</a>
+    <a href="#pair-b">B · IBM Plex</a>
+    <a href="#pair-c">C · Manrope</a>
+    <a href="#pair-d">D · Wix Madefor</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<section class="intro">
+  <h1>Выбираем <em>пару шрифтов</em> для нового light-mode Neiry Pulse</h1>
+  <p>Четыре варианта — все бесплатные, все с поддержкой кириллицы и латиницы, все по схеме «слова + цифры» (как у Whoop: Proxima Nova + DIN Pro). Везде показываю одни и те же сэмплы: hero-приветствие на двух языках, body-параграф, BPM-метрика, статусные бейджи. Ниже — за и против каждой пары.</p>
+  <div class="meta">
+    <span>Бюджет<strong>$0</strong></span>
+    <span>Языки<strong>RU primary + EN</strong></span>
+    <span>Тон<strong>wellness-warm</strong></span>
+    <span>Схема<strong>words + numbers split</strong></span>
+    <span>Mode<strong>light-first (mobile)</strong></span>
+  </div>
+</section>
+
+<!-- ============ PAIR A — Golos Text + JetBrains Mono ============ -->
+<section class="pair pair-a" id="pair-a">
+  <div class="pair-badge">A</div>
+  <div class="pair-label">Recommended baseline</div>
+  <div class="pair-title">Golos Text + JetBrains Mono</div>
+  <div class="pair-fonts">
+    <code>Golos Text</code> Yandex foundry · OFL · 4 weights
+    <code>JetBrains Mono</code> JetBrains · OFL · 6 weights
+  </div>
+  <div class="tags">
+    <span class="tag tag-strong">Russian-first</span>
+    <span class="tag">humanist warmth</span>
+    <span class="tag">engineering precision</span>
+    <span class="tag">low recognizability</span>
+  </div>
+
+  <div class="pair-divider"></div>
+
+  <div class="grid-2">
+    <div>
+      <div class="lang-tag">RU · primary</div>
+      <div class="sample-display">Привет, Алексей</div>
+    </div>
+    <div>
+      <div class="lang-tag">EN</div>
+      <div class="sample-display">Good morning</div>
+    </div>
+  </div>
+
+  <div class="sample-row">
+    <div class="sample-label"><strong>Headline</strong>24 / 600</div>
+    <div class="sample-headline">Сегодня в команде — 12 человек онлайн · Today's team activity</div>
+  </div>
+
+  <div class="sample-row">
+    <div class="sample-label"><strong>Body</strong>15 / 400</div>
+    <div class="sample-body">Двухступенчатый фильтр R-R интервалов отрезает артефакты движения и удерживает базовую линию пульса. The Neiry stress index (NSI) reflects real-time physiological readiness, not just heart rate variability.</div>
+  </div>
+
+  <div class="demo-strip">
+    <div class="demo-metric-block">
+      <div class="demo-metric-label">Heart Rate · сейчас</div>
+      <div class="demo-metric-value">78<span class="demo-metric-unit">bpm</span></div>
+      <div class="demo-metric-secondary">
+        <span><strong>42</strong>мс HRV</span>
+        <span><strong>28</strong>NSI</span>
+        <span><strong>84%</strong>recovery</span>
+      </div>
+    </div>
+    <div class="demo-controls">
+      <div class="demo-controls-row">
+        <button class="btn">Начать тест</button>
+        <button class="btn-ghost">Позже</button>
+      </div>
+      <div class="demo-controls-row">
+        <span class="badge badge-low">Low stress · NSI 28</span>
+        <span class="badge badge-mid">Mid · 54</span>
+        <span class="badge badge-high">High · 76</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-col pros">
+      <h4>За</h4>
+      <ul>
+        <li>Кириллица проектировалась <strong>с нуля</strong> (Яндекс), не доделанная. Видно в строчных «д», «з», «я».</li>
+        <li>Тёплая humanist-форма без playful-перебора — медицинский уровень серьёзности сохранён.</li>
+        <li>Сторителлинг для B2B: «spec'd in Russia for Russian users».</li>
+        <li>JetBrains Mono на цифрах звучит как «инженерная честность» — резонирует с продуктом.</li>
+        <li>Очень редко встречается у конкурентов — distinct.</li>
+      </ul>
+    </div>
+    <div class="verdict-col cons">
+      <h4>Против</h4>
+      <ul>
+        <li>Только 4 weights — для очень тонкой иерархии может не хватить.</li>
+        <li>Латиница у Golos Text хороша, но менее распространённая → у западных партнёров может вызвать «незнакомость».</li>
+        <li>JetBrains Mono узнаваем разработчиками — для них прочитается как «IDE».</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAIR B — IBM Plex Sans + Mono ============ -->
+<section class="pair pair-b" id="pair-b">
+  <div class="pair-badge">B</div>
+  <div class="pair-label">Coherent system</div>
+  <div class="pair-title">IBM Plex Sans + IBM Plex Mono</div>
+  <div class="pair-fonts">
+    <code>IBM Plex Sans</code> IBM · OFL · 8 weights
+    <code>IBM Plex Mono</code> IBM · OFL · 7 weights
+  </div>
+  <div class="tags">
+    <span class="tag tag-strong">one-family coherence</span>
+    <span class="tag">medical heritage</span>
+    <span class="tag">humanist tech</span>
+    <span class="tag">italic available</span>
+  </div>
+
+  <div class="pair-divider"></div>
+
+  <div class="grid-2">
+    <div>
+      <div class="lang-tag">RU · primary</div>
+      <div class="sample-display">Привет, Алексей</div>
+    </div>
+    <div>
+      <div class="lang-tag">EN</div>
+      <div class="sample-display">Good morning</div>
+    </div>
+  </div>
+
+  <div class="sample-row">
+    <div class="sample-label"><strong>Headline</strong>24 / 600</div>
+    <div class="sample-headline">Сегодня в команде — 12 человек онлайн · Today's team activity</div>
+  </div>
+
+  <div class="sample-row">
+    <div class="sample-label"><strong>Body</strong>15 / 400</div>
+    <div class="sample-body">Двухступенчатый фильтр R-R интервалов отрезает артефакты движения и удерживает базовую линию пульса. The Neiry stress index (NSI) reflects real-time physiological readiness, not just heart rate variability.</div>
+  </div>
+
+  <div class="demo-strip">
+    <div class="demo-metric-block">
+      <div class="demo-metric-label">Heart Rate · сейчас</div>
+      <div class="demo-metric-value">78<span class="demo-metric-unit">bpm</span></div>
+      <div class="demo-metric-secondary">
+        <span><strong>42</strong>мс HRV</span>
+        <span><strong>28</strong>NSI</span>
+        <span><strong>84%</strong>recovery</span>
+      </div>
+    </div>
+    <div class="demo-controls">
+      <div class="demo-controls-row">
+        <button class="btn">Начать тест</button>
+        <button class="btn-ghost">Позже</button>
+      </div>
+      <div class="demo-controls-row">
+        <span class="badge badge-low">Low stress · NSI 28</span>
+        <span class="badge badge-mid">Mid · 54</span>
+        <span class="badge badge-high">High · 76</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-col pros">
+      <h4>За</h4>
+      <ul>
+        <li>Sans + Mono — <strong>одна семья</strong>, идеальная coherence: цифры и буквы говорят одним голосом.</li>
+        <li>Кириллица отличная — IBM делала русский серьёзно.</li>
+        <li>8 weights Sans + 7 weights Mono → любая иерархия.</li>
+        <li>IBM — медицинская / научная / industrial репутация → tone совпадает с био-сенсорным продуктом.</li>
+        <li>Доступны Italic — редкий бонус для редакционных вставок.</li>
+      </ul>
+    </div>
+    <div class="verdict-col cons">
+      <h4>Против</h4>
+      <ul>
+        <li>Узнаваем — у IBM, Cloudflare и пары крупных tech-лендингов. Не «свой» голос.</li>
+        <li>Чуть «корпоративный» — wellness-warm немного приглушается industrial-составляющей.</li>
+        <li>Slab-like терминалы в букве «t» — характерный, может надоесть.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAIR C — Manrope + DM Mono ============ -->
+<section class="pair pair-c" id="pair-c">
+  <div class="pair-badge">C</div>
+  <div class="pair-label">Softest wellness</div>
+  <div class="pair-title">Manrope + DM Mono</div>
+  <div class="pair-fonts">
+    <code>Manrope</code> Mikhail Sharanda · OFL · 7 weights
+    <code>DM Mono</code> Colophon for Google · OFL · 3 weights
+  </div>
+  <div class="tags">
+    <span class="tag tag-strong">most wellness-warm</span>
+    <span class="tag">rounded terminals</span>
+    <span class="tag">friendly</span>
+    <span class="tag">medium recognizability</span>
+  </div>
+
+  <div class="pair-divider"></div>
+
+  <div class="grid-2">
+    <div>
+      <div class="lang-tag">RU · primary</div>
+      <div class="sample-display">Привет, Алексей</div>
+    </div>
+    <div>
+      <div class="lang-tag">EN</div>
+      <div class="sample-display">Good morning</div>
+    </div>
+  </div>
+
+  <div class="sample-row">
+    <div class="sample-label"><strong>Headline</strong>24 / 700</div>
+    <div class="sample-headline">Сегодня в команде — 12 человек онлайн · Today's team activity</div>
+  </div>
+
+  <div class="sample-row">
+    <div class="sample-label"><strong>Body</strong>15 / 400</div>
+    <div class="sample-body">Двухступенчатый фильтр R-R интервалов отрезает артефакты движения и удерживает базовую линию пульса. The Neiry stress index (NSI) reflects real-time physiological readiness, not just heart rate variability.</div>
+  </div>
+
+  <div class="demo-strip">
+    <div class="demo-metric-block">
+      <div class="demo-metric-label">Heart Rate · сейчас</div>
+      <div class="demo-metric-value">78<span class="demo-metric-unit">bpm</span></div>
+      <div class="demo-metric-secondary">
+        <span><strong>42</strong>мс HRV</span>
+        <span><strong>28</strong>NSI</span>
+        <span><strong>84%</strong>recovery</span>
+      </div>
+    </div>
+    <div class="demo-controls">
+      <div class="demo-controls-row">
+        <button class="btn">Начать тест</button>
+        <button class="btn-ghost">Позже</button>
+      </div>
+      <div class="demo-controls-row">
+        <span class="badge badge-low">Low stress · NSI 28</span>
+        <span class="badge badge-mid">Mid · 54</span>
+        <span class="badge badge-high">High · 76</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-col pros">
+      <h4>За</h4>
+      <ul>
+        <li>Самый <strong>тёплый и rounded</strong> — лучше всего попадает в wellness-companion позиционирование.</li>
+        <li>7 weights — от ExtraLight до ExtraBold, гибкая иерархия.</li>
+        <li>Кириллица грамотная, дизайнер сам русскоязычный.</li>
+        <li>DM Mono casual-light → цифры читаются как «дружелюбный браслет», не как «лабораторный прибор».</li>
+      </ul>
+    </div>
+    <div class="verdict-col cons">
+      <h4>Против</h4>
+      <ul>
+        <li>Узнается на лендингах — Manrope стал популярен с 2023.</li>
+        <li>Слишком тёплый → есть риск «дружить с пользователем», но потерять серьёзность медицинского инструмента.</li>
+        <li>DM Mono имеет только 3 weights — для крупных kiosk-цифр может быть пресновато.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAIR D — Wix Madefor + JetBrains Mono ============ -->
+<section class="pair pair-d" id="pair-d">
+  <div class="pair-badge">D</div>
+  <div class="pair-label">UI-screen optimized</div>
+  <div class="pair-title">Wix Madefor Text + Display + JetBrains Mono</div>
+  <div class="pair-fonts">
+    <code>Wix Madefor Text</code> Rene Bieder for Wix · OFL · 4 weights
+    <code>Wix Madefor Display</code> · OFL · 3 weights
+    <code>JetBrains Mono</code> JetBrains · OFL
+  </div>
+  <div class="tags">
+    <span class="tag tag-strong">UI-optimized</span>
+    <span class="tag">screen-first design</span>
+    <span class="tag">rare in stack</span>
+    <span class="tag">3-font system</span>
+  </div>
+
+  <div class="pair-divider"></div>
+
+  <div class="grid-2">
+    <div>
+      <div class="lang-tag">RU · primary</div>
+      <div class="sample-display">Привет, Алексей</div>
+    </div>
+    <div>
+      <div class="lang-tag">EN</div>
+      <div class="sample-display">Good morning</div>
+    </div>
+  </div>
+
+  <div class="sample-row">
+    <div class="sample-label"><strong>Headline</strong>24 / 600</div>
+    <div class="sample-headline">Сегодня в команде — 12 человек онлайн · Today's team activity</div>
+  </div>
+
+  <div class="sample-row">
+    <div class="sample-label"><strong>Body</strong>15 / 400</div>
+    <div class="sample-body">Двухступенчатый фильтр R-R интервалов отрезает артефакты движения и удерживает базовую линию пульса. The Neiry stress index (NSI) reflects real-time physiological readiness, not just heart rate variability.</div>
+  </div>
+
+  <div class="demo-strip">
+    <div class="demo-metric-block">
+      <div class="demo-metric-label">Heart Rate · сейчас</div>
+      <div class="demo-metric-value">78<span class="demo-metric-unit">bpm</span></div>
+      <div class="demo-metric-secondary">
+        <span><strong>42</strong>мс HRV</span>
+        <span><strong>28</strong>NSI</span>
+        <span><strong>84%</strong>recovery</span>
+      </div>
+    </div>
+    <div class="demo-controls">
+      <div class="demo-controls-row">
+        <button class="btn">Начать тест</button>
+        <button class="btn-ghost">Позже</button>
+      </div>
+      <div class="demo-controls-row">
+        <span class="badge badge-low">Low stress · NSI 28</span>
+        <span class="badge badge-mid">Mid · 54</span>
+        <span class="badge badge-high">High · 76</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-col pros">
+      <h4>За</h4>
+      <ul>
+        <li>Спроектирован специально для <strong>screen UI</strong> (Wix заказала Rene Bieder под свой редактор) — оптимальная читаемость на маленьких размерах.</li>
+        <li>Display + Text — две оптические оси, можно играть масштабом без потери ритма.</li>
+        <li>Кириллица full, дизайнер уделил ей внимание.</li>
+        <li>Редкий в стеке — никто из конкурентов не использует.</li>
+      </ul>
+    </div>
+    <div class="verdict-col cons">
+      <h4>Против</h4>
+      <ul>
+        <li>Тон менее «human-warm» чем Golos или Manrope → больше utility, меньше lifestyle.</li>
+        <li>Используя Display + Text, увеличиваем число подключаемых файлов → чуть больше initial-load.</li>
+        <li>Бренд-сторителлинг слабее («made for Wix editor») — нет своей легенды.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</div>
+
+</body>
+</html>
