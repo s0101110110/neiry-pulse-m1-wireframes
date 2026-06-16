@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Mobile Settings Detail · BT + Notifications + Privacy · C2 · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      /* shadcn light tokens — 1:1 с canonical m3 */
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --destructive: #b91c1c;
+      --destructive-soft: #fef2f2;
+      --toggle-off: #d4cfc0;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame — canonical */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    /* Status bar */
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    /* App-bar nested — back-chevron + centered title, no right action */
+    .app-bar-nested {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 8px;
+      display: grid;
+      grid-template-columns: 64px 1fr 64px;
+      align-items: center;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+    .app-bar-back {
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 50%;
+      color: var(--foreground);
+    }
+    .app-bar-back:hover { background: var(--card-warm); }
+    .app-bar-back:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .app-bar-title {
+      text-align: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+    }
+
+    /* Scrollable body */
+    .body-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--background);
+      padding: 0 0 90px 0;
+    }
+    .body-scroll::-webkit-scrollbar { display: none; }
+
+    /* ============ SECTION (shared) ============ */
+    .section-h {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      padding: 10px 20px 4px 20px;
+    }
+    .section-card {
+      margin: 0 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    /* Generic row inside section-card */
+    .s-row {
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      cursor: pointer;
+      transition: background 140ms ease;
+    }
+    .s-row:last-child { border-bottom: 0; }
+    .s-row:hover { background: var(--card-warm); }
+    .s-row:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: -2px;
+    }
+    .s-row-icon {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .s-row-icon.muted {
+      background: var(--muted);
+      color: var(--muted-foreground);
+    }
+    .s-row-icon.destructive {
+      background: var(--destructive-soft);
+      color: var(--destructive);
+    }
+    .s-row-text { flex: 1; min-width: 0; }
+    .s-row-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--foreground);
+      line-height: 1.2;
+      letter-spacing: -0.005em;
+    }
+    .s-row-label.destructive { color: var(--destructive); }
+    .s-row-sub {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      color: var(--muted-foreground);
+      margin-top: 3px;
+      letter-spacing: 0.01em;
+      line-height: 1.3;
+    }
+    .s-row-chevron {
+      color: var(--border-strong);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    /* iOS toggle 44×26 (compressed from 51×31) */
+    .toggle {
+      flex-shrink: 0;
+      width: 44px;
+      height: 26px;
+      border-radius: 13px;
+      background: var(--primary);
+      position: relative;
+      transition: background 140ms ease;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: #fff;
+      border-radius: 50%;
+      top: 2px;
+      right: 2px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.18), 0 0 0 0.5px rgba(0,0,0,0.04);
+      transition: right 160ms ease, left 160ms ease;
+    }
+    .toggle.off { background: var(--toggle-off); }
+    .toggle.off::after { right: auto; left: 2px; }
+    .toggle.locked { opacity: 0.85; }
+
+    /* ============ PHONE 1: BT pairing ============ */
+    .bt-connected-card {
+      margin: 12px 16px 0 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .bt-card-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .bt-icon-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .bt-card-info { flex: 1; min-width: 0; }
+    .bt-card-name {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+      line-height: 1.1;
+    }
+    .bt-card-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      color: var(--success);
+      letter-spacing: 0.01em;
+    }
+    .bt-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      flex-shrink: 0;
+    }
+    .bt-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .bt-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .bt-stat-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .bt-stat-val {
+      font-family: 'Geist Mono', monospace;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--foreground);
+      letter-spacing: -0.005em;
+    }
+    .bt-stat-val.success { color: var(--success); }
+    .bt-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .bt-action-primary {
+      flex: 1;
+      height: 38px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      border: none;
+      border-radius: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .bt-action-primary:hover { background: #6b1238; }
+    .bt-action-destructive {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--destructive);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 8px 12px;
+      letter-spacing: 0.01em;
+    }
+    .bt-action-destructive:hover { background: var(--destructive-soft); border-radius: 8px; }
+
+    .add-new-row {
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      cursor: pointer;
+      border: none;
+      transition: background 140ms ease;
+    }
+    .add-new-row:hover { background: var(--card-warm); }
+    .add-new-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .add-new-label {
+      flex: 1;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--primary);
+      letter-spacing: -0.005em;
+    }
+
+    /* ============ PHONE 2: Notifications master ============ */
+    .master-card {
+      margin: 12px 16px 0 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .master-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .master-body { flex: 1; min-width: 0; }
+    .master-title {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.005em;
+      color: var(--foreground);
+      line-height: 1.15;
+    }
+    .master-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      color: var(--muted-foreground);
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+
+    .lock-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      color: var(--warning);
+      background: var(--warning-soft);
+      padding: 1px 5px;
+      border-radius: 3px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-left: 6px;
+      vertical-align: 1px;
+    }
+
+    /* ============ PHONE 3: Privacy avatars ============ */
+    .avatar-32 {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .avatar-32.muted {
+      background: linear-gradient(135deg, #e8e2d4 0%, #d4cfc0 100%);
+      color: #57534e;
+    }
+
+    .add-link-row {
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      cursor: pointer;
+      border: none;
+      border-top: 1px solid var(--border);
+      transition: background 140ms ease;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--primary);
+      letter-spacing: 0.005em;
+    }
+    .add-link-row:hover { background: var(--primary-soft); }
+
+    /* Tab-bar — canonical */
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 8px 16px 8px;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .tab-icon { width: 24px; height: 24px; display: block; }
+    .tab.active { color: var(--primary); }
+    .tab.active .tab-icon { stroke: var(--primary); }
+
+    /* Page chrome */
+    .page-chrome {
+      min-height: 100vh;
+      padding: 32px 16px;
+      background: var(--background);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .frames-row {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: nowrap;
+      padding: 16px 0 24px 0;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Neiry Pulse · Mobile · C2 · Settings Detail — BT + Notifications + Privacy · 3×(390×844)</div>
+
+    <div class="frames-row">
+
+      <!-- ===================== PHONE 1 — BT PAIRING ===================== -->
+      <div class="frame-with-caption">
+        <section class="device-frame" aria-label="Браслет — управление подключением">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:55</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <div class="app-bar-nested">
+            <button class="app-bar-back" aria-label="Назад">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13.5 5 L7 11 L13.5 17"/>
+              </svg>
+            </button>
+            <div class="app-bar-title">Браслет</div>
+            <div></div>
+          </div>
+
+          <div class="body-scroll">
+
+            <!-- Section: Подключён -->
+            <h3 class="section-h">Подключён</h3>
+            <div class="bt-connected-card">
+              <div class="bt-card-top">
+                <div class="bt-icon-circle" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="7" width="14" height="8" rx="2"/>
+                    <path d="M7 7 V5 H15 V7 M7 15 V17 H15 V15"/>
+                    <path d="M8.5 11 H10 L11 9 L12 13 L13 11 H13.5"/>
+                  </svg>
+                </div>
+                <div class="bt-card-info">
+                  <div class="bt-card-name mono">VIGOR-XYZ123</div>
+                  <div class="bt-card-status">
+                    <span class="bt-status-dot" aria-hidden="true"></span>
+                    <span>подключён</span>
+                  </div>
+                </div>
+              </div>
+              <div class="bt-stats-grid">
+                <div class="bt-stat">
+                  <span class="bt-stat-label">Заряд</span>
+                  <span class="bt-stat-val success num">87%</span>
+                </div>
+                <div class="bt-stat">
+                  <span class="bt-stat-label">Firmware</span>
+                  <span class="bt-stat-val mono">2.1.4</span>
+                </div>
+                <div class="bt-stat">
+                  <span class="bt-stat-label">Посл. sync</span>
+                  <span class="bt-stat-val mono">9:52</span>
+                </div>
+              </div>
+              <div class="bt-actions">
+                <button class="bt-action-primary">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M2 7 a5 5 0 0 1 10 0 M12 7 V4 M12 7 H9"/>
+                    <path d="M12 7 a5 5 0 0 1 -10 0 M2 7 V10 M2 7 H5"/>
+                  </svg>
+                  Переподключить
+                </button>
+                <button class="bt-action-destructive">Отключить</button>
+              </div>
+            </div>
+
+            <!-- Section: Другие устройства -->
+            <h3 class="section-h">Другие устройства</h3>
+            <div class="section-card">
+              <button class="s-row" aria-label="VANTA-ABC456, последний раз 12.05.2026">
+                <div class="s-row-icon muted" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="7" width="14" height="8" rx="2"/>
+                    <path d="M7 7 V5 H15 V7 M7 15 V17 H15 V15"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label mono">VANTA-ABC456</div>
+                  <div class="s-row-sub">последний раз <span class="num">12.05.2026</span></div>
+                </div>
+                <div class="s-row-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
+                </div>
+              </button>
+              <button class="s-row" aria-label="VITRO-DEF789, последний раз 28.04.2026">
+                <div class="s-row-icon muted" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="7" width="14" height="8" rx="2"/>
+                    <path d="M7 7 V5 H15 V7 M7 15 V17 H15 V15"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label mono">VITRO-DEF789</div>
+                  <div class="s-row-sub">последний раз <span class="num">28.04.2026</span></div>
+                </div>
+                <div class="s-row-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
+                </div>
+              </button>
+            </div>
+
+            <!-- Add new -->
+            <h3 class="section-h">Добавить</h3>
+            <div class="section-card">
+              <button class="add-new-row" aria-label="Добавить новый браслет">
+                <div class="add-new-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 3 V13 M3 8 H13"/>
+                  </svg>
+                </div>
+                <span class="add-new-label">Добавить новый браслет</span>
+                <div class="s-row-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
+                </div>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Tab-bar — Ещё active -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+              История
+            </button>
+            <button class="tab" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="3"/><path d="M2 19a6 6 0 0 1 12 0"/><circle cx="16" cy="7" r="2.5"/><path d="M13 13a4 4 0 0 1 7 3.5"/></svg>
+              Health Sharing
+            </button>
+            <button class="tab active" aria-current="page" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+        <div class="frame-caption"><strong>ЭКРАН 31</strong> · SETTINGS · BT PAIRING</div>
+      </div>
+
+      <!-- ===================== PHONE 2 — NOTIFICATIONS ===================== -->
+      <div class="frame-with-caption">
+        <section class="device-frame" aria-label="Уведомления — детальные настройки">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:55</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <div class="app-bar-nested">
+            <button class="app-bar-back" aria-label="Назад">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13.5 5 L7 11 L13.5 17"/>
+              </svg>
+            </button>
+            <div class="app-bar-title">Уведомления</div>
+            <div></div>
+          </div>
+
+          <div class="body-scroll">
+
+            <!-- Master toggle card -->
+            <div class="master-card">
+              <div class="master-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 16 V10 a6 6 0 0 1 12 0 V16"/>
+                  <path d="M3 16 H19"/>
+                  <path d="M9 19 a2 2 0 0 0 4 0"/>
+                </svg>
+              </div>
+              <div class="master-body">
+                <div class="master-title">Уведомления Neiry Pulse</div>
+                <div class="master-sub">Получать любые уведомления</div>
+              </div>
+              <div class="toggle" role="switch" aria-checked="true" aria-label="Master toggle ON"></div>
+            </div>
+
+            <!-- Section: Типы уведомлений -->
+            <h3 class="section-h">Типы уведомлений</h3>
+            <div class="section-card">
+              <!-- 1. HRV-инсайт ON -->
+              <div class="s-row" role="switch" aria-checked="true" tabindex="0">
+                <div class="s-row-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 17s-6-4-6-9a3.5 3.5 0 0 1 6-2.5A3.5 3.5 0 0 1 16 8c0 5-6 9-6 9z"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label">HRV-инсайт</div>
+                  <div class="s-row-sub">каждое утро в <span class="num">9:00</span></div>
+                </div>
+                <div class="toggle" aria-hidden="true"></div>
+              </div>
+              <!-- 2. Тренировки ON -->
+              <div class="s-row" role="switch" aria-checked="true" tabindex="0">
+                <div class="s-row-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="14" cy="4" r="1.6"/>
+                    <path d="M3 18l3-4 4 2 2-5 4 4-2 3"/>
+                    <path d="M7 12l3-3 3 3"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Напоминания о тренировке</div>
+                  <div class="s-row-sub">за <span class="num">30</span> мин до запланированной</div>
+                </div>
+                <div class="toggle" aria-hidden="true"></div>
+              </div>
+              <!-- 3. Алерт о падении ON locked -->
+              <div class="s-row" role="switch" aria-checked="true" tabindex="0">
+                <div class="s-row-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 2.5 L17 16 H3 Z"/>
+                    <path d="M10 8 V11.5"/>
+                    <circle cx="10" cy="13.5" r="0.7" fill="currentColor"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Алерт о падении<span class="lock-badge">safety</span></div>
+                  <div class="s-row-sub">опекунам, при детекции</div>
+                </div>
+                <div class="toggle locked" aria-hidden="true"></div>
+              </div>
+              <!-- 4. Сон ON -->
+              <div class="s-row" role="switch" aria-checked="true" tabindex="0">
+                <div class="s-row-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 12.5A6.5 6.5 0 0 1 7.5 4a6.5 6.5 0 1 0 8.5 8.5z"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Анализ сна</div>
+                  <div class="s-row-sub">по утрам после &gt; <span class="num">4</span> ч сна</div>
+                </div>
+                <div class="toggle" aria-hidden="true"></div>
+              </div>
+              <!-- 5. Еженедельная сводка OFF -->
+              <div class="s-row" role="switch" aria-checked="false" tabindex="0">
+                <div class="s-row-icon muted" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="14" height="13" rx="1.5"/>
+                    <path d="M3 8 H17"/>
+                    <path d="M7 11 V14 M10 12 V14 M13 10 V14"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Еженедельная сводка</div>
+                  <div class="s-row-sub">по понедельникам в <span class="num">10:00</span></div>
+                </div>
+                <div class="toggle off" aria-hidden="true"></div>
+              </div>
+            </div>
+
+            <!-- Section: Не беспокоить -->
+            <h3 class="section-h">Не беспокоить</h3>
+            <div class="section-card">
+              <button class="s-row" aria-label="Тихие часы 22:00 — 07:00">
+                <div class="s-row-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="10" cy="10" r="7.5"/>
+                    <path d="M10 5.5 V10 L13 12"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Тихие часы</div>
+                  <div class="s-row-sub mono"><span class="num">22:00</span> — <span class="num">07:00</span></div>
+                </div>
+                <div class="s-row-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
+                </div>
+              </button>
+              <div class="s-row" role="switch" aria-checked="true" tabindex="0">
+                <div class="s-row-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="14" height="13" rx="1.5"/>
+                    <path d="M7 2 V5 M13 2 V5 M3 8 H17"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Выходные</div>
+                  <div class="s-row-sub">только критичные (fall-alert)</div>
+                </div>
+                <div class="toggle" aria-hidden="true"></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Tab-bar — Ещё active -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+              История
+            </button>
+            <button class="tab" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="3"/><path d="M2 19a6 6 0 0 1 12 0"/><circle cx="16" cy="7" r="2.5"/><path d="M13 13a4 4 0 0 1 7 3.5"/></svg>
+              Health Sharing
+            </button>
+            <button class="tab active" aria-current="page" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+        <div class="frame-caption"><strong>ЭКРАН 32</strong> · SETTINGS · NOTIFICATIONS</div>
+      </div>
+
+      <!-- ===================== PHONE 3 — PRIVACY ===================== -->
+      <div class="frame-with-caption">
+        <section class="device-frame" aria-label="Приватность — управление данными">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:55</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <div class="app-bar-nested">
+            <button class="app-bar-back" aria-label="Назад">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13.5 5 L7 11 L13.5 17"/>
+              </svg>
+            </button>
+            <div class="app-bar-title">Приватность</div>
+            <div></div>
+          </div>
+
+          <div class="body-scroll">
+
+            <!-- Section: Кому вы показываете данные -->
+            <h3 class="section-h">Кому вы показываете данные</h3>
+            <div class="section-card">
+              <button class="s-row" aria-label="Мама — HRV, шаги, fall-alert">
+                <div class="avatar-32" aria-hidden="true">М</div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Мама</div>
+                  <div class="s-row-sub">HRV, шаги, fall-alert · с <span class="num">12.05</span></div>
+                </div>
+                <div class="s-row-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
+                </div>
+              </button>
+              <button class="s-row" aria-label="Папа — все метрики">
+                <div class="avatar-32" aria-hidden="true">П</div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Папа</div>
+                  <div class="s-row-sub">все метрики · с <span class="num">03.06</span></div>
+                </div>
+                <div class="s-row-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
+                </div>
+              </button>
+              <button class="add-link-row" aria-label="Подключить нового">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7 3 V11 M3 7 H11"/>
+                </svg>
+                Подключить нового
+              </button>
+            </div>
+
+            <!-- Section: Ваши данные -->
+            <h3 class="section-h">Ваши данные</h3>
+            <div class="section-card">
+              <button class="s-row" aria-label="Скачать данные">
+                <div class="s-row-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 3 V13"/>
+                    <path d="M6 9 L10 13 L14 9"/>
+                    <path d="M4 16 H16"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Скачать данные</div>
+                  <div class="s-row-sub">JSON со всеми метриками за всё время</div>
+                </div>
+                <div class="s-row-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
+                </div>
+              </button>
+              <button class="s-row" aria-label="Удалить данные">
+                <div class="s-row-icon destructive" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6 H16"/>
+                    <path d="M7 6 V4 H13 V6"/>
+                    <path d="M5.5 6 L6 17 H14 L14.5 6"/>
+                    <path d="M9 9 V14 M11 9 V14"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Удалить данные</div>
+                  <div class="s-row-sub">очистить историю, оставить аккаунт</div>
+                </div>
+                <div class="s-row-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
+                </div>
+              </button>
+              <button class="s-row" aria-label="Удалить аккаунт">
+                <div class="s-row-icon destructive" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M13 4 H16 a1 1 0 0 1 1 1 V15 a1 1 0 0 1 -1 1 H13"/>
+                    <path d="M11 10 H3 M6 7 L3 10 L6 13"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label destructive">Удалить аккаунт</div>
+                  <div class="s-row-sub">безвозвратно, всё стирается</div>
+                </div>
+                <div class="s-row-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
+                </div>
+              </button>
+            </div>
+
+            <!-- Section: Юридическое -->
+            <h3 class="section-h">Юридическое</h3>
+            <div class="section-card">
+              <button class="s-row" aria-label="Политика конфиденциальности">
+                <div class="s-row-icon muted" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5" y="9" width="10" height="8" rx="1.5"/>
+                    <path d="M7 9 V6 a3 3 0 0 1 6 0 V9"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Политика конфиденциальности</div>
+                </div>
+                <div class="s-row-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
+                </div>
+              </button>
+              <button class="s-row" aria-label="Условия использования">
+                <div class="s-row-icon muted" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="2.5" width="12" height="15" rx="1.5"/>
+                    <path d="M7 7 H13 M7 10 H13 M7 13 H10.5"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Условия использования</div>
+                </div>
+                <div class="s-row-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
+                </div>
+              </button>
+              <button class="s-row" aria-label="Согласие на обработку данных, версия 2.6">
+                <div class="s-row-icon muted" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 10 L9 14 L15 6"/>
+                  </svg>
+                </div>
+                <div class="s-row-text">
+                  <div class="s-row-label">Согласие на обработку</div>
+                  <div class="s-row-sub mono">v<span class="num">2.6</span> · принято <span class="num">14.06.2026</span></div>
+                </div>
+                <div class="s-row-chevron" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
+                </div>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Tab-bar — Ещё active -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+              История
+            </button>
+            <button class="tab" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="3"/><path d="M2 19a6 6 0 0 1 12 0"/><circle cx="16" cy="7" r="2.5"/><path d="M13 13a4 4 0 0 1 7 3.5"/></svg>
+              Health Sharing
+            </button>
+            <button class="tab active" aria-current="page" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+        <div class="frame-caption"><strong>ЭКРАН 33</strong> · SETTINGS · PRIVACY</div>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

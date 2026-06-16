@@ -1,65 +1,165 @@
-# BRIEF: C1 Revision — Compress padding в Profile edit · Neiry Pulse Ф1
+# BRIEF: C2 — Settings detail screens (BT pairing + Notifications + Privacy) · Neiry Pulse Ф1
 
-**Дата:** 2026-06-14
+**Дата:** 2026-06-16
 **Заказчик:** PM (Костя)
-**Контекст:** C1 закоммичено (`6cff452`). PM выявил overflow в Phone 1 Profile edit — обрезаются Connected braclet card + «Удалить аккаунт» text-link. Нужна compress-правка чтобы ВСЕ элементы помещались в 844px viewport.
+**Контекст:** C1 закрыт (Profile + HRV detail). PM выявил оставшиеся missing screens в Settings — детальные sub-экраны, недоступные из base Settings. Сейчас **порция C2 (1 из 4)** — 3 Settings detail-экрана.
 
-**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-profile-hrv-detail-v0.html`
+**Цель:** закрыть Settings management gaps:
+- **BT pairing edit** — управление подключёнными браслетами (replace/remove/add)
+- **Notifications detail** — toggles per type (HRV insight / training / fall-alert / sleep / weekly summary)
+- **Privacy controls** — data sharing visibility, export/delete account, HS audit log
 
-**Что НЕ трогать:** Phone 2 (HRV detail) и Phone 3 (HRV explainer modal) — они помещаются корректно.
-
----
-
-## Задача: compress padding в Phone 1 Profile edit
-
-Цель — вместить ~900px контента в 844px viewport через визуальное сжатие. Все запрошенные элементы должны остаться видны.
-
-### Текущая структура (~900px overflow)
-- App-bar ~60px
-- Avatar block ~140px (avatar 96px + «Изменить фото» + padding)
-- 7 form fields × ~70px = ~490px
-- Braclet section ~80px
-- «Удалить аккаунт» link ~50px
-- Tab-bar ~80px
-- **Total: ~900px** — overflow ~60px
-
-### Compress правки
-
-1. **Avatar block:**
-   - Avatar 96px → **72px** (initials font auto-scale)
-   - Padding над/под — уменьшить с ~20px до ~12px
-   - «Изменить фото» text-link: 13pt → 12pt
-   - Экономия: ~30-40px
-
-2. **Form fields:**
-   - Vertical gap между полями: ~14px → **10px**
-   - Padding внутри каждого field row: ~16px → **12-14px**
-   - Label-to-value spacing: ~6px → **4px**
-   - Экономия: ~20-30px по форме
-
-3. **Optional micro-compressions:**
-   - Section «БРАСЛЕТ» card: padding 16 → 12
-   - «Удалить аккаунт» padding: 24 → 16
-   - Экономия: ~10-15px
-
-**Цель:** total ~840px (помещается в 844px). Все элементы видимы при render 460×920.
-
-### Что НЕ менять
-- Содержание полей (всё остаётся)
-- Колонки / структура (avatar + 7 fields + braclet + удалить + tab-bar)
-- Шрифты (Onest / Space Grotesk / Geist Mono)
-- Цвета (wine accent, destructive red, success-green dot)
-- Иконки (camera, chevron, success-dot)
+**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-settings-detail-v0.html`
 
 ---
 
-## Дизайн-принципы (соблюдать)
+## Источники правды
 
-- **Box-sizing border-box** глобально
-- **Tailwind CDN** оставить
-- **Phone 2 + Phone 3 не трогать**
-- **Header canonical** остаётся
-- **Tab-bar canonical** остаётся (Ещё active wine)
+- **PRD v2.6 §8 AC-1.2:** «Settings: подключение/отключение браслета, управление уведомлениями, privacy»
+- **Reference (existing):**
+  - `mobile-settings-v0.html` — base Settings (entry-point)
+  - `mobile-onboarding-02-bracelet-scan-pair-v0.html` — для BT pairing entry pattern
+  - `mobile-onboarding-03-notifications-calibrating-v0.html` Phone 1 — Notifications permission
+
+---
+
+## Структура HTML (3 device-frames рядом)
+
+Caption:
+- «**ЭКРАН 31** · SETTINGS · BT PAIRING»
+- «**ЭКРАН 32** · SETTINGS · NOTIFICATIONS»
+- «**ЭКРАН 33** · SETTINGS · PRIVACY»
+
+---
+
+## Phone 1 · BT pairing edit
+
+**Назначение:** управление подключёнными браслетами. Юзер: тап Settings → раздел «Браслет» → видит свои спаренные устройства с детальной информацией, может add/replace/remove.
+
+**Структура:**
+
+### Status bar + App-bar
+- 9:55 / back-chevron «‹» + title «Браслет» (centered)
+
+### Connected braclet section
+- Section title (mono uppercase 11pt muted): `ПОДКЛЮЧЁН`
+- **Big card** (light Bevel, padding 16-20, border-radius 16):
+  - Top row: braclet icon SVG (48×48, wine bg-soft circle) + name «VIGOR-XYZ123» (Onest 700 18pt) + success-green dot + sub «подключён»
+  - Stats grid 3-col (mono 11pt muted labels + 14pt values):
+    - **ЗАРЯД** 87% (success-green if >50% / alert-orange if <30%)
+    - **FIRMWARE** 2.1.4
+    - **ПОСЛ. SYNC** 9:52
+  - Action row (2 buttons inline):
+    - **«Переподключить»** — wine small button
+    - **«Отключить»** — text-link destructive
+
+### Other devices section
+- Section title: `ДРУГИЕ УСТРОЙСТВА`
+- 2 list-rows (light Bevel cards, compact):
+  - «VANTA-ABC456 · последний раз 12.05.2026» (muted-grey, не active)
+  - chevron `›` правая (tap → connect)
+
+### Add new section (CTA)
+- Card-style row с **+ icon SVG**: «Добавить новый браслет» (semibold 15pt foreground) + chevron
+- Wine accent on hover
+
+### Tab-bar
+Ещё active wine (canonical)
+
+---
+
+## Phone 2 · Notifications detail
+
+**Назначение:** управление **per-type notifications**. Юзер видит все типы уведомлений, может toggle on/off каждый.
+
+**Структура:**
+
+### Status bar + App-bar
+- 9:55 / back-chevron + title «Уведомления»
+
+### Master toggle (top)
+- Row (light Bevel, padding 16):
+  - Bell-icon SVG + label «**Уведомления Neiry Pulse**» (Onest 700 16pt)
+  - Right: large toggle (ON, wine bg)
+- Sub-hint: «Получать любые уведомления» (12pt muted)
+
+### Notifications grouping (под master)
+Section title (mono uppercase 11pt muted): `ТИПЫ УВЕДОМЛЕНИЙ`
+
+5 rows (каждая: icon-32 + label + sub + toggle):
+1. **❤️ HRV-инсайт** — sub «Каждое утро в 9:00» — toggle ON
+2. **🏃 Напоминания о тренировке** — sub «За 30 мин до запланированной» — toggle ON
+3. **⚠️ Алерт о падении** — sub «Опекунам, при детекции» — toggle ON (нельзя выключить если есть HS)
+4. **🌙 Анализ сна** — sub «По утрам после > 4 ч сна» — toggle ON
+5. **📊 Еженедельная сводка** — sub «По понедельникам в 10:00» — toggle OFF
+
+### Quiet hours section
+Section title: `НЕ БЕСПОКОИТЬ`
+- Row: «**Тихие часы**» + sub «22:00 — 07:00» + chevron `›` (tap → edit hours)
+- Row: «**Выходные**» + sub «Только критичные (fall-alert)» + toggle ON
+
+### Tab-bar Ещё active
+
+---
+
+## Phone 3 · Privacy controls
+
+**Назначение:** управление приватностью данных. Health Sharing audit, data export, account delete.
+
+**Структура:**
+
+### Status bar + App-bar
+- 9:55 / back-chevron + title «Приватность»
+
+### Data sharing section
+Section title: `КОМУ ВЫ ПОКАЗЫВАЕТЕ ДАННЫЕ`
+
+- Row: avatar circle (Мама) + «Мама» + sub «HRV, шаги, fall-alert · с 12.05» + chevron `›` (tap → edit access)
+- Row: avatar (Папа) + «Папа» + sub «Все метрики · с 03.06» + chevron
+- Bottom: **Wine text-link** «+ Подключить нового» (16pt, semibold)
+
+### Privacy details section
+Section title: `ВАШИ ДАННЫЕ`
+
+3 rows (icon-24 + label + sub muted + chevron):
+- **📥 Скачать данные** — sub «JSON со всеми метриками за всё время»
+- **📤 Удалить данные** — sub «Очистить всю историю, оставить аккаунт»
+- **🚪 Удалить аккаунт** — destructive red, sub «Безвозвратно, всё стирается»
+
+### Legal section (bottom)
+Section title: `ЮРИДИЧЕСКОЕ`
+
+- Row: «**Политика конфиденциальности**» + chevron
+- Row: «**Условия использования**» + chevron
+- Row: «**Согласие на обработку**» + sub «Версия 2.6 · принято 14.06.2026» + chevron
+
+### Tab-bar Ещё active
+
+---
+
+## Дизайн-принципы
+
+- **Light Bevel-tone** для всех 3 screens
+- **Wine `#831843`** для primary actions, accent, master toggle ON
+- **Destructive red `#b91c1c`** для «Удалить аккаунт» / «Удалить данные»
+- **Success-green `#65a30d`** для active dot, success battery indicator
+- **Alert-orange `#d97706`** для low battery (<30%) warning
+- **Toggle UI:** rounded-pill style (iOS native), 51×31 size, white knob, wine bg for ON, muted-grey для OFF
+- **Box-sizing border-box** глобально (`*, *::before, *::after`)
+- **Tailwind CDN**
+- **Header canonical** — back-chevron + title-bar pattern (nested screens)
+- **Шрифты:** Space Grotesk UI / Onest 700 hero / Geist Mono labels & numbers
+- **Pixel grid 4px**
+- **tabular-nums** на цифрах (87, 9:52, 22:00, 12.05)
+- **SVG icons** (НЕ emoji): bracelet, bell, heart, running, fall-alert-triangle, moon, chart, download, trash, door, document, chevron, plus
+
+---
+
+## Skills
+
+UX/UI агент — выбирай сам. Особое внимание к toggle accessibility (aria-checked) + section hierarchy не overcrowded.
+
+**НЕ запускать:** init/document/craft/extract.
 
 ---
 
@@ -67,13 +167,18 @@
 
 **slicing-script DEPRECATED** — crop из 3-phone side-by-side render.
 
-Перегенерировать ТОЛЬКО Phone 1 PNGs:
+1. **HTML:** `mobile-settings-detail-v0.html` в `docs_web/wireframes/m3/`
 
-1. **Transparent:** `screenshots/sliced-flow-v2-1-transparent-2026-06-14/20a-profile-edit.png`
-2. **Proof:** `screenshots/onboarding-2026-06-14/40-profile-edit.png`
-3. **Side-by-side (3-phone wide):** `screenshots/onboarding-2026-06-14/43-profile-hrv-side-by-side.png`
+2. **Transparent PNGs** в `screenshots/sliced-flow-v2-1-transparent-2026-06-14/`:
+   - `21a-settings-bt-pairing.png`
+   - `21b-settings-notifications.png`
+   - `21c-settings-privacy.png`
 
-Phone 2 (20b, 41) и Phone 3 (20c, 42) PNG — НЕ перегенерировать (они не изменились).
+3. **Proof в `screenshots/onboarding-2026-06-14/`:**
+   - `44-settings-bt-pairing.png`
+   - `45-settings-notifications.png`
+   - `46-settings-privacy.png`
+   - `47-settings-detail-side-by-side.png` (3-phone wide)
 
 **НЕ КОММИТЬ.**
 
@@ -81,32 +186,48 @@ Phone 2 (20b, 41) и Phone 3 (20c, 42) PNG — НЕ перегенерирова
 
 ## Acceptance criteria
 
-- [ ] Phone 1 HTML compressed
-- [ ] Avatar 96 → 72px
-- [ ] Form field gap 14 → 10px
-- [ ] Vertical padding sections сжато
-- [ ] ВСЕ элементы видимы на 460×920 render: avatar / 7 form fields / Connected braclet card / «Удалить аккаунт» link / tab-bar
-- [ ] Phone 2 + Phone 3 не тронуты
-- [ ] PNG регенерированы (20a, 40, 43)
-- [ ] **Self-review обязательно** — открыть `40-profile-edit.png` через Read tool, подтвердить ВИЗУАЛЬНО что braclet card + «Удалить аккаунт» теперь видимы
+- [ ] HTML создан с 3 device-frames
+- [ ] **Phone 1 BT pairing:** title «Браслет» + Connected card (VIGOR-XYZ123 + 3-col stats + actions) + Other devices (2 inactive cards) + «Добавить новый браслет» CTA + tab-bar
+- [ ] **Phone 2 Notifications:** title «Уведомления» + Master toggle + 5 per-type rows с toggles + Quiet hours section (Тихие часы + Выходные) + tab-bar
+- [ ] **Phone 3 Privacy:** title «Приватность» + Data sharing rows (Мама + Папа + Подключить нового) + Privacy details (Скачать / Удалить данные / Удалить аккаунт destructive) + Legal section + tab-bar
+- [ ] Toggle UI iOS-style (51×31, wine ON)
+- [ ] Box-sizing border-box, Tailwind CDN
+- [ ] WCAG AA contrast
+- [ ] Transparent PNG via crop из 3-phone side-by-side
+- [ ] Self-review визуальный ПЕРЕД отчётом — открой все 3 proof PNG, **проверь что не обрезано** (compress если нужно как в C1 fix)
 
 ---
 
-## Skills
+## Open вопросы
 
-UX/UI агент — выбирай сам. Compress без потери readability — приоритет.
+1. **Master toggle для всех уведомлений** — должен ли disable fall-alert? Я бы оставил **отдельный override** для fall-alert (safety-критично) — даже при master OFF, fall-alert остаётся. Можно с дисклеймером.
+2. **Quiet hours для fall-alert** — игнорируем? Да — fall-alert всегда проходит независимо от quiet hours (safety override).
+3. **Battery low warning на BT pairing screen** — добавить alert-orange visualHints если заряд <30%? Я бы добавил (consistency с B1 Charging-low banner).
+4. **Privacy: «Удалить данные» vs «Удалить аккаунт»** — разница может быть неочевидной. Я выбрал sub-text explainer для каждой. PM может уточнить или схлопнуть в один пункт.
 
-**НЕ запускать:** init/document/craft/extract.
+---
+
+## Reference
+
+- Settings base: `mobile-settings-v0.html`
+- HS connections (для Privacy data sharing): `mobile-health-sharing-v0.html`
+- A3 Notifications permission pattern: `mobile-onboarding-03-notifications-calibrating-v0.html`
 
 ---
 
 ## РЕЗУЛЬТАТ (заполняет UX/UI агент)
 
 **Дата:**
-**Изменено в Phone 1:**
-**Новый total height:**
-**PNG регенерированы:**
+**HTML:**
+**Transparent PNGs:**
+**Proof-screenshots:**
 
-### Self-review (визуальный — какие элементы теперь видны)
+### Что сделано
 
-### Регрессии (если что-то ухудшилось)
+### Skills run
+
+### Decisions / compromises
+
+### Что требует ревизии PM
+
+### Регрессии
