@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neiry Pulse · Baseline ready + First HRV reveal · C4 · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Box-sizing reset — A5 R2 lesson, applied throughout C-series */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --muted-foreground-strong: #57534e;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --primary-soft-border: #f5d4e3;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --warning-strong: #b45309;
+      --destructive: #b91c1c;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      margin: 0;
+    }
+
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+    .hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+
+    /* ========== Device frame (canonical) ========== */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: #fafaf9;
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: #fafaf9;
+    }
+
+    /* =========================================================== */
+    /* PHONE 1 — BASELINE READY NOTIFICATION                       */
+    /* =========================================================== */
+
+    /* Home app-bar canonical */
+    .app-bar-home {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fafaf9;
+    }
+    .app-bar-home .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+    }
+    .app-bar-home .right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .app-bar-icon-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      color: var(--foreground);
+    }
+    .avatar-32 {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #e7e2d4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      color: #57534e;
+    }
+
+    /* Body (Phone 1) */
+    .br-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fafaf9;
+      overflow: hidden;
+    }
+
+    /* Celebration card — wine-soft bg, full-width with side gutter */
+    .br-celebration-wrap {
+      padding: 6px 14px 0;
+    }
+    .br-card {
+      position: relative;
+      background: var(--primary-soft);
+      border: 1px solid var(--primary-soft-border);
+      border-radius: 20px;
+      padding: 18px 18px 16px;
+      overflow: hidden;
+    }
+    /* Subtle confetti corners — 6 particles, restrained (lesson B4) + staggered cascade */
+    .br-confetti {
+      position: absolute;
+      width: 5px;
+      height: 7px;
+      border-radius: 1.5px;
+      opacity: 0;
+      animation: confetti-fade-soft 900ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+    @keyframes confetti-fade-soft {
+      0%   { opacity: 0; transform: translateY(-6px) rotate(0deg); }
+      100% { opacity: 0.78; transform: translateY(0) rotate(var(--rot, 12deg)); }
+    }
+    .br-c1 { top: 10px; left: 12px;  background: var(--primary); --rot: -16deg; animation-delay: 200ms; }
+    .br-c2 { top: 28px; left: 36px;  background: var(--warning); --rot: 14deg;  width: 4px; height: 4px; border-radius: 50%; animation-delay: 260ms; }
+    .br-c3 { top: 8px;  right: 18px; background: var(--warning); --rot: 22deg;  animation-delay: 320ms; }
+    .br-c4 { top: 30px; right: 38px; background: var(--primary); --rot: -12deg; width: 4px; height: 4px; border-radius: 50%; animation-delay: 380ms; }
+    .br-c5 { bottom: 22px; left: 18px; background: var(--primary); --rot: 8deg;  width: 4px; height: 4px; border-radius: 50%; animation-delay: 440ms; }
+    .br-c6 { bottom: 14px; right: 22px; background: var(--warning); --rot: -22deg; width: 4px; height: 4px; border-radius: 50%; animation-delay: 500ms; }
+
+    .br-icon-wrap {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .br-eyebrow {
+      display: block;
+      text-align: center;
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .br-title {
+      text-align: center;
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--foreground);
+      margin: 0 0 6px 0;
+    }
+    .br-sub {
+      text-align: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13.5px;
+      font-weight: 400;
+      line-height: 1.42;
+      color: var(--muted-foreground-strong);
+      margin: 0 4px 14px;
+    }
+    .br-sub strong {
+      color: var(--foreground);
+      font-weight: 600;
+    }
+    .br-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .br-stat {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(131, 24, 67, 0.1);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .br-stat-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .br-stat-row {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .br-stat-v {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .br-stat-u {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+    }
+    .br-cta {
+      width: 100%;
+      height: 46px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14.5px;
+      letter-spacing: -0.005em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      cursor: pointer;
+      transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background 160ms ease;
+    }
+    .br-cta:hover { background: #6b1238; }
+    .br-cta:active { transform: scale(0.97); }
+
+    /* Home preview peek — dimmed, partial visible */
+    .br-home-peek {
+      flex: 1;
+      min-height: 0;
+      padding: 14px 14px 0;
+      opacity: 0.4;
+      pointer-events: none;
+      position: relative;
+    }
+    .br-home-peek::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 60px;
+      background: linear-gradient(to bottom, rgba(250,250,249,0), #fafaf9);
+      pointer-events: none;
+    }
+    .br-peek-card {
+      background: var(--card-warm);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+    }
+    .br-peek-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .br-peek-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .br-peek-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      margin-top: 6px;
+    }
+    .br-peek-unit {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      color: var(--muted-foreground);
+      margin-left: 4px;
+    }
+
+    /* Tab-bar (canonical) */
+    .tabbar {
+      flex-shrink: 0;
+      height: 76px;
+      background: #fafaf9;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 8px 16px 8px;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .tab-icon { width: 22px; height: 22px; display: block; }
+    .tab.active { color: var(--primary); }
+
+    /* =========================================================== */
+    /* PHONE 2 — FIRST HRV MEASUREMENT REVEAL                      */
+    /* =========================================================== */
+
+    .reveal-app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      background: #fafaf9;
+    }
+    .reveal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--muted-foreground-strong);
+    }
+    .reveal-close:hover { background: var(--muted); }
+
+    .reveal-body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 0 20px 24px;
+      display: flex;
+      flex-direction: column;
+      background: #fafaf9;
+      position: relative;
+    }
+    .reveal-body::-webkit-scrollbar { display: none; }
+
+    /* Confetti — 8 particles, subtle, top zone */
+    .reveal-confetti-layer {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 240px;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .reveal-confetti {
+      position: absolute;
+      width: 6px;
+      height: 8px;
+      border-radius: 1.5px;
+      opacity: 0;
+      animation: reveal-confetti-fade 900ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+    @keyframes reveal-confetti-fade {
+      0%   { opacity: 0; transform: translateY(-8px) rotate(0deg); }
+      40%  { opacity: 1; }
+      100% { opacity: 0.85; transform: translateY(0) rotate(var(--rot, 16deg)); }
+    }
+    .rc1 { left: 10%; top: 20px;  background: var(--primary); --rot: -18deg; animation-delay: 200ms; }
+    .rc2 { left: 18%; top: 60px;  background: var(--success); --rot: 12deg;  width: 5px; height: 7px; animation-delay: 260ms; }
+    .rc3 { left: 6%;  top: 100px; background: var(--primary); --rot: 22deg;  width: 4px; height: 4px; border-radius: 50%; animation-delay: 320ms; }
+    .rc4 { left: 22%; top: 140px; background: var(--warning); --rot: -10deg; width: 4px; height: 4px; border-radius: 50%; animation-delay: 380ms; }
+    .rc5 { right: 12%; top: 24px;  background: var(--warning); --rot: 18deg;  animation-delay: 230ms; }
+    .rc6 { right: 6%;  top: 64px;  background: var(--primary); --rot: -14deg; width: 5px; height: 7px; animation-delay: 290ms; }
+    .rc7 { right: 18%; top: 110px; background: var(--success); --rot: 20deg;  width: 4px; height: 4px; border-radius: 50%; animation-delay: 350ms; }
+    .rc8 { right: 4%;  top: 150px; background: var(--primary); --rot: -6deg;  width: 4px; height: 4px; border-radius: 50%; animation-delay: 410ms; }
+
+    /* Hero number entrance — single beat after confetti */
+    .reveal-hero-num-row {
+      animation: hero-land 320ms cubic-bezier(0.23, 1, 0.32, 1) 120ms both;
+    }
+    @keyframes hero-land {
+      from { opacity: 0; transform: translateY(8px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Wine dot slides from baseline (42.5%) to current (55%) — explanatory motion */
+    .reveal-scale-dot {
+      animation: dot-slide 600ms cubic-bezier(0.77, 0, 0.175, 1) 500ms both;
+    }
+    @keyframes dot-slide {
+      from { left: 42.5%; opacity: 0; }
+      to   { left: 55%; opacity: 1; }
+    }
+
+    /* Hero */
+    .reveal-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 14px 0 20px;
+      position: relative;
+      z-index: 2;
+    }
+    .reveal-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+    .reveal-hero-num-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .reveal-hero-num {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 128px;
+      letter-spacing: -0.04em;
+      line-height: 0.9;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+    }
+    .reveal-hero-unit {
+      font-family: 'Geist Mono', monospace;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+    }
+    .reveal-hero-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted-foreground-strong);
+      margin-top: 4px;
+    }
+
+    /* Context card — "Что это значит" */
+    .reveal-context {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 14px 12px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 2;
+    }
+    .reveal-context-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13.5px;
+      letter-spacing: -0.005em;
+      color: var(--foreground);
+      margin: 0 0 6px 0;
+    }
+    .reveal-context-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12.5px;
+      font-weight: 400;
+      line-height: 1.45;
+      color: var(--muted-foreground-strong);
+      margin: 0 0 12px 0;
+    }
+    .reveal-context-sub strong {
+      color: var(--foreground);
+      font-weight: 600;
+    }
+    /* Mini scale 30 → 70 ms */
+    .reveal-scale {
+      position: relative;
+      height: 36px;
+      margin: 0 2px;
+    }
+    .reveal-scale-track {
+      position: absolute;
+      left: 0; right: 0;
+      top: 16px;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(
+        to right,
+        #fde2e2 0%,
+        #fdf3e1 30%,
+        #f0f7e1 70%,
+        #e2efc7 100%
+      );
+    }
+    .reveal-scale-baseline {
+      position: absolute;
+      top: 10px;
+      width: 2px;
+      height: 18px;
+      background: var(--muted-foreground-strong);
+      border-radius: 1px;
+    }
+    .reveal-scale-baseline-lbl {
+      position: absolute;
+      top: 28px;
+      transform: translateX(-50%);
+      font-family: 'Geist Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--muted-foreground-strong);
+      white-space: nowrap;
+    }
+    .reveal-scale-dot {
+      position: absolute;
+      top: 11px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid #fafaf9;
+      box-shadow: 0 1px 3px rgba(131, 24, 67, 0.3);
+      transform: translateX(-50%);
+    }
+    .reveal-scale-dot-lbl {
+      position: absolute;
+      top: -4px;
+      transform: translateX(-50%);
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+    .reveal-scale-edges {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+    .reveal-scale-edge {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      letter-spacing: 0.04em;
+    }
+
+    /* Comparison section */
+    .reveal-section-title {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      margin: 4px 0 8px 4px;
+    }
+    .reveal-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 2;
+    }
+    .reveal-stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+    }
+    .reveal-stat-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      text-align: center;
+      line-height: 1.2;
+    }
+    .reveal-stat-row {
+      display: flex;
+      align-items: baseline;
+      gap: 3px;
+    }
+    .reveal-stat-v {
+      font-family: 'Onest', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .reveal-stat-v.is-primary { color: var(--primary); }
+    .reveal-stat-u {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+    }
+
+    /* Actions */
+    .reveal-actions {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-top: 8px;
+      position: relative;
+      z-index: 2;
+    }
+    .reveal-cta-primary {
+      width: 100%;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -0.005em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      cursor: pointer;
+      transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background 160ms ease;
+    }
+    .reveal-cta-primary:hover { background: #6b1238; }
+    .reveal-cta-primary:active { transform: scale(0.97); }
+    .reveal-cta-link {
+      width: 100%;
+      height: 40px;
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 13.5px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    .reveal-cta-link:hover { background: var(--primary-soft); }
+
+    /* ========== Page chrome ========== */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px 16px;
+      gap: 24px;
+    }
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .page-title .pill {
+      display: inline-block;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      background: var(--primary-soft);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-left: 8px;
+      text-transform: uppercase;
+    }
+    .frames-row {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .br-confetti,
+      .reveal-confetti { animation: none; opacity: 0.78; transform: none; }
+      .reveal-hero-num-row,
+      .reveal-scale-dot { animation: none; }
+      .reveal-scale-dot { left: 55%; opacity: 1; }
+      .br-cta:active,
+      .reveal-cta-primary:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">
+      Neiry Pulse · Baseline ready + First HRV reveal · v0 · 390×844
+      <span class="pill">C4 celebration · Ф1</span>
+    </div>
+
+    <div class="frames-row">
+
+      <!-- =========================================== -->
+      <!-- PHONE 1 — BASELINE READY NOTIFICATION       -->
+      <!-- =========================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 36</strong> · BASELINE · READY NOTIFICATION</div>
+
+        <section class="device-frame" aria-label="Ваш baseline готов">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:48</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- Home app-bar canonical -->
+          <div class="app-bar-home">
+            <div class="brand">
+              <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="9.5" stroke="#831843" stroke-width="1.6"/>
+                <path d="M6 11 L9 8 L11 14 L13 9 L16 11" stroke="#831843" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+              <span>Neiry Pulse</span>
+            </div>
+            <div class="right">
+              <button class="app-bar-icon-btn" aria-label="Уведомления">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M16 14H4l1.5-1.8V8.5a4.5 4.5 0 0 1 9 0v3.7L16 14z"/>
+                  <path d="M8 17a2 2 0 0 0 4 0"/>
+                </svg>
+              </button>
+              <div class="avatar-32" aria-label="Профиль">КЛ</div>
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="br-body">
+
+            <!-- Celebration card -->
+            <div class="br-celebration-wrap">
+              <div class="br-card">
+                <!-- Confetti (subtle, 6 particles) -->
+                <span class="br-confetti br-c1" aria-hidden="true"></span>
+                <span class="br-confetti br-c2" aria-hidden="true"></span>
+                <span class="br-confetti br-c3" aria-hidden="true"></span>
+                <span class="br-confetti br-c4" aria-hidden="true"></span>
+                <span class="br-confetti br-c5" aria-hidden="true"></span>
+                <span class="br-confetti br-c6" aria-hidden="true"></span>
+
+                <!-- Abstract icon: concentric circles + heart-pulse -->
+                <div class="br-icon-wrap" aria-hidden="true">
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                    <circle cx="32" cy="32" r="29" stroke="#831843" stroke-width="1.2" opacity="0.18" stroke-dasharray="2 3"/>
+                    <circle cx="32" cy="32" r="22" stroke="#831843" stroke-width="1.4" opacity="0.4"/>
+                    <circle cx="32" cy="32" r="14" fill="#fdf2f8" stroke="#831843" stroke-width="1.6"/>
+                    <path d="M22 32 L26 32 L28 26 L32 38 L34 30 L38 32 L42 32"
+                          stroke="#831843" stroke-width="1.8"
+                          stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                  </svg>
+                </div>
+
+                <span class="br-eyebrow">День 2 · Утро</span>
+                <h1 class="br-title">Ваш baseline готов</h1>
+                <p class="br-sub">
+                  Мы изучили вашу личную норму HRV за <strong>36 часов</strong>. Теперь приложение показывает дельты — насколько вы сегодня отдохнули.
+                </p>
+
+                <!-- Stats inline 2 cells -->
+                <div class="br-stats" role="list">
+                  <div class="br-stat" role="listitem">
+                    <span class="br-stat-label">Собрано</span>
+                    <div class="br-stat-row">
+                      <span class="br-stat-v num">48</span>
+                      <span class="br-stat-u">ч</span>
+                    </div>
+                  </div>
+                  <div class="br-stat" role="listitem">
+                    <span class="br-stat-label">Ваш baseline</span>
+                    <div class="br-stat-row">
+                      <span class="br-stat-v num">47</span>
+                      <span class="br-stat-u">ms</span>
+                    </div>
+                  </div>
+                </div>
+
+                <button class="br-cta" aria-label="Посмотреть первый замер">
+                  Посмотреть первый замер
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 8 L13 8 M9 4 L13 8 L9 12"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Home preview peek (dimmed) — генерик preview, без spoiler hero 52 -->
+            <div class="br-home-peek" aria-hidden="true">
+              <div class="br-peek-card">
+                <div class="br-peek-head">
+                  <span class="br-peek-eyebrow">HRV сегодня</span>
+                </div>
+                <div>
+                  <span class="br-peek-num" style="color:var(--border-strong);">—</span>
+                  <span class="br-peek-unit">ожидает первого замера</span>
+                </div>
+              </div>
+              <div class="br-peek-card" style="background:#fff;">
+                <div class="br-peek-head">
+                  <span class="br-peek-eyebrow">Шаги</span>
+                </div>
+                <div>
+                  <span class="br-peek-num">1&nbsp;248</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab-bar canonical -->
+          <nav class="tabbar" aria-label="Главная навигация">
+            <button class="tab active" aria-current="page" aria-label="Дом">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 11.5 L12 4 L21 11.5"/>
+                <path d="M5 10.5 V20 H19 V10.5"/>
+              </svg>
+              Дом
+            </button>
+            <button class="tab" aria-label="История">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h10"/>
+              </svg>
+              История
+            </button>
+            <button class="tab" aria-label="Health Sharing">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="8" cy="9" r="3"/>
+                <path d="M2 19a6 6 0 0 1 12 0"/>
+                <circle cx="16" cy="7" r="2.5"/>
+                <path d="M13 13a4 4 0 0 1 7 3.5"/>
+              </svg>
+              Health Sharing
+            </button>
+            <button class="tab" aria-label="Ещё">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.6"/>
+                <circle cx="12" cy="12" r="1.6"/>
+                <circle cx="19" cy="12" r="1.6"/>
+              </svg>
+              Ещё
+            </button>
+          </nav>
+        </section>
+      </div>
+
+      <!-- =========================================== -->
+      <!-- PHONE 2 — FIRST HRV MEASUREMENT REVEAL      -->
+      <!-- =========================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>ЭКРАН 37</strong> · HRV · FIRST MEASUREMENT REVEAL</div>
+
+        <section class="device-frame" aria-label="Ваш первый замер HRV">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:49</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- Minimal app-bar with close × -->
+          <div class="reveal-app-bar">
+            <button class="reveal-close" aria-label="Закрыть">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 5 L15 15 M15 5 L5 15"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Body -->
+          <div class="reveal-body">
+            <!-- Confetti -->
+            <div class="reveal-confetti-layer" aria-hidden="true">
+              <span class="reveal-confetti rc1"></span>
+              <span class="reveal-confetti rc2"></span>
+              <span class="reveal-confetti rc3"></span>
+              <span class="reveal-confetti rc4"></span>
+              <span class="reveal-confetti rc5"></span>
+              <span class="reveal-confetti rc6"></span>
+              <span class="reveal-confetti rc7"></span>
+              <span class="reveal-confetti rc8"></span>
+            </div>
+
+            <!-- Hero -->
+            <div class="reveal-hero">
+              <span class="reveal-eyebrow">Ваш первый замер</span>
+              <div class="reveal-hero-num-row">
+                <span class="reveal-hero-num">52</span>
+                <span class="reveal-hero-unit">ms</span>
+              </div>
+              <span class="reveal-hero-sub">Сегодня в <span class="mono">9:48</span></span>
+            </div>
+
+            <!-- Context card -->
+            <div class="reveal-context">
+              <h2 class="reveal-context-title">Что это значит</h2>
+              <p class="reveal-context-sub">
+                <strong>52 ms</strong> на <strong>5 ms выше</strong> вашего baseline (<strong>47 ms</strong>). Хороший знак — нервная система отдохнула и готова к нагрузке.
+              </p>
+              <!-- Mini scale 30 → 47 baseline → 70 with wine dot at 52 -->
+              <div class="reveal-scale" aria-hidden="true">
+                <div class="reveal-scale-track"></div>
+                <!-- Baseline marker at (47-30)/(70-30) = 42.5% -->
+                <div class="reveal-scale-baseline" style="left: 42.5%;"></div>
+                <span class="reveal-scale-baseline-lbl" style="left: 42.5%;">47 baseline</span>
+                <!-- Current dot at (52-30)/(70-30) = 55% -->
+                <div class="reveal-scale-dot" style="left: 55%;"></div>
+                <span class="reveal-scale-dot-lbl" style="left: 55%;">52</span>
+              </div>
+              <div class="reveal-scale-edges">
+                <span class="reveal-scale-edge">30 ms</span>
+                <span class="reveal-scale-edge">70 ms</span>
+              </div>
+            </div>
+
+            <!-- Comparison section -->
+            <h3 class="reveal-section-title">Ваш диапазон</h3>
+            <div class="reveal-stats" role="list">
+              <div class="reveal-stat" role="listitem">
+                <span class="reveal-stat-label">Сейчас</span>
+                <div class="reveal-stat-row">
+                  <span class="reveal-stat-v is-primary num">52</span>
+                  <span class="reveal-stat-u">ms</span>
+                </div>
+              </div>
+              <div class="reveal-stat" role="listitem">
+                <span class="reveal-stat-label">Baseline</span>
+                <div class="reveal-stat-row">
+                  <span class="reveal-stat-v num">47</span>
+                  <span class="reveal-stat-u">ms</span>
+                </div>
+              </div>
+              <div class="reveal-stat" role="listitem">
+                <span class="reveal-stat-label">Норма</span>
+                <div class="reveal-stat-row">
+                  <span class="reveal-stat-v mono num">±10</span>
+                  <span class="reveal-stat-u">%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="reveal-actions">
+              <button class="reveal-cta-primary" aria-label="Открыть HRV-экран">
+                Открыть HRV-экран
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 8 L13 8 M9 4 L13 8 L9 12"/>
+                </svg>
+              </button>
+              <button class="reveal-cta-link" aria-label="Понятно, спасибо">Понятно, спасибо</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

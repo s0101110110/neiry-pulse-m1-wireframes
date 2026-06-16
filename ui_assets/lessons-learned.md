@@ -490,6 +490,20 @@ Mechanical check: подсчитать row-heights × N + section-gaps × M = д
 
 Anti-pattern: фиксировать `height: 75%` без `auto` fallback — на грани screen size получаются артефакты или обрезанный CTA.
 
+## 2026-06-16 — C4 Celebration: preview peek НЕ должен spoiler-ить hero ревью на следующем экране
+
+Проблема: на Phone 1 (Baseline ready notification) под celebration card положен dimmed Home preview peek (opacity 0.4) с widget'ами HRV / Шаги. Естественно скопировать loaded-state values из canonical Home — но если HRV preview покажет конкретное value (например `47 ms`), это либо (а) **дублирует** baseline value из stat-cell наверху и читается как ошибка («почему два раза 47?»), либо (б) **spoiler-ит** first HRV measurement value (52), который раскрывается ТОЛЬКО на Phone 2.
+
+Семантически: на момент Baseline ready (Day 2 утром, через 36-48 ч калибровки) первый замер HRV ещё НЕ сделан — user нажимает CTA «Посмотреть первый замер» именно чтобы получить его. Следовательно preview HRV widget в этот момент = pre-reveal state, и должен показывать placeholder.
+
+**Правило для preview peek под celebration card:**
+1. **Placeholder pattern для HRV widget pre-reveal:** `—` (em-dash) в `var(--border-strong)` weight 500 + sub-label «ожидает первого замера» в muted-foreground. Это same pattern что и empty Home (A5 lesson 2026-06-14) — calibrating placeholder, не «broken».
+2. **Real values только для метрик, которые валидны на этот момент:** Шаги (1 248) — валидно, юзер двигался эти 36 ч. Sleep, если есть — валидно (вчерашняя ночь). HR resting — валидно (не зависит от baseline).
+3. **HRV / Stress Index / любые baseline-dependent метрики** — placeholder до первого замера. Только Phone 2 (reveal) раскрывает их.
+4. Не дублировать значение из stat-cell наверху celebration card в preview — это inconsistency прокидывает «47» дважды (1 раз как baseline label, 1 раз как «сегодня»), читатель не различает контексты.
+
+Mechanical check: для любого celebration-screen с preview peek — пройти список widget'ов и для каждого ответить «эта метрика существует на этот момент времени flow'а?» Если ответ «нет» / «именно её мы будем показывать на следующем экране» — placeholder.
+
 ## 2026-06-15 (Revision 5) — 3 phones в одном файле: добавление Phone к existing 2-phone setup
 
 Проблема: добавляя Phone 3 (close confirm modal) к существующему 2-phone файлу B4 (end-of-session + bracelet disconnect), естественно скопировать Phone 1 markup целиком как background для overlay. Это дублирует 100+ строк HTML — рискованно для maintenance и нарушает single-source-of-truth.
