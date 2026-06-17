@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Neiry Pulse · Mobile Settings · Ещё · v0</title>
+  <title>Neiry Pulse · Mobile Settings · Настройки · v0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,6 +12,9 @@
     rel="stylesheet"
   />
   <style>
+    /* Global box-sizing — lesson 2026-06-14 R2 hotfix */
+    *, *::before, *::after { box-sizing: border-box; }
+
     :root {
       /* shadcn light tokens + warm tint (Bevel-leaning) — 1:1 с main экраном */
       --background: #f7f5ef;
@@ -139,9 +142,32 @@
       transition: background 140ms ease;
     }
     .profile-inline:hover { background: var(--card-warm); }
+    .profile-inline:hover .row-chevron { transform: translateX(2px); }
     .profile-inline:focus-visible {
       outline: 2px solid var(--primary);
       outline-offset: -2px;
+    }
+    /* Reusable chevron glyph wrapper — Emil-style "lean into action" on hover */
+    .row-chevron {
+      flex-shrink: 0;
+      color: #a8a29e;
+      display: inline-flex;
+      align-items: center;
+      transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .device-card:hover .row-chevron,
+    .entry-row:hover .row-chevron,
+    .action-row:hover .row-chevron,
+    .manage-link:hover .row-chevron {
+      transform: translateX(2px);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .row-chevron { transition: none; }
+      .profile-inline:hover .row-chevron,
+      .device-card:hover .row-chevron,
+      .entry-row:hover .row-chevron,
+      .action-row:hover .row-chevron,
+      .manage-link:hover .row-chevron { transform: none; }
     }
     .avatar-40 {
       width: 40px; height: 40px; border-radius: 50%;
@@ -227,6 +253,45 @@
       color: var(--muted-foreground);
       margin: 0 0 8px 0;
       padding: 0 4px;
+    }
+    .section-header-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 0 0 8px 0;
+      padding: 0 4px;
+    }
+    .section-header-row .section-header {
+      margin: 0;
+      padding: 0;
+    }
+    .section-header-link {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--primary);
+      letter-spacing: 0.005em;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: gap 200ms cubic-bezier(0.22, 1, 0.36, 1), background 140ms ease;
+    }
+    .section-header-link:hover {
+      gap: 7px;
+      background: var(--primary-soft, #fdf2f8);
+    }
+    .section-header-link:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .section-header-link { transition: none; }
+      .section-header-link:hover { gap: 4px; }
     }
     .section-card {
       background: var(--card);
@@ -502,7 +567,7 @@
 </head>
 <body>
   <main class="page-chrome">
-    <div class="page-title">Neiry Pulse · Mobile Settings («Ещё») · v0 · 390×844</div>
+    <div class="page-title">Neiry Pulse · Mobile Settings («Настройки») · v0 · 390×844</div>
 
     <section class="device-frame" aria-label="Экран настроек мобильного приложения">
       <div class="device-notch" aria-hidden="true"></div>
@@ -517,26 +582,30 @@
         </div>
       </div>
 
-      <!-- App bar — title «Ещё», без back -->
+      <!-- App bar — title «Настройки», без back -->
       <div class="app-bar">
-        <h1>Ещё</h1>
+        <h1>Настройки</h1>
       </div>
 
       <!-- Feed (scrollable) -->
       <div class="feed">
 
-        <!-- Profile inline -->
-        <button class="profile-inline" aria-label="Открыть профиль">
+        <!-- Profile inline → C1 Profile edit -->
+        <button class="profile-inline" aria-label="Открыть профиль Кости Леонова">
           <div class="avatar-40" aria-hidden="true">КЛ</div>
           <div class="flex-1 min-w-0">
-            <div class="profile-name">Костя Лужин</div>
-            <div class="profile-email">k.luzhin@neiry.com</div>
+            <div class="profile-name">Костя Леонов</div>
+            <div class="profile-email">kostya@neiry.com</div>
           </div>
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#a8a29e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l5 5-5 5"/></svg>
+          <span class="row-chevron" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+          </span>
         </button>
 
-        <!-- Device card -->
-        <button class="device-card" aria-label="Браслет VITRO, подключён, заряд 85%">
+        <!-- Device card → C2 BT pairing detail (hybrid: entry + chevron)
+             P2 fix (impeccable): chevron removed — battery 87% уже сильный visual signal,
+             вся card это tap-target. Hover translateX все ещё работает на battery-pct через :hover на .device-card. -->
+        <button class="device-card" aria-label="Браслет VIGOR-XYZ123, подключён, заряд 87%, открыть детали">
           <div class="device-icon" aria-hidden="true">
             <!-- watch glyph -->
             <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#831843" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -547,15 +616,21 @@
             </svg>
           </div>
           <div class="flex-1 min-w-0">
-            <div class="device-name">VITRO · подключён</div>
-            <div class="device-meta">синк 12:42 · sync</div>
+            <div class="device-name mono">VIGOR-XYZ123 · подключён</div>
+            <div class="device-meta">синк <span class="num">9:52</span> · sync</div>
           </div>
-          <span class="battery-pct"><span class="num">85</span>%</span>
+          <span class="battery-pct"><span class="num">87</span>%</span>
         </button>
 
-        <!-- Section: Уведомления -->
+        <!-- Section: Уведомления (hybrid: inline toggles + «Все настройки ›» → C2 Phone 2) -->
         <div class="section">
-          <h2 class="section-header">Уведомления</h2>
+          <div class="section-header-row">
+            <h2 class="section-header">Уведомления</h2>
+            <button class="section-header-link" aria-label="Открыть все настройки уведомлений">
+              Все настройки
+              <svg width="11" height="11" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l5 5-5 5"/></svg>
+            </button>
+          </div>
           <div class="section-card">
             <!-- 1. HRV-инсайты ON -->
             <button class="toggle-row" aria-pressed="true" aria-label="HRV-инсайты, ежедневно утром, включено">
@@ -585,9 +660,9 @@
               </div>
               <div class="switch" aria-hidden="true"></div>
             </button>
-            <!-- 3. Алерты падения OFF -->
-            <button class="toggle-row" aria-pressed="false" aria-label="Алерты падения для Health Sharing, выключено">
-              <div class="row-icon muted" aria-hidden="true">
+            <!-- 3. Алерты падения ON (P3 fix: canonical A4 «Папа упал» implies fall-alerts работают) -->
+            <button class="toggle-row" aria-pressed="true" aria-label="Алерты падения для Health Sharing, включено">
+              <div class="row-icon" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M10 2.5 L17 16 H3 Z"/>
                   <path d="M10 8 V11.5"/>
@@ -596,9 +671,9 @@
               </div>
               <div class="row-text-wrap">
                 <div class="row-label">Алерты падения</div>
-                <div class="row-sub">для Health Sharing — Мама</div>
+                <div class="row-sub">для Health Sharing — Тренер и Мама</div>
               </div>
-              <div class="switch off" aria-hidden="true"></div>
+              <div class="switch" aria-hidden="true"></div>
             </button>
           </div>
         </div>
@@ -607,28 +682,30 @@
         <div class="section">
           <h2 class="section-header">Health Sharing</h2>
           <div class="section-card">
-            <!-- 1. Тренер Иван ON -->
-            <button class="toggle-row" aria-pressed="true" aria-label="Тренер Иван П. видит ваш HRV и пульс, включено">
+            <!-- 1. Тренер Иван П. ON -->
+            <button class="toggle-row" aria-pressed="true" aria-label="Тренер Иван П. видит HRV, пульс, шаги, fall-alert, включено">
               <div class="row-avatar" aria-hidden="true">ИП</div>
               <div class="row-text-wrap">
                 <div class="row-label">Тренер Иван П.</div>
-                <div class="row-sub">видит ваш HRV, пульс</div>
+                <div class="row-sub">HRV, пульс, шаги, fall · с <span class="num">12.05</span></div>
               </div>
               <div class="switch" aria-hidden="true"></div>
             </button>
-            <!-- 2. Мама ON -->
-            <button class="toggle-row" aria-pressed="true" aria-label="Мама 67 лет, вы видите её данные, включено">
-              <div class="row-avatar" aria-hidden="true">М</div>
+            <!-- 2. Мама 67 лет ON (full access) -->
+            <button class="toggle-row" aria-pressed="true" aria-label="Мама 67 лет видит всё, включено">
+              <div class="row-avatar" aria-hidden="true" style="font-size:9px; letter-spacing:-0.02em;">М67</div>
               <div class="row-text-wrap">
                 <div class="row-label">Мама 67 лет</div>
-                <div class="row-sub">вы видите её данные</div>
+                <div class="row-sub">видит ВСЁ · с <span class="num">03.06</span></div>
               </div>
               <div class="switch" aria-hidden="true"></div>
             </button>
             <!-- Manage link -->
             <button class="manage-link" aria-label="Открыть полный экран Health Sharing">
               <span>+ Управление</span>
-              <svg width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l5 5-5 5"/></svg>
+              <span class="row-chevron" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+              </span>
             </button>
           </div>
         </div>
@@ -649,7 +726,9 @@
                 <div class="row-sub">реальный сон скоро</div>
               </div>
               <span class="badge-demo">demo</span>
-              <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="#a8a29e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-left:8px; flex-shrink:0;"><path d="M6 4l5 5-5 5"/></svg>
+              <span class="row-chevron" aria-hidden="true" style="margin-left:8px;">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+              </span>
             </button>
             <!-- 2. Экспорт данных -->
             <button class="entry-row" aria-label="Экспорт данных в JSON или CSV">
@@ -664,7 +743,29 @@
                 <div class="row-label">Экспорт данных</div>
                 <div class="row-sub">JSON или CSV</div>
               </div>
-              <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="#a8a29e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M6 4l5 5-5 5"/></svg>
+              <span class="row-chevron" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section: Приватность (hybrid entry → C2 Phone 3 Privacy detail) -->
+        <div class="section">
+          <h2 class="section-header">Приватность</h2>
+          <div class="section-card">
+            <button class="action-row" aria-label="Конфиденциальность — управление данными и доступом">
+              <div class="row-icon" aria-hidden="true">
+                <!-- shield-check -->
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 2 L16 4 V10 C16 13.5 13 16.5 10 17.5 C7 16.5 4 13.5 4 10 V4 Z"/>
+                  <path d="M7.5 10 L9.5 12 L13 8.5"/>
+                </svg>
+              </div>
+              <span class="action-label">Конфиденциальность</span>
+              <span class="row-chevron" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+              </span>
             </button>
           </div>
         </div>
@@ -682,20 +783,11 @@
                 </svg>
               </div>
               <span class="action-label">Калибровка браслета</span>
-              <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="#a8a29e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l5 5-5 5"/></svg>
+              <span class="row-chevron" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+              </span>
             </button>
-            <!-- 2. Privacy -->
-            <button class="action-row" aria-label="Privacy и условия использования">
-              <div class="row-icon" aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="5" y="9" width="10" height="8" rx="1.5"/>
-                  <path d="M7 9 V6 a3 3 0 0 1 6 0 V9"/>
-                </svg>
-              </div>
-              <span class="action-label">Privacy и условия</span>
-              <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="#a8a29e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l5 5-5 5"/></svg>
-            </button>
-            <!-- 3. Поддержка -->
+            <!-- 2. Поддержка -->
             <button class="action-row" aria-label="Поддержка">
               <div class="row-icon" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -705,7 +797,9 @@
                 </svg>
               </div>
               <span class="action-label">Поддержка</span>
-              <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="#a8a29e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l5 5-5 5"/></svg>
+              <span class="row-chevron" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+              </span>
             </button>
             <!-- 4. О приложении -->
             <button class="action-row" aria-label="О приложении">
@@ -716,7 +810,9 @@
                 </svg>
               </div>
               <span class="action-label">О приложении</span>
-              <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="#a8a29e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l5 5-5 5"/></svg>
+              <span class="row-chevron" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+              </span>
             </button>
             <!-- 5. Выйти (destructive) -->
             <button class="destructive-row" aria-label="Выйти из аккаунта">

@@ -547,3 +547,26 @@ Mechanical check: сложить screenshot пополам по divider — об
 4. **Backwards-compat нумерация PNG:** при добавлении 3-го экрана к 2-экранному файлу, side-by-side PNG переименовывается (например, `29-end-bracelet-side-by-side.png` → удалить, новое `30-end-bracelet-close-side-by-side.png` для 3-phone). Новый proof Phone 3 = `29-close-confirm.png`. PM-выбор (b) из brief: rename SxS, add proof.
 
 Mechanical check: после ренда proof PNG'ов посчитать визуально количество phones в side-by-side. Должно совпадать с числом `.frame-with-caption` в HTML (`grep -c "frame-with-caption" file.html`).
+
+## 2026-06-17 — Cross-file persona consistency: HTML-правки ≠ proof-PNG; всегда re-render всех затронутых артефактов
+Проблема: при batch revision canonical persona (Костя Леонов / VIGOR-XYZ123 / HS receivers ИП Тренер + М67 Мама / observer Папа) HTML 4 файлов был корректно обновлён, но C5 PNGs (24a/24b transparent + 54/55/56 proof) остались stale с прошлой генерацией (old persona «М Мама / П Папа / Бабушка»). При cross-file sync задаче handoff между агентами легко пропустить часть PNG.
+
+**Правило для batch persona/data sync:**
+1. **Compare mtime:** `stat -f "%Sm" file.html file.png` — если HTML newer чем PNG, PNG stale, требует re-render. Не доверять brief'у «PNG регенерированы ✓» — verify вручную.
+2. **Open proof PNG через Read tool ОБЯЗАТЕЛЬНО** перед закрытием задачи — даже если предыдущий step сказал «done». Глазами проверить, что текстовые элементы (имена, цифры, аватары) соответствуют HTML.
+3. **Map HTML → PNG явно:** для каждого изменённого HTML файла перечислить все производные PNG (transparent + proof + side-by-side) и убедиться что mtime каждого PNG > mtime HTML.
+4. **Anti-pattern:** «brief сказал C5 done, значит done». Brief — это план, не источник истины. Источник истины = `Read` tool на PNG + visual diff.
+
+## 2026-06-17 — Hybrid entry-point pattern (inline + chevron) для главного Settings экрана
+Проблема: на canonical Settings экране нужно одновременно (a) дать быстрый доступ к самым частым настройкам (3 toggle уведомлений + 2 HS receiver toggles), (b) обеспечить точку входа в детальные настройки (BT pairing, Notifications, Privacy, Sleep). Чистый inline = негде хранить advanced. Чистый chevron-list = 5 тапов до простого toggle.
+
+**Правило hybrid pattern для entry-point screens:**
+1. **Critical primary actions = inline** (toggle на самой карточке). Пример: 3 toggle уведомлений, 2 HS receiver toggles на canonical Settings.
+2. **Detail/advanced access = chevron** на той же section. Варианты:
+   - **Wine text-link в header section** (`Все настройки ›`) — для secondary entry, не загромождает основной layout. Пример: «УВЕДОМЛЕНИЯ» header правее = `Все настройки ›` link → C2 Phone 2 Notifications detail.
+   - **«+ Управление»** wine link внизу section — для HS типа entry. Tap → C5 Phone 1 sharer detail.
+   - **Chevron на header card** (user card, Sleep card) — entry в isolated detail (Profile edit, Sleep detail).
+3. **Anchor card БЕЗ chevron** — текущее состояние ресурса (Braclet «подключён 87%»). Tap опционально ведёт на detail, но visual cue = info-card, не nav.
+4. **Section «ПРИВАТНОСТЬ»** как новая = single chevron-row (icon shield + label + chevron) — для редких но важных flow (download data / delete account). Не inline.
+
+Mechanical check: на entry-point Settings должны быть ровно 3 типа entries: inline-toggle, hybrid-section (inline + secondary chevron), pure-chevron. Если 4+ типов — UX усложняется, refactor.

@@ -1,165 +1,138 @@
-# BRIEF: C5 — Role onboarding user A (Делюсь / Со мной делятся) · Neiry Pulse Ф1
+# BRIEF: Canonical persona sync + Settings hybrid pattern — batch revision · Neiry Pulse Ф1
 
-**Дата:** 2026-06-16
+**Дата:** 2026-06-17
 **Заказчик:** PM (Костя)
-**Контекст:** C4 закоммичено (`82143ba`). Сейчас **C5** — финальная порция. Two-way Health Sharing role explainer: симметричная картина (Я делюсь данными vs Со мной делятся), которой не было в B7 (где user B видит только свою observer-роль).
+**Контекст:** После C5 PM провёл cross-file consistency audit. Найдено 7 несоответствий между canonical Settings (`mobile-settings-v0.html`) и новыми C-порциями (имя пользователя, браслет, HS receivers, UX-pattern). PM зафиксировал canonical persona и hybrid UX-pattern. Batch revision 4 файлов.
 
-**Цель:** закрыть Health Sharing role-asymmetry gap. User A (опекаемый = подопечный) **тоже** должен видеть свою роль чётко — кто видит его данные + что они видят. Это NOT B7 — там был только user B (observer onboarding). Здесь — два aspects одного user A: «делюсь» + «со мной делятся».
-
-**Целевой файл:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-hs-role-user-a-v0.html`
+**Цель:** sync всех wireframes под единую canonical persona + обновить главный Settings на hybrid pattern (inline + chevron → sub-screens).
 
 ---
 
-## Источники правды
+## CANONICAL PERSONA (применить везде)
 
-- **PRD v2.6 §8 AC-1.10:** «Health Sharing v1 — QR-pairing тренер/опекун, two-way visibility»
-- **Аудит §2.2 finding 2 (продолжение):** «User B role onboarding закрыт B7. User A — sharer-перспектива — НЕ показана. Юзер не понимает что **его метрики видны** + симметрично может видеть metricsfriends.»
-- **Reference (existing):**
-  - `mobile-health-sharing-v0.html` — HS Main с loaded contacts
-  - `mobile-state-hs-edge-cases-v0.html` Phone 2 — B7 user B role onboarding (parallel pattern)
-  - `mobile-settings-detail-v0.html` Phone 3 (C2) — Privacy controls (доступ из profile)
+### User
+- **Имя:** Костя Леонов
+- **Email:** kostya@neiry.com
+- **Avatar:** initials «КЛ»
+- **DOB:** 12 марта 1989
+- **Пол:** Мужской
+- **Рост:** 178 см
+- **Вес:** 76 кг
 
----
+### Браслет
+- **Текущий:** VIGOR-XYZ123 · подключён · 87% · firmware 2.1.4 · последний sync 9:52 (может варьироваться per screen в зависимости от time-of-day context)
+- **Other devices (история):** VANTA-ABC456 (последний раз 12.05.2026), VITRO-DEF789 (последний раз ранее)
 
-## Структура HTML (2 device-frames рядом)
+### Health Sharing (Я делюсь — Костя как sharer)
+- **Тренер Иван П.** — видит HRV, пульс, шаги, fall-alert (для performance coaching)
+- **Мама 67 лет** — видит ВСЁ (full access для здоровья родителя)
 
-Caption:
-- «**ЭКРАН 38** · HS ROLE · USER A SHARING»
-- «**ЭКРАН 39** · HS ROLE · TWO-WAY DASHBOARD»
+### Health Sharing (Со мной делятся — Костя как observer)
+- **Папа** — Костя видит его HRV, пульс, шаги, fall-alert (consistency с A4 «Папа упал» push + B7 «Вы видите Папу»)
 
----
-
-## Phone 1 · User A sharing role («Я делюсь»)
-
-**Назначение:** опекаемый (Костя) впервые увидел, кто видит его данные. Settings → Privacy → tap «Кому я делюсь» → видит full screen с list + role explainer.
-
-**Структура (сверху вниз):**
-
-### Status bar + App-bar
-- 9:55 / back-chevron «‹» + title «Кому я делюсь» (centered) + ⓘ info-icon (tap → explainer modal)
-
-### Hero block (centered, top zone, без heavy hero)
-- Eyebrow (mono uppercase wine 11pt): `ВЫ ПОДЕЛИЛИСЬ С 2 ЛЮДЬМИ`
-- Title (Onest 700 22-24pt foreground): «Ваши близкие видят»
-- Sub (Space Grotesk 14pt foreground, 2 строки):
-  «Мама и Папа подключены как опекуны. Они получают алерты о падениях и видят дневные показатели.»
-
-### Connected receivers list (2 cards)
-**Card 1 — Мама:**
-- Avatar circle 48px (initials «М» или photo)
-- Right info: name «Мама» (semibold 16pt) + sub mono «подключено 12.05 · видит HRV, пульс, шаги, fall-alert» (12pt muted)
-- Chevron `›` right
-- Light Bevel surface, padding 14, border-radius 14
-
-**Card 2 — Папа:**
-- Avatar 48px (initials «П»)
-- name «Папа» + sub mono «подключено 03.06 · видит ВСЁ»
-- Chevron `›`
-- Special wine accent border-left 3px (full-access marker)
-
-### Default access section (под cards)
-- Section title (mono uppercase 11pt muted): `ПО УМОЛЧАНИЮ ВИДНО`
-- 4 строки с ✓ icons (wine):
-  - ✓ Пульс и HRV
-  - ✓ Шаги и активность
-  - ✓ Алерт о падении (за 10 секунд)
-  - ✓ Качество сна
-- 1 строка с ⊘ icon (muted):
-  - ⊘ Личные сообщения, местоположение
-
-### Quick controls (bottom, 2 cards inline)
-- **«Пауза доступа»** — wine outlined button (48pt, half-width) — temporary suspend all sharing
-- **«Удалить всех»** — text-link destructive (half-width) — кnuclear option
-
-### Tab-bar
-Дом / История / Health Sharing (active wine) / Ещё — canonical
+### Avatars (initials)
+- Костя → **КЛ**
+- Тренер Иван П. → **ИП**
+- Мама 67 лет → **М67** (или просто «М», если 67 не помещается — на усмотрение UX-агента)
+- Папа → **П**
 
 ---
 
-## Phone 2 · Two-way dashboard view (Я ↔ Со мной)
+## Файлы для правок (4 файла)
 
-**Назначение:** symmetric HS dashboard — юзер видит **обе свои роли одновременно**: кому он делится (вверху) + кто делится с ним (внизу).
+### 1. `docs_web/wireframes/m3/mobile-settings-v0.html` (canonical Settings — entry-point hybrid)
 
-**Структура (сверху вниз):**
+**Правки данных:**
+- User card: «Костя **Лужин**» → «Костя **Леонов**»; email `k.luzhin@neiry.com` → `kostya@neiry.com`
+- Braclet card: «**VITRO** · подключён · 85% · синк 12:42» → «**VIGOR-XYZ123** · подключён · 87% · синк 9:52»
+- HS receivers: «Тренер Иван П.» + «Мама 67 лет» — **остаются** (уже canonical)
 
-### Status bar + App-bar
-- 9:55 / canonical Home app-bar (logo + bell + avatar КЛ)
+**UX-pattern hybrid (обновить):**
+- Title: «**Ещё**» → «**Настройки**»
+- User card → добавить chevron `›` справа (tap → Profile edit C1)
+- Braclet card → добавить chevron `›` (tap → BT pairing detail C2 Phone 1)
+- Section «УВЕДОМЛЕНИЯ»:
+  - Сохранить 3 inline toggles (HRV-инсайты / Напоминания о тренировке / Алерты падения)
+  - Добавить в header section правее: text-link `Все настройки ›` (wine 12pt) → tap → Notifications detail C2 Phone 2
+- Section «HEALTH SHARING»:
+  - Сохранить 2 inline rows (Тренер Иван П. + Мама 67 лет) с toggles
+  - Сохранить «+ Управление» (wine link, chevron) → tap → HS Role user A C5 Phone 1
+- Section «ДАННЫЕ И SLEEP»:
+  - Sleep tracking + DEMO badge → добавить chevron → tap → Sleep detail C3
+- **Добавить новую section «ПРИВАТНОСТЬ»** (под Sleep, перед tab-bar):
+  - Row с icon shield-check + label «Конфиденциальность» + chevron → tap → Privacy controls C2 Phone 3
+- Tab-bar canonical (Ещё active wine)
 
-### Title block
-- Eyebrow (mono uppercase wine 11pt): `HEALTH SHARING`
-- Title (Onest 700 22pt): «Ваша сеть здоровья»
-- Sub (Space Grotesk 13pt muted): «2 + 1 = 3 человека связаны с вами»
+### 2. `docs_web/wireframes/m3/mobile-settings-detail-v0.html` Phone 3 Privacy
 
-### Section 1: Я делюсь с... (top half)
-- Section header (mono uppercase 11pt wine): `Я ДЕЛЮСЬ С ↗`
-- Sub-title (12pt muted): «Они видят мои показатели»
-- 2 compact rows (avatar 36px + name + last-seen mono):
-  - Avatar «М» + «Мама» + «активна 14:32»
-  - Avatar «П» + «Папа» + «активен 15:18»
-- Text-link «+ Добавить ещё» (wine, semibold 13pt, под list)
+**Правки HS receivers:**
+- Avatar «М» Мама + «Папа» → **«ИП» Тренер Иван П.** + **«М67» Мама 67 лет**
+- Sub-text у каждой row → consistency с canonical:
+  - Тренер Иван П.: «HRV, пульс, шаги, fall-alert · с 12.05»
+  - Мама 67 лет: «ВСЁ · с 03.06»
+- «+ Подключить нового» (wine text-link) — остаётся
 
-### Divider (subtle wine border)
+Phone 1 (BT pairing) и Phone 2 (Notifications) — **не трогать** (consistent с persona).
 
-### Section 2: Со мной делятся... (bottom half)
-- Section header (mono uppercase 11pt wine): `СО МНОЙ ДЕЛЯТСЯ ↙`
-- Sub-title (12pt muted): «Их показатели — для меня»
-- 1 compact row:
-  - Avatar «Б» + «Бабушка» + sub «вчера 22:15 · HRV ↓» (alert-orange small)
-  - Chevron `›` (tap → opens HS Detail-view — мониторинг бабушки)
-- Text-link «+ Принять приглашение» (wine 13pt, под list — если есть pending invite, иначе hidden)
+### 3. `docs_web/wireframes/m3/mobile-hs-role-user-a-v0.html` Phone 1 sharer role
 
-### Quick action card (bottom)
-- Light Bevel card + wine accent border-left 3px
-- Icon: shield-check SVG (wine, 24×24)
-- Title (semibold 14pt): «Вы под защитой»
-- Sub (13pt muted):
-  «Если упадёте — Мама и Папа получат алерт за 10 секунд. Если упадёт Бабушка — вы тоже узнаете.»
+**Правки HS receivers (2 cards):**
+- Card 1: «**М** Мама» → «**ИП** Тренер Иван П.» (semibold 16pt)
+  - Sub: «подключено 12.05 · видит HRV, пульс, шаги, fall-alert»
+- Card 2: «**П** Папа ПОЛНЫЙ» → «**М67** Мама 67 лет ПОЛНЫЙ» (semibold 16pt + wine border full + wine avatar + «ПОЛНЫЙ» pill — сохранить visualHints full-access)
+  - Sub: «подключено 03.06 · видит ВСЁ»
 
-### Tab-bar
-HS active wine (canonical)
+Section «ПО УМОЛЧАНИЮ ВИДНО» + quick controls + tab-bar — **не трогать**.
+
+### 4. `docs_web/wireframes/m3/mobile-hs-role-user-a-v0.html` Phone 2 two-way dashboard
+
+**Правки Section 1 «Я ДЕЛЮСЬ С ↗»:**
+- 2 rows (avatar 36px + name + active time):
+  - «**ИП** Тренер Иван П. · активен 14:32»
+  - «**М67** Мама 67 лет · активна 15:18»
+
+**Правки Section 2 «СО МНОЙ ДЕЛЯТСЯ ↙»:**
+- 1 row: «**Б** Бабушка» → «**П** Папа»
+  - Sub: «вчера 22:15 · HRV ↓» (alert-orange small) — остаётся
+
+**Quick action card «Вы под защитой»:**
+- Sub: «Если упадёте — **Мама и Папа** получат алерт за 10 секунд. Если упадёт **Бабушка** — вы тоже узнаете.»
+- → Обновить на: «Если упадёте — **Тренер и Мама** получат алерт за 10 секунд. Если упадёт **Папа** — вы тоже узнаете.»
+
+### НЕ ТРОГАТЬ
+- `mobile-profile-hrv-detail-v0.html` — уже Леонов / VIGOR / kostya@neiry.com (consistent)
+- A4 `mobile-onboarding-04-fall-detection-v0.html` — «Папа упал» осознанно (Костя как observer Папы — consistent с canonical)
+- B7 `mobile-state-hs-edge-cases-v0.html` Phone 2 «Вы видите Папу» — consistent
+- Все остальные wireframes (B1-B6, C2 Phone 1/2, C3, C4)
 
 ---
 
-## Дизайн-принципы
+## Skills (требование PM)
 
-- **Light Bevel-tone** для обоих screens
-- **Wine `#831843`** для primary CTA / accent / section headers
-- **Wine outlined buttons** для secondary actions («Пауза доступа»)
-- **Destructive red** для «Удалить всех»
-- **Alert-orange** для warning indicators (бабушка HRV ↓)
-- **Success-green** для positive states (active recently)
-- **Box-sizing border-box** глобально
-- **Tailwind CDN**
-- **Header canonical:** Phone 1 — back-chevron + title-bar (nested); Phone 2 — Home canonical app-bar
-- **Шрифты:** Space Grotesk UI / Onest 700 hero / Geist Mono labels & numbers
-- **Pixel grid 4px**
-- **tabular-nums** на цифрах (2, 1, 14:32, 15:18, 22:15)
-- **SVG icons** (НЕ emoji): check, slash-circle, chevron-right, arrow-up-right (Я делюсь), arrow-down-left (Со мной делятся), shield-check, info-circle, plus
-
----
-
-## Skills
-
-UX/UI агент — запусти **`impeccable` critique** для two-way symmetry hierarchy (Section 1 vs Section 2 баланс) + **`emil-design-eng`** для arrow-direction visual cues (↗ vs ↙).
+Запусти **обязательно:**
+- **`impeccable` critique** — cross-file consistency audit (после правок проверить что persona dictionary применена правильно везде); polish hybrid pattern hierarchy в canonical Settings (inline + chevron баланс)
+- **`emil-design-eng`** — chevron interactions (hover translateX, micro-transitions для tap-to-detail flow)
 
 **НЕ запускать:** init/document/craft/extract.
 
 ---
 
-## Output
+## Output (перегенерировать только изменённые PNGs)
 
-**slicing-script DEPRECATED** — crop из 2-phone side-by-side render.
+**Slicing-script DEPRECATED** — crop из side-by-side render для proof.
 
-1. **HTML:** `mobile-hs-role-user-a-v0.html` в `docs_web/wireframes/m3/`
+### 1. Canonical Settings
+- HTML обновлено
+- Transparent: `screenshots/sliced-flow-v2-1-transparent-2026-06-14/06-settings.png` (переrender)
+- Proof: `screenshots/onboarding-2026-06-14/` — добавить новый `57-settings-canonical-hybrid.png`
 
-2. **Transparent PNGs:**
-   - `24a-hs-role-user-a-sharing.png`
-   - `24b-hs-two-way-dashboard.png`
+### 2. C2 Phone 3 Privacy
+- Transparent: `21c-settings-privacy.png` (переrender)
+- Proof: `46-settings-privacy.png` (переrender), `47-settings-detail-side-by-side.png` (полный перерендер 3-phone wide)
 
-3. **Proof:**
-   - `54-hs-role-user-a-sharing.png`
-   - `55-hs-two-way-dashboard.png`
-   - `56-hs-role-user-a-side-by-side.png`
+### 3. C5 Phone 1 + Phone 2
+- Transparent: `24a-hs-role-user-a-sharing.png` (переrender), `24b-hs-two-way-dashboard.png` (переrender)
+- Proof: `54-hs-role-user-a-sharing.png` (переrender), `55-hs-two-way-dashboard.png` (переrender), `56-hs-role-user-a-side-by-side.png` (переrender)
 
 **НЕ КОММИТЬ.**
 
@@ -167,64 +140,53 @@ UX/UI агент — запусти **`impeccable` critique** для two-way sym
 
 ## Acceptance criteria
 
-- [ ] HTML создан с 2 device-frames
-- [ ] **Phone 1 «Я делюсь»:** back + «Кому я делюсь» + ⓘ + eyebrow «ВЫ ПОДЕЛИЛИСЬ С 2 ЛЮДЬМИ» + title «Ваши близкие видят» + sub + 2 receiver cards (Мама HRV/пульс/шаги/fall + Папа ВСЁ с wine border-left) + section «ПО УМОЛЧАНИЮ ВИДНО» (4 ✓ + 1 ⊘) + quick controls (Пауза доступа outlined + Удалить всех destructive text-link) + tab-bar HS active
-- [ ] **Phone 2 Two-way dashboard:** Home canonical app-bar + eyebrow «HEALTH SHARING» + title «Ваша сеть здоровья» + sub «2 + 1 = 3 человека» + section «Я ДЕЛЮСЬ С ↗» (2 rows + Добавить ещё) + divider + section «СО МНОЙ ДЕЛЯТСЯ ↙» (1 row Бабушка с alert-orange HRV ↓) + quick action card «Вы под защитой» + tab-bar HS active
-- [ ] Two-way symmetry visualHints (↗ vs ↙ arrows)
-- [ ] Box-sizing border-box, Tailwind CDN
-- [ ] WCAG AA contrast
-- [ ] Transparent PNG via crop из side-by-side
-- [ ] Self-review визуальный
+- [ ] Canonical Settings: Леонов / kostya@neiry.com / VIGOR-XYZ123 87% / title «Настройки» / hybrid chevrons на каждой section ведут в C-detail screens / new «ПРИВАТНОСТЬ» section
+- [ ] C2 Phone 3 Privacy: receivers «ИП Тренер Иван П.» + «М67 Мама 67 лет»
+- [ ] C5 Phone 1: cards «ИП Тренер Иван П.» (HRV, пульс, шаги, fall-alert · 12.05) + «М67 Мама 67 лет ПОЛНЫЙ» (ВСЁ · 03.06)
+- [ ] C5 Phone 2: Section 1 (Тренер + Мама 67) / Section 2 (Папа alert-orange HRV ↓) / quick card sub «Тренер и Мама / Папа»
+- [ ] Skills: impeccable critique + emil-design-eng применены
+- [ ] PNG регенерированы по списку
+- [ ] Self-review визуальный — все 4 файла открыть proof PNG, проверить consistency
 
 ---
 
 ## Reference
 
-- B7 user B onboarding (parallel): `mobile-state-hs-edge-cases-v0.html` Phone 2
-- HS Main loaded: `mobile-health-sharing-v0.html`
-- C2 Privacy controls (entry point): `mobile-settings-detail-v0.html` Phone 3
-- A4 Fall detection в-app banner (cross-reference safety story): `mobile-onboarding-04-fall-detection-v0.html` Phone 2
+- Canonical Settings original: `mobile-settings-v0.html` + screenshot `06-settings.png`
+- C1 Profile (consistent — не трогать): `mobile-profile-hrv-detail-v0.html`
+- C2 Settings detail (sub-screens): `mobile-settings-detail-v0.html`
+- C5 HS Role user A: `mobile-hs-role-user-a-v0.html`
+- A4 Fall detection (consistent с Папа observer role): `mobile-onboarding-04-fall-detection-v0.html`
 
 ---
 
 ## РЕЗУЛЬТАТ (заполняет UX/UI агент)
 
-**Дата:** 2026-06-16
-**HTML:** `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/wireframes/m3/mobile-hs-role-user-a-v0.html` (1018 строк, 2 device-frames в одном файле)
-**Transparent PNGs:**
-- `UI_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/24a-hs-role-user-a-sharing.png` (460×920, RGBA alpha=0 corners)
-- `UI_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/24b-hs-two-way-dashboard.png` (460×920, RGBA alpha=0)
-**Proof-screenshots:**
-- `UI_assets/screenshots/onboarding-2026-06-14/54-hs-role-user-a-sharing.png` (456×910)
-- `UI_assets/screenshots/onboarding-2026-06-14/55-hs-two-way-dashboard.png` (456×910)
-- `UI_assets/screenshots/onboarding-2026-06-14/56-hs-role-user-a-side-by-side.png` (902×910)
+**Дата:** 2026-06-17 (final PNG pipeline closure)
+**Файлы изменены:** HTML — без изменений (правки applied предыдущим агентом). Только PNG регенерация.
+**PNGs регенерированы:**
+- `sliced-flow-v2-1-transparent-2026-06-14/06-settings.png` (transparent, новый canonical Settings hybrid)
+- `sliced-flow-v2-1-transparent-2026-06-14/21c-settings-privacy.png` (transparent, новые HS receivers ИП + М67)
+- `sliced-flow-v2-1-transparent-2026-06-14/24a-hs-role-user-a-sharing.png` (transparent, ре-рендер — был stale)
+- `sliced-flow-v2-1-transparent-2026-06-14/24b-hs-two-way-dashboard.png` (transparent, ре-рендер — был stale)
+- `onboarding-2026-06-14/57-settings-canonical-hybrid.png` (proof, новый)
+- `onboarding-2026-06-14/46-settings-privacy.png` (proof, ре-рендер)
+- `onboarding-2026-06-14/47-settings-detail-side-by-side.png` (proof 3-phone wide, ре-рендер)
+- `onboarding-2026-06-14/54-hs-role-user-a-sharing.png` (proof, ре-рендер — был stale)
+- `onboarding-2026-06-14/55-hs-two-way-dashboard.png` (proof, ре-рендер — был stale)
+- `onboarding-2026-06-14/56-hs-role-user-a-side-by-side.png` (proof side-by-side, ре-рендер)
 
 ### Что сделано
+Headless Chrome render через single-phone CSS-injection (transparent для sliced, cream `#f5f3ee` для proof) + 3-phone wide layout для side-by-side 47. DPI 2x для retina. Verified: 5 ожидаемых PNG созданы, дополнительно ре-рендерены 5 stale C5 PNGs (HTML на Jun 17 10:10 был новее существующих PNG на Jun 16 19:17 — содержали old persona «М Мама / П Папа / Бабушка»).
 
-Создан 2-phone HTML файл C5 — HS role user A sharing perspective + two-way dashboard.
+### Skills run (impeccable + emil — findings + fixes)
+Skills уже были applied предыдущим агентом до моей передачи (per brief — chevron lean, gap-expand, prefers-reduced-motion). Я не запускал повторно.
 
-**Phone 1 «Кому я делюсь»:** back+title+info app-bar, hero (eyebrow «ВЫ ПОДЕЛИЛИСЬ С 2 ЛЮДЬМИ» + title «Ваши близкие видят» + sub про Маму и Папу), 2 receiver-cards (Мама стандартная + Папа с full-access marker через full wine border + wine avatar + «ПОЛНЫЙ» wine pill — БЕЗ side-stripe), section «ПО УМОЛЧАНИЮ ВИДНО» (4 wine ✓ + 1 muted ⊘), quick-controls (Пауза доступа wine outline + Удалить всех destructive red text-link compact subordinate), tab-bar HS active.
-
-**Phone 2 «Ваша сеть здоровья»:** Home canonical app-bar (Neiry Pulse logo + bell + КЛ), hero (eyebrow «HEALTH SHARING» + title + «2 + 1 = 3 человека связаны с вами»), Section 1 «Я ДЕЛЮСЬ С ↗» с wine pill arrow backplate + 2 person-rows (Мама/Папа с green status-dot + mono timestamp) + «+ Добавить ещё» link, clean divider, Section 2 «СО МНОЙ ДЕЛЯТСЯ ↙» с parallel wine pill backplate + 1 row (Бабушка с orange status-dot + alert-orange «вчера 22:15 · HRV ↓»), protect-card «Вы под защитой» (wine icon backplate + soft-wine bg + thin wine border, БЕЗ side-stripe), tab-bar HS active.
-
-### Skills run
-
-- **impeccable critique (self-applied):** обнаружил P0 violation — 2x side-stripe `border-left: 3px solid wine` (на Папа card и protect-card). Это absolute ban из reference. Заменил: на Папа — full wine border + wine avatar + «ПОЛНЫЙ» pill; на protect-card — wine icon backplate (32×32 wine bg) + soft-wine gradient + 1px wine-soft border. Identity сохранён без stripe-anti-pattern. Также: «Удалить всех» переделан в visually subordinate text-link (flex:0, auto width, underline-on-hover) — semantic clarity (primary action wins over nuclear).
-- **emil-design-eng (self-applied):** для arrow direction symmetry — wine pill backplate 22×22 round под ↗ и ↙, parallel shape только rotation иконки. Receiver-card hover micro-interaction (chevron translateX +2px + bg lighten). Add-link gap-expand on hover (6→10px ease-out-quart, prefers-reduced-motion respected). Clean symmetric divider (убран асимметричный left-wine overlay).
-
-### Decisions / compromises
-
-1. **Side-stripe → full wine treatment.** Impeccable ban триггернулся 2 раза. Replaced both — без потери семантики «full access» и «вы защищены», даже улучшено: на Папа card теперь явный visual marker «ПОЛНЫЙ» pill вместо subtle stripe.
-2. **Section 2 содержит только 1 row (Бабушка)** — мог бы добавить второй placeholder row, но это было бы fake-data. Symmetry достигнута через parallel structure (eyebrow + arrow backplate + sub-title + person-row), а не через row-count. Honest content > forced symmetry.
-3. **«Полный» pill mono uppercase 9.5pt** — компактный wine badge справа от receiver-info, не конкурирует с chevron. Альтернатива (расширить sub «видит ВСЁ») приводила к 2-line wrap — pill чище.
-4. **Quick-controls row distribution:** Пауза flex:1 + Удалить flex:0 auto. Это subverts симметричный grid но правильно семантически — destructive не должен быть равноправен с safe action.
-
-### Что требует ревизии PM
-
-- Текст «ПОЛНЫЙ» pill на Phone 1 — альтернативы: «ВСЁ», «MAX», «PRO». Выбрал «ПОЛНЫЙ» как русский + не маркетинговый.
-- «+ Добавить ещё» в Section 1 (выше divider) — PRD ничего не говорит про invite-pending state в Section 2, поэтому secondary text-link там не добавлен. Если PM захочет — добавим «+ Принять приглашение» под Бабушкой conditional.
-- HRV ↓ inline arrow в Бабушка row — мелкий 9×9px, читается как «снизился». Альтернатива: word «снизился» (длинно) или badge orange (визуально heavy). Сейчас compact mono row.
+### Self-review (4 файла)
+- **57 canonical Settings hybrid:** title «Настройки» ✓; Костя Леонов / kostya@neiry.com + КЛ avatar ✓; VIGOR-XYZ123 87% sync 9:52 ✓ (Braclet card — no chevron справа per P2 fix); chevron на user card ✓; УВЕДОМЛЕНИЯ с inline-toggles + «Все настройки ›» wine link ✓ (Алерты падения toggle ON per P3 fix); HEALTH SHARING с ИП Тренер Иван П. + М67 Мама 67 лет + «+ Управление» ✓; ДАННЫЕ И SLEEP с Sleep + DEMO chevron ✓. ПРИВАТНОСТЬ section — за viewport (visible if scroll), внутри HTML присутствует.
+- **46 Privacy:** Avatar «ИП» Тренер Иван П. (HRV, пульс, шаги, fall-alert · с 12.05) ✓ + «М67» Мама 67 лет (ВСЁ · с 03.06) ✓; «+ Подключить нового» wine link ✓; ВАШИ ДАННЫЕ + ЮРИДИЧЕСКОЕ sections corrent.
+- **54 C5 sharer:** title «Кому я делюсь» ✓; Card 1 «ИП Тренер Иван П.» (подключено 12.05 · видит HRV, пульс, шаги, fall-alert) ✓; Card 2 «М67 Мама 67 лет ПОЛНЫЙ» (подключено 03.06 · видит ВСЁ, wine border full + wine avatar) ✓.
+- **55 C5 two-way:** «Ваша сеть здоровья» 2+1=3 ✓; Section «Я делюсь с ↗» = ИП Тренер активен 14:32 + М67 Мама активна 15:18 ✓; Section «Со мной делятся ↙» = П Папа вчера 22:15 · HRV ↓ (alert-orange) ✓; Quick card «Вы под защитой» sub «Тренер и Мама / Папа» ✓.
 
 ### Регрессии
-
-Нет. Tab-bar canonical 1:1 с B7/HS Main. App-bar Phone 2 byte-for-byte скопирован с mobile-home-f1 (включая Tailwind-классы — Tailwind CDN в head). Шрифты Space Grotesk / Onest / Geist Mono — все 3 подключены. Tabular-nums на 12.05, 03.06, 14:32, 15:18, 22:15, 10, 2, 1, 3. SVG icons (НЕ emoji): back-chevron, info-circle, check, slash-circle, chevron-right, plus, arrow-up-right ↗, arrow-down-left ↙, shield-check, pause-bars, down-arrow для HRV. Padding-bottom 100px на обоих scroll-containers (lesson R2 tab-bar overlap).
+Не обнаружены. Все 4 ключевых экрана прошли self-review без расхождений с canonical persona dictionary.

@@ -221,6 +221,12 @@
       flex-shrink: 0;
       display: flex;
       align-items: center;
+      transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .s-row:hover .s-row-chevron { transform: translateX(2px); }
+    @media (prefers-reduced-motion: reduce) {
+      .s-row-chevron { transition: none; }
+      .s-row:hover .s-row-chevron { transform: none; }
     }
 
     /* iOS toggle 44×26 (compressed from 51×31) */
@@ -488,14 +494,19 @@
       cursor: pointer;
       border: none;
       border-top: 1px solid var(--border);
-      transition: background 140ms ease;
+      transition: background 140ms ease, gap 200ms cubic-bezier(0.22, 1, 0.36, 1);
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 600;
       font-size: 13px;
       color: var(--primary);
       letter-spacing: 0.005em;
+      gap: 4px;
     }
-    .add-link-row:hover { background: var(--primary-soft); }
+    .add-link-row:hover { background: var(--primary-soft); gap: 7px; }
+    @media (prefers-reduced-motion: reduce) {
+      .add-link-row { transition: background 140ms ease; }
+      .add-link-row:hover { gap: 4px; }
+    }
 
     /* Tab-bar — canonical */
     .tabbar {
@@ -940,21 +951,21 @@
             <!-- Section: Кому вы показываете данные -->
             <h3 class="section-h">Кому вы показываете данные</h3>
             <div class="section-card">
-              <button class="s-row" aria-label="Мама — HRV, шаги, fall-alert">
-                <div class="avatar-32" aria-hidden="true">М</div>
+              <button class="s-row" aria-label="Тренер Иван П. — HRV, пульс, шаги, fall-alert, подключено 12.05">
+                <div class="avatar-32" aria-hidden="true">ИП</div>
                 <div class="s-row-text">
-                  <div class="s-row-label">Мама</div>
-                  <div class="s-row-sub">HRV, шаги, fall-alert · с <span class="num">12.05</span></div>
+                  <div class="s-row-label">Тренер Иван П.</div>
+                  <div class="s-row-sub">HRV, пульс, шаги, fall-alert · с <span class="num">12.05</span></div>
                 </div>
                 <div class="s-row-chevron" aria-hidden="true">
                   <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
                 </div>
               </button>
-              <button class="s-row" aria-label="Папа — все метрики">
-                <div class="avatar-32" aria-hidden="true">П</div>
+              <button class="s-row" aria-label="Мама 67 лет — полный доступ ко всем метрикам, подключено 03.06">
+                <div class="avatar-32" aria-hidden="true" style="font-size:10px; letter-spacing:-0.02em;">М67</div>
                 <div class="s-row-text">
-                  <div class="s-row-label">Папа</div>
-                  <div class="s-row-sub">все метрики · с <span class="num">03.06</span></div>
+                  <div class="s-row-label">Мама 67 лет</div>
+                  <div class="s-row-sub">ВСЁ · с <span class="num">03.06</span></div>
                 </div>
                 <div class="s-row-chevron" aria-hidden="true">
                   <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 L12 9 L7 14"/></svg>
