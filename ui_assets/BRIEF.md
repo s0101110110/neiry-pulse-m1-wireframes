@@ -229,3 +229,56 @@ Skills уже были applied предыдущим агентом до моей
 - ✓ Tab-bar (Ещё active wine)
 
 **Не коммитил** — ждать acceptance PM.
+
+---
+
+## РЕЗУЛЬТАТ — HS persona sync 07a + 07e (round 3, 2026-06-17 follow-up)
+
+**Контекст (от PM):** canonical persona (Папа observer / Мама 67 лет receiver) ещё не была применена к `mobile-health-sharing-v0.html` frame 0 + frame 4. Нужен sync двух transparent PNG.
+
+**Правки HTML в `docs_web/wireframes/m3/mobile-health-sharing-v0.html`:**
+
+**Frame 0 (HS Main, lines 755-792):**
+- Section «Я ДЕЛЮСЬ ДАННЫМИ С» — добавлен 2-й `.person-row` ПОД Тренером: avatar «М67» (default wine palette, не warning), name «Мама 67 лет» (Space Grotesk 600/14pt), mono «С 12.05.2026 · 36 дней», success-green dot, chevron. Aria-label «Мама 67 лет, получает данные».
+- Section «Я ВИЖУ ДАННЫЕ» — заменена «МА / Мама · 67 лет» на «П / Папа». Сохранены: `avatar-warning` palette (warning-soft bg + warning-strong text), warning triangle SVG inline с именем, HRV 38 ms ↓ −5%, 12:42 timestamp, alert-orange dot, chevron. Aria-label «Папа, alert HRV».
+
+**Frame 4 (HS Detail-view, lines 1148-1151):**
+- App-bar: avatar `avatar-sm avatar-warning` «МА» → **«П»**; name «Мама · 67 лет» → **«Папа»**. Остальное (HRV card, alert banner, 3-col stats, 7-day chart, уведомления log с «Возможное падение 12:42 RESOLVED», Разрешения, Tab-bar) — не тронуто.
+- Frame caption (комментарий + h-метка) синхронизирован «Мама alert» → «Папа alert».
+
+**Skills:**
+- Запущен `Skill impeccable args:"critique …"` — setup reported NO_PRODUCT_MD (skip init per BRIEF), critique выполнен manually против impeccable rules (color contrast, typography, hierarchy, AI-slop test, avatar consistency).
+- **Findings:** 0× P0, 0× P1, 1× P2 (observation only). Visual hierarchy «Я делюсь» 2-row balance — PASS. Contrast ≥4.5:1 на body text — PASS. «П» avatar в alert context использует `avatar-warning` palette (warm peach `#fdf3e1` + burnt-orange text `#b45309`), НЕ wine — это правильно и harmonizes с alert-orange dot + HRV warning text. Persona consistency с A4 «Папа упал» — alert-tier (deteriotation), не destructive-red — `Возможное падение RESOLVED` подтверждает recovery-watch state, consistent.
+
+**PNG регенерированы (overwrite, transparent RGBA):**
+- `sliced-flow-v2-1-transparent-2026-06-14/07a-hs-main.png` — 56 584 bytes, 460×920
+- `sliced-flow-v2-1-transparent-2026-06-14/07e-hs-detail.png` — 61 439 bytes, 460×920
+
+Использован headless Chrome rendering через `/tmp/regen-hs-07a-07e.py` (production logic из `skills/scripts/slice_phones_transparent.py`, только Frame 0 + Frame 4 индексы 0 и 4 из `frame-wrap` блоков).
+
+**Self-review (через Read PNG):**
+
+*07a-hs-main.png:*
+- ✓ Status bar 9:41 + signal/wifi/battery
+- ✓ App-bar: back + «Health Sharing» bold + info-icon
+- ✓ Hint card «Делитесь HRV-данными с тренером, опекуном или близкими — безопасно через QR-код»
+- ✓ CTA wine «+ Добавить человека»
+- ✓ Section «Я ДЕЛЮСЬ ДАННЫМИ С»: **2 rows visible** — ИП «Тренер Иван П. / С 03.06.2026 · 12 дней» + М67 «Мама 67 лет / С 12.05.2026 · 36 дней», обе с success-green dots
+- ✓ Section «Я ВИЖУ ДАННЫЕ»: П «Папа ⚠ / HRV 38 ms · ↓ −5% сегодня / 12:42 последние данные» + alert-orange dot
+- ✓ Disclaimer «Доступ к данным можно отозвать в любой момент»
+- ✓ Tab-bar (HS active wine)
+
+*07e-hs-detail.png:*
+- ✓ Status bar 9:41
+- ✓ App-bar: back + **П «Папа»** + dots-menu
+- ✓ HRV сейчас 38 ms (alert-orange) · «Сейчас активна» chip-success · ↓ −5% к вчера · ↓ −12% к неделе
+- ✓ Alert banner ⚠ «Состояние ухудшилось — рекомендуем связаться»
+- ✓ 3-col stats: ПУЛЬС 78 / ШАГИ 3,420 / АКТИВНОСТЬ 12:42
+- ✓ HRV · 7 дней sparkline (warning-orange tint, тренд ↓, средний 41 ms, ↓ −8%)
+- ✓ Уведомления log: 12:42 Возможное падение RESOLVED / 09:15 Утренняя активность — 1,200 шагов / 03:30 Пик стресса HRV — ночь
+- ✓ РАЗРЕШЕНИЯ section peek снизу (Sleep / Уведомления о падении toggle)
+- ✓ Tab-bar (HS active wine)
+
+**Persona consistency confirmed:** Костя (КЛ) — sharer to Тренер ИП + Мама 67 (М67); observer of Папа (П). Папа alert state в HS consistent с A4 «Папа упал» story (recovery-watch tier, не critical-red).
+
+**Не коммитил** — ждать acceptance PM.
