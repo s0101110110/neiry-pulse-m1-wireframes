@@ -73,6 +73,7 @@ wireframes/m1/
 ## Knowledge Base
 - Живой снимок проекта: `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/knowledge-base/PROJECT_STATE.md`
 - Текущие задания: `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/BRIEF.md`
+- Конкурентные референсы UI: `/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/knowledge-base/competitive-design/` — Whoop, Bevel и другие. Читать при задачах «как делают конкуренты Recovery-кольцо / биомаркер-карточку / стресс-индекс». **Не копировать**, только сверяться. Источник истины — `docs_web/DESIGN.md` + `wireframes/m2/ui-kit.html`.
 
 ## Session Start
 1. Прочитать `BRIEF.md` — есть ли задание от PM?
