@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
   <style>
@@ -41,7 +41,7 @@
     html, body {
       background: var(--background);
       color: var(--foreground);
-      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
       margin: 0;
     }
@@ -51,7 +51,7 @@
       font-feature-settings: 'tnum' 1;
     }
     .mono {
-      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
       font-variant-numeric: tabular-nums;
       font-feature-settings: 'tnum' 1;
     }
@@ -91,7 +91,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 15px;
       color: var(--foreground);
@@ -127,7 +127,7 @@
     }
     .app-bar-title {
       text-align: center;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 16px;
       letter-spacing: -0.01em;
@@ -166,7 +166,7 @@
     }
     .body-scroll::-webkit-scrollbar { display: none; }
 
-    /* ============= DEMO-MODE BANNER (sticky-under-app-bar) ============= */
+    /* ============= ДЕМО-MODE BANNER (sticky-under-app-bar) ============= */
     .demo-banner {
       background: var(--warning-soft);
       border-bottom: 1px solid var(--warning-border);
@@ -186,7 +186,7 @@
       justify-content: center;
     }
     .demo-banner-text {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-size: 11.5px;
       line-height: 1.35;
       color: var(--muted-foreground-strong);
@@ -207,7 +207,7 @@
       background: var(--card);
     }
     .sleep-eyebrow {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.14em;
@@ -215,11 +215,11 @@
       color: var(--primary);
     }
     .sleep-hero-num {
-      font-family: 'Onest', sans-serif;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
       font-weight: 700;
       font-size: 56px;
       line-height: 1;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.04em;
       color: var(--foreground);
       font-variant-numeric: tabular-nums;
       font-feature-settings: 'tnum' 1;
@@ -232,20 +232,20 @@
       color: var(--primary-foreground);
       padding: 4px 11px;
       border-radius: 999px;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 12px;
       letter-spacing: 0.005em;
     }
     .quality-pill .num {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-weight: 700;
     }
     .sleep-delta {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 0.02em;
@@ -266,7 +266,7 @@
       padding: 12px 14px 12px 14px;
     }
     .section-title {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.14em;
@@ -288,7 +288,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9.5px;
       font-weight: 600;
       letter-spacing: 0.04em;
@@ -325,7 +325,7 @@
     .legend-dot.light { background: var(--wine-soft); }
     .legend-dot.deep { background: var(--wine-deep); }
     .legend-name {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9.5px;
       font-weight: 500;
       letter-spacing: 0.08em;
@@ -333,7 +333,7 @@
       color: var(--muted-foreground);
     }
     .legend-val {
-      font-family: 'Onest', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 14px;
       line-height: 1.1;
@@ -342,7 +342,7 @@
       font-variant-numeric: tabular-nums;
     }
     .legend-pct {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9.5px;
       color: var(--muted-foreground);
       letter-spacing: 0.02em;
@@ -370,7 +370,7 @@
     }
     .chart-y-label,
     .chart-x-label {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       fill: var(--muted-foreground);
       letter-spacing: 0.04em;
@@ -413,7 +413,7 @@
     }
     .insight-body { flex: 1; min-width: 0; }
     .insight-title {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 14px;
       color: var(--foreground);
@@ -421,7 +421,7 @@
     }
     .insight-sub {
       margin-top: 3px;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-size: 12.5px;
       line-height: 1.4;
       color: var(--muted-foreground);
@@ -438,7 +438,7 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 13px;
       color: var(--primary);
@@ -469,10 +469,10 @@
       gap: 4px;
       padding: 4px 0;
       color: var(--muted-foreground);
-      font-family: 'Geist Mono', monospace;
+      font-family: 'Golos Text', sans-serif;
       font-size: 10px;
       font-weight: 500;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.02em;
       background: none;
       border: none;
       cursor: pointer;
@@ -532,7 +532,7 @@
     }
     .sheet-close:hover { background: #e8e2d4; }
     .sheet-eyebrow {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.14em;
@@ -541,7 +541,7 @@
       margin-bottom: 4px;
     }
     .sheet-title {
-      font-family: 'Onest', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 22px;
       letter-spacing: -0.02em;
@@ -555,7 +555,7 @@
       margin-bottom: 12px;
     }
     .sheet-body p {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-size: 13px;
       line-height: 1.5;
       color: var(--foreground);
@@ -566,7 +566,7 @@
       color: var(--primary);
     }
     .sheet-bullets-h {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.12em;
@@ -586,7 +586,7 @@
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-size: 12.5px;
       line-height: 1.4;
       color: var(--foreground);
@@ -609,7 +609,7 @@
     .sheet-disclaimer {
       padding-top: 10px;
       border-top: 1px solid var(--border);
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-size: 11.5px;
       line-height: 1.45;
       color: var(--muted-foreground);
@@ -625,7 +625,7 @@
       border-radius: 12px;
       background: var(--primary);
       color: var(--primary-foreground);
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 15px;
       border: none;
@@ -649,7 +649,7 @@
       gap: 16px;
     }
     .page-title {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 14px;
       color: var(--muted-foreground);
@@ -671,7 +671,7 @@
       gap: 14px;
     }
     .frame-caption {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.1em;
@@ -808,7 +808,7 @@
                 <span class="mono" style="font-size:10px;color:var(--muted-foreground);letter-spacing:0.04em;">часов</span>
               </div>
               <div class="chart-svg-wrap">
-                <!-- Plot area: x=22..344 (width 322), y=4..76 (height 72, for 4..10 hours range; bars from baseline y=76 up)
+                <!-- Plot area: x=22..344 (width 322), y=4..76 (height 72, for 4..10 hours range; bars from личная норма y=76 up)
                      7 bars centered at x = 28, 74, 120, 166, 212, 258, 304 (gap 46, width 24, half=12).
                      Y mapping: 4h -> y=76, 10h -> y=4, scale 12 per hour.
                      Values: Пн 6.5h, Вт 5.8h, Ср 7.2h, Чт 6.0h, Пт 5.3h, Сб 7.5h, Вс 6.7h (today, ~6h42m).

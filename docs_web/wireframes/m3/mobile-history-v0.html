@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
   <style>
@@ -43,20 +43,20 @@
     html, body {
       background: var(--background);
       color: var(--foreground);
-      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
 
     .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
     .mono {
-      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
       font-variant-numeric: tabular-nums;
       font-feature-settings: 'tnum' 1;
     }
     .hero-num {
-      font-family: 'Onest', sans-serif;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
       font-weight: 700;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.04em;
       font-variant-numeric: tabular-nums;
     }
 
@@ -95,7 +95,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 15px;
       color: var(--foreground);
@@ -112,7 +112,7 @@
       background: var(--card);
     }
     .app-title {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 17px;
       letter-spacing: -0.01em;
@@ -124,7 +124,7 @@
       padding: 5px 10px;
       border-radius: 8px;
       background: var(--muted);
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.1em;
@@ -174,7 +174,7 @@
       outline-offset: 2px;
     }
     .month-switcher .name {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 17px;
       letter-spacing: -0.01em;
@@ -189,7 +189,7 @@
       gap: 4px;
     }
     .cal-dow {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       font-weight: 600;
       color: var(--muted-foreground);
@@ -205,7 +205,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 600;
       color: var(--foreground);
@@ -251,7 +251,7 @@
       justify-content: center;
       gap: 8px;
       padding: 14px 0 8px 0;
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       font-weight: 500;
       letter-spacing: 0.1em;
@@ -280,22 +280,22 @@
       margin-bottom: 10px;
     }
     .detail-date {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 13px;
       letter-spacing: -0.01em;
     }
     .detail-date .badge-today {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'Golos Text', sans-serif;
       font-size: 9px;
       font-weight: 600;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       color: var(--primary);
       margin-left: 6px;
     }
     .detail-link {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.08em;
@@ -321,12 +321,12 @@
       border-bottom: 1px solid var(--border);
     }
     .detail-hero-row .type {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 14px;
     }
     .detail-hero-row .dist {
-      font-family: 'Onest', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 22px;
       letter-spacing: -0.02em;
@@ -335,14 +335,14 @@
       margin-left: auto;
     }
     .detail-hero-row .dist .unit {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       font-weight: 500;
       color: var(--muted-foreground);
       margin-left: 2px;
     }
     .detail-hero-row .duration {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       color: var(--muted-foreground);
     }
@@ -359,7 +359,7 @@
       gap: 2px;
     }
     .detail-stat .l {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       font-weight: 500;
       letter-spacing: 0.1em;
@@ -367,7 +367,7 @@
       color: var(--muted-foreground);
     }
     .detail-stat .v {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 14px;
       font-weight: 700;
       font-variant-numeric: tabular-nums;
@@ -397,10 +397,10 @@
       gap: 4px;
       padding: 4px 0;
       color: var(--muted-foreground);
-      font-family: 'Geist Mono', monospace;
+      font-family: 'Golos Text', sans-serif;
       font-size: 10px;
       font-weight: 500;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.02em;
       background: none;
       border: none;
       cursor: pointer;
@@ -424,7 +424,7 @@
       gap: 16px;
     }
     .page-title {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 14px;
       color: var(--muted-foreground);

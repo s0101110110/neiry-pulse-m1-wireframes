@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
   <style>
@@ -42,21 +42,21 @@
     html, body {
       background: var(--background);
       color: var(--foreground);
-      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
       margin: 0;
     }
 
     .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
     .hero-num {
-      font-family: 'Onest', sans-serif;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
       font-weight: 700;
       letter-spacing: -0.04em;
       font-variant-numeric: tabular-nums;
       line-height: 1;
     }
     .mono {
-      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
       font-variant-numeric: tabular-nums;
       font-feature-settings: 'tnum' 1;
     }
@@ -97,7 +97,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 15px;
       color: var(--foreground);
@@ -132,7 +132,7 @@
       50% { opacity: 0.45; transform: scale(0.85); }
     }
     .session-label {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 0.06em;
@@ -140,7 +140,7 @@
       color: var(--foreground);
     }
     .session-timer {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 15px;
       font-weight: 700;
       letter-spacing: -0.01em;
@@ -154,7 +154,7 @@
       border-radius: 10px;
       background: var(--destructive);
       color: #fff;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 13px;
       letter-spacing: 0.08em;
@@ -178,7 +178,7 @@
       background: var(--paused-bg);
       color: #fff;
       border-radius: 999px;
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -220,7 +220,7 @@
       border-radius: 4px;
     }
     .page-label {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.12em;
@@ -261,7 +261,7 @@
       transition: background 200ms ease;
     }
     .zone-cell .z-lbl {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       font-weight: 600;
       letter-spacing: 0.08em;
@@ -269,7 +269,7 @@
       color: var(--muted-foreground);
     }
     .zone-cell .z-pct {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
       font-weight: 700;
       color: var(--foreground);
@@ -289,7 +289,7 @@
     .zone-cell.muted-active .z-pct { color: #fff; }
 
     .eyebrow {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.12em;
@@ -315,7 +315,7 @@
       padding: 12px 0;
     }
     .p1-hr-num {
-      font-family: 'Onest', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 112px;
       line-height: 1;
@@ -336,7 +336,7 @@
       36% { transform: scale(1); }
     }
     .p1-hr-unit {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 17px;
       font-weight: 500;
       color: var(--muted-foreground);
@@ -347,7 +347,7 @@
       padding: 5px 14px;
       background: var(--primary);
       color: #fff;
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.1em;
@@ -373,7 +373,7 @@
       gap: 4px;
     }
     .p1-meta-cell .v {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 20px;
       font-weight: 700;
       color: var(--foreground);
@@ -382,7 +382,7 @@
     }
     .p1-meta-cell .v.is-frozen { color: var(--border-strong); }
     .p1-meta-cell .l {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       font-weight: 500;
       letter-spacing: 0.1em;
@@ -425,7 +425,7 @@
       to { opacity: 1; transform: scale(1); }
     }
     .modal-eyebrow {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.14em;
@@ -434,7 +434,7 @@
       margin-bottom: 4px;
     }
     .modal-title {
-      font-family: 'Onest', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 22px;
       line-height: 1.18;
@@ -443,7 +443,7 @@
       margin: 0 0 8px 0;
     }
     .modal-sub {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 400;
       font-size: 14px;
       line-height: 1.5;
@@ -452,7 +452,7 @@
       margin: 0;
     }
     .modal-sub .stat {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-weight: 700;
       color: var(--foreground);
       opacity: 1;
@@ -475,7 +475,7 @@
       gap: 3px;
     }
     .modal-stat-cell .v {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 17px;
       font-weight: 700;
       color: var(--foreground);
@@ -483,7 +483,7 @@
       font-variant-numeric: tabular-nums;
     }
     .modal-stat-cell .l {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       font-weight: 500;
       letter-spacing: 0.1em;
@@ -506,7 +506,7 @@
       border-radius: 12px;
       background: var(--destructive);
       color: #fff;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 15px;
       letter-spacing: 0.02em;
@@ -525,7 +525,7 @@
       width: 100%;
       background: transparent;
       color: var(--primary);
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 14px;
       letter-spacing: 0.01em;
@@ -543,7 +543,7 @@
       width: 100%;
       background: transparent;
       color: var(--destructive);
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 14px;
       letter-spacing: 0.01em;
@@ -599,7 +599,7 @@
       margin-top: 4px;
     }
     .pause-eyebrow {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10.5px;
       font-weight: 600;
       letter-spacing: 0.14em;
@@ -608,7 +608,7 @@
       text-align: center;
     }
     .pause-title {
-      font-family: 'Onest', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 20px;
       line-height: 1.18;
@@ -618,7 +618,7 @@
       text-align: center;
     }
     .pause-sub {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 400;
       font-size: 14px;
       line-height: 1.5;
@@ -641,7 +641,7 @@
       border-radius: 14px;
       background: var(--primary);
       color: #fff;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 15px;
       letter-spacing: 0.02em;
@@ -689,7 +689,7 @@
       flex-shrink: 0;
     }
     .gps-banner-eyebrow {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10.5px;
       font-weight: 600;
       letter-spacing: 0.12em;
@@ -711,7 +711,7 @@
       50% { opacity: 0.4; transform: scale(0.78); }
     }
     .gps-banner-title {
-      font-family: 'Onest', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 15px;
       line-height: 1.22;
@@ -720,7 +720,7 @@
       margin: 0 0 4px 0;
     }
     .gps-banner-sub {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 400;
       font-size: 13px;
       line-height: 1.42;
@@ -775,7 +775,7 @@
       background: rgba(255,255,255,0.92);
       padding: 4px 10px;
       border-radius: 6px;
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 600;
       color: var(--muted-foreground);
@@ -799,7 +799,7 @@
       gap: 3px;
     }
     .p2-stat .v {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.01em;
@@ -807,7 +807,7 @@
     }
     .p2-stat .v.is-frozen { color: var(--border-strong); }
     .p2-stat .v-paused-tag {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 8.5px;
       font-weight: 700;
       letter-spacing: 0.14em;
@@ -819,7 +819,7 @@
       vertical-align: middle;
     }
     .p2-stat .l {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       font-weight: 500;
       letter-spacing: 0.1em;
@@ -842,7 +842,7 @@
       background: #fff;
       padding: 4px 8px;
       border-radius: 6px;
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       font-weight: 700;
       color: var(--warning-strong);
@@ -875,7 +875,7 @@
       background: var(--background);
     }
     .page-title {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 14px;
       color: var(--muted-foreground);
@@ -884,7 +884,7 @@
     }
     .page-title .pill {
       display: inline-block;
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.08em;
@@ -909,7 +909,7 @@
       align-items: center;
     }
     .frame-caption {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -973,7 +973,7 @@
               <span class="session-label">Бег</span>
               <span class="session-timer" aria-label="Длительность 12 минут 43 секунды">00:12:43</span>
             </div>
-            <button class="btn-stop" aria-label="Остановить тренировку">STOP</button>
+            <button class="btn-stop" aria-label="Остановить тренировку">СТОП</button>
           </div>
 
           <!-- Pagination dots (page 1 active) -->
@@ -1074,16 +1074,16 @@
             </div>
           </div>
 
-          <!-- App bar with PAUSED pill -->
+          <!-- App bar with ПАУЗА pill -->
           <div class="app-bar-active">
             <div class="left">
               <span class="paused-pill" aria-label="Тренировка Бег на паузе, время заморожено на 12 минутах 43 секундах">
                 <span class="dot" aria-hidden="true"></span>
-                БЕГ · PAUSED
+                БЕГ · ПАУЗА
                 <span class="timer-num">12:43</span>
               </span>
             </div>
-            <button class="btn-stop" aria-label="Остановить тренировку">STOP</button>
+            <button class="btn-stop" aria-label="Остановить тренировку">СТОП</button>
           </div>
 
           <!-- Pagination dots -->
@@ -1179,7 +1179,7 @@
               <span class="session-label">Бег</span>
               <span class="session-timer">00:12:48</span>
             </div>
-            <button class="btn-stop" aria-label="Остановить тренировку">STOP</button>
+            <button class="btn-stop" aria-label="Остановить тренировку">СТОП</button>
           </div>
 
           <!-- ===== GPS Lost banner (sticky under app-bar) ===== -->
@@ -1232,7 +1232,7 @@
                 <g transform="translate(290, 78)">
                   <rect x="-58" y="-16" width="116" height="22" rx="6" fill="#ffffff"/>
                   <text x="0" y="-2" text-anchor="middle"
-                        font-family="Geist Mono, monospace"
+                        font-family="JetBrains Mono, monospace"
                         font-size="10"
                         font-weight="700"
                         letter-spacing="1"
@@ -1246,10 +1246,10 @@
               <div class="p2-scale">200 м</div>
             </div>
 
-            <!-- Bottom strip: km PAUSED tag + pace muted + HR live -->
+            <!-- Bottom strip: km ПАУЗА tag + pace muted + HR live -->
             <div class="p2-bottom-strip">
               <div class="p2-stat">
-                <span class="v is-frozen">2.34<span class="v-paused-tag">PAUSED</span></span>
+                <span class="v is-frozen">2.34<span class="v-paused-tag">ПАУЗА</span></span>
                 <span class="l">км</span>
               </div>
               <span class="p2-stat-sep" aria-hidden="true"></span>

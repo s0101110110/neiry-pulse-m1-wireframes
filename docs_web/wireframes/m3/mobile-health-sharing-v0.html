@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pulse · Health Sharing · E2E 5 screens · v0</title>
+  <title>Pulse · Здоровье · E2E 5 screens · v0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
   <style>
@@ -38,7 +38,7 @@
     html, body {
       background: var(--background);
       color: var(--foreground);
-      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -47,15 +47,15 @@
       font-feature-settings: 'tnum' 1;
     }
     .hero-num {
-      font-family: 'Onest', sans-serif;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
       font-weight: 700;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.04em;
       font-variant-numeric: tabular-nums;
       font-feature-settings: 'tnum' 1;
       line-height: 1;
     }
     .mono {
-      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
       font-variant-numeric: tabular-nums;
       font-feature-settings: 'tnum' 1;
     }
@@ -96,7 +96,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 15px;
       color: var(--foreground);
@@ -150,7 +150,7 @@
     .chip-success {
       background: var(--success-soft);
       color: #4d7c0f;
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
       font-size: 10px;
       letter-spacing: 0.04em;
@@ -164,7 +164,7 @@
     .chip-warning {
       background: var(--warning-soft);
       color: var(--warning-strong);
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
       font-size: 10px;
       letter-spacing: 0.04em;
@@ -176,7 +176,7 @@
     }
 
     .eyebrow {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.12em;
@@ -187,7 +187,7 @@
     .btn {
       height: 48px;
       border-radius: 12px;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 15px;
       display: flex;
@@ -242,10 +242,10 @@
       gap: 4px;
       padding: 4px 0;
       color: var(--muted-foreground);
-      font-family: 'Geist Mono', monospace;
+      font-family: 'Golos Text', sans-serif;
       font-size: 10px;
       font-weight: 500;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.02em;
       background: none;
       border: none;
       cursor: pointer;
@@ -264,7 +264,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 13px;
       letter-spacing: 0.02em;
@@ -332,7 +332,7 @@
       padding: 32px 24px 64px 24px;
     }
     .page-title {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 14px;
       color: var(--muted-foreground);
@@ -341,7 +341,7 @@
       margin-bottom: 4px;
     }
     .page-sub {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       color: var(--muted-foreground);
       letter-spacing: 0.06em;
@@ -368,7 +368,7 @@
       flex-shrink: 0;
     }
     .frame-caption {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.14em;
@@ -569,7 +569,7 @@
       border: 1px solid #f5d9a8;
       border-radius: 10px;
       color: var(--warning-strong);
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 13px;
       letter-spacing: 0.01em;
@@ -584,7 +584,7 @@
       min-height: 64px;
     }
     .metric-label {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       font-weight: 500;
       letter-spacing: 0.08em;
@@ -593,7 +593,7 @@
       margin-bottom: 4px;
     }
     .metric-val {
-      font-family: 'Onest', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 18px;
       letter-spacing: -0.01em;
@@ -602,7 +602,7 @@
       line-height: 1.1;
     }
     .metric-sub {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       color: var(--muted-foreground);
       margin-top: 2px;
@@ -624,7 +624,7 @@
 
     /* Section header */
     .sect-h {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.14em;
@@ -661,7 +661,7 @@
       background: var(--primary-soft);
       color: var(--primary);
       border-radius: 999px;
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.04em;
@@ -671,7 +671,7 @@
     /* Manual call destructive link */
     .text-destructive {
       color: var(--destructive);
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 14px;
       letter-spacing: 0.01em;
@@ -697,7 +697,7 @@
 </head>
 <body>
   <main class="page-chrome">
-    <div class="page-title">Pulse · Health Sharing v0 · E2E 5 screens · 390×844</div>
+    <div class="page-title">Pulse · Здоровье v0 · E2E 5 screens · 390×844</div>
     <div class="page-sub">M3 v2.6 · AC-1.10 · 2026-06-13</div>
 
     <div class="frames-strip">
@@ -708,7 +708,7 @@
       <div class="frame-wrap">
         <div class="frame-caption"><strong>ЭКРАН 1</strong>MAIN · список людей</div>
 
-        <section class="device-frame" aria-label="Health Sharing — Main">
+        <section class="device-frame" aria-label="Здоровье — Main">
           <div class="device-notch" aria-hidden="true"></div>
 
           <!-- Status bar -->
@@ -726,7 +726,7 @@
             <button aria-label="Назад" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l-6 6 6 6"/></svg>
             </button>
-            <span style="font-family:'Space Grotesk'; font-weight:700; font-size:17px; letter-spacing:-0.01em;">Health Sharing</span>
+            <span style="font-family:'Golos Text'; font-weight:700; font-size:17px; letter-spacing:-0.01em;">Здоровье</span>
             <button aria-label="Что это" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M10 6v.01M10 9.5v4.5"/></svg>
             </button>
@@ -736,7 +736,7 @@
           <div class="feed">
             <!-- Hero hint -->
             <div class="hint-card mb-3">
-              <p style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; line-height:1.45; color:#5a1f3e;">
+              <p style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.45; color:#5a1f3e;">
                 Делитесь HRV-данными с тренером, опекуном или близкими — безопасно через QR-код.
               </p>
             </div>
@@ -757,7 +757,7 @@
             <div class="person-row" aria-label="Иван П., тренер">
               <div class="avatar">ИП</div>
               <div class="flex-1 min-w-0">
-                <div style="font-family:'Space Grotesk'; font-weight:600; font-size:14px; color:var(--foreground);">Тренер Иван П.</div>
+                <div style="font-family:'Golos Text'; font-weight:600; font-size:14px; color:var(--foreground);">Тренер Иван П.</div>
                 <div class="mono" style="font-size:10px; color:var(--muted-foreground); margin-top:2px;">С 03.06.2026 · 12 дней</div>
               </div>
               <div class="flex items-center gap-3">
@@ -768,7 +768,7 @@
             <div class="person-row" aria-label="Мама 67 лет, получает данные">
               <div class="avatar">М67</div>
               <div class="flex-1 min-w-0">
-                <div style="font-family:'Space Grotesk'; font-weight:600; font-size:14px; color:var(--foreground);">Мама 67 лет</div>
+                <div style="font-family:'Golos Text'; font-weight:600; font-size:14px; color:var(--foreground);">Мама 67 лет</div>
                 <div class="mono" style="font-size:10px; color:var(--muted-foreground); margin-top:2px;">С 12.05.2026 · 36 дней</div>
               </div>
               <div class="flex items-center gap-3">
@@ -783,7 +783,7 @@
               <div class="avatar avatar-warning">П</div>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
-                  <span style="font-family:'Space Grotesk'; font-weight:600; font-size:14px; color:var(--foreground);">Папа</span>
+                  <span style="font-family:'Golos Text'; font-weight:600; font-size:14px; color:var(--foreground);">Папа</span>
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#d97706" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M8 1.5 L14.5 13 L1.5 13 Z"/>
                     <path d="M8 6 V9"/>
@@ -807,7 +807,7 @@
             </p>
           </div>
 
-          <!-- Tab-bar — unified format (Revision 1: HS added, retroactive) — Health Sharing active -->
+          <!-- Tab-bar — unified format (Revision 1: HS added, retroactive) — Здоровье active -->
           <nav class="tabbar" aria-label="Главная навигация">
             <button class="tab" aria-label="Главная">
               <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
@@ -839,7 +839,7 @@
       <div class="frame-wrap">
         <div class="frame-caption"><strong>ЭКРАН 2</strong>GENERATE QR · юзер A</div>
 
-        <section class="device-frame" aria-label="Health Sharing — Generate QR">
+        <section class="device-frame" aria-label="Здоровье — Generate QR">
           <div class="device-notch" aria-hidden="true"></div>
 
           <div class="status-bar" aria-hidden="true">
@@ -855,14 +855,14 @@
             <button aria-label="Назад" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l-6 6 6 6"/></svg>
             </button>
-            <span style="font-family:'Space Grotesk'; font-weight:700; font-size:17px; letter-spacing:-0.01em;">Поделиться данными</span>
+            <span style="font-family:'Golos Text'; font-weight:700; font-size:17px; letter-spacing:-0.01em;">Поделиться данными</span>
             <span class="w-9 h-9" aria-hidden="true"></span>
           </div>
 
           <div class="feed">
             <!-- Hero -->
             <div class="text-center mt-2 mb-4">
-              <h2 style="font-family:'Space Grotesk'; font-weight:600; font-size:20px; letter-spacing:-0.01em; line-height:1.25; color:var(--foreground);">
+              <h2 style="font-family:'Golos Text'; font-weight:600; font-size:20px; letter-spacing:-0.01em; line-height:1.25; color:var(--foreground);">
                 Покажите этот QR-код
               </h2>
               <p style="font-size:14px; line-height:1.4; color:var(--muted-foreground); margin:6px 16px 0 16px;">
@@ -924,7 +924,7 @@
 
             <!-- Permission section -->
             <div class="card mt-4 mb-3" style="padding:14px 16px;">
-              <div style="font-family:'Space Grotesk'; font-weight:600; font-size:13px; color:var(--foreground); margin-bottom:6px;">Что они увидят</div>
+              <div style="font-family:'Golos Text'; font-weight:600; font-size:13px; color:var(--foreground); margin-bottom:6px;">Что они увидят</div>
               <div class="perm-row">
                 <span class="check-pill" aria-hidden="true">
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2 L5 8.5 L9.5 3.5"/></svg>
@@ -961,7 +961,7 @@
             </p>
           </div>
 
-          <!-- Tab-bar — unified format (Revision 1: HS added, retroactive) — Health Sharing active -->
+          <!-- Tab-bar — unified format (Revision 1: HS added, retroactive) — Здоровье active -->
           <nav class="tabbar" aria-label="Главная навигация">
             <button class="tab" aria-label="Главная">
               <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
@@ -993,7 +993,7 @@
       <div class="frame-wrap">
         <div class="frame-caption"><strong>ЭКРАН 3</strong>SCAN QR · юзер B</div>
 
-        <section class="device-frame" aria-label="Health Sharing — Scan QR" style="background:#0a0a0d;">
+        <section class="device-frame" aria-label="Здоровье — Scan QR" style="background:#0a0a0d;">
           <div class="device-notch" aria-hidden="true" style="z-index:30;"></div>
 
           <!-- Camera view (background) -->
@@ -1023,7 +1023,7 @@
             <button aria-label="Закрыть" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5l10 10M15 5l-10 10"/></svg>
             </button>
-            <span style="font-family:'Space Grotesk'; font-weight:600; font-size:17px; color:#ffffff;">Сканировать QR</span>
+            <span style="font-family:'Golos Text'; font-weight:600; font-size:17px; color:#ffffff;">Сканировать QR</span>
             <button aria-label="Помощь" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M10 6v.01M10 9.5v4.5"/></svg>
             </button>
@@ -1040,7 +1040,7 @@
 
           <!-- Hint text -->
           <div style="position:absolute; left:0; right:0; top:60%; text-align:center; z-index:5;">
-            <p style="font-family:'Space Grotesk'; font-weight:500; font-size:15px; color:#ffffff; letter-spacing:0.01em;">
+            <p style="font-family:'Golos Text'; font-weight:500; font-size:15px; color:#ffffff; letter-spacing:0.01em;">
               Наведите камеру на QR-код
             </p>
             <p class="mono" style="font-size:10px; color:rgba(255,255,255,0.6); letter-spacing:0.08em; margin-top:6px;">
@@ -1056,7 +1056,7 @@
                   <path d="M10 2v3M10 15v3M3.5 10h-1.5M17.5 10h-1.5M5.3 5.3 L4.2 4.2M14.7 14.7 L15.8 15.8M5.3 14.7 L4.2 15.8M14.7 5.3 L15.8 4.2"/>
                   <circle cx="10" cy="10" r="3.5"/>
                 </svg>
-                <span style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; color:#ffffff;">Фонарик</span>
+                <span style="font-family:'Golos Text'; font-weight:500; font-size:14px; color:#ffffff;">Фонарик</span>
               </div>
               <div class="toggle off" aria-label="фонарик выключен"></div>
             </div>
@@ -1070,7 +1070,7 @@
               Загрузить из галереи
             </button>
 
-            <button style="background:none; border:none; color:#ffffff; padding:10px 0; width:100%; font-family:'Space Grotesk'; font-weight:500; font-size:14px; cursor:pointer; opacity:0.85;" aria-label="Ввести код вручную">
+            <button style="background:none; border:none; color:#ffffff; padding:10px 0; width:100%; font-family:'Golos Text'; font-weight:500; font-size:14px; cursor:pointer; opacity:0.85;" aria-label="Ввести код вручную">
               Ввести код вручную
             </button>
           </div>
@@ -1083,7 +1083,7 @@
       <div class="frame-wrap">
         <div class="frame-caption"><strong>ЭКРАН 4</strong>CONNECTION SUCCESS</div>
 
-        <section class="device-frame" aria-label="Health Sharing — Connection Success">
+        <section class="device-frame" aria-label="Здоровье — Connection Success">
           <div class="device-notch" aria-hidden="true"></div>
 
           <div class="status-bar" aria-hidden="true">
@@ -1112,7 +1112,7 @@
                 </svg>
               </div>
               <h1 class="hero-num" style="font-size:32px; margin-top:24px; color:var(--foreground);">Готово!</h1>
-              <p style="font-family:'Space Grotesk'; font-weight:500; font-size:16px; line-height:1.4; color:var(--foreground); margin:8px 16px 0 16px;">
+              <p style="font-family:'Golos Text'; font-weight:500; font-size:16px; line-height:1.4; color:var(--foreground); margin:8px 16px 0 16px;">
                 Вы добавлены к Тренеру Ивану П.
               </p>
               <p style="font-size:13px; line-height:1.45; color:var(--muted-foreground); margin:8px 24px 0 24px;">
@@ -1123,7 +1123,7 @@
             <!-- Avatar showcase -->
             <div class="card-warm card text-center" style="margin:28px 0 24px 0; padding:20px 16px;">
               <div class="avatar avatar-lg" style="margin:0 auto 12px auto;">ИП</div>
-              <div style="font-family:'Space Grotesk'; font-weight:600; font-size:18px; color:var(--foreground);">Иван П.</div>
+              <div style="font-family:'Golos Text'; font-weight:600; font-size:18px; color:var(--foreground);">Иван П.</div>
               <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:4px; letter-spacing:0.04em;">
                 ТРЕНЕР · С 13.06.2026
               </div>
@@ -1134,7 +1134,7 @@
 
             <!-- CTA -->
             <button class="btn btn-primary btn-big" aria-label="Готово">Готово</button>
-            <button style="background:none; border:none; color:var(--primary); padding:14px 0; width:100%; font-family:'Space Grotesk'; font-weight:600; font-size:14px; cursor:pointer;" aria-label="Добавить ещё одного">
+            <button style="background:none; border:none; color:var(--primary); padding:14px 0; width:100%; font-family:'Golos Text'; font-weight:600; font-size:14px; cursor:pointer;" aria-label="Добавить ещё одного">
               Добавить ещё одного человека
             </button>
           </div>
@@ -1147,7 +1147,7 @@
       <div class="frame-wrap">
         <div class="frame-caption"><strong>ЭКРАН 5</strong>DETAIL · Папа · alert</div>
 
-        <section class="device-frame" aria-label="Health Sharing — Detail Person">
+        <section class="device-frame" aria-label="Здоровье — Detail Person">
           <div class="device-notch" aria-hidden="true"></div>
 
           <div class="status-bar" aria-hidden="true">
@@ -1166,7 +1166,7 @@
             </button>
             <div class="flex items-center gap-2">
               <div class="avatar avatar-sm avatar-warning">П</div>
-              <span style="font-family:'Space Grotesk'; font-weight:700; font-size:15px; letter-spacing:-0.01em;">Папа</span>
+              <span style="font-family:'Golos Text'; font-weight:700; font-size:15px; letter-spacing:-0.01em;">Папа</span>
             </div>
             <button aria-label="Меню" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1246,7 +1246,7 @@
 
             <!-- Alerts feed -->
             <article class="card mb-3" style="padding:14px 16px;">
-              <div style="font-family:'Space Grotesk'; font-weight:600; font-size:13px; color:var(--foreground); margin-bottom:8px;">
+              <div style="font-family:'Golos Text'; font-weight:600; font-size:13px; color:var(--foreground); margin-bottom:8px;">
                 Уведомления
               </div>
               <div class="alert-row">
@@ -1277,15 +1277,15 @@
             <div class="sect-h" style="padding-left:4px;">Разрешения</div>
             <article class="card mb-3" style="padding:8px 16px;">
               <div class="flex items-center justify-between" style="padding:10px 0; border-bottom:1px solid var(--border);">
-                <span style="font-size:13px; color:var(--foreground); font-family:'Space Grotesk'; font-weight:500;">HRV-данные</span>
+                <span style="font-size:13px; color:var(--foreground); font-family:'Golos Text'; font-weight:500;">HRV-данные</span>
                 <div class="toggle" aria-label="включено"></div>
               </div>
               <div class="flex items-center justify-between" style="padding:10px 0; border-bottom:1px solid var(--border);">
-                <span style="font-size:13px; color:var(--foreground); font-family:'Space Grotesk'; font-weight:500;">Уведомления о падении</span>
+                <span style="font-size:13px; color:var(--foreground); font-family:'Golos Text'; font-weight:500;">Уведомления о падении</span>
                 <div class="toggle" aria-label="включено"></div>
               </div>
               <div class="flex items-center justify-between" style="padding:10px 0;">
-                <span style="font-size:13px; color:var(--foreground); font-family:'Space Grotesk'; font-weight:500;">Push-уведомления</span>
+                <span style="font-size:13px; color:var(--foreground); font-family:'Golos Text'; font-weight:500;">Push-уведомления</span>
                 <div class="toggle" aria-label="включено"></div>
               </div>
             </article>
@@ -1300,7 +1300,7 @@
             <button class="text-destructive" aria-label="Отозвать доступ">Отозвать доступ</button>
           </div>
 
-          <!-- Tab-bar — unified format (Revision 1: HS added, retroactive) — Health Sharing active -->
+          <!-- Tab-bar — unified format (Revision 1: HS added, retroactive) — Здоровье active -->
           <nav class="tabbar" aria-label="Главная навигация">
             <button class="tab" aria-label="Главная">
               <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>

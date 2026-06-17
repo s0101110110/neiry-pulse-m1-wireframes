@@ -157,7 +157,7 @@
 - [ ] НЕ добавлены customizable cards / drag-handles
 - [ ] Все 4 phone-мокапа рендерятся как HTML с применёнными через cascade Golos + JetBrains Mono
 - [ ] Donor-компоненты помечены `<!-- from Whoop -->` или `<!-- from Bevel -->`
-- [ ] Бренд «Neiry Pulse» в hero
+- [ ] Бренд «Pulse» в hero
 - [ ] Light bg — `#FAFAF7` или `#FFFFFF` (не cream, не warm-cream)
 
 ---

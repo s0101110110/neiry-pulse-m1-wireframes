@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
   <style>
@@ -35,19 +35,19 @@
     html, body {
       background: var(--background);
       color: var(--foreground);
-      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
 
     .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
     .hero-num {
-      font-family: 'Onest', sans-serif;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
       font-weight: 700;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.04em;
       font-variant-numeric: tabular-nums;
     }
     .mono {
-      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
       font-variant-numeric: tabular-nums;
       font-feature-settings: 'tnum' 1;
     }
@@ -87,7 +87,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 15px;
       color: var(--foreground);
@@ -106,7 +106,7 @@
     }
 
     .app-bar-title {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 16px;
       letter-spacing: -0.01em;
@@ -124,7 +124,7 @@
     .step-body::-webkit-scrollbar { display: none; }
 
     .eyebrow {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.12em;
@@ -174,14 +174,14 @@
       color: var(--primary-foreground);
     }
     .activity-name {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 16px;
       letter-spacing: -0.01em;
       margin-top: 12px;
     }
     .activity-hint {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -229,7 +229,7 @@
       border-radius: 16px;
       background: var(--primary);
       color: var(--primary-foreground);
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 700;
       font-size: 22px;
       letter-spacing: 0.04em;
@@ -255,7 +255,7 @@
       background: var(--card);
       color: var(--primary);
       border: 1px dashed var(--primary);
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 14px;
       display: flex;
@@ -310,7 +310,7 @@
       gap: 24px;
     }
     .page-title {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Golos Text', sans-serif;
       font-weight: 600;
       font-size: 14px;
       color: var(--muted-foreground);
@@ -331,7 +331,7 @@
       align-items: center;
     }
     .frame-caption {
-      font-family: 'Geist Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -387,7 +387,7 @@
           <!-- Body -->
           <div class="step-body">
             <div style="padding: 24px 20px 12px 20px;">
-              <h1 style="font-family:'Space Grotesk'; font-weight:700; font-size:28px; line-height:1.1; letter-spacing:-0.02em; text-align:center;">
+              <h1 style="font-family:'Golos Text'; font-weight:700; font-size:28px; line-height:1.1; letter-spacing:-0.02em; text-align:center;">
                 Что тренируем?
               </h1>
               <p style="margin-top:8px; font-size:14px; line-height:1.4; color:var(--muted-foreground); text-align:center;">
@@ -518,7 +518,7 @@
                 </svg>
               </div>
               <div style="flex:1;">
-                <div style="font-family:'Space Grotesk'; font-weight:600; font-size:18px; line-height:1.1; letter-spacing:-0.01em;">Бег</div>
+                <div style="font-family:'Golos Text'; font-weight:600; font-size:18px; line-height:1.1; letter-spacing:-0.01em;">Бег</div>
                 <div class="eyebrow" style="margin-top:2px;">Активность</div>
               </div>
               <button class="icon-btn" aria-label="Изменить тип активности" style="color:var(--muted-foreground);">
@@ -536,7 +536,7 @@
             <div style="background:var(--card); border:1px solid var(--border); border-radius:16px; padding: 4px 16px; margin-top:4px;">
               <div style="padding: 10px 0 6px; display:flex; align-items:center; justify-content:space-between;">
                 <span class="eyebrow">Готовность</span>
-                <span class="mono" style="font-size:10px; color:var(--success); font-weight:600; letter-spacing:0.08em;">READY</span>
+                <span class="mono" style="font-size:10px; color:var(--success); font-weight:600; letter-spacing:0.08em;">ГОТОВО</span>
               </div>
 
               <!-- GPS row -->
@@ -548,7 +548,7 @@
                   </svg>
                 </div>
                 <div style="flex:1; min-width:0;">
-                  <div style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; line-height:1.2;">GPS</div>
+                  <div style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.2;">GPS</div>
                   <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">захвачен · точность 5м</div>
                 </div>
                 <span class="status-dot ok" aria-label="Готово"></span>
@@ -564,13 +564,13 @@
                   </svg>
                 </div>
                 <div style="flex:1; min-width:0;">
-                  <div style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; line-height:1.2;">Браслет</div>
+                  <div style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.2;">Браслет</div>
                   <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">подключён · HR 68</div>
                 </div>
                 <span class="status-dot ok" aria-label="Готово"></span>
               </div>
 
-              <!-- HR baseline row -->
+              <!-- Личная норма HR row -->
               <div class="status-row" style="padding-bottom:14px;">
                 <div class="status-icon" aria-hidden="true">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -578,7 +578,7 @@
                   </svg>
                 </div>
                 <div style="flex:1; min-width:0;">
-                  <div style="font-family:'Space Grotesk'; font-weight:500; font-size:14px; line-height:1.2;">HR baseline</div>
+                  <div style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.2;">Личная норма HR</div>
                   <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">47 ms · сегодня</div>
                 </div>
                 <span class="status-dot ok" aria-label="Готово"></span>
