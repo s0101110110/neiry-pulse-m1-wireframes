@@ -570,3 +570,28 @@ Mechanical check: после ренда proof PNG'ов посчитать виз
 4. **Section «ПРИВАТНОСТЬ»** как новая = single chevron-row (icon shield + label + chevron) — для редких но важных flow (download data / delete account). Не inline.
 
 Mechanical check: на entry-point Settings должны быть ровно 3 типа entries: inline-toggle, hybrid-section (inline + secondary chevron), pure-chevron. Если 4+ типов — UX усложняется, refactor.
+
+## 2026-06-17 — Settings: добавление новой section требует pre-emptive compress audit (cumulative micro-padding wins)
+
+Проблема: при добавлении новой section «ПРИВАТНОСТЬ» в canonical Settings (5 sections итого: Уведомления / HS / Данные и Sleep / Приватность / Прочее) контент overflow'нул 844px viewport. Privacy section была формально в HTML, но визуально не показывалась — обрезана tab-bar'ом. Аналог проблемы C1 Profile edit где compress padding'ом починили похожий overflow.
+
+**Правило для list-heavy entry-point Settings (5+ sections):**
+
+1. **Pre-emptive compress audit ДО добавления новой section.** Считать total content height: app-bar (~48) + status (~44) + sum(section heights) + tab-bar (~88). Если ≥ 844 — compress сначала, потом добавляй section.
+
+2. **Cumulative micro-padding budget** (validated на 5-section Settings 390×844, все 8 acceptance elements visible):
+   - `.toggle-row` / `.entry-row` / `.action-row`: padding `7-8px 12px` (НЕ 12-14px). gap `10px` (НЕ 12px).
+   - `.section`: padding `8px 16px 0` (НЕ 16px top).
+   - `.section-header` margin-bottom: `6px` (НЕ 8-12px).
+   - `.device-card` / `.profile-inline`: padding `8-10px` (НЕ 12-14px). Avatar/icon `32-36px` (НЕ 40px).
+   - `.manage-link`: `8px 12px`. `.destructive-row`: `10px 14px` (если есть).
+   - `.row-sub` / `.device-meta` / `.profile-email` margin-top: `1-2px` (НЕ 4px).
+
+3. **Sections priority ladder** для Settings list — что обязано быть above-fold-no-scroll vs ниже:
+   - **Above viewport (must visible):** App-bar, User card, Anchor card (Braclet), main toggles section (Уведомления), HS section, primary entry-rows (Sleep + Privacy).
+   - **Below viewport (scroll required, OK):** Калибровка / Поддержка / О приложении / destructive Выйти.
+   - Visual scroll-affordance: section «ПРОЧЕЕ» peek снизу tab-bar — даёт намёк что есть ещё контент. Эстетически работает.
+
+4. **Mechanical post-render check:** обязательно открыть proof PNG через Read tool и подтвердить acceptance checklist visible. Если row залезает под tab-bar даже на 4-6px — overflow ещё есть, нужен round 2 compress (snap `padding: 8px → 7px` ещё на 1px на самой длинной group of rows). Это окупается.
+
+5. **Anti-pattern:** добавлять новую section и сразу регенерить PNG без compress audit. На list-heavy экранах с 5+ sections это всегда даёт overflow — micro-paddings × 30+ rows накапливаются в крупные суммы (60-80px). Compress ДО добавления, не после.

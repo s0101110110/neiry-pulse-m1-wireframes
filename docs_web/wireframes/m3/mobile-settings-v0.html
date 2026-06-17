@@ -131,7 +131,7 @@
     /* Profile inline — top white surface, под app-bar */
     .profile-inline {
       background: var(--card);
-      padding: 12px 16px;
+      padding: 8px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -170,7 +170,7 @@
       .manage-link:hover .row-chevron { transform: none; }
     }
     .avatar-40 {
-      width: 40px; height: 40px; border-radius: 50%;
+      width: 36px; height: 36px; border-radius: 50%;
       background: var(--primary);
       color: var(--primary-foreground);
       display: flex; align-items: center; justify-content: center;
@@ -189,16 +189,16 @@
       font-family: 'Geist Mono', monospace;
       font-size: 10px;
       color: var(--muted-foreground);
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     /* Device card — warm bevel surface, 16px margin */
     .device-card {
-      margin: 12px 16px 4px;
+      margin: 8px 16px 0;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 14px;
+      padding: 10px 12px;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -213,7 +213,7 @@
       outline-offset: 2px;
     }
     .device-icon {
-      width: 36px; height: 36px;
+      width: 32px; height: 32px;
       border-radius: 10px;
       background: #fdf2f8; /* wine-tinted, 1:1 с Health Sharing icon в main */
       display: flex; align-items: center; justify-content: center;
@@ -230,7 +230,7 @@
       font-family: 'Geist Mono', monospace;
       font-size: 10px;
       color: var(--muted-foreground);
-      margin-top: 4px;
+      margin-top: 2px;
       letter-spacing: 0.02em;
     }
     .battery-pct {
@@ -243,7 +243,7 @@
     }
 
     /* Section blocks */
-    .section { padding: 16px 16px 4px; }
+    .section { padding: 8px 16px 0; }
     .section-header {
       font-family: 'Geist Mono', monospace;
       font-size: 10px;
@@ -251,14 +251,14 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--muted-foreground);
-      margin: 0 0 8px 0;
+      margin: 0 0 6px 0;
       padding: 0 4px;
     }
     .section-header-row {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      margin: 0 0 8px 0;
+      margin: 0 0 6px 0;
       padding: 0 4px;
     }
     .section-header-row .section-header {
@@ -304,8 +304,8 @@
     .toggle-row {
       display: flex;
       align-items: center;
-      padding: 12px 14px;
-      gap: 12px;
+      padding: 7px 12px;
+      gap: 10px;
       border-bottom: 1px solid var(--border);
       width: 100%;
       text-align: left;
@@ -343,7 +343,7 @@
       font-family: 'Geist Mono', monospace;
       font-size: 10px;
       color: var(--muted-foreground);
-      margin-top: 4px;
+      margin-top: 2px;
       letter-spacing: 0.01em;
     }
 
@@ -391,7 +391,7 @@
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      padding: 10px 14px;
+      padding: 8px 12px;
       background: transparent;
       border-top: 1px solid var(--border);
       font-family: 'Space Grotesk', sans-serif;
@@ -412,8 +412,8 @@
     .entry-row {
       display: flex;
       align-items: center;
-      padding: 12px 14px;
-      gap: 12px;
+      padding: 7px 12px;
+      gap: 10px;
       border-bottom: 1px solid var(--border);
       width: 100%;
       text-align: left;
@@ -444,8 +444,8 @@
     .action-row {
       display: flex;
       align-items: center;
-      padding: 13px 14px;
-      gap: 12px;
+      padding: 8px 12px;
+      gap: 10px;
       border-bottom: 1px solid var(--border);
       width: 100%;
       text-align: left;
@@ -467,7 +467,7 @@
 
     /* Destructive — centered, no chevron, red */
     .destructive-row {
-      padding: 16px 14px;
+      padding: 10px 14px;
       width: 100%;
       text-align: center;
       background: transparent;
@@ -487,7 +487,7 @@
 
     /* Footer */
     .footer {
-      padding: 20px 16px 12px;
+      padding: 10px 16px 6px;
       text-align: center;
     }
     .footer-version {

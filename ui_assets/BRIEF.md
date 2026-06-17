@@ -190,3 +190,42 @@ Skills уже были applied предыдущим агентом до моей
 
 ### Регрессии
 Не обнаружены. Все 4 ключевых экрана прошли self-review без расхождений с canonical persona dictionary.
+
+---
+
+## РЕЗУЛЬТАТ — Compress fix (round 2, 2026-06-17 follow-up)
+
+**Проблема (от PM):** canonical Settings overflow'ил 844px viewport — обрезана Sleep card частично, Privacy section не видна вообще.
+
+**Что compressed (cumulative paddings reduction в `mobile-settings-v0.html`):**
+- `.profile-inline` padding: `12px 16px` → `8px 16px` + avatar `40px` → `36px`
+- `.device-card` margin: `12px 16px 4px` → `8px 16px 0`; padding: `14px` → `10px 12px`; device-icon `36px` → `32px`
+- `.section` padding: `16px 16px 4px` → `8px 16px 0`
+- `.section-header` margin-bottom: `8px` → `6px` (header-row тоже)
+- `.toggle-row` padding: `12px 14px` → `7px 12px`; gap `12px` → `10px`
+- `.entry-row` padding: `12px 14px` → `7px 12px`; gap → `10px`
+- `.action-row` padding: `13px 14px` → `8px 12px`; gap → `10px`
+- `.manage-link` padding: `10px 14px` → `8px 12px`
+- `.destructive-row` padding: `16px 14px` → `10px 14px`
+- `.footer` padding: `20px 16px 12px` → `10px 16px 6px`
+- `.row-sub` / `.device-meta` margin-top: `4px` → `2px`; `.profile-email` margin-top: `2px` → `1px`
+
+**Privacy section:** уже была в HTML (присутствовала после предыдущей итерации, просто не визуально проявлялась за overflow). HTML structure не менял — только compress.
+
+**Total visible content:** все 8 элементов acceptance checklist умещаются в viewport. Section «ПРОЧЕЕ» peek снизу tab-bar (scroll-affordance) — намёк что есть ещё контент.
+
+**PNG регенерированы (overwrite):**
+- `sliced-flow-v2-1-transparent-2026-06-14/06-settings.png` — 460×920 RGBA transparent
+- `onboarding-2026-06-14/57-settings-canonical-hybrid.png` — 460×920 RGB proof
+
+**Self-review (через Read PNG):**
+- ✓ App-bar «Настройки»
+- ✓ User card «Костя Леонов / kostya@neiry.com» + chevron
+- ✓ Braclet card «VIGOR-XYZ123 · подключён · синк 9:52» + «87%» (БЕЗ chevron, per P2 fix)
+- ✓ УВЕДОМЛЕНИЯ section полностью: header + «Все настройки ›» + 3 toggles (HRV / Напоминания / Алерты падения — все ON per P3 fix)
+- ✓ HEALTH SHARING полностью: header + Тренер Иван П. + Мама 67 лет + «+ Управление ›»
+- ✓ ДАННЫЕ И SLEEP полностью: Sleep tracking + DEMO badge + chevron, Экспорт данных + chevron
+- ✓ ПРИВАТНОСТЬ полностью: shield icon + Конфиденциальность + chevron — clean above tab-bar
+- ✓ Tab-bar (Ещё active wine)
+
+**Не коммитил** — ждать acceptance PM.
