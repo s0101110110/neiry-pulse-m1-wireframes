@@ -6,89 +6,272 @@
 <title>Neiry Pulse — Design System Preview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: hsl(240 10% 3.9%);
-    --card: hsl(240 10% 6%);
-    --card-2: hsl(240 8% 9%);
-    --muted: hsl(240 3.7% 15.9%);
-    --border: hsl(240 3.7% 18%);
-    --fg: hsl(0 0% 98%);
-    --fg-mute: hsl(240 5% 64.9%);
-    --fg-dim: hsl(240 5% 45%);
-    --wine: hsl(336 76% 45%);
+    /* --- LIGHT (mobile primary) --- */
+    --background-light: #FFFFFF;
+    --card-light: #FAFAF7;
+    --card-warm-light: #FBF8F4;
+    --border-light: #E8E4DE;
+    --border-strong-light: #D4CFC7;
+    --ink-light: #1A1815;
+    --ink-mute-light: #6B6660;
+    --ink-dim-light: #9C968E;
+
+    /* --- DARK (kiosk + dashboard) --- */
+    --background-dark: hsl(240 10% 3.9%);
+    --card-dark: hsl(240 10% 6%);
+    --card-2-dark: hsl(240 8% 9%);
+    --muted-dark: hsl(240 3.7% 15.9%);
+    --border-dark: hsl(240 3.7% 18%);
+    --ink-dark: hsl(0 0% 98%);
+    --ink-mute-dark: hsl(240 5% 64.9%);
+    --ink-dim-dark: hsl(240 5% 45%);
+
+    /* --- BRAND (both themes) --- */
+    --wine: #831843;
     --wine-deep: hsl(336 76% 33%);
     --wine-hover: hsl(336 76% 52%);
-    --bio-hrv: hsl(195 90% 55%);
-    --bio-low: hsl(151 100% 45%);
-    --bio-mid: hsl(42 100% 50%);
-    --bio-high: hsl(348 100% 54%);
-    --ecg: hsl(151 100% 55%);
-    --sans: 'Space Grotesk', system-ui, sans-serif;
-    --display: 'Onest', 'Space Grotesk', system-ui, sans-serif;
-    --mono: 'Geist Mono', ui-monospace, monospace;
+    --wine-tint: #FBE6EE;
+
+    /* --- BIO semantic (light-safe, AA pass on white) --- */
+    --bio-hrv: #0288A8;
+    --bio-low: #00A653;
+    --bio-mid: #E89500;
+    --bio-high: #D1003C;
+    --ecg: #00A653;
+
+    /* --- BIO (dark surfaces, kept brighter for legibility 1.5m) --- */
+    --bio-hrv-dark: hsl(195 90% 55%);
+    --bio-low-dark: hsl(151 100% 45%);
+    --bio-mid-dark: hsl(42 100% 50%);
+    --bio-high-dark: hsl(348 100% 54%);
+    --ecg-dark: hsl(151 100% 55%);
+
+    /* --- FONTS --- */
+    --sans: 'Golos Text', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--bg); color: var(--fg); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  html, body {
+    background: var(--card-light);
+    color: var(--ink-light);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
   body { padding: 64px 48px 120px; max-width: 1440px; margin: 0 auto; }
 
-  .eyebrow { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase; color: var(--fg-mute); }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--ink-mute-light);
+  }
   .section { margin-top: 96px; }
   .section:first-child { margin-top: 0; }
-  .section-head { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 32px; }
-  .section-head h2 { font-family: var(--display); font-size: 40px; font-weight: 600; letter-spacing: -1px; line-height: 1.15; }
-  .section-head .meta { color: var(--fg-dim); font-size: 12px; }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 16px;
+    margin-bottom: 32px;
+  }
+  .section-head h2 {
+    font-family: var(--sans);
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    line-height: 1.15;
+  }
+  .section-head .meta { color: var(--ink-dim-light); font-size: 12px; font-family: var(--mono); }
 
   /* --- HERO --- */
-  .hero { padding: 48px 0 24px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
-  .hero .brand { font-family: var(--mono); font-size: 12px; letter-spacing: 0.8px; text-transform: uppercase; color: var(--wine); }
-  .hero h1 { font-family: var(--display); font-size: 72px; font-weight: 600; letter-spacing: -2.5px; line-height: 1.05; margin-top: 16px; }
+  .hero {
+    padding: 48px 0 24px;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 16px;
+  }
+  .hero .brand {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--wine);
+  }
+  .hero h1 {
+    font-family: var(--sans);
+    font-size: 72px;
+    font-weight: 700;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    margin-top: 16px;
+  }
   .hero h1 em { font-style: normal; color: var(--wine); }
-  .hero p { color: var(--fg-mute); font-size: 18px; line-height: 1.5; margin-top: 24px; max-width: 720px; }
-  .hero-meta { display: flex; gap: 32px; margin-top: 32px; font-family: var(--mono); font-size: 12px; color: var(--fg-dim); }
-  .hero-meta span strong { color: var(--fg); font-weight: 500; display: block; margin-top: 4px; font-size: 14px; }
+  .hero p {
+    color: var(--ink-mute-light);
+    font-size: 18px;
+    line-height: 1.5;
+    margin-top: 24px;
+    max-width: 720px;
+  }
+  .hero-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+  .chip-token {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card-warm-light);
+    border: 1px solid var(--border-light);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-light);
+  }
+  .chip-token strong { color: var(--wine); font-weight: 600; }
 
   /* --- COLORS --- */
   .palette { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
-  .swatch { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .swatch {
+    background: var(--card-light);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 16px;
+  }
   .swatch .chip { height: 88px; border-radius: 8px; margin-bottom: 12px; }
   .swatch .name { font-size: 13px; font-weight: 500; }
-  .swatch .hex { font-family: var(--mono); font-size: 11px; color: var(--fg-mute); margin-top: 2px; }
-  .swatch .role { font-size: 11px; color: var(--fg-dim); margin-top: 6px; line-height: 1.3; }
+  .swatch .hex { font-family: var(--mono); font-size: 11px; color: var(--ink-mute-light); margin-top: 2px; }
+  .swatch .role { font-size: 11px; color: var(--ink-dim-light); margin-top: 6px; line-height: 1.3; }
 
-  .group-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--fg-mute); margin: 32px 0 12px; }
+  .group-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--ink-mute-light);
+    margin: 32px 0 12px;
+  }
 
   /* --- TYPOGRAPHY --- */
-  .type-row { display: grid; grid-template-columns: 200px 1fr; gap: 32px; align-items: baseline; padding: 24px 0; border-bottom: 1px solid var(--border); }
-  .type-meta { font-family: var(--mono); font-size: 11px; color: var(--fg-mute); line-height: 1.6; }
-  .type-meta strong { color: var(--fg); font-weight: 500; display: block; font-size: 13px; margin-bottom: 4px; }
-  .type-sample.kiosk { font-family: var(--display); font-size: 180px; font-weight: 600; letter-spacing: -6px; line-height: 1; }
-  .type-sample.metric-xl { font-family: var(--mono); font-size: 128px; font-weight: 500; letter-spacing: -3px; line-height: 1; font-variant-numeric: tabular-nums; }
-  .type-sample.metric-lg { font-family: var(--mono); font-size: 64px; font-weight: 500; letter-spacing: -1.5px; font-variant-numeric: tabular-nums; }
-  .type-sample.metric-md { font-family: var(--mono); font-size: 32px; font-weight: 500; font-variant-numeric: tabular-nums; }
-  .type-sample.display-xl { font-family: var(--display); font-size: 56px; font-weight: 600; letter-spacing: -1.8px; }
-  .type-sample.display-lg { font-family: var(--display); font-size: 40px; font-weight: 600; letter-spacing: -1px; }
-  .type-sample.headline { font-family: var(--sans); font-size: 24px; font-weight: 600; letter-spacing: -0.4px; }
-  .type-sample.body { font-family: var(--sans); font-size: 14px; }
-  .type-sample.caption { font-family: var(--sans); font-size: 12px; color: var(--fg-mute); }
+  .type-row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+    align-items: baseline;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .type-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-mute-light);
+    line-height: 1.6;
+  }
+  .type-meta strong {
+    color: var(--ink-light);
+    font-weight: 500;
+    display: block;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .type-sample.kiosk {
+    font-family: var(--sans);
+    font-size: 180px;
+    font-weight: 700;
+    letter-spacing: -6px;
+    line-height: 1;
+  }
+  .type-sample.metric-xl {
+    font-family: var(--mono);
+    font-size: 128px;
+    font-weight: 500;
+    letter-spacing: -3px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .type-sample.metric-lg {
+    font-family: var(--mono);
+    font-size: 64px;
+    font-weight: 500;
+    letter-spacing: -1.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .type-sample.metric-md {
+    font-family: var(--mono);
+    font-size: 32px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .type-sample.display-xl {
+    font-family: var(--sans);
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: -1.5px;
+  }
+  .type-sample.display-lg {
+    font-family: var(--sans);
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: -1px;
+  }
+  .type-sample.headline {
+    font-family: var(--sans);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+  .type-sample.body { font-family: var(--sans); font-size: 15px; line-height: 1.55; }
+  .type-sample.caption { font-family: var(--sans); font-size: 12px; color: var(--ink-mute-light); }
+  .type-sample.eyebrow-sample {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--ink-mute-light);
+  }
+  .type-sample.button-sample {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+  }
 
   /* --- COMPONENTS --- */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
   .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .demo-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--fg-dim); margin-bottom: 12px; }
+  .demo-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--ink-dim-light);
+    margin-bottom: 12px;
+  }
 
-  /* Kiosk demo */
+  /* Kiosk demo (DARK surface) */
   .kiosk-card {
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: var(--card-dark);
+    border: 1px solid var(--border-dark);
     border-radius: 16px;
     padding: 48px;
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 48px;
     align-items: center;
+    color: var(--ink-dark);
   }
   .kiosk-num {
     font-family: var(--mono);
@@ -97,98 +280,928 @@
     line-height: 0.9;
     letter-spacing: -6px;
     font-variant-numeric: tabular-nums;
-    color: var(--fg);
+    color: var(--ink-dark);
   }
-  .kiosk-num .unit { font-family: var(--sans); font-size: 28px; color: var(--fg-mute); margin-left: 12px; font-weight: 500; letter-spacing: 0; }
-  .kiosk-label { font-family: var(--mono); font-size: 13px; letter-spacing: 0.8px; text-transform: uppercase; color: var(--fg-mute); margin-bottom: 8px; }
+  .kiosk-num .unit {
+    font-family: var(--sans);
+    font-size: 28px;
+    color: var(--ink-mute-dark);
+    margin-left: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .kiosk-label {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--ink-mute-dark);
+    margin-bottom: 8px;
+  }
   .gauge-wrap { width: 260px; height: 260px; position: relative; }
 
-  /* Dashboard KPI */
+  /* Dashboard KPI (DARK surface) */
   .kpi {
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: var(--card-dark);
+    border: 1px solid var(--border-dark);
     border-radius: 12px;
     padding: 20px;
+    color: var(--ink-dark);
   }
-  .kpi .lbl { font-size: 12px; color: var(--fg-mute); letter-spacing: 0.2px; }
-  .kpi .val { font-family: var(--mono); font-size: 32px; font-weight: 500; margin-top: 8px; font-variant-numeric: tabular-nums; letter-spacing: -0.5px; }
-  .kpi .delta { display: inline-flex; gap: 4px; align-items: center; margin-left: 8px; font-size: 12px; color: var(--bio-low); font-family: var(--mono); }
-  .kpi .delta.neg { color: var(--bio-high); }
+  .kpi .lbl { font-size: 12px; color: var(--ink-mute-dark); letter-spacing: 0.2px; }
+  .kpi .val {
+    font-family: var(--mono);
+    font-size: 32px;
+    font-weight: 500;
+    margin-top: 8px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.5px;
+  }
+  .kpi .delta {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    margin-left: 8px;
+    font-size: 12px;
+    color: var(--bio-low-dark);
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi .delta.neg { color: var(--bio-high-dark); }
   .kpi .spark { margin-top: 12px; height: 32px; }
 
-  /* Buttons */
+  /* Buttons (LIGHT surface) */
   .btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-  .btn { font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 10px 16px; border-radius: 8px; border: 0; cursor: pointer; }
-  .btn-primary { background: var(--wine); color: var(--fg); }
+  .btn {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 0;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--wine); color: #FFFFFF; }
   .btn-primary:hover { background: var(--wine-hover); }
-  .btn-secondary { background: var(--muted); color: var(--fg); }
-  .btn-ghost { background: transparent; color: var(--fg-mute); }
-  .btn-outline { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+  .btn-secondary { background: var(--card-warm-light); color: var(--ink-light); border: 1px solid var(--border-light); }
+  .btn-ghost { background: transparent; color: var(--ink-mute-light); }
+  .btn-outline { background: transparent; color: var(--ink-light); border: 1px solid var(--border-strong-light); }
 
-  /* Badges */
-  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-family: var(--sans); }
-  .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-  .badge-low { background: hsl(151 100% 45% / 0.15); color: var(--bio-low); }
-  .badge-mid { background: hsl(42 100% 50% / 0.15); color: var(--bio-mid); }
-  .badge-high { background: hsl(348 100% 54% / 0.15); color: var(--bio-high); }
+  /* Badges (LIGHT surface, AA pass) */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-family: var(--sans);
+    font-weight: 500;
+  }
+  .badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .badge-low { background: #E5F7EE; color: var(--bio-low); }
+  .badge-mid { background: #FFF3DC; color: var(--bio-mid); }
+  .badge-high { background: #FFE2E8; color: var(--bio-high); }
 
   /* Input */
   .input {
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: var(--card-light);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
     padding: 10px 12px;
-    color: var(--fg);
+    color: var(--ink-light);
     font-family: var(--sans);
     font-size: 14px;
     width: 100%;
   }
-  .input:focus { outline: none; border-color: var(--wine); box-shadow: 0 0 0 3px hsl(336 76% 45% / 0.2); }
+  .input:focus { outline: none; border-color: var(--wine); box-shadow: 0 0 0 3px rgba(131, 24, 67, 0.18); }
 
   /* Tabs */
-  .tabs { display: inline-flex; gap: 4px; padding: 4px; background: var(--card); border-radius: 10px; border: 1px solid var(--border); }
-  .tab { font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 8px 14px; border-radius: 8px; background: transparent; color: var(--fg-mute); cursor: pointer; border: 0; }
-  .tab.active { background: var(--muted); color: var(--fg); }
+  .tabs {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--card-warm-light);
+    border-radius: 10px;
+    border: 1px solid var(--border-light);
+  }
+  .tab {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink-mute-light);
+    cursor: pointer;
+    border: 0;
+  }
+  .tab.active { background: var(--background-light); color: var(--ink-light); box-shadow: 0 0 0 1px var(--border-light); }
 
-  /* Table */
-  .table { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; border-collapse: collapse; }
-  .table th { text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 500; letter-spacing: 0.4px; text-transform: uppercase; color: var(--fg-mute); border-bottom: 1px solid var(--border); }
-  .table td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--border); }
+  /* Table (DARK surface — dashboard) */
+  .table {
+    width: 100%;
+    background: var(--card-dark);
+    border: 1px solid var(--border-dark);
+    border-radius: 12px;
+    overflow: hidden;
+    border-collapse: collapse;
+    color: var(--ink-dark);
+  }
+  .table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--ink-mute-dark);
+    border-bottom: 1px solid var(--border-dark);
+    font-family: var(--mono);
+  }
+  .table td {
+    padding: 12px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-dark);
+  }
   .table tr:last-child td { border-bottom: 0; }
   .table .name { font-weight: 500; }
   .table .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .table .badge { font-size: 11px; padding: 3px 10px; }
+  .table .badge-low { background: rgba(0, 166, 83, 0.18); color: #44D88A; }
+  .table .badge-mid { background: rgba(232, 149, 0, 0.18); color: #FFB948; }
+  .table .badge-high { background: rgba(209, 0, 60, 0.20); color: #FF6B8A; }
 
-  /* ECG */
-  .ecg-strip { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  /* ECG (DARK surface, kiosk) */
+  .ecg-strip {
+    background: var(--card-dark);
+    border: 1px solid var(--border-dark);
+    border-radius: 12px;
+    padding: 16px;
+  }
   .ecg-strip svg { width: 100%; height: 80px; display: block; }
 
-  /* Spacing demo */
-  .spacing-row { display: grid; grid-template-columns: 60px 1fr 80px; gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
-  .spacing-name { font-family: var(--mono); font-size: 12px; color: var(--fg-mute); }
-  .spacing-bar { height: 16px; background: var(--wine); border-radius: 4px; }
-  .spacing-val { font-family: var(--mono); font-size: 12px; color: var(--fg); text-align: right; }
+  /* ECG (LIGHT surface, mobile) */
+  .ecg-strip-light {
+    background: var(--card-light);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .ecg-strip-light svg { width: 100%; height: 80px; display: block; }
 
-  /* Footer principles */
+  /* Spacing demo */
+  .spacing-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 160px;
+    gap: 16px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .spacing-name { font-family: var(--mono); font-size: 12px; color: var(--ink-mute-light); }
+  .spacing-bar { height: 16px; background: var(--wine); border-radius: 4px; }
+  .spacing-val { font-family: var(--mono); font-size: 12px; color: var(--ink-light); text-align: right; }
+
+  /* Principles */
   .principles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-  .principle { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .principle {
+    background: var(--card-light);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 24px;
+  }
   .principle .num { font-family: var(--mono); font-size: 11px; color: var(--wine); letter-spacing: 0.6px; }
   .principle h4 { font-family: var(--sans); font-size: 16px; font-weight: 600; margin: 8px 0; }
-  .principle p { color: var(--fg-mute); font-size: 13px; line-height: 1.5; }
+  .principle p { color: var(--ink-mute-light); font-size: 13px; line-height: 1.5; }
+
+  /* Anti-patterns */
+  .anti-list {
+    background: var(--card-light);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 24px 28px;
+  }
+  .anti-list li {
+    list-style: none;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-light);
+    padding-left: 24px;
+    position: relative;
+    margin-bottom: 10px;
+  }
+  .anti-list li::before {
+    content: '✕';
+    position: absolute;
+    left: 0;
+    top: 1px;
+    color: var(--bio-high);
+    font-weight: 700;
+    font-family: var(--mono);
+  }
+
+  /* ========= PHONE MOCKUPS — "На реальных экранах" ========= */
+  .screens-stage {
+    background:
+      radial-gradient(circle at 30% 20%, rgba(131, 24, 67, 0.06), transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(2, 136, 168, 0.04), transparent 50%),
+      var(--card-warm-light);
+    border: 1px solid var(--border-light);
+    border-radius: 24px;
+    padding: 48px 32px;
+  }
+  .screens-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .screen-cell { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .screen-caption {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--ink-dim-light);
+    text-align: center;
+    line-height: 1.4;
+  }
+  .screen-caption strong { display: block; color: var(--ink-light); font-weight: 500; margin-top: 2px; text-transform: none; letter-spacing: 0; font-family: var(--sans); font-size: 12px; }
+
+  .phone {
+    background: #1A1815;
+    border-radius: 36px;
+    padding: 6px;
+    position: relative;
+    width: 280px;
+  }
+  .phone .screen {
+    background: #FFFFFF;
+    border-radius: 30px;
+    overflow: hidden;
+    position: relative;
+    height: 580px;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--sans);
+  }
+
+  /* Status bar */
+  .s-statusbar {
+    height: 26px;
+    padding: 4px 16px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 10px;
+    font-weight: 600;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .s-statusbar::before {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 14px;
+    background: #1A1815;
+    border-radius: 14px;
+    left: 50%;
+    top: 6px;
+    transform: translateX(-50%);
+  }
+  .s-status-icons { font-size: 9px; letter-spacing: 1px; opacity: 0.85; font-family: var(--mono); }
+
+  /* App header */
+  .s-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 14px;
+    flex-shrink: 0;
+  }
+  .s-brand { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 12px; color: var(--ink-light); }
+  .s-brand-mark {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--wine-tint);
+    color: var(--wine);
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .s-header-icons { display: flex; align-items: center; gap: 8px; }
+  .s-icon { font-size: 13px; color: var(--ink-mute-light); }
+  .s-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--wine-tint);
+    color: var(--wine);
+    display: grid;
+    place-items: center;
+    font-size: 9px;
+    font-weight: 600;
+  }
+  .s-back-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  /* Body container */
+  .s-body { flex: 1; overflow: hidden; padding: 4px 12px 0; }
+
+  /* Cards */
+  .s-card {
+    background: #FAFAF7;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  /* Glassmorphic hero card — from Bevel — only on home hero + modals */
+  .s-card-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(26, 24, 21, 0.04);
+  }
+  .s-card-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .s-eyebrow {
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--ink-dim-light);
+  }
+  .s-eyebrow-wine {
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--wine);
+  }
+  .s-badge-up {
+    background: #E5F7EE;
+    color: var(--bio-low);
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 500;
+    font-family: var(--sans);
+  }
+  .s-badge-up::before { content: '▲ '; font-size: 7px; }
+  .s-ready {
+    color: var(--bio-low);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-family: var(--mono);
+  }
+
+  /* Hero metric */
+  .s-metric-line { display: flex; align-items: baseline; gap: 4px; margin: 2px 0 6px; }
+  .s-metric-num {
+    font-family: var(--mono);
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -1.2px;
+    color: var(--ink-light);
+  }
+  .s-metric-unit { font-size: 11px; color: var(--ink-mute-light); font-family: var(--sans); }
+  .s-body-text { font-size: 10.5px; line-height: 1.45; color: var(--ink-mute-light); font-family: var(--sans); }
+  .s-heading-lg {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+    margin: 6px 0 4px;
+    font-family: var(--sans);
+    color: var(--ink-light);
+  }
+  .s-sparkline { width: 100%; height: 36px; margin: 8px 0 4px; display: block; }
+  .s-meta {
+    font-size: 9px;
+    color: var(--ink-mute-light);
+    font-weight: 500;
+    font-family: var(--mono);
+  }
+
+  /* Buttons */
+  .s-buttons { display: flex; gap: 6px; margin-top: 10px; }
+  .s-btn {
+    flex: 1;
+    padding: 9px 4px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    border: 0;
+    cursor: pointer;
+    line-height: 1;
+    font-family: var(--sans);
+  }
+  .s-btn-primary { background: var(--wine); color: white; }
+  .s-btn-outline { background: transparent; color: var(--ink-light); border: 1px solid var(--border-strong-light); }
+
+  /* Rows */
+  .s-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    background: #FAFAF7;
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    margin-bottom: 6px;
+  }
+  .s-row-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid var(--border-light);
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    color: var(--ink-mute-light);
+  }
+  .s-row-title { font-size: 10.5px; color: var(--ink-light); font-weight: 500; line-height: 1.2; font-family: var(--sans); }
+  .s-row-sub { font-size: 9px; color: var(--ink-mute-light); margin-top: 2px; line-height: 1.2; font-family: var(--sans); }
+  .s-row-sub .s-metric-sm {
+    font-weight: 600;
+    color: var(--ink-light);
+    font-variant-numeric: tabular-nums;
+    font-family: var(--mono);
+  }
+
+  /* Warning row */
+  .s-warning-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #FFF3DC;
+    border: 1px solid #FFE2A8;
+    border-radius: 10px;
+    margin-bottom: 6px;
+  }
+  .s-warning-icon { font-size: 12px; color: var(--bio-mid); flex-shrink: 0; line-height: 1.3; }
+  .s-warning-text { font-size: 10px; color: var(--ink-light); line-height: 1.35; font-family: var(--sans); }
+
+  /* Bottom nav — 4 tabs per BRIEF */
+  .s-bottom-nav {
+    display: flex;
+    border-top: 1px solid var(--border-light);
+    background: white;
+    flex-shrink: 0;
+    padding: 4px 0;
+  }
+  .s-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 9px;
+    color: var(--ink-dim-light);
+    gap: 2px;
+    font-family: var(--sans);
+  }
+  .s-nav-item.active { color: var(--ink-light); font-weight: 600; }
+  .s-nav-icon { font-size: 13px; opacity: 0.7; }
+  .s-nav-item.active .s-nav-icon { opacity: 1; color: var(--wine); }
+
+  /* === Screen 2 — HRV Detail === */
+  .s-hero-section { text-align: center; padding: 8px 0 6px; }
+  .s-hero-num {
+    font-family: var(--mono);
+    font-size: 64px;
+    font-weight: 600;
+    letter-spacing: -2.5px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    margin: 4px 0;
+    display: inline-block;
+    color: var(--ink-light);
+  }
+  .s-hero-unit { font-size: 12px; color: var(--ink-mute-light); margin-left: 2px; font-family: var(--sans); }
+  .s-hero-deltas {
+    font-size: 8px;
+    color: var(--bio-low);
+    font-weight: 500;
+    margin-top: 4px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .s-hero-deltas .divider { color: var(--border-strong-light); }
+  .s-tabs {
+    display: flex;
+    background: #F0EDE7;
+    border-radius: 6px;
+    padding: 2px;
+    gap: 1px;
+  }
+  .s-tab {
+    padding: 3px 7px;
+    border-radius: 4px;
+    font-size: 9px;
+    color: var(--ink-mute-light);
+    font-weight: 500;
+    font-family: var(--mono);
+  }
+  .s-tab.active { background: var(--wine); color: white; }
+  .s-chart { width: 100%; height: 86px; margin-top: 8px; display: block; }
+  .s-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 8px 0; }
+  .s-stat-card {
+    background: #FAFAF7;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 6px 8px;
+  }
+  .s-stat-num {
+    font-family: var(--mono);
+    font-size: 17px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.4px;
+    color: var(--ink-light);
+  }
+  .s-insight {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    background: #FAFAF7;
+    border-left: 3px solid var(--wine);
+    border-radius: 8px;
+    margin-top: 4px;
+    align-items: flex-start;
+  }
+  .s-insight-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--wine-tint);
+    color: var(--wine);
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+  .s-insight-title { font-size: 11px; font-weight: 600; font-family: var(--sans); color: var(--ink-light); }
+  .s-insight-body { font-size: 9.5px; line-height: 1.4; color: var(--ink-mute-light); margin-top: 2px; font-family: var(--sans); }
+  .s-learn-more {
+    text-align: center;
+    color: var(--wine);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 6px;
+    margin-top: 4px;
+    font-family: var(--sans);
+  }
+
+  /* === Screen 3 — Modal (glassmorphic) === */
+  .s-modal-bg { position: relative; flex: 1; }
+  .s-modal-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 24, 21, 0.25);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .s-modal-dim { opacity: 0.85; pointer-events: none; padding: 0 12px; }
+  /* Glassmorphic modal sheet — from Bevel */
+  .s-modal-sheet {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 18px 18px 30px 30px;
+    padding: 10px 14px 18px;
+    max-height: 72%;
+    overflow: hidden;
+    z-index: 2;
+  }
+  .s-modal-handle {
+    width: 32px;
+    height: 3px;
+    background: var(--border-strong-light);
+    border-radius: 999px;
+    margin: 0 auto 8px;
+  }
+  .s-modal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .s-modal-close {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #F0EDE7;
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+    color: var(--ink-mute-light);
+  }
+  .s-modal-title {
+    font-family: var(--sans);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+    color: var(--ink-light);
+  }
+  .s-modal-body { font-size: 10px; line-height: 1.5; color: var(--ink-light); margin-bottom: 6px; font-family: var(--sans); }
+  .s-wine-bold { color: var(--wine); font-weight: 700; }
+  .s-modal-divider { height: 1px; background: var(--border-light); margin: 8px 0; }
+  .s-bullets { list-style: none; padding: 0; margin: 4px 0 6px; }
+  .s-bullets li {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 9.5px;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    font-family: var(--sans);
+    color: var(--ink-light);
+  }
+  .s-bull { font-size: 10px; width: 12px; flex-shrink: 0; }
+  .s-bull-up { color: var(--bio-low); }
+  .s-bull-mid { color: var(--wine); }
+  .s-bull-down { color: var(--bio-mid); }
+  .s-disclaimer {
+    background: rgba(250, 250, 247, 0.6);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 9px;
+    color: var(--ink-mute-light);
+    line-height: 1.4;
+    margin: 6px 0 10px;
+    font-family: var(--sans);
+  }
+  .s-disclaimer strong { color: var(--ink-light); font-weight: 600; }
+  .s-modal-btn {
+    width: 100%;
+    padding: 11px;
+    background: var(--wine);
+    color: white;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 0;
+    text-align: center;
+    cursor: pointer;
+    font-family: var(--sans);
+  }
+
+  /* === Screen 4 — Training Active (Whoop-leaning) === */
+  .s-training-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 14px 4px;
+    flex-shrink: 0;
+  }
+  .s-training-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: var(--ink-light);
+  }
+  .s-training-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--bio-high);
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .s-training-time {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-light);
+    margin-left: 4px;
+  }
+  .s-training-stop {
+    background: var(--bio-high);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    border: 0;
+    letter-spacing: 0.5px;
+  }
+  .s-pagination-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 0 4px;
+  }
+  .s-pagination-dots .dot {
+    width: 14px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-light);
+  }
+  .s-pagination-dots .dot.active { background: var(--wine); }
+  .s-page-label {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--ink-mute-light);
+    margin-bottom: 2px;
+  }
+  .s-training-hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    gap: 8px;
+  }
+  .s-training-eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--ink-mute-light);
+  }
+  .s-training-bpm {
+    font-family: var(--mono);
+    font-size: 96px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -4px;
+    font-variant-numeric: tabular-nums;
+    color: var(--wine);
+    display: flex;
+    align-items: baseline;
+  }
+  .s-training-bpm-unit {
+    font-family: var(--sans);
+    font-size: 16px;
+    color: var(--ink-mute-light);
+    margin-left: 6px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .s-training-zone-pill {
+    background: var(--wine);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .s-training-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--border-light);
+    padding: 8px 0 6px;
+    flex-shrink: 0;
+  }
+  .s-training-stat { text-align: center; }
+  .s-training-stat-num {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-light);
+    letter-spacing: -0.4px;
+  }
+  .s-training-stat-lbl {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--ink-mute-light);
+    margin-top: 2px;
+  }
+  .s-training-zones {
+    display: flex;
+    gap: 4px;
+    padding: 6px 10px 8px;
+    border-top: 1px solid var(--border-light);
+    background: #FAFAF7;
+    flex-shrink: 0;
+  }
+  .s-zone-cell {
+    flex: 1;
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    padding: 4px 0;
+    text-align: center;
+  }
+  .s-zone-cell.active { background: var(--wine); border-color: var(--wine); }
+  .s-zone-name {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--ink-mute-light);
+    letter-spacing: 0.4px;
+  }
+  .s-zone-cell.active .s-zone-name { color: white; }
+  .s-zone-pct {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-light);
+    font-variant-numeric: tabular-nums;
+    margin-top: 2px;
+  }
+  .s-zone-cell.active .s-zone-pct { color: white; }
+
+  /* Donor attribution label */
+  .donor-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-dim-light);
+    text-align: center;
+    margin-top: 6px;
+  }
+  .donor-label .from-whoop { color: var(--bio-high); }
+  .donor-label .from-bevel { color: var(--bio-hrv); }
+
+  /* Footer */
+  footer.page-footer {
+    margin-top: 96px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    color: var(--ink-dim-light);
+    font-size: 12px;
+    font-family: var(--mono);
+  }
 </style>
 </head>
 <body>
 
 <!-- HERO -->
 <header class="hero">
-  <div class="brand">Neiry Pulse · Design System · v0.alpha · 2026-06-04</div>
+  <div class="brand">Neiry Pulse · Design System · v0.alpha · 2026-06-17</div>
   <h1>Био-интерфейс, в котором единственный цвет — это <em>пульс</em>.</h1>
-  <p>Три поверхности — выставочный стенд, корпоративный дашборд, мобильное приложение — собраны на одном тёмном полотне, единственном брендовом акценте wine и моноширинных цифрах, которые не прыгают при обновлении биометрии.</p>
-  <div class="hero-meta">
-    <span>Brand accent <strong style="color: var(--wine)">#831843 wine</strong></span>
-    <span>Display <strong>Onest 600</strong></span>
-    <span>UI <strong>Space Grotesk 400/500</strong></span>
-    <span>Metrics <strong>Geist Mono · tnum</strong></span>
-    <span>Grid <strong>4px base</strong></span>
+  <p>Три поверхности — выставочный стенд, корпоративный дашборд, мобильное приложение. Light-mode primary для mobile, dark для kiosk и dashboard. Wine остаётся единственным брендовым акцентом в обеих темах, моноширинные цифры не прыгают при обновлении биометрии.</p>
+  <div class="hero-chips">
+    <span class="chip-token"><strong>Golos Text</strong> · UI sans</span>
+    <span class="chip-token"><strong>JetBrains Mono</strong> · metrics tnum</span>
+    <span class="chip-token">wine <strong>#831843</strong></span>
+    <span class="chip-token"><strong>4px</strong> grid</span>
+    <span class="chip-token"><strong>light-first</strong> mobile</span>
   </div>
 </header>
 
@@ -196,37 +1209,57 @@
 <section class="section">
   <div class="section-head">
     <h2>Цвет</h2>
-    <div class="meta">wine — единственный chromatic accent · bio-палитра — служебная</div>
+    <div class="meta">wine — единственный chromatic accent · bio — служебная семантика · контраст AA на light</div>
   </div>
 
   <div class="group-title">Brand & Accent</div>
   <div class="palette">
-    <div class="swatch"><div class="chip" style="background: hsl(336 76% 33%)"></div><div class="name">Wine Primary</div><div class="hex">#831843 · hsl(336 76% 33%)</div><div class="role">Single chromatic accent. CTA, focus, бренд-знак.</div></div>
-    <div class="swatch"><div class="chip" style="background: hsl(336 76% 45%)"></div><div class="name">Wine on Dark</div><div class="hex">hsl(336 76% 45%)</div><div class="role">Wine на тёмном фоне (контраст +).</div></div>
+    <div class="swatch"><div class="chip" style="background: #831843"></div><div class="name">Wine Primary</div><div class="hex">#831843</div><div class="role">Single chromatic accent. CTA, focus, бренд-знак. AA на белом (9.3:1).</div></div>
     <div class="swatch"><div class="chip" style="background: hsl(336 76% 52%)"></div><div class="name">Wine Hover</div><div class="hex">hsl(336 76% 52%)</div><div class="role">Hover-state primary.</div></div>
-    <div class="swatch"><div class="chip" style="background: hsl(336 76% 33%); opacity: 0.2"></div><div class="name">Wine Tint</div><div class="hex">wine / 20%</div><div class="role">Focus-ring, soft fill.</div></div>
     <div class="swatch"><div class="chip" style="background: hsl(336 76% 28%)"></div><div class="name">Wine Pressed</div><div class="hex">hsl(336 76% 28%)</div><div class="role">Active-state.</div></div>
-    <div class="swatch"><div class="chip" style="background: hsl(0 0% 98%); border: 1px solid var(--border)"></div><div class="name">Wine Foreground</div><div class="hex">hsl(0 0% 98%)</div><div class="role">Текст на wine — почти белый.</div></div>
+    <div class="swatch"><div class="chip" style="background: #FBE6EE"></div><div class="name">Wine Tint</div><div class="hex">#FBE6EE</div><div class="role">Soft fill, badge bg, focus-ring base.</div></div>
+    <div class="swatch"><div class="chip" style="background: rgba(131, 24, 67, 0.18)"></div><div class="name">Wine Focus Ring</div><div class="hex">wine / 18%</div><div class="role">3px ring на :focus inputs.</div></div>
+    <div class="swatch"><div class="chip" style="background: #FFFFFF; border: 1px solid var(--border-light)"></div><div class="name">Wine Foreground</div><div class="hex">#FFFFFF</div><div class="role">Текст на wine — белый.</div></div>
   </div>
 
-  <div class="group-title">Surface (Dark — primary)</div>
+  <div class="group-title">Surface · Light (mobile primary)</div>
   <div class="palette">
-    <div class="swatch"><div class="chip" style="background: hsl(240 10% 3.9%); border: 1px solid var(--border)"></div><div class="name">Background</div><div class="hex">hsl(240 10% 3.9%)</div><div class="role">Главное полотно.</div></div>
-    <div class="swatch"><div class="chip" style="background: hsl(240 10% 6%); border: 1px solid var(--border)"></div><div class="name">Card</div><div class="hex">hsl(240 10% 6%)</div><div class="role">KPI, kiosk-блоки, side-panel.</div></div>
-    <div class="swatch"><div class="chip" style="background: hsl(240 8% 9%); border: 1px solid var(--border)"></div><div class="name">Card Hover</div><div class="hex">hsl(240 8% 9%)</div><div class="role">Подсветка строки таблицы.</div></div>
+    <div class="swatch"><div class="chip" style="background: #FFFFFF; border: 1px solid var(--border-light)"></div><div class="name">Background</div><div class="hex">#FFFFFF</div><div class="role">Главное полотно mobile.</div></div>
+    <div class="swatch"><div class="chip" style="background: #FAFAF7; border: 1px solid var(--border-light)"></div><div class="name">Card</div><div class="hex">#FAFAF7</div><div class="role">Карточки, rows, stat-cards.</div></div>
+    <div class="swatch"><div class="chip" style="background: #FBF8F4; border: 1px solid var(--border-light)"></div><div class="name">Card Warm</div><div class="hex">#FBF8F4</div><div class="role">Tabs background, chip-token.</div></div>
+    <div class="swatch"><div class="chip" style="background: #E8E4DE"></div><div class="name">Border</div><div class="hex">#E8E4DE</div><div class="role">Hairline 1px. Никаких shadows.</div></div>
+    <div class="swatch"><div class="chip" style="background: #1A1815"></div><div class="name">Ink</div><div class="hex">#1A1815</div><div class="role">Основной текст, phone bezel.</div></div>
+    <div class="swatch"><div class="chip" style="background: #6B6660"></div><div class="name">Ink Mute</div><div class="hex">#6B6660</div><div class="role">Подписи, единицы (ms, bpm). AA 4.8:1.</div></div>
+  </div>
+
+  <div class="group-title">Surface · Dark (kiosk + dashboard)</div>
+  <div class="palette">
+    <div class="swatch"><div class="chip" style="background: hsl(240 10% 3.9%); border: 1px solid var(--border-light)"></div><div class="name">Background</div><div class="hex">hsl(240 10% 3.9%)</div><div class="role">Главное полотно kiosk + dashboard.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(240 10% 6%); border: 1px solid var(--border-light)"></div><div class="name">Card</div><div class="hex">hsl(240 10% 6%)</div><div class="role">KPI, kiosk-блоки, side-panel.</div></div>
     <div class="swatch"><div class="chip" style="background: hsl(240 3.7% 15.9%)"></div><div class="name">Muted</div><div class="hex">hsl(240 3.7% 15.9%)</div><div class="role">Secondary buttons, active tab.</div></div>
-    <div class="swatch"><div class="chip" style="background: hsl(240 3.7% 18%)"></div><div class="name">Border</div><div class="hex">hsl(240 3.7% 18%)</div><div class="role">Hairline 1px. Никаких shadows.</div></div>
-    <div class="swatch"><div class="chip" style="background: hsl(240 5% 64.9%)"></div><div class="name">Muted FG</div><div class="hex">hsl(240 5% 64.9%)</div><div class="role">Подписи, единицы (BPM, мс).</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(240 3.7% 18%)"></div><div class="name">Border</div><div class="hex">hsl(240 3.7% 18%)</div><div class="role">Hairline 1px.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(0 0% 98%); border: 1px solid var(--border-light)"></div><div class="name">Ink</div><div class="hex">hsl(0 0% 98%)</div><div class="role">Основной текст на dark.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(240 5% 64.9%)"></div><div class="name">Ink Mute</div><div class="hex">hsl(240 5% 64.9%)</div><div class="role">Подписи.</div></div>
   </div>
 
-  <div class="group-title">Bio (служебная палитра биометрик)</div>
+  <div class="group-title">Bio · Light surface (AA on white)</div>
   <div class="palette">
-    <div class="swatch"><div class="chip" style="background: hsl(336 76% 45%)"></div><div class="name">Bio · Pulse / HR</div><div class="hex">wine</div><div class="role">Тот же wine. Бренд = главная метрика.</div></div>
-    <div class="swatch"><div class="chip" style="background: hsl(195 90% 55%)"></div><div class="name">Bio · HRV</div><div class="hex">hsl(195 90% 55%)</div><div class="role">Вариабельность.</div></div>
-    <div class="swatch"><div class="chip" style="background: hsl(151 100% 45%)"></div><div class="name">Stress · Low</div><div class="hex">#00E676</div><div class="role">NSI зелёная зона.</div></div>
-    <div class="swatch"><div class="chip" style="background: hsl(42 100% 50%)"></div><div class="name">Stress · Mid</div><div class="hex">#FFB300</div><div class="role">Пограничная зона.</div></div>
-    <div class="swatch"><div class="chip" style="background: hsl(348 100% 54%)"></div><div class="name">Stress · High</div><div class="hex">#FF1744</div><div class="role">Критическая зона.</div></div>
-    <div class="swatch"><div class="chip" style="background: hsl(151 100% 55%)"></div><div class="name">ECG Trace</div><div class="hex">hsl(151 100% 55%)</div><div class="role">Линия ЭКГ на kiosk-плашке.</div></div>
+    <div class="swatch"><div class="chip" style="background: #0288A8"></div><div class="name">Bio · HRV</div><div class="hex">#0288A8</div><div class="role">Вариабельность. Затемнён для AA на белом.</div></div>
+    <div class="swatch"><div class="chip" style="background: #00A653"></div><div class="name">Stress · Low</div><div class="hex">#00A653</div><div class="role">NSI зелёная зона. Контраст 3.5:1 large.</div></div>
+    <div class="swatch"><div class="chip" style="background: #E89500"></div><div class="name">Stress · Mid</div><div class="hex">#E89500</div><div class="role">Пограничная зона. Контраст 3.0:1 large.</div></div>
+    <div class="swatch"><div class="chip" style="background: #D1003C"></div><div class="name">Stress · High</div><div class="hex">#D1003C</div><div class="role">Критическая зона. Контраст 5.7:1.</div></div>
+    <div class="swatch"><div class="chip" style="background: #831843"></div><div class="name">Bio · Pulse / HR</div><div class="hex">wine #831843</div><div class="role">Тот же wine. Бренд = главная метрика.</div></div>
+    <div class="swatch"><div class="chip" style="background: #00A653"></div><div class="name">ECG Trace</div><div class="hex">#00A653</div><div class="role">Линия ЭКГ на mobile.</div></div>
+  </div>
+
+  <div class="group-title">Bio · Dark surface (kiosk legibility 1.5m)</div>
+  <div class="palette">
+    <div class="swatch"><div class="chip" style="background: hsl(195 90% 55%)"></div><div class="name">Bio · HRV</div><div class="hex">hsl(195 90% 55%)</div><div class="role">Cyan brighter for dark surface.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(151 100% 45%)"></div><div class="name">Stress · Low</div><div class="hex">#00E676</div><div class="role">Только на dark.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(42 100% 50%)"></div><div class="name">Stress · Mid</div><div class="hex">#FFB300</div><div class="role">Только на dark.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(348 100% 54%)"></div><div class="name">Stress · High</div><div class="hex">#FF1744</div><div class="role">Только на dark.</div></div>
+    <div class="swatch"><div class="chip" style="background: hsl(151 100% 55%)"></div><div class="name">ECG Trace</div><div class="hex">hsl(151 100% 55%)</div><div class="role">Mint на kiosk.</div></div>
+    <div class="swatch"><div class="chip" style="background: #831843"></div><div class="name">Bio · Pulse / HR</div><div class="hex">wine #831843</div><div class="role">Тот же wine — бренд через все темы.</div></div>
   </div>
 </section>
 
@@ -234,44 +1267,52 @@
 <section class="section">
   <div class="section-head">
     <h2>Типографика</h2>
-    <div class="meta">Onest · Space Grotesk · Geist Mono · tabular nums везде, где цифра живая</div>
+    <div class="meta">Golos Text (UI sans) · JetBrains Mono (метрики · tnum)</div>
   </div>
 
   <div class="type-row">
-    <div class="type-meta"><strong>display-kiosk</strong>Onest 600<br>180 / 1.0 / -6px<br>Kiosk главная метрика</div>
+    <div class="type-meta"><strong>display-kiosk</strong>Golos Text 700<br>180 / 1.0 / -6px<br>Kiosk главная метрика</div>
     <div class="type-sample kiosk">78</div>
   </div>
   <div class="type-row">
-    <div class="type-meta"><strong>metric-xl</strong>Geist Mono 500<br>128 / 1.0 / -3px<br>Kiosk вторичная метрика · tnum</div>
-    <div class="type-sample metric-xl">42<span style="font-family: var(--sans); font-size: 24px; color: var(--fg-mute); margin-left: 12px; letter-spacing: 0">мс</span></div>
+    <div class="type-meta"><strong>metric-xl</strong>JetBrains Mono 500<br>128 / 1.0 / -3px · tnum<br>Kiosk вторичная метрика</div>
+    <div class="type-sample metric-xl">42<span style="font-family: var(--sans); font-size: 24px; color: var(--ink-mute-light); margin-left: 12px; letter-spacing: 0">мс</span></div>
   </div>
   <div class="type-row">
-    <div class="type-meta"><strong>metric-lg</strong>Geist Mono 500<br>64 / 1.0 / -1.5px<br>Drill-down side-panel</div>
+    <div class="type-meta"><strong>metric-lg</strong>JetBrains Mono 500<br>64 / 1.0 / -1.5px · tnum<br>Mobile hero metric · drill-down</div>
     <div class="type-sample metric-lg">312</div>
   </div>
   <div class="type-row">
-    <div class="type-meta"><strong>metric-md</strong>Geist Mono 500<br>32 / 1.1<br>Dashboard KPI цифра</div>
+    <div class="type-meta"><strong>metric-md</strong>JetBrains Mono 500<br>32 / 1.1 · tnum<br>Dashboard KPI цифра</div>
     <div class="type-sample metric-md">68 bpm</div>
   </div>
   <div class="type-row">
-    <div class="type-meta"><strong>display-xl</strong>Onest 600<br>56 / 1.1 / -1.8px<br>Mobile hero</div>
+    <div class="type-meta"><strong>display-xl</strong>Golos Text 700<br>56 / 1.1 / -1.5px<br>Mobile hero text</div>
     <div class="type-sample display-xl">Привет, Алексей</div>
   </div>
   <div class="type-row">
-    <div class="type-meta"><strong>display-lg</strong>Onest 600<br>40 / 1.15 / -1px<br>Section opener</div>
+    <div class="type-meta"><strong>display-lg</strong>Golos Text 600<br>40 / 1.15 / -1px<br>Section opener</div>
     <div class="type-sample display-lg">Сегодня в команде</div>
   </div>
   <div class="type-row">
-    <div class="type-meta"><strong>headline</strong>Space Grotesk 600<br>24 / 1.25 / -0.4px<br>Tab heading, screen title</div>
+    <div class="type-meta"><strong>headline</strong>Golos Text 600<br>24 / 1.25 / -0.3px<br>Tab heading, screen title</div>
     <div class="type-sample headline">Спорт · 12 сотрудников онлайн</div>
   </div>
   <div class="type-row">
-    <div class="type-meta"><strong>body</strong>Space Grotesk 400<br>14 / 1.5<br>Default</div>
+    <div class="type-meta"><strong>body</strong>Golos Text 400<br>15 / 1.55<br>Default body</div>
     <div class="type-sample body">Двухступенчатый фильтр R-R интервалов — медианный 20% и перцентильный 5/95% — отрезает артефакты движения и удерживает базовую линию пульса в реальном времени.</div>
   </div>
   <div class="type-row">
-    <div class="type-meta"><strong>caption</strong>Space Grotesk 400<br>12 / 1.4 / 0.1px<br>Подписи, единицы</div>
+    <div class="type-meta"><strong>caption</strong>Golos Text 400<br>12 / 1.4<br>Подписи, единицы</div>
     <div class="type-sample caption">обновлено 12 секунд назад · BPM · последние 30 минут</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><strong>eyebrow</strong>JetBrains Mono 500<br>11 / 1.4 / +0.6px<br>UPPERCASE pre-headers</div>
+    <div class="type-sample eyebrow-sample">HRV сегодня · готовы тренироваться</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta"><strong>button</strong>Golos Text 500<br>14 / 1<br>CTA, secondary, ghost</div>
+    <div class="type-sample button-sample">Начать тренировку</div>
   </div>
 </section>
 
@@ -281,7 +1322,7 @@
     <h2>Сетка и отступы</h2>
     <div class="meta">4px base · никаких 18/22/30px</div>
   </div>
-  <div style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 32px;">
+  <div style="background: var(--card-light); border: 1px solid var(--border-light); border-radius: 12px; padding: 24px 32px;">
     <div class="spacing-row"><div class="spacing-name">space-1</div><div><div class="spacing-bar" style="width: 4px"></div></div><div class="spacing-val">4px</div></div>
     <div class="spacing-row"><div class="spacing-name">space-2</div><div><div class="spacing-bar" style="width: 8px"></div></div><div class="spacing-val">8px</div></div>
     <div class="spacing-row"><div class="spacing-name">space-3</div><div><div class="spacing-bar" style="width: 12px"></div></div><div class="spacing-val">12px</div></div>
@@ -294,31 +1335,218 @@
   </div>
 </section>
 
-<!-- KIOSK -->
+<!-- ON REAL SCREENS -->
 <section class="section">
   <div class="section-head">
-    <h2>Kiosk · стенд 1920×1080</h2>
-    <div class="meta">читается с 1.5–2м · tabular nums · layered SVG-gauge · ECG-плашка</div>
+    <h2>На реальных экранах</h2>
+    <div class="meta">4 phone-мокапа · light-bg · Golos + JetBrains Mono · glassmorphic только на home hero + modal</div>
   </div>
 
-  <div class="demo-label">Главная метрика — пульс</div>
+  <div class="screens-stage">
+    <div class="screens-row">
+
+      <!-- ============ Screen 1 — Home ============ -->
+      <div class="screen-cell">
+        <div class="phone"><div class="screen">
+          <div class="s-statusbar"><span>9:41</span><span class="s-status-icons">●●●● ▮ ▮</span></div>
+          <div class="s-header">
+            <div class="s-brand"><span class="s-brand-mark">~</span><span>Pulse</span></div>
+            <div class="s-header-icons"><span class="s-icon">🔔</span><span class="s-avatar">КЛ</span></div>
+          </div>
+          <div class="s-body">
+            <!-- from Bevel -->
+            <div class="s-card-glass">
+              <div class="s-card-row"><span class="s-eyebrow">HRV сегодня</span><span class="s-badge-up">+12% к вчера</span></div>
+              <div class="s-metric-line"><span class="s-metric-num">47</span><span class="s-metric-unit">ms</span></div>
+              <p class="s-body-text">Вы набираете форму и справляетесь со стрессом лучше</p>
+            </div>
+            <div class="s-card">
+              <div class="s-card-row"><span class="s-eyebrow">Готовы тренироваться</span><span class="s-ready">READY</span></div>
+              <h3 class="s-heading-lg">Сегодня лёгкий бег</h3>
+              <p class="s-body-text">3 дня форма растёт — идеальное время для нагрузки</p>
+              <svg class="s-sparkline" viewBox="0 0 240 36" preserveAspectRatio="none"><path d="M 0 28 L 20 26 L 40 27 L 60 22 L 80 24 L 100 19 L 120 21 L 140 17 L 160 14 L 180 16 L 200 11 L 220 12 L 240 8" fill="none" stroke="#831843" stroke-width="1.5" stroke-linecap="round" /></svg>
+              <div class="s-card-row" style="margin-top:2px"><span class="s-meta">HRV · 7 дней</span><span class="s-meta" style="color: var(--bio-low)">тренд ↑</span></div>
+              <div class="s-buttons">
+                <button class="s-btn s-btn-primary">Начать тренировку</button>
+                <button class="s-btn s-btn-outline">Подробнее</button>
+              </div>
+            </div>
+            <div class="s-warning-row">
+              <span class="s-warning-icon">⚠</span>
+              <span class="s-warning-text">Demo data — real sleep tracking coming soon</span>
+            </div>
+            <div class="s-row">
+              <div class="s-row-icon">🌙</div>
+              <div><div class="s-row-title">Сон прошлой ночью</div><div class="s-row-sub"><span class="s-metric-sm">7ч 42м</span> · 22% / 15% / 63%</div></div>
+            </div>
+          </div>
+          <div class="s-bottom-nav">
+            <div class="s-nav-item active"><span class="s-nav-icon">⌂</span>Дом</div>
+            <div class="s-nav-item"><span class="s-nav-icon">≡</span>История</div>
+            <div class="s-nav-item"><span class="s-nav-icon">♥</span>Sharing</div>
+            <div class="s-nav-item"><span class="s-nav-icon">⋯</span>Ещё</div>
+          </div>
+        </div></div>
+        <div class="screen-caption">01 · home<strong>glass hero · light primary</strong></div>
+      </div>
+
+      <!-- ============ Screen 2 — HRV Detail ============ -->
+      <div class="screen-cell">
+        <div class="phone"><div class="screen">
+          <div class="s-statusbar"><span>9:55</span><span class="s-status-icons">●●●● ▮ ▮</span></div>
+          <div class="s-back-header"><span class="s-icon">‹</span><span>HRV</span><span class="s-icon">ⓘ</span></div>
+          <div class="s-body">
+            <div class="s-hero-section">
+              <div class="s-eyebrow-wine">Сегодня · 9:48</div>
+              <div><span class="s-hero-num">52</span><span class="s-hero-unit">ms</span></div>
+              <div class="s-hero-deltas"><span>▲ +8% к неделе</span><span class="divider">|</span><span>▲ +12% к baseline</span></div>
+            </div>
+            <!-- from Bevel -->
+            <div class="s-card">
+              <div class="s-card-row"><span class="s-eyebrow">30 дней</span><div class="s-tabs"><span class="s-tab">7Д</span><span class="s-tab active">30Д</span><span class="s-tab">Год</span></div></div>
+              <svg class="s-chart" viewBox="0 0 240 86" preserveAspectRatio="none">
+                <line x1="0" y1="58" x2="240" y2="58" stroke="#E8E4DE" stroke-width="1" stroke-dasharray="2,2" />
+                <path d="M 0 60 L 8 55 L 16 58 L 24 52 L 32 56 L 40 48 L 48 53 L 56 46 L 64 50 L 72 44 L 80 49 L 88 41 L 96 45 L 104 38 L 112 42 L 120 35 L 128 39 L 136 32 L 144 36 L 152 30 L 160 34 L 168 26 L 176 30 L 184 24 L 192 28 L 200 20 L 208 24 L 216 18 L 224 22 L 232 16 L 240 14" fill="none" stroke="#831843" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="240" cy="14" r="3" fill="#831843" />
+              </svg>
+            </div>
+            <div class="s-stat-grid">
+              <div class="s-stat-card"><div class="s-eyebrow">Сегодня</div><div><span class="s-stat-num">52</span><span class="s-metric-unit"> ms</span></div></div>
+              <div class="s-stat-card"><div class="s-eyebrow">Сред. неделя</div><div><span class="s-stat-num">48</span><span class="s-metric-unit"> ms</span></div></div>
+              <div class="s-stat-card"><div class="s-eyebrow">Сред. месяц</div><div><span class="s-stat-num">45</span><span class="s-metric-unit"> ms</span></div></div>
+            </div>
+            <div class="s-insight">
+              <div class="s-insight-icon">♥</div>
+              <div><div class="s-insight-title">HRV выше нормы</div><div class="s-insight-body">Хорошо отдохнули — можно интенсивную тренировку или recovery-фокус.</div></div>
+            </div>
+            <div class="s-learn-more">ⓘ Узнать больше про HRV</div>
+          </div>
+          <div class="s-bottom-nav">
+            <div class="s-nav-item active"><span class="s-nav-icon">⌂</span>Дом</div>
+            <div class="s-nav-item"><span class="s-nav-icon">≡</span>История</div>
+            <div class="s-nav-item"><span class="s-nav-icon">♥</span>Sharing</div>
+            <div class="s-nav-item"><span class="s-nav-icon">⋯</span>Ещё</div>
+          </div>
+        </div></div>
+        <div class="screen-caption">20b · hrv detail<strong>baseline-aware chart</strong></div>
+      </div>
+
+      <!-- ============ Screen 3 — HRV Explainer Modal (glassmorphic) ============ -->
+      <div class="screen-cell">
+        <div class="phone"><div class="screen">
+          <div class="s-statusbar"><span>9:55</span><span class="s-status-icons">●●●● ▮ ▮</span></div>
+          <div class="s-modal-bg">
+            <div class="s-modal-dim">
+              <div class="s-back-header"><span class="s-icon">‹</span><span>HRV</span><span class="s-icon">ⓘ</span></div>
+              <div class="s-hero-section" style="padding-top: 12px;">
+                <div class="s-eyebrow-wine">Сегодня · 9:48</div>
+                <div><span class="s-hero-num" style="font-size: 56px;">52</span><span class="s-hero-unit">ms</span></div>
+                <div class="s-hero-deltas"><span>▲ +8% к неделе</span></div>
+              </div>
+            </div>
+            <!-- from Bevel -->
+            <div class="s-modal-sheet">
+              <div class="s-modal-handle"></div>
+              <div class="s-modal-row"><span class="s-eyebrow-wine">Как это работает</span><span class="s-modal-close">✕</span></div>
+              <h2 class="s-modal-title">Что такое HRV?</h2>
+              <p class="s-modal-body"><span class="s-wine-bold">HRV</span> — вариабельность интервалов между ударами сердца. Чем выше — тем лучше нервная система отдохнула и готова к нагрузке.</p>
+              <p class="s-modal-body">Браслет измеряет HRV каждое утро и сравнивает с вашим <span class="s-wine-bold">baseline</span> (среднее за 30 дней).</p>
+              <div class="s-modal-divider"></div>
+              <div class="s-eyebrow">Как читать график</div>
+              <ul class="s-bullets">
+                <li><span class="s-bull s-bull-up">▲</span><span><strong>+10%</strong> и выше к baseline — отличное восстановление</span></li>
+                <li><span class="s-bull s-bull-mid">●</span><span><strong>±10%</strong> к baseline — норма</span></li>
+                <li><span class="s-bull s-bull-down">▼</span><span><strong>−10%</strong> и ниже — стресс или недосып</span></li>
+              </ul>
+              <div class="s-disclaimer"><strong>Не медицинская диагностика.</strong> HRV меняется от сна, тренировок, кофе и стресса. Если стабильно низкие — обратитесь к врачу.</div>
+              <button class="s-modal-btn">Понятно</button>
+            </div>
+          </div>
+        </div></div>
+        <div class="screen-caption">20c · explainer modal<strong>glassmorphic sheet</strong></div>
+      </div>
+
+      <!-- ============ Screen 4 — Training Active (Whoop-leaning) ============ -->
+      <div class="screen-cell">
+        <div class="phone"><div class="screen">
+          <div class="s-statusbar"><span>9:41</span><span class="s-status-icons">●●●● ▮ ▮</span></div>
+          <!-- from Whoop -->
+          <div class="s-training-header">
+            <div>
+              <span class="s-training-status">БЕГ</span>
+              <span class="s-training-time">00:12:43</span>
+            </div>
+            <button class="s-training-stop">STOP</button>
+          </div>
+          <div class="s-pagination-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <div class="s-page-label">1 / 3 · зоны</div>
+          <div class="s-training-hero">
+            <div class="s-training-eyebrow">Пульс</div>
+            <div class="s-training-bpm">156<span class="s-training-bpm-unit">bpm</span></div>
+            <div class="s-training-zone-pill">Zone 3 · Tempo</div>
+          </div>
+          <div class="s-training-stats">
+            <div class="s-training-stat">
+              <div class="s-training-stat-num">2.34</div>
+              <div class="s-training-stat-lbl">км</div>
+            </div>
+            <div class="s-training-stat">
+              <div class="s-training-stat-num">5:24</div>
+              <div class="s-training-stat-lbl">мин/км</div>
+            </div>
+            <div class="s-training-stat">
+              <div class="s-training-stat-num">186</div>
+              <div class="s-training-stat-lbl">ккал</div>
+            </div>
+          </div>
+          <div class="s-training-zones">
+            <div class="s-zone-cell"><div class="s-zone-name">Z1</div><div class="s-zone-pct">3%</div></div>
+            <div class="s-zone-cell"><div class="s-zone-name">Z2</div><div class="s-zone-pct">28%</div></div>
+            <div class="s-zone-cell active"><div class="s-zone-name">Z3</div><div class="s-zone-pct">52%</div></div>
+            <div class="s-zone-cell"><div class="s-zone-name">Z4</div><div class="s-zone-pct">14%</div></div>
+            <div class="s-zone-cell"><div class="s-zone-name">Z5</div><div class="s-zone-pct">3%</div></div>
+          </div>
+        </div></div>
+        <div class="screen-caption">03a · training active<strong>HR zones · Whoop heritage</strong></div>
+      </div>
+
+    </div>
+
+    <div style="margin-top: 24px; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--ink-dim-light);">
+      Donor lineage:
+      <span style="color: var(--bio-hrv);">●</span> from Bevel — home hero glass, chart, modal sheet ·
+      <span style="color: var(--bio-high);">●</span> from Whoop — HR-zones training screen
+    </div>
+  </div>
+</section>
+
+<!-- KIOSK (DARK) -->
+<section class="section">
+  <div class="section-head">
+    <h2>Kiosk · стенд 1920×1080 · DARK</h2>
+    <div class="meta">читается с 1.5–2м · tabular nums · single-ring NSI · ECG-плашка</div>
+  </div>
+
+  <div class="demo-label">Главная метрика — пульс · single recovery-ring (NSI semantic ramp)</div>
   <div class="kiosk-card">
     <div>
       <div class="kiosk-label">Heart Rate · Алексей</div>
       <div class="kiosk-num">78<span class="unit">bpm</span></div>
-      <div style="display: flex; gap: 12px; margin-top: 24px;">
-        <span class="badge badge-low">Stress Low · NSI 28</span>
-        <span style="font-family: var(--mono); font-size: 13px; color: var(--fg-mute);">HRV 42мс · zone Z2</span>
+      <div style="display: flex; gap: 12px; margin-top: 24px; align-items: center;">
+        <span class="badge" style="background: rgba(0,166,83,0.18); color: #44D88A;">Stress Low · NSI 28</span>
+        <span style="font-family: var(--mono); font-size: 13px; color: var(--ink-mute-dark); font-variant-numeric: tabular-nums;">HRV 42мс · zone Z2</span>
       </div>
     </div>
     <div class="gauge-wrap">
       <svg viewBox="0 0 260 260" width="260" height="260">
-        <circle cx="130" cy="130" r="110" fill="none" stroke="hsl(240 3.7% 15.9%)" stroke-width="12" />
-        <circle cx="130" cy="130" r="110" fill="none" stroke="hsl(151 100% 45%)" stroke-width="12" stroke-linecap="round" stroke-dasharray="691" stroke-dashoffset="207" transform="rotate(-90 130 130)" />
-        <circle cx="130" cy="130" r="86" fill="none" stroke="hsl(240 3.7% 15.9%)" stroke-width="10" />
-        <circle cx="130" cy="130" r="86" fill="none" stroke="hsl(336 76% 45%)" stroke-width="10" stroke-linecap="round" stroke-dasharray="540" stroke-dashoffset="180" transform="rotate(-90 130 130)" />
-        <text x="130" y="135" text-anchor="middle" font-family="Geist Mono" font-size="48" font-weight="500" fill="hsl(0 0% 98%)" style="font-variant-numeric: tabular-nums;">78</text>
-        <text x="130" y="158" text-anchor="middle" font-family="Space Grotesk" font-size="11" letter-spacing="1" fill="hsl(240 5% 64.9%)">BPM</text>
+        <circle cx="130" cy="130" r="110" fill="none" stroke="hsl(240 3.7% 15.9%)" stroke-width="14" />
+        <circle cx="130" cy="130" r="110" fill="none" stroke="hsl(151 100% 45%)" stroke-width="14" stroke-linecap="round" stroke-dasharray="691" stroke-dashoffset="207" transform="rotate(-90 130 130)" />
+        <text x="130" y="138" text-anchor="middle" font-family="JetBrains Mono" font-size="56" font-weight="500" fill="hsl(0 0% 98%)" style="font-variant-numeric: tabular-nums;">28</text>
+        <text x="130" y="166" text-anchor="middle" font-family="JetBrains Mono" font-size="11" letter-spacing="1.2" fill="hsl(240 5% 64.9%)">NSI · LOW</text>
       </svg>
     </div>
   </div>
@@ -331,18 +1559,18 @@
   </div>
 </section>
 
-<!-- DASHBOARD -->
+<!-- DASHBOARD (DARK) -->
 <section class="section">
   <div class="section-head">
-    <h2>Dashboard · corporate 1440+</h2>
+    <h2>Dashboard · corporate 1440+ · DARK</h2>
     <div class="meta">три таба · KPI-strip · таблица с sparkline · drill-down side-panel</div>
   </div>
 
   <div class="demo-label">Табы</div>
-  <div class="tabs">
-    <button class="tab active">Спорт</button>
-    <button class="tab">Офис</button>
-    <button class="tab">Драйверы</button>
+  <div class="tabs" style="background: var(--card-dark); border-color: var(--border-dark);">
+    <button class="tab active" style="background: var(--muted-dark); color: var(--ink-dark); box-shadow: none;">Спорт</button>
+    <button class="tab" style="color: var(--ink-mute-dark);">Офис</button>
+    <button class="tab" style="color: var(--ink-mute-dark);">Драйверы</button>
   </div>
 
   <div class="demo-label" style="margin-top: 32px;">KPI-strip — 4 в строке</div>
@@ -350,7 +1578,7 @@
     <div class="kpi">
       <div class="lbl">Средний пульс</div>
       <div class="val">68<span class="delta">↓ 3%</span></div>
-      <svg class="spark" viewBox="0 0 200 32" preserveAspectRatio="none"><path d="M 0 20 L 20 18 L 40 22 L 60 16 L 80 14 L 100 18 L 120 12 L 140 10 L 160 14 L 180 8 L 200 12" fill="none" stroke="hsl(336 76% 45%)" stroke-width="1.5" /></svg>
+      <svg class="spark" viewBox="0 0 200 32" preserveAspectRatio="none"><path d="M 0 20 L 20 18 L 40 22 L 60 16 L 80 14 L 100 18 L 120 12 L 140 10 L 160 14 L 180 8 L 200 12" fill="none" stroke="#831843" stroke-width="1.5" /></svg>
     </div>
     <div class="kpi">
       <div class="lbl">HRV команды</div>
@@ -383,10 +1611,10 @@
   </table>
 </section>
 
-<!-- CONTROLS -->
+<!-- CONTROLS (LIGHT) -->
 <section class="section">
   <div class="section-head">
-    <h2>Контролы</h2>
+    <h2>Контролы · light surface</h2>
     <div class="meta">кнопки, бейджи, инпут · wine — только на primary CTA</div>
   </div>
 
@@ -394,12 +1622,12 @@
     <div>
       <div class="demo-label">Кнопки</div>
       <div class="btn-row" style="margin-bottom: 16px;">
-        <button class="btn btn-primary">Начать тест</button>
+        <button class="btn btn-primary">Начать тренировку</button>
         <button class="btn btn-secondary">Подключить браслет</button>
         <button class="btn btn-outline">Отмена</button>
         <button class="btn btn-ghost">Позже</button>
       </div>
-      <div class="demo-label" style="margin-top: 24px;">Статусы стресса</div>
+      <div class="demo-label" style="margin-top: 24px;">Статусы стресса · AA-safe на белом</div>
       <div class="btn-row">
         <span class="badge badge-low">Low · NSI 28</span>
         <span class="badge badge-mid">Mid · NSI 54</span>
@@ -410,7 +1638,13 @@
       <div class="demo-label">Инпут</div>
       <input class="input" placeholder="Введите имя для теста" />
       <div class="demo-label" style="margin-top: 16px;">Инпут в фокусе</div>
-      <input class="input" value="Алексей" autofocus style="border-color: var(--wine); box-shadow: 0 0 0 3px hsl(336 76% 45% / 0.2);" />
+      <input class="input" value="Алексей" autofocus style="border-color: var(--wine); box-shadow: 0 0 0 3px rgba(131, 24, 67, 0.18);" />
+      <div class="demo-label" style="margin-top: 16px;">ECG-плашка · light surface · mint #00A653</div>
+      <div class="ecg-strip-light">
+        <svg viewBox="0 0 800 80" preserveAspectRatio="none">
+          <path d="M 0 40 L 60 40 L 70 38 L 80 42 L 90 40 L 140 40 L 145 28 L 150 52 L 155 10 L 160 70 L 165 40 L 220 40 L 230 38 L 240 42 L 250 40 L 310 40 L 315 28 L 320 52 L 325 10 L 330 70 L 335 40 L 400 40 L 410 38 L 420 42 L 430 40 L 490 40 L 495 28 L 500 52 L 505 10 L 510 70 L 515 40 L 580 40 L 590 38 L 600 42 L 610 40 L 670 40 L 675 28 L 680 52 L 685 10 L 690 70 L 695 40 L 800 40" fill="none" stroke="#00A653" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+        </svg>
+      </div>
     </div>
   </div>
 </section>
@@ -422,18 +1656,40 @@
     <div class="meta">что соблюдаем и что не делаем никогда</div>
   </div>
   <div class="principles">
-    <div class="principle"><div class="num">01</div><h4>Wine — единственный chromatic accent</h4><p>Никаких вторых брендовых hue. Bio-палитра — служебная семантика (пульс, HRV, стресс), не декор.</p></div>
-    <div class="principle"><div class="num">02</div><h4>Tabular nums на живых метриках</h4><p>Geist Mono с font-feature-settings: 'tnum' 1. Пульс не должен прыгать при смене 78→79.</p></div>
-    <div class="principle"><div class="num">03</div><h4>Hairline-borders, не shadows</h4><p>Иерархия через surface ladder background → card → muted. Нулевые decorative shadows.</p></div>
-    <div class="principle"><div class="num">04</div><h4>4px grid строго</h4><p>Все отступы кратны 4. Никаких 18px / 22px / 30px. Перед commit — арифметика пикселей.</p></div>
-    <div class="principle"><div class="num">05</div><h4>Dark-first, light — паритет</h4><p>Wine остаётся wine в обеих темах. Surface ladder параллельна. Mobile = Android + iOS.</p></div>
-    <div class="principle"><div class="num">06</div><h4>Skills — подсказка, не закон</h4><p>Источник истины — этот DESIGN.md + ui-kit.html. Если skill советует тёплую палитру / убрать tnum — игнорируем.</p></div>
+    <div class="principle"><div class="num">01</div><h4>Wine — единственный chromatic accent</h4><p>Никаких вторых брендовых hue. Bio-палитра — служебная семантика (пульс, HRV, стресс), не декор. Wine остаётся wine в обеих темах.</p></div>
+    <div class="principle"><div class="num">02</div><h4>Tabular nums на живых метриках</h4><p>JetBrains Mono с font-variant-numeric: tabular-nums. Пульс не должен прыгать при смене 78→79.</p></div>
+    <div class="principle"><div class="num">03</div><h4>Hairline-borders, не shadows</h4><p>Иерархия через surface ladder background → card → muted. На light bg тем более — никаких heavy shadows.</p></div>
+    <div class="principle"><div class="num">04</div><h4>4px grid строго</h4><p>Все отступы кратны 4. Никаких 18/22/30px. Перед commit — арифметика пикселей.</p></div>
+    <div class="principle"><div class="num">05</div><h4>Light-first для mobile, dark для kiosk + dashboard</h4><p>Mobile = Android + iOS, primary light. Kiosk + dashboard остаются dark-first для plasma-кейсов и плотной аналитики. Wine — мост между темами.</p></div>
+    <div class="principle"><div class="num">06</div><h4>Glassmorphic — только home hero + ВСЕ модалки</h4><p>Применяется на mobile home hero card и на всех modal sheets (HRV explainer, Sleep explainer, любые). Dashboard и kiosk — flat surfaces, никакого блюра.</p></div>
+    <div class="principle"><div class="num">07</div><h4>Skills — подсказка, не закон</h4><p>Источник истины — DESIGN.md + ui-kit.html. Если skill советует тёплую палитру / убрать tnum / заменить шрифты — игнорируем.</p></div>
+    <div class="principle"><div class="num">08</div><h4>Mobile = Android + iOS</h4><p>Phone-мокапы рендерятся в светлой теме на обеих платформах. Шрифты через Google Fonts CDN. Web fallback — system-ui.</p></div>
   </div>
 </section>
 
-<footer style="margin-top: 96px; padding-top: 32px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--fg-dim); font-size: 12px; font-family: var(--mono);">
+<!-- ANTI-PATTERNS -->
+<section class="section">
+  <div class="section-head">
+    <h2>Анти-паттерны</h2>
+    <div class="meta">никогда не делаем — даже если skill советует</div>
+  </div>
+  <ul class="anti-list">
+    <li>Применять glassmorphic вне home hero и modal sheets — размывает медицинскую серьёзность.</li>
+    <li>Использовать второй brand-hue помимо wine — bio-палитра не для декора.</li>
+    <li>Менять Golos / JetBrains Mono на Inter / Geist / SF Pro по совету AI-skill.</li>
+    <li>Тёплая cream/sand палитра вместо нейтральной — это AI-default 2026, не Neiry.</li>
+    <li>Heavy drop-shadows вместо hairline-borders — особенно на light bg.</li>
+    <li>Отступы 18/22/30px — нарушение 4px grid.</li>
+    <li>Использовать bio-low/mid/high HEX как декоративный фон — они только для статусов.</li>
+    <li>Customizable cards / drag-handles — пост-MVP, сейчас НЕ добавляем.</li>
+    <li>Убирать font-variant-numeric: tabular-nums на живых метриках — цифры будут прыгать.</li>
+    <li>Радикально снижать плотность данных в dashboard — это профи-инструмент, не лендинг.</li>
+  </ul>
+</section>
+
+<footer class="page-footer">
   <span>Neiry Pulse Design System · v0.alpha · draft for PM acceptance</span>
-  <span>04.06.2026</span>
+  <span>17.06.2026 · Golos Text + JetBrains Mono · light-first mobile</span>
 </footer>
 
 </body>
