@@ -307,7 +307,10 @@
       "Bash(awk 'BEGIN{IGNORECASE=0} /JetBrains Mono/{for\\(i=NR-5;i<NR;i++\\) print lines[i]; print $0; print \"---\"} {lines[NR]=$0}' /Users/solomono/.claude/projects/-Users-solomono-Desktop-NOW---------NEIRY-docs-web/aa766322-2ab7-42d8-b844-bba8151b088b/tool-results/toolu_014Ba4oNiR1oPkvyMC4QAvEp.txt)",
       "Bash(awk -F: '{print $2}')",
       "Bash(python3 /tmp/slice_extended.py)",
-      "Bash(python3 regen_hero_num_fix.py)"
+      "Bash(python3 regen_hero_num_fix.py)",
+      "Bash(python3 /tmp/slice_settings_calibration.py)",
+      "Bash(python3 /tmp/render_settings_proofs.py)",
+      "Bash(python3 /tmp/slice_settings_detail.py)"
     ],
     "additionalDirectories": [
       "/tmp",

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pulse · Mobile Settings Detail · BT + Notifications + Privacy · C2 · v0</title>
+  <title>Pulse · Mobile Settings Detail · BT + Notifications + Privacy + Calibration · C2 · v0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -508,6 +508,222 @@
       .add-link-row:hover { gap: 4px; }
     }
 
+    /* ============ PHONE 4: Calibration (re-trigger baseline) ============ */
+    .cal-current-card {
+      margin: 12px 16px 0 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px;
+    }
+    .cal-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+    .cal-hero-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .cal-hero-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 56px;
+      letter-spacing: -0.03em;
+      color: var(--foreground);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .cal-hero-unit {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+    }
+    .cal-hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: auto;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--success-soft);
+      color: var(--success);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .cal-sub {
+      margin-top: 8px;
+      font-family: 'Golos Text', sans-serif;
+      font-size: 12px;
+      color: var(--muted-foreground);
+      line-height: 1.35;
+    }
+    .cal-sub .num { color: var(--foreground); font-weight: 500; }
+
+    .cal-device-row {
+      margin: 10px 16px 0 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cal-device-icon {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .cal-device-body { flex: 1; min-width: 0; }
+    .cal-device-name {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--foreground);
+      line-height: 1.2;
+    }
+    .cal-device-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted-foreground);
+      margin-top: 2px;
+      letter-spacing: 0.02em;
+    }
+    .cal-device-battery {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--success);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cal-warning {
+      margin: 12px 16px 0 16px;
+      background: var(--warning-soft);
+      border-left: 4px solid var(--warning);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .cal-warning-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .cal-warning-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--warning);
+    }
+    .cal-warning-title {
+      margin-top: 6px;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--foreground);
+      line-height: 1.25;
+      letter-spacing: -0.005em;
+    }
+    .cal-warning-sub {
+      margin-top: 4px;
+      font-family: 'Golos Text', sans-serif;
+      font-size: 12px;
+      color: var(--foreground);
+      line-height: 1.4;
+    }
+
+    .cal-info-section {
+      margin: 12px 16px 0 16px;
+    }
+    .cal-info-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      padding: 0 6px 4px 6px;
+    }
+    .cal-info-list {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 12px;
+    }
+    .cal-info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 5px 0;
+      font-family: 'Golos Text', sans-serif;
+      font-size: 12px;
+      color: var(--foreground);
+      line-height: 1.35;
+    }
+    .cal-info-bullet {
+      flex-shrink: 0;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--primary);
+      margin-top: 7px;
+    }
+
+    .cal-actions {
+      margin: 14px 16px 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .cal-cta-destructive {
+      width: 100%;
+      height: 48px;
+      background: var(--destructive);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.005em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 140ms ease;
+    }
+    .cal-cta-destructive:hover { background: #9b1818; }
+    .cal-cta-secondary {
+      width: 100%;
+      height: 40px;
+      background: transparent;
+      color: var(--primary);
+      border: none;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      letter-spacing: 0.005em;
+    }
+    .cal-cta-secondary:hover { background: var(--primary-soft); border-radius: 8px; }
+
     /* Tab-bar — canonical */
     .tabbar {
       position: absolute;
@@ -562,7 +778,7 @@
     }
     .frames-row {
       display: flex;
-      gap: 48px;
+      gap: 36px;
       align-items: flex-start;
       justify-content: center;
       flex-wrap: nowrap;
@@ -595,7 +811,7 @@
 </head>
 <body>
   <main class="page-chrome">
-    <div class="page-title">Pulse · Mobile · C2 · Settings Detail — BT + Notifications + Privacy · 3×(390×844)</div>
+    <div class="page-title">Pulse · Mobile · C2 · Settings Detail — BT + Notifications + Privacy + Calibration · 4×(390×844)</div>
 
     <div class="frames-row">
 
@@ -1114,6 +1330,119 @@
           </nav>
         </section>
         <div class="frame-caption"><strong>ЭКРАН 33</strong> · SETTINGS · PRIVACY</div>
+      </div>
+
+      <!-- ===================== PHONE 4 — CALIBRATION (re-trigger baseline) ===================== -->
+      <div class="frame-with-caption">
+        <section class="device-frame" aria-label="Калибровка браслета — сброс личной нормы">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <div class="app-bar-nested">
+            <button class="app-bar-back" aria-label="Назад">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13.5 5 L7 11 L13.5 17"/>
+              </svg>
+            </button>
+            <div class="app-bar-title">Калибровка браслета</div>
+            <div></div>
+          </div>
+
+          <div class="body-scroll" style="padding-bottom: 16px;">
+
+            <!-- Current baseline card -->
+            <div class="cal-current-card">
+              <div class="cal-eyebrow">Текущая личная норма</div>
+              <div class="cal-hero-row">
+                <span class="cal-hero-num num">47</span>
+                <span class="cal-hero-unit">ms</span>
+                <span class="cal-hero-pill" aria-label="Калибровка активна">
+                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M2 6.5 L5 9 L10 3.5"/>
+                  </svg>
+                  активна
+                </span>
+              </div>
+              <div class="cal-sub">Готова с <span class="num">14 июня 2026</span> · собрана за <span class="num">36</span> часов</div>
+            </div>
+
+            <!-- Connected bracelet info -->
+            <div class="cal-device-row">
+              <div class="cal-device-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="5" width="10" height="10" rx="2.5"/>
+                  <path d="M7 5 L7.5 2 H12.5 L13 5"/>
+                  <path d="M7 15 L7.5 18 H12.5 L13 15"/>
+                  <circle cx="10" cy="10" r="2"/>
+                </svg>
+              </div>
+              <div class="cal-device-body">
+                <div class="cal-device-name mono">VIGOR-XYZ123 · 87%</div>
+                <div class="cal-device-meta">firmware <span class="num">2.1.4</span></div>
+              </div>
+              <span class="cal-device-battery num">87%</span>
+            </div>
+
+            <!-- Warning card -->
+            <div class="cal-warning">
+              <div class="cal-warning-header">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M10 2.5 L17 16 H3 Z"/>
+                  <path d="M10 8 V11.5"/>
+                  <circle cx="10" cy="13.5" r="0.7" fill="#d97706"/>
+                </svg>
+                <span class="cal-warning-eyebrow">Безвозвратное действие</span>
+              </div>
+              <div class="cal-warning-title">Перекалибровка сбросит личную норму</div>
+              <div class="cal-warning-sub">Новая калибровка займёт ~<span style="font-family:'JetBrains Mono',monospace;">36</span> часов. В это время метрики HRV будут менее точными — система собирает новые данные личной нормы.</div>
+            </div>
+
+            <!-- Info section: когда нужна перекалибровка -->
+            <div class="cal-info-section">
+              <div class="cal-info-title">Когда нужна перекалибровка</div>
+              <div class="cal-info-list">
+                <div class="cal-info-item">
+                  <span class="cal-info-bullet" aria-hidden="true"></span>
+                  <span>Поменялся образ жизни — тренировки, сон, питание</span>
+                </div>
+                <div class="cal-info-item">
+                  <span class="cal-info-bullet" aria-hidden="true"></span>
+                  <span>Устройство было неактивно более <span class="mono">30</span> дней</span>
+                </div>
+                <div class="cal-info-item">
+                  <span class="cal-info-bullet" aria-hidden="true"></span>
+                  <span>По рекомендации врача</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions stack -->
+            <div class="cal-actions">
+              <button class="cal-cta-destructive" aria-label="Сбросить личную норму и начать новую калибровку">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 6 H16"/>
+                  <path d="M7 6 V4 H13 V6"/>
+                  <path d="M5.5 6 L6 17 H14 L14.5 6"/>
+                  <path d="M9 9 V14 M11 9 V14"/>
+                </svg>
+                Сбросить и начать заново
+              </button>
+              <button class="cal-cta-secondary" aria-label="Отмена">Отмена</button>
+            </div>
+
+          </div>
+
+          <!-- БЕЗ tab-bar — nested screen внутри Settings -->
+        </section>
+        <div class="frame-caption"><strong>ЭКРАН 34</strong> · SETTINGS · КАЛИБРОВКА БРАСЛЕТА</div>
       </div>
 
     </div>
