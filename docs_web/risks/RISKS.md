@@ -12,6 +12,7 @@ layout: default
 - v1 (2026-06-05) — основан на M2-эре + walkthrough 2026-06-05.
 - v2 (2026-06-09) — pivot 08.06: большая часть v1-рисков superseded; добавлены R-008..R-019 из PRD v2.4 (унифицированная нумерация).
 - v3 (2026-06-12) — синхронизация с PRD v2.6 (акцепт Никиты 12.06): R-013 закрыт (Sber-демо вне PM-скоупа), R-017 переформулирован (Firebase для пуш-инфраструктуры Ф1, не Sber), R-018 переформулирован (буфер 1 рабочий день после сдвига Ф1 на 19.06), R-019 смягчён (Whoop-принцип переписан в AC-1.14 PRD v2.6).
+- v3.1 (2026-06-18) — добавлен R-020 (Backend baseline pipeline + Калибровка re-trigger) после Settings sync 17.06 с новым screen «Калибровка браслета». PRD §9.1 добавлена subsection «Отложено в v2» для MVP store submission scope.
 
 ---
 
@@ -42,6 +43,7 @@ layout: default
 | R-017 | 🟡 | Технические | Firebase задержка для пуш-инфраструктуры Ф1 | in-mitigation (downgrade 🔴→🟡 после 12.06) | Кирилл+Алиса |
 | R-018 | 🟢 | Сроки | Цепочка 12.06→19.06→22.06 — буфер 1 раб. день | open (downgrade 🟡→🟢 после сдвига Ф1 на 19.06) | PM |
 | R-019 | ⚪ | Дизайн | UI-дизайнер клонирует Whoop вопреки брифу — снят после смягчения принципа | **CLOSED 12.06** (AC-1.14 PRD v2.6 переписан) | — |
+| R-020 | 🟡 | Технические | Backend baseline pipeline + Калибровка re-trigger (новый screen 17.06) | open | Кирилл |
 
 ---
 
@@ -136,6 +138,28 @@ layout: default
 **Категория:** Дизайн · **Статус:** closed
 
 **Итог 12.06:** Принцип «копируем качество Whoop ≠ копируем UX-паттерны» снят правкой Никиты 09.06 и зафиксирован в PRD v2.6: AC-1.14 переписан под «Bevel + light primary + допустимы UX-элементы Whoop». Side-by-side проверка «без совпадений» больше не требуется. Риск более не актуален.
+
+### 🟡 R-020. Backend baseline pipeline + Калибровка re-trigger
+**Категория:** Технические · **Milestone:** Ф1 W3-W4 · **Owner:** Кирилл · **Статус:** open
+
+**Что:** Frontend wireframes готовы (HTML zip передан Кириллу 17.06), но **backend infrastructure** для baseline pipeline остаётся неясной:
+
+1. **Первая калибровка** — после онбординга система собирает HRV-данные ~36-48 ч и формирует личную норму (baseline). Требует timed background job + storage схему R-R intervals по дням.
+2. **Push notification «Личная норма готова»** — backend triggers через ~36-48 ч после ready. Требует scheduled trigger (cron / queue) интегрированный с Firebase (R-017).
+3. **Калибровка re-trigger** (новый screen 17.06, добавлен в MVP Settings) — юзер тапает «Сбросить и начать заново» → backend должен:
+   - Reset existing baseline value
+   - Очистить старые R-R intervals для baseline calculation
+   - Запустить новый 36-48 ч сбор
+   - Триггерить новый «готово» push после завершения
+
+**Митигация:**
+- **К 19.06 release:** baseline calculation pipeline + ready trigger (без re-trigger flow — это можно отложить)
+- **К pilots 22.06:** обязательно re-trigger endpoint (Settings → Калибровка браслета — UI юзеру обещает это работает)
+- Если backend не успевает re-trigger к 22.06 → frontend показывает CTA `disabled` state с tooltip «доступно с обновления» (graceful degradation)
+
+**Резерв:** Если baseline pipeline не успевает к 19.06 — fallback: системные значения «личной нормы» из научных данных (как Sleep tracking демо-режим), реальный baseline появится в обновлении.
+
+**Источник:** Settings sync 17.06 (commit 00b58b9) — добавлен Phone 4 «Калибровка браслета» в `mobile-settings-detail-v0.html`. PM-доcument `knowledge-base/briefs/2026-06-18-kirill-mvp-store-handover.md` фиксирует requirement.
 
 ---
 
