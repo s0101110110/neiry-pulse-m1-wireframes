@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Neiry Pulse — Store screenshot sanity render · iPhone 6.9″</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Neiry tokens — копия того, что выдаст neiry-pulse тема скилла */
+    :root {
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;          /* wine — PROTECTED */
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Golos Text', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* iPhone 6.9" canvas */
+    .canvas {
+      width: 1320px;
+      height: 2868px;
+      position: relative;
+      background: var(--background);
+      overflow: hidden;
+      padding: 180px 100px 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Eyebrow + headline */
+    .eyebrow {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-weight: 500;
+      font-size: 32px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 36px;
+    }
+    .headline {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 96px;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      color: var(--foreground);
+      text-align: center;
+      max-width: 1100px;
+      margin-bottom: 32px;
+    }
+    .headline .accent { color: var(--primary); }
+    .subhead {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 400;
+      font-size: 44px;
+      line-height: 1.35;
+      color: var(--muted-foreground);
+      text-align: center;
+      max-width: 920px;
+      margin-bottom: 120px;
+    }
+
+    /* Device frame — iPhone bezel */
+    .device {
+      width: 880px;
+      height: 1850px;
+      background: #1a1814;
+      border-radius: 116px;
+      padding: 20px;
+      box-shadow:
+        0 80px 160px -40px rgba(12, 10, 9, 0.35),
+        0 40px 80px -20px rgba(12, 10, 9, 0.20);
+      position: relative;
+    }
+    .device-screen {
+      width: 100%;
+      height: 100%;
+      background: var(--card);
+      border-radius: 96px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .notch {
+      position: absolute;
+      top: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      height: 80px;
+      background: #1a1814;
+      border-radius: 44px;
+      z-index: 30;
+    }
+
+    /* Status bar */
+    .status-bar {
+      flex-shrink: 0;
+      height: 130px;
+      padding: 40px 80px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 38px;
+      color: var(--foreground);
+    }
+    .status-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Hero content area — splash + permission BT */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 80px 200px;
+      gap: 64px;
+    }
+    .logo-wrap {
+      width: 280px;
+      height: 280px;
+      border-radius: 64px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 24px 60px -12px rgba(131, 24, 67, 0.4),
+        0 8px 24px -8px rgba(131, 24, 67, 0.25);
+    }
+    .logo-mark {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-weight: 700;
+      font-size: 140px;
+      color: var(--primary-foreground);
+      letter-spacing: -0.04em;
+    }
+    .app-name {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 96px;
+      letter-spacing: -0.03em;
+      color: var(--foreground);
+    }
+    .app-tagline {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 400;
+      font-size: 36px;
+      color: var(--muted-foreground);
+      text-align: center;
+      max-width: 600px;
+      line-height: 1.4;
+    }
+
+    /* Permission card (Screen 2 of splash flow) */
+    .perm-card {
+      width: 100%;
+      max-width: 660px;
+      background: var(--muted);
+      border-radius: 40px;
+      padding: 56px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      border: 2px solid var(--border);
+    }
+    .perm-icon {
+      width: 96px;
+      height: 96px;
+      border-radius: 28px;
+      background: var(--primary-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 44px;
+    }
+    .perm-title {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 44px;
+      color: var(--foreground);
+    }
+    .perm-body {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 400;
+      font-size: 30px;
+      line-height: 1.5;
+      color: var(--muted-foreground);
+    }
+
+    /* CTA */
+    .cta {
+      width: 100%;
+      max-width: 660px;
+      height: 124px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 38px;
+      border-radius: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 16px 40px -8px rgba(131, 24, 67, 0.35),
+        0 4px 12px -2px rgba(131, 24, 67, 0.2);
+    }
+
+    /* Home indicator */
+    .home-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      height: 8px;
+      background: var(--foreground);
+      border-radius: 4px;
+      opacity: 0.6;
+    }
+
+    /* Watermark sanity-render */
+    .watermark {
+      position: absolute;
+      bottom: 24px;
+      right: 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      color: var(--muted-foreground);
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="eyebrow">Onboarding · 01</div>
+    <h1 class="headline">
+      Подключи браслет<br>и начни <span class="accent">отслеживать</span>
+    </h1>
+    <p class="subhead">
+      Pulse покажет HRV, стресс и баланс ANS сразу после подключения
+    </p>
+
+    <div class="device">
+      <div class="notch"></div>
+      <div class="device-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-right">
+            <span style="font-size: 32px;">●●●●●</span>
+          </div>
+        </div>
+        <div class="hero">
+          <div class="logo-wrap">
+            <div class="logo-mark">N</div>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+            <div class="app-name">Pulse</div>
+            <div class="app-tagline">Носимая нейро-аналитика для повседневной жизни</div>
+          </div>
+          <div class="perm-card">
+            <div class="perm-icon">BT</div>
+            <div class="perm-title">Разрешите Bluetooth</div>
+            <div class="perm-body">
+              Браслет передаёт пульс и HRV через Bluetooth Low Energy. Без него Pulse не сможет считать ваши данные.
+            </div>
+          </div>
+          <div class="cta">Разрешить Bluetooth</div>
+        </div>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+
+    <div class="watermark">sanity-render · 2026-06-20 · iPhone 6.9″ · Neiry preset</div>
+  </div>
+</body>
+</html>
