@@ -1954,8 +1954,8 @@
         </a>
         <a class="artifact-row" href="../../../docs_web/risks/RISKS.md">
           <div class="artifact-icon">⚠</div>
-          <div class="artifact-title">RISKS.md · v3.2</div>
-          <div class="artifact-desc">Риск-реестр v3.2 (18.06 вечер): R-008/011/014 closed PM audit + R-021/022 NEW. Открытых: 0 🔴 + 8 🟡 + 2 🟢. Closed: 5 ⚪</div>
+          <div class="artifact-title">RISKS.md · v3.5</div>
+          <div class="artifact-desc">Риск-реестр v3.5 (23.06 вечер): Ф1 release сдвинут на 24.06, дата пилотов TBD. R-018 переформулирован под новые вводные. Открытых: 0 🔴 + 9 🟡 + 2 🟢. Closed: 6 ⚪</div>
           <span class="artifact-author pm">PM</span>
         </a>
         <a class="artifact-row" href="../../../../knowledge-base/PROJECT_STATE.md">
@@ -2157,7 +2157,7 @@
   <!-- VIEW: RISKS -->
   <div class="view" data-view="risks">
     <div style="margin-bottom: 16px; padding: 12px 16px; background: rgba(101,163,13,0.06); border-left: 3px solid var(--green); border-radius: 6px; font-size: 12px; color: var(--muted);">
-      Синхронизировано с <code style="color: var(--text);">risks/RISKS.md v3.2</code> (18.06.2026 вечер · PM audit). <strong style="color: var(--text);">Critical 🔴: 0</strong> · <strong style="color: var(--yellow);">High 🟡: 8</strong> · <strong style="color: var(--green);">Medium 🟢: 2</strong> · <strong>Closed ⚪: 5</strong>. Командный sync с Никитой 19.06 12:00.
+      Синхронизировано с <code style="color: var(--text);">risks/RISKS.md v3.5</code> (23.06.2026 вечер · сдвиг Ф1 release на 24.06, дата пилотов TBD). <strong style="color: var(--text);">Critical 🔴: 0</strong> · <strong style="color: var(--yellow);">High 🟡: 9</strong> · <strong style="color: var(--green);">Medium 🟢: 2</strong> · <strong>Closed ⚪: 6</strong>. Заливка в стор <strong>24.06</strong>, дата пилотов <strong>TBD</strong>. Главный приоритет — финальный bundle от Кирилла для submit 24.06.
     </div>
     <div class="risks-summary">
       <table>
@@ -2166,20 +2166,22 @@
         </thead>
         <tbody>
           <tr><td class="r-id">R-008</td><td>⚪</td><td>Технические</td><td><s>iOS Bridge не успеваем к 12.06</s> — submitted</td><td class="r-status-closed">CLOSED 18.06</td><td>—</td></tr>
-          <tr><td class="r-id">R-009</td><td>🟡</td><td>Юр / Compliance</td><td>App Store review &gt;7 дней</td><td class="r-status-mit">in-mitigation</td><td>PM</td></tr>
-          <tr><td class="r-id">R-010</td><td>🟡</td><td>Дизайн</td><td>Дизайн затягивается</td><td class="r-status-open">open</td><td>PM</td></tr>
+          <tr><td class="r-id">R-009</td><td>🟡</td><td>Юр / Compliance</td><td>App Store review > 7 дней — после сдвига Ф1 на 23.06 буфер до пилотов 24.06 сократился до 1 дня</td><td class="r-status-mit">in-mitigation</td><td>PM</td></tr>
+          <tr><td class="r-id">R-010</td><td>🟢</td><td>Дизайн</td><td>Дизайн затягивается — downgrade 🟡→🟢 (Никита открыл бюджет на max-тариф Claude + дизайнер)</td><td class="r-status-mit">in-mitigation</td><td>PM</td></tr>
           <tr><td class="r-id">R-011</td><td>⚪</td><td>Технические</td><td><s>Сырьё данных Дины задерживается</s> — получено, вопросы Valdus сформированы</td><td class="r-status-closed">CLOSED 18.06</td><td>—</td></tr>
-          <tr><td class="r-id">R-012</td><td>🟢</td><td>Команда</td><td>Костя+Дина границы ролей</td><td class="r-status-open">open</td><td>PM+Дина</td></tr>
+          <tr><td class="r-id">R-012</td><td>🟡</td><td>Команда</td><td>Дина — встраивание как owner HRV-методологии (upgrade 🟢→🟡 после звонка 19.06)</td><td class="r-status-mit">in-mitigation</td><td>PM+Дина</td></tr>
           <tr><td class="r-id">R-013</td><td>⚪</td><td>Бизнес</td><td><s>Демка Сбера 10.06 не готова</s> — Sber-демо вне PM-скоупа</td><td class="r-status-closed">CLOSED 12.06</td><td>—</td></tr>
           <tr><td class="r-id">R-014</td><td>⚪</td><td>Логистика</td><td><s>Костя без браслета</s> — получен в Волгограде</td><td class="r-status-closed">CLOSED 18.06</td><td>—</td></tr>
-          <tr><td class="r-id">R-015</td><td>🟡</td><td>Бизнес</td><td>Sync браслет ↔ Mine Tracker для Райф</td><td class="r-status-open">open</td><td>Никита+Алексей</td></tr>
-          <tr><td class="r-id">R-016</td><td>🟡</td><td>Продукт</td><td>Композитная метрика Ф2 не валидируется</td><td class="r-status-open">open</td><td>Дина</td></tr>
-          <tr><td class="r-id">R-017</td><td>🟡</td><td>Технические</td><td>Firebase для пуш-инфраструктуры Ф1 (downgrade 🔴→🟡)</td><td class="r-status-mit">in-mitigation</td><td>Кирилл+Алиса</td></tr>
-          <tr><td class="r-id">R-018</td><td>🟢</td><td>Сроки</td><td>Цепочка 12.06→19.06→22.06 — буфер 1 раб.день (downgrade 🟡→🟢)</td><td class="r-status-open">open</td><td>PM</td></tr>
+          <tr><td class="r-id">R-015</td><td>🟡</td><td>Бизнес</td><td>Sync браслет ↔ Mine Tracker для Райф — методология интеграции не отработана</td><td class="r-status-open">open</td><td>Никита+Алексей</td></tr>
+          <tr><td class="r-id">R-016</td><td>🟡</td><td>Продукт</td><td>Композитная метрика Ф2 не валидируется Диной — провал AC-2.3 если не успеет к 30.06</td><td class="r-status-open">open</td><td>Дина</td></tr>
+          <tr><td class="r-id">R-017</td><td>🟡</td><td>Технические</td><td>Firebase push для baseline-ready — Алиса в отпуске до 23.06, инфра не финализирована</td><td class="r-status-mit">in-mitigation</td><td>Кирилл+Алиса</td></tr>
+          <tr><td class="r-id">R-018</td><td>🟢</td><td>Сроки</td><td>Ф1 release сдвинут на 24.06, дата пилотов TBD — давление снято</td><td class="r-status-open">open</td><td>PM</td></tr>
           <tr><td class="r-id">R-019</td><td>⚪</td><td>Дизайн</td><td><s>UI-клон Whoop вопреки брифу</s> — принцип смягчён</td><td class="r-status-closed">CLOSED 12.06</td><td>—</td></tr>
-          <tr><td class="r-id">R-020</td><td>🟡</td><td>Технические</td><td>Backend baseline pipeline + Калибровка re-trigger (новый screen 17.06)</td><td class="r-status-open">open</td><td>Кирилл</td></tr>
-          <tr style="background: rgba(217,119,6,0.06);"><td class="r-id"><strong>R-021</strong></td><td>🟡</td><td>Продукт</td><td><strong>NEW 18.06</strong> · Дина: формула HRV не выбрана (RMSSD / SDNN / pNN50) — блокер pipeline</td><td class="r-status-open">open</td><td>Дина</td></tr>
-          <tr style="background: rgba(217,119,6,0.06);"><td class="r-id"><strong>R-022</strong></td><td>🟡</td><td>Логистика</td><td><strong>NEW 18.06</strong> · VIGOR парк недостаточен для Райф (нужно 13-15, есть 4)</td><td class="r-status-open">open</td><td>Алексей</td></tr>
+          <tr><td class="r-id">R-020</td><td>🟡</td><td>Технические</td><td>Backend baseline pipeline + Калибровка re-trigger — без pipeline ключевая фича MVP не работает</td><td class="r-status-open">open</td><td>Кирилл</td></tr>
+          <tr><td class="r-id">R-021</td><td>🟡</td><td>Продукт</td><td>Дина: формула HRV не выбрана (RMSSD / SDNN / pNN50) — блокер baseline pipeline Кирилла</td><td class="r-status-open">open</td><td>Дина</td></tr>
+          <tr><td class="r-id">R-022</td><td>🟡</td><td>Логистика</td><td>VIGOR парк недостаточен для Райф (нужно 13–15, на 08.06 было 4) — fallback на VITRO</td><td class="r-status-open">open</td><td>Алексей</td></tr>
+          <tr style="background: rgba(217,119,6,0.06);"><td class="r-id"><strong>R-023</strong></td><td>🟡</td><td>Технические</td><td><strong>NEW 19.06</strong> · BLE-экспертиза Кирилла под сомнением Никиты — резерв через команду Mind Tracker</td><td class="r-status-open">open</td><td>Кирилл+Дымов</td></tr>
+          <tr><td class="r-id">R-024</td><td>⚪</td><td>Юр / Бренд</td><td><s>Бренд + аккаунт публикации не финализированы</s> — Neiry Pulse + split-схема (App Store ИП Кости / Google Play Нейротех)</td><td class="r-status-closed">CLOSED 23.06</td><td>—</td></tr>
         </tbody>
       </table>
     </div>
@@ -2192,89 +2194,104 @@
       </div>
     </div>
 
-    <div class="risk-section-title">🟡 High · открытые (8)</div>
+    <div class="risk-section-title">🟡 High · открытые (9)</div>
     <div class="risks-grid">
       <div class="risk-card high">
-        <div class="risk-head"><div class="risk-title">🟡 App Store review &gt;7 дней</div><div class="risk-id">R-009</div></div>
-        <div class="risk-meta"><span>Юр / Compliance</span><span>Ф1 W2-W3</span><span>in-mitigation</span><span>PM</span></div>
-        <div class="risk-row"><span class="lab">Что:</span>Apple ревью health-приложений непредсказуемо. При submit 12.06 и MVP 19.06 пт — буфер 7 дней.</div>
-        <div class="risk-row"><span class="lab">Митигация:</span>Ранний submit прото-бандла для запуска модерации параллельно. iOS Bridge submitted 18.06 (R-008 закрыт).</div>
-        <div class="risk-row"><span class="lab">Резерв:</span>AC-1.1 = «submitted, awaiting review»; pilots 22.06 могут стартовать Android-only.</div>
+        <div class="risk-head"><div class="risk-title">🟡 App Store review занимает больше 7 дней</div><div class="risk-id">R-009</div></div>
+        <div class="risk-meta"><span>Юр / Compliance</span><span>Ф1 release</span><span>in-mitigation</span><span>PM</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Apple ревью health-приложений длится непредсказуемо: типичный срок 1–7 дней, но для health-данных бывает до 14. После сдвига Ф1 release на 23.06 буфер до пилотов 24.06 — всего 1 день. Если Apple отклонит билд — iOS не успеет одновременно с пилотами.</div>
+        <div class="risk-row"><span class="lab">Что делать:</span>Залить прото-бандл в App Store в течение 23.06 — это запускает ревью параллельно с финальной шлифовкой. Финальный билд обновлять через update до 24.06. PM мониторит статус ежедневно в App Store Connect, при rejection — оперативно дорабатывает спорные пункты.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Если Apple отказывает или тянет — пилоты 24.06 стартуют Android-only, iOS подключается по мере одобрения ревью.</div>
       </div>
 
       <div class="risk-card high">
-        <div class="risk-head"><div class="risk-title">🟡 Дизайн затягивается</div><div class="risk-id">R-010</div></div>
-        <div class="risk-meta"><span>Дизайн</span><span>Ф1 W2</span><span>open</span><span>PM</span></div>
-        <div class="risk-row"><span class="lab">Что:</span>Методология Кости через Claude+скиллы (Whoop+Bevel→синтез) может не дать качества к 19.06.</div>
-        <div class="risk-row"><span class="lab">Митигация:</span>Wireframes 33 экрана готовы 14.06. Pulse rebrand + Golos/JetBrains 17.06. HTML zip передан Кириллу.</div>
+        <div class="risk-head"><div class="risk-title">🟡 Дина — встраивание в команду как owner HRV-методологии</div><div class="risk-id">R-012</div></div>
+        <div class="risk-meta"><span>Команда</span><span>Ф1 + Ф2</span><span>in-mitigation</span><span>PM+Дина</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>На звонке 19.06 Дина прямо сказала, что не понимает, куда встроиться в продуктовом флоу, и чувствует, что её правки не нужны команде. Никита определил Дину как owner HRV-методологии (формула, валидация, onboarding-опросник). Без чёткого встраивания Дина блокирует R-021, R-016 и в целом тормозит развитие продукта.</div>
+        <div class="risk-row"><span class="lab">Что делать:</span>Костя проводит 1-1 sync с Диной 23.06 в 15:00 — определяют конкретные точки приложения её экспертизы (методология HRV, формула, onboarding опросник, валидация). К 23.06 совместно выдают общий план действий. Дальше — короткие синки 15–20 минут несколько раз в неделю.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Если sync не даст конструктива — эскалация Никите, который вправе пересмотреть скоуп Дины в проекте.</div>
       </div>
 
       <div class="risk-card high">
-        <div class="risk-head"><div class="risk-title">🟡 Sync браслет ↔ Mine Tracker для Райф</div><div class="risk-id">R-015</div></div>
-        <div class="risk-meta"><span>Бизнес</span><span>Ф1 W2-W3</span><span>open</span><span>Никита+Алексей</span></div>
-        <div class="risk-row"><span class="lab">Что:</span>Райффайзен пилот (13-15 колл-центр) требует сшивки с их Mine Tracker — методология не отработана.</div>
-        <div class="risk-row"><span class="lab">Митигация:</span>Никита + Алексей прорабатывают отдельным треком. К sync 19.06 12:00 — статус.</div>
+        <div class="risk-head"><div class="risk-title">🟡 Sync браслет ↔ Mine Tracker для Райф-пилота</div><div class="risk-id">R-015</div></div>
+        <div class="risk-meta"><span>Бизнес</span><span>pilots 24.06</span><span>open</span><span>Никита+Алексей</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Корпоративный пилот в Райффайзене (13–15 операторов колл-центра) требует интеграции с их Mine Tracker — связка браслет → система Райф для отслеживания стресса операторов. Методология на сегодня не отработана: непонятно, как именно данные с браслета попадают в Mine Tracker, нужно ли промежуточное API.</div>
+        <div class="risk-row"><span class="lab">Что делать:</span>Никита и Алексей до 24.06 проводят отдельный sync с командой Райф, фиксируют методологию интеграции, определяют ответственного с их стороны и техническую схему передачи данных. Если интеграция не успевает к 24.06 — Райф-пилот откладывается.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Райф-пилот стартует позже (1–2 недели), Лига и внутренний пилот идут по плану.</div>
       </div>
 
       <div class="risk-card high">
         <div class="risk-head"><div class="risk-title">🟡 Композитная метрика Ф2 не валидируется Диной</div><div class="risk-id">R-016</div></div>
-        <div class="risk-meta"><span>Продукт</span><span>Ф2 W3-W4</span><span>open</span><span>Дина</span></div>
-        <div class="risk-row"><span class="lab">Что:</span>Если Дина не подтверждает методологию — AC-2.3 проваливается.</div>
-        <div class="risk-row"><span class="lab">Резерв:</span>HRV-движок + рекомендация без композитной метрики, перенос в M4.</div>
+        <div class="risk-meta"><span>Продукт</span><span>Ф2 (30.06)</span><span>open</span><span>Дина</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Ф2 (30.06) включает первую композитную метрику стресса (HRV + R-R + активность + самоотчёты), которую разрабатывает Дина. Если к 30.06 не подтвердит методологию или не успеет валидировать на данных пилотов — Acceptance AC-2.3 проваливается, фича не релизится.</div>
+        <div class="risk-row"><span class="lab">Что делать:</span>Дина начинает работу над композитной метрикой сразу после фиксации формулы HRV (R-021), параллельно с baseline pipeline Кирилла. Источник данных для валидации — пилоты с 24.06 (35–40 пользователей за неделю дают достаточный объём). Промежуточный sync с PM 27.06.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Если композитная метрика не готова к 30.06 — релизим Ф2 без неё, переносим в M4. Остальные фичи Ф2 от композитной метрики не зависят.</div>
       </div>
 
       <div class="risk-card high">
-        <div class="risk-head"><div class="risk-title">🟡 Firebase задержка для пуш-инфраструктуры Ф1</div><div class="risk-id">R-017</div></div>
-        <div class="risk-meta"><span>Технические</span><span>Ф1 W2</span><span>in-mitigation</span><span>Кирилл+Алиса</span></div>
-        <div class="risk-row"><span class="lab">Что:</span>Алиса обещала Firebase к ~15.06. Нужен для пушей Ф1 (HRV-инсайт / training reminders / fall-alert).</div>
-        <div class="risk-row"><span class="lab">Митигация:</span>Локальный fall detection без облака как fallback. Миграция push-флоу после 15.06.</div>
+        <div class="risk-head"><div class="risk-title">🟡 Firebase push-инфраструктура для baseline-ready</div><div class="risk-id">R-017</div></div>
+        <div class="risk-meta"><span>Технические</span><span>Ф1 + pilots</span><span>in-mitigation</span><span>Кирилл+Алиса</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Push-уведомление «Личная норма готова» — ключевой триггер UX-флоу после 36–48 часов калибровки. Реализуется через Firebase FCM, инфраструктура Firebase — зона Алисы. Алиса в отпуске до 23.06 (вт), пока её настройки не финализированы, Кирилл не может тестировать end-to-end push-флоу.</div>
+        <div class="risk-row"><span class="lab">Что делать:</span>Костя 23.06 утром тегает Алису и её непосредственного руководителя (он добавлен в группу) — запрос финализации Firebase к 23.06 вечеру. Кирилл параллельно готовит интеграцию на стороне backend (FCM SDK, endpoint регистрации push-tokens). После выхода Алисы — финальный тест в течение 24 часов.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Если Firebase не готов к старту пилотов 24.06 — триггер «Личная норма готова» работает как in-app notification при следующем открытии приложения. Push подключается через update в первую неделю пилотов.</div>
       </div>
 
       <div class="risk-card high">
         <div class="risk-head"><div class="risk-title">🟡 Backend baseline pipeline + Калибровка re-trigger</div><div class="risk-id">R-020</div></div>
-        <div class="risk-meta"><span>Технические</span><span>Ф1 W3-W4</span><span>open</span><span>Кирилл</span></div>
-        <div class="risk-row"><span class="lab">Что:</span>Frontend готов (HTML zip передан 17.06), но backend baseline pipeline + Калибровка re-trigger endpoint неясны. Юзер тапает «Сбросить и начать заново» → backend должен очистить baseline + старые R-R + запустить новый 36-48ч сбор.</div>
-        <div class="risk-row"><span class="lab">Митигация:</span>К 19.06 — phase 1 baseline calculation. К 22.06 — phase 2 re-trigger endpoint (graceful degradation если не успевает).</div>
-        <div class="risk-row"><span class="lab">Источник:</span>Settings sync 17.06 (commit 00b58b9) + PRD §9.1 walkthrough 18.06 (commit 7df6a9f).</div>
+        <div class="risk-meta"><span>Технические</span><span>Ф1 + pilots</span><span>open</span><span>Кирилл</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Backend pipeline для расчёта «личной нормы» HRV — ключевой движок MVP. Два сценария: (1) первичная калибровка после онбординга — сбор R-R 36–48ч, расчёт hrv_personal_norm, триггер push «готово»; (2) re-trigger из настроек — пользователь нажимает «Сбросить и начать заново», система очищает baseline и запускает новый сбор. Без pipeline ключевая фича «личная норма» не работает.</div>
+        <div class="risk-row"><span class="lab">Что делать:</span>Кирилл к 23.06 release выкатывает phase 1 (первичная калибровка + ready trigger через FCM); re-trigger flow допиливает к старту пилотов 24.06. Спецификация формулы HRV — зависимость от Дины (R-021), backend пишется на mock-формуле RMSSD до финального решения.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Если phase 1 не готов к 23.06 — baseline берётся из «средних значений по возрасту/полу», реальный персональный расчёт включается через update в первую неделю пилотов. Если re-trigger не готов к 24.06 — CTA «Сбросить» в disabled-состоянии с tooltip «доступно с обновления».</div>
       </div>
 
-      <div class="risk-card high" style="border-color: var(--yellow);">
-        <div class="risk-head"><div class="risk-title">🟡 Дина: формула HRV не выбрана — блокер baseline pipeline</div><div class="risk-id"><strong>R-021 · NEW</strong></div></div>
-        <div class="risk-meta"><span>Продукт</span><span>Ф1 W3-W4</span><span>open (18.06)</span><span>Дина</span></div>
-        <div class="risk-row"><span class="lab">Что:</span>R-011 закрыт 18.06 (сырьё R-R получено, вопросы Valdus сформированы). Однако формула расчёта HRV всё ещё не выбрана (RMSSD vs SDNN vs pNN50). Без формулы Кирилл не может допилить baseline pipeline (R-020).</div>
-        <div class="risk-row"><span class="lab">Митигация:</span>К 19.06 sync с Никитой — Дина представляет промежуточный анализ + рекомендацию. Fallback на <strong>RMSSD</strong> (industry standard) с пометкой «v0, уточнить пост-MVP».</div>
-        <div class="risk-row"><span class="lab">Резерв:</span>Если ни одна формула не выбрана к 22.06 — стартуем pilots с RMSSD, пересчитываем когда Дина определится.</div>
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 Дина: формула HRV не выбрана (RMSSD / SDNN / pNN50)</div><div class="risk-id">R-021</div></div>
+        <div class="risk-meta"><span>Продукт</span><span>Ф1 + pilots</span><span>open</span><span>Дина</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Формула расчёта HRV (выбор между RMSSD, SDNN или pNN50) — это спецификация для core-движка приложения. Дина получила сырьё R-R 18.06, но финальная формула до сих пор не зафиксирована. Без выбора Кирилл пишет baseline pipeline на mock-формуле RMSSD, но реальная замена возможна только после решения — иначе все исторические значения придётся пересчитывать ретроспективно.</div>
+        <div class="risk-row"><span class="lab">Что делать:</span>Дина к 23.06 (вт sync с Костей в 15:00) представляет промежуточный анализ сырых данных + рекомендацию формулы с обоснованием. Если до 24.06 не финализирована — стартуем пилоты на RMSSD по умолчанию (industry standard), ретроактивно пересчитываем после окончательного выбора. Финальное решение — не позднее 30.06.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>RMSSD как safe default — Whoop, Garmin, Apple Watch используют именно его. Риск замены минимален.</div>
         <div class="risk-row"><span class="lab">Связано:</span>R-016 (композитная Ф2), R-020 (Backend pipeline ждёт формулу).</div>
       </div>
 
-      <div class="risk-card high" style="border-color: var(--yellow);">
-        <div class="risk-head"><div class="risk-title">🟡 VIGOR парк недостаточен для Райф-пилота</div><div class="risk-id"><strong>R-022 · NEW</strong></div></div>
-        <div class="risk-meta"><span>Логистика</span><span>pilots 22.06</span><span>open (18.06)</span><span>Алексей</span></div>
-        <div class="risk-row"><span class="lab">Что:</span>Райф-пилот требует 13-15 VIGOR браслетов (9-осевой IMU + GPS — для колл-центра tracking). На 08.06 в наличии только 4 (3 склад + 1 Кирилл). К 22.06 может остаться дефицит ~10 единиц.</div>
-        <div class="risk-row"><span class="lab">Митигация:</span>Алексей к 19.06 sync — проверить актуальную availability на складе. Если дефицит — escalate Никите (поставки от Veepoo).</div>
-        <div class="risk-row"><span class="lab">Резерв:</span>Fallback на VITRO для части Райф-сотрудников (без GPS, но HRV работает). Mine Tracker integration (R-015) пересматривается под смешанный парк.</div>
+      <div class="risk-card high">
+        <div class="risk-head"><div class="risk-title">🟡 VIGOR парк недостаточен для Райф-пилота</div><div class="risk-id">R-022</div></div>
+        <div class="risk-meta"><span>Логистика</span><span>pilots 24.06</span><span>open</span><span>Алексей</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Райф-пилот требует 13–15 браслетов VIGOR — premium-модель с 9-осевым IMU и GPS-чипом, нужным для tracking операторов колл-центра. На 08.06 в наличии было только 4 VIGOR (3 склад + 1 Кирилл). Если к 24.06 не поступит дополнительная партия — Райф стартует с дефицитом 9–11 устройств.</div>
+        <div class="risk-row"><span class="lab">Что делать:</span>Алексей до 23.06 проверяет фактическую availability VIGOR на складе. Если дефицит подтверждается — эскалация Никите, который связывается напрямую с Veepoo для ускорения поставки. Параллельно готовится fallback на VITRO (без GPS, но HRV работает) для части операторов.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Райф-пилот стартует на смешанном парке (4 VIGOR + 9–11 VITRO). GPS-tracking операторов реализуется только для тех, у кого VIGOR. Mine Tracker integration (R-015) пересматривается под смешанный парк.</div>
+        <div class="risk-row"><span class="lab">Связано:</span>R-015 (Sync браслет ↔ Mine Tracker), R-018 (буфер сроков).</div>
       </div>
+
+      <div class="risk-card high" style="border-color: var(--yellow);">
+        <div class="risk-head"><div class="risk-title">🟡 BLE-экспертиза Кирилла под сомнением — резерв через Mind Tracker</div><div class="risk-id"><strong>R-023 · NEW</strong></div></div>
+        <div class="risk-meta"><span>Технические</span><span>Ф1 + Ф2</span><span>open (19.06)</span><span>Кирилл+Дымов</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>На звонке 19.06 Никита открыто высказал сомнение в глубине BLE-экспертизы Кирилла, особенно по части потоковой передачи в режиме тренировки (HR-realtime + GPS-stream одновременно с iOS background-операциями). BLE через Flutter — известно сложная тема: вызовы спускаются на нативный слой через несколько абстракций. При проблемах со стабильностью BLE при тестировании тренировки — блокируется Ф2 и подрывается UX.</div>
+        <div class="risk-row"><span class="lab">Что делать:</span>Костя 23.06 договаривается с Сашей Дымовым (PM Mind Tracker) о консультации команды Mind Tracker по BLE — у них опыт работы с непрерывной BLE-потоковой передачей ЭЭГ. При первом инциденте на тестах тренировки — эскалация через Сашу, минимум парный code-review BLE-обвязки Кирилла.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Если BLE не стабилизируется к Ф2 release (30.06) — тренировка релизится без real-time HR (только запись пост-фактум, без отображения зон в моменте). Снижает UX, но не блокирует релиз.</div>
+      </div>
+
     </div>
 
     <div class="risk-section-title">🟢 Medium · открытые (2)</div>
     <div class="risks-grid">
       <div class="risk-card med">
-        <div class="risk-head"><div class="risk-title">🟢 Костя+Дина границы ролей</div><div class="risk-id">R-012</div></div>
-        <div class="risk-meta"><span>Команда</span><span>Ф1 W1</span><span>open</span><span>PM+Дина</span></div>
-        <div class="risk-row"><span class="lab">Что:</span>Дина = researcher+product. Костя = PM. Пересечение по фичам/метрикам.</div>
-        <div class="risk-row"><span class="lab">Митигация:</span>1-1 синк Костя+Дина: кто за метрики, кто за фичи, кто комитит правки в PRD.</div>
+        <div class="risk-head"><div class="risk-title">🟢 Дизайн затягивается — downgrade 🟡→🟢</div><div class="risk-id">R-010</div></div>
+        <div class="risk-meta"><span>Дизайн</span><span>Ф1 release</span><span>in-mitigation</span><span>PM</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Методология PM (агенты + скиллы Claude для генерации UI) за две недели не дала готового дизайна по визуалу Bevel — есть wireframes и частичная стилизация, до production-ready ещё доработка. На звонке 19.06 Никита открыто сказал: «20 баксов — ну сделайте самый дорогой, любые опции оплатим, вплоть до подключения дизайнера на проект».</div>
+        <div class="risk-row"><span class="lab">Что делать:</span>PM пишет Саше Дымову на следующей неделе с запросом подключить max-тариф Claude и опционально подключить штатного дизайнера, если итерации Claude не дадут production-quality результата к 29.06. Цель — финальный production-ready UI основного флоу (копия Bevel по тону) к концу следующей недели.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Никита уже подтвердил, что любые ресурсы оплачиваются — нет ограничения по бюджету, только по времени и качеству результата.</div>
       </div>
 
       <div class="risk-card med">
-        <div class="risk-head"><div class="risk-title">🟢 Цепочка 12.06 → 19.06 → 22.06 — буфер 1 раб. день</div><div class="risk-id">R-018</div></div>
-        <div class="risk-meta"><span>Сроки</span><span>Ф1 W2-W3</span><span>open</span><span>PM</span></div>
-        <div class="risk-row"><span class="lab">Что:</span>После сдвига Ф1 17.06 → 19.06 пт цепочка остаётся плотной. Между Ф1 и pilots — выходные + 1 раб. день.</div>
-        <div class="risk-row"><span class="lab">Митигация:</span>Прото-submit 12.06 для запуска модерации. Параллельная разработка финального бандла. AC-1.9b fallback на Ф1.5 если не успеваем.</div>
-        <div class="risk-row"><span class="lab">Резерв:</span>Если Apple отказывает до 19.06 — pilots 22.06 Android-only старт. <strong>Downgrade 🟡 → 🟢.</strong></div>
+        <div class="risk-head"><div class="risk-title">🟢 Ф1 release сдвинут на 24.06, дата пилотов TBD</div><div class="risk-id">R-018</div></div>
+        <div class="risk-meta"><span>Сроки</span><span>Ф1 release 24.06</span><span>open</span><span>PM</span></div>
+        <div class="risk-row"><span class="lab">Что:</span>Ф1 release сдвинут с 23.06 на 24.06 (один день буфер на финальную сборку). Дата старта пилотов больше не зафиксирована — обсуждается отдельно. Главный приоритет сейчас — заливка билдов в App Store + Google Play 24.06, чтобы запустить Apple-ревью.</div>
+        <div class="risk-row"><span class="lab">Что делать:</span>PM контролирует ежедневный статус готовности: 23.06 вечером — финальный smoke-test всех 19 экранов MVP-1, проверка готовности bundle от Кирилла + Firebase инфраструктуры от Алисы; 24.06 утром — submit в стор (iOS через личный ак Кости, Android через ак Нейротех). Дата пилотов фиксируется отдельно когда понятен срок прохождения Apple-ревью + готовность briefing-материалов.</div>
+        <div class="risk-row"><span class="lab">Резерв:</span>Если 24.06 не успеваем — заливаем proto-bundle для запуска Apple-ревью параллельно, финальные экраны докатываем через TestFlight update. Эскалация Никите если 25.06+ сборка тоже не готова.</div>
       </div>
     </div>
 
-    <div class="risk-section-title">⚪ Closed (5)</div>
+    <div class="risk-section-title">⚪ Closed (6)</div>
     <div class="risks-grid">
       <div class="risk-card closed low">
         <div class="risk-head"><div class="risk-title">⚪ R-008 · iOS Bridge не успеваем к 12.06</div><div class="risk-id">closed 18.06</div></div>
@@ -2300,6 +2317,13 @@
         <div class="risk-head"><div class="risk-title">⚪ R-019 · UI-клон Whoop вопреки брифу</div><div class="risk-id">closed 12.06</div></div>
         <div class="risk-meta"><span>Дизайн</span><span>Ф1 W2</span><span>closed 12.06</span></div>
         <div class="risk-row"><span class="lab">Итог:</span>Принцип «не копируем UX Whoop» снят правкой Никиты 09.06. AC-1.14 PRD v2.6 переписан: Bevel + light primary, UX-элементы Whoop допустимы.</div>
+      </div>
+      <div class="risk-card closed low">
+        <div class="risk-head"><div class="risk-title">⚪ R-024 · Бренд + аккаунт публикации не финализированы</div><div class="risk-id">closed 23.06</div></div>
+        <div class="risk-meta"><span>Юр / Бренд</span><span>Ф1 release 23.06</span><span>closed 23.06</span></div>
+        <div class="risk-row"><span class="lab">Итог (a) Имя:</span>Финализировано «Neiry Pulse» — свободно и в App Store, и в Google Play, согласовано с Никитой 23.06. Имя «Neiry» в названии разрешено в обоих сторах.</div>
+        <div class="risk-row"><span class="lab">Итог (b) Аккаунты (split-схема):</span>App Store iOS — через личный developer-ак Кости (ИП), заливкой занимаются Костя + Кирилл. Google Play — через ак ООО «Нейротех» (у них свой DUNS), заливкой полностью занимаются ребята из Нейротех.</div>
+        <div class="risk-row"><span class="lab">Подзадачи:</span>Создание App ID, передача certificates Кириллу, запрос Developer Role в Google Play Console у Нейротех — трекаются в YouGile отдельной задачей. Сам риск closed: заливка 23.06 не блокируется этими подзадачами.</div>
       </div>
     </div>
 
