@@ -282,6 +282,65 @@
       color: var(--muted-foreground);
       letter-spacing: 0.02em;
     }
+
+    /* ============ DEMO-MODE PLATE ============ */
+    /* Persistent runtime state — показывается только при demo entry
+       (через "Продолжить без браслета" на Permission BT) */
+    .demo-plate {
+      flex-shrink: 0;
+      min-height: 52px;
+      padding: 8px 16px;
+      background: #fdf2f8;                 /* primary-soft wine-tinted */
+      border-top: 1px solid #fbcfe8;       /* wine soft */
+      border-bottom: 1px solid #fbcfe8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-family: 'Golos Text', sans-serif;
+    }
+    .demo-plate-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+    .demo-plate-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .demo-plate-text {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 1.25;
+      color: var(--foreground);
+      letter-spacing: -0.005em;
+    }
+    .demo-plate-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--primary);
+      padding: 4px 0;
+      flex-shrink: 0;
+      letter-spacing: -0.005em;
+    }
+    .demo-plate-link:hover { color: #6b1238; }
+    .demo-plate-link:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
@@ -302,6 +361,24 @@
           <!-- battery -->
           <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
         </div>
+      </div>
+
+      <!-- Demo-mode plate (runtime state — persistent при demo entry) -->
+      <div class="demo-plate" role="status" aria-label="Демо-режим без подключения браслета">
+        <div class="demo-plate-left">
+          <svg class="demo-plate-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="10" cy="10" r="8"/>
+            <path d="M10 6.5 V6.7"/>
+            <path d="M10 9 V13.5"/>
+          </svg>
+          <span class="demo-plate-text">Демо-режим — без подключения браслета</span>
+        </div>
+        <button class="demo-plate-link" aria-label="Подключить браслет">
+          Подключить браслет
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 3 L9 7 L5 11"/>
+          </svg>
+        </button>
       </div>
 
       <!-- App bar -->

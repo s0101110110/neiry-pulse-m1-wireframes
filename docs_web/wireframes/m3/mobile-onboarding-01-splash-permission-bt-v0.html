@@ -372,6 +372,41 @@
       padding-top: 12px;
     }
 
+    /* Demo entry — text-link "Продолжить без браслета" + caption */
+    .demo-entry {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding-top: 4px;
+    }
+    .btn-demo {
+      height: 44px;
+      padding: 14px 16px;
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      cursor: pointer;
+      letter-spacing: -0.005em;
+    }
+    .btn-demo:hover { color: #6b1238; }
+    .btn-demo:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+    .demo-caption {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      color: var(--muted-foreground);
+      line-height: 1.3;
+      text-align: center;
+    }
+
     /* Page chrome */
     .page-chrome {
       min-height: 100vh;
@@ -480,24 +515,20 @@
               <div class="value-row">
                 <div class="value-icon" aria-hidden="true">
                   <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="13" cy="4" r="1.8"/>
-                    <path d="M5 18l3-5 3 1 1-4 3 3-1 5"/>
-                    <path d="M8 10l3-3 3 3"/>
+                    <path d="M16.25 11.5c1.24-1.22 2.5-2.68 2.5-4.58A4.58 4.58 0 0 0 14.17 2.33c-1.47 0-2.5.42-3.75 1.67-1.25-1.25-2.28-1.67-3.75-1.67A4.58 4.58 0 0 0 2.08 6.92c0 1.92 1.25 3.38 2.5 4.58l5.84 5.83Z"/>
                   </svg>
                 </div>
-                <div class="value-text">Тренировки с пульсовыми зонами</div>
+                <div class="value-text">Анализ HRV и пульса</div>
               </div>
 
               <div class="value-row">
                 <div class="value-icon" aria-hidden="true">
                   <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="7" cy="8" r="2.8"/>
-                    <path d="M2 17a5 5 0 0 1 10 0"/>
-                    <circle cx="14.5" cy="6" r="2.2"/>
-                    <path d="M12 12a4 4 0 0 1 6.5 3"/>
+                    <path d="M3 14l4-4 3 2 4-6 3 4"/>
+                    <path d="M3 17h14"/>
                   </svg>
                 </div>
-                <div class="value-text">Делись здоровьем с близкими</div>
+                <div class="value-text">Личная норма HRV и тренд</div>
               </div>
             </div>
 
@@ -556,7 +587,7 @@
 
               <h1 class="perm-title">Подключим браслет</h1>
               <p class="perm-sub">
-                Bluetooth нужен, чтобы найти и связать ваш Neiry-браслет с приложением. Данные о пульсе и тренировках синхронизируются напрямую с устройства.
+                Bluetooth нужен, чтобы найти и связать ваш Neiry-браслет с приложением. Данные о пульсе и HRV синхронизируются напрямую с устройства.
               </p>
             </div>
 
@@ -574,7 +605,7 @@
                 <svg class="check-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M3.5 9.5 L7 13 L14.5 5"/>
                 </svg>
-                <span class="perm-check-text">Получаем пульс, тренировки и шаги</span>
+                <span class="perm-check-text">Получаем пульс, HRV и активность</span>
               </div>
 
               <div class="perm-check-row">
@@ -592,6 +623,13 @@
             <!-- CTAs + disclaimer -->
             <div class="perm-cta-stack">
               <button class="btn btn-primary" aria-label="Разрешить Bluetooth">Разрешить Bluetooth</button>
+
+              <!-- Demo entry — secondary CTA для App Store reviewers (нет физического браслета) -->
+              <div class="demo-entry" style="padding-top:4px;">
+                <button class="btn-demo" aria-label="Продолжить без браслета — демо-режим">Продолжить без браслета</button>
+                <span class="demo-caption">Демо-режим без подключения</span>
+              </div>
+
               <button class="btn btn-text" aria-label="Не сейчас">Не сейчас</button>
               <p class="perm-disclaimer">Изменить разрешение можно в Настройках iPhone</p>
             </div>
