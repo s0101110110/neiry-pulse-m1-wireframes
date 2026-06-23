@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulse · Mobile История · MVP store · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --warning-dot: #fca5a5;
+      --neutral-dot: #e5e5e5;
+      --high-dot: #fbcfe8;
+      --destructive: #b91c1c;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Golos Text', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card);
+    }
+    .app-bar-title {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+    }
+
+    /* Body scroll */
+    .body-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--background);
+      padding: 12px 16px 88px 16px;
+    }
+    .body-scroll::-webkit-scrollbar { display: none; }
+
+    /* Filter tabs */
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      background: var(--muted);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 14px;
+    }
+    .filter-tab {
+      flex: 1;
+      height: 30px;
+      border: none;
+      background: transparent;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--muted-foreground);
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background 140ms ease, color 140ms ease;
+      letter-spacing: 0.01em;
+    }
+    .filter-tab.active {
+      background: var(--card);
+      color: var(--foreground);
+      box-shadow: 0 1px 2px rgba(12, 10, 9, 0.08);
+    }
+
+    /* Calendar card */
+    .cal-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 14px;
+      margin-bottom: 14px;
+    }
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .cal-month {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      letter-spacing: -0.005em;
+    }
+    .cal-legend {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+    }
+    .legend-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 3px;
+      vertical-align: middle;
+    }
+
+    /* Weekdays header */
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+    .cal-weekday {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--muted-foreground);
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    /* Grid */
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .cal-cell {
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--foreground);
+      border-radius: 8px;
+    }
+    .cal-cell.empty { color: transparent; }
+    .cal-cell.no-data {
+      border: 1px solid var(--border);
+      color: var(--muted-foreground);
+      background: transparent;
+    }
+    .cal-cell.low {
+      background: var(--warning-dot);
+      color: #7f1d1d;
+    }
+    .cal-cell.normal {
+      background: var(--neutral-dot);
+      color: var(--foreground);
+    }
+    .cal-cell.high {
+      background: var(--high-dot);
+      color: #831843;
+    }
+    .cal-cell.today {
+      box-shadow: inset 0 0 0 2px var(--primary);
+      font-weight: 700;
+    }
+
+    /* List */
+    .list-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      margin: 6px 4px 8px 4px;
+    }
+
+    .list-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .list-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .list-row:last-child { border-bottom: 0; }
+
+    .row-date {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--foreground);
+      letter-spacing: -0.005em;
+      line-height: 1.2;
+    }
+    .row-weekday {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 400;
+      font-size: 11px;
+      color: var(--muted-foreground);
+      margin-top: 2px;
+      line-height: 1.2;
+    }
+    .row-hrv {
+      display: flex;
+      align-items: baseline;
+      gap: 3px;
+    }
+    .row-hrv-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 17px;
+      color: var(--foreground);
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .row-hrv-unit {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted-foreground);
+      font-weight: 500;
+    }
+    .delta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 3px 7px;
+      border-radius: 6px;
+      min-width: 48px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+    .delta.up   { background: var(--success-soft); color: #4d7c0f; }
+    .delta.flat { background: var(--muted);        color: var(--muted-foreground); }
+    .delta.down { background: var(--warning-soft); color: #b45309; }
+
+    /* Tab-bar */
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 8px 16px 8px;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Golos Text', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .tab-icon { width: 24px; height: 24px; display: block; }
+    .tab.active { color: var(--primary); }
+    .tab.active .tab-icon { stroke: var(--primary); }
+
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+      gap: 16px;
+    }
+    .page-title {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Pulse · Mobile · История · MVP store v0 · 390×844</div>
+
+    <section class="device-frame" aria-label="История замеров HRV">
+      <div class="device-notch" aria-hidden="true"></div>
+
+      <!-- Status bar -->
+      <div class="status-bar" aria-hidden="true">
+        <span class="num">9:41</span>
+        <div class="flex items-center gap-1.5">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+          <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+        </div>
+      </div>
+
+      <!-- App bar — centered title, no back (это tab) -->
+      <div class="app-bar">
+        <div class="app-bar-title">История</div>
+      </div>
+
+      <div class="body-scroll">
+
+        <!-- Filter tabs -->
+        <div class="filter-tabs" role="tablist" aria-label="Период">
+          <button class="filter-tab" role="tab" aria-selected="false">7Д</button>
+          <button class="filter-tab active" role="tab" aria-selected="true">30Д</button>
+          <button class="filter-tab" role="tab" aria-selected="false">Год</button>
+        </div>
+
+        <!-- Calendar card -->
+        <div class="cal-card">
+          <div class="cal-header">
+            <span class="cal-month">Июнь 2026</span>
+            <div class="cal-legend" aria-label="Легенда цветов">
+              <span><span class="legend-dot" style="background: var(--high-dot);"></span>выше</span>
+              <span><span class="legend-dot" style="background: var(--neutral-dot);"></span>норма</span>
+              <span><span class="legend-dot" style="background: var(--warning-dot);"></span>ниже</span>
+            </div>
+          </div>
+
+          <!-- Weekdays -->
+          <div class="cal-weekdays" aria-hidden="true">
+            <div class="cal-weekday">ПН</div>
+            <div class="cal-weekday">ВТ</div>
+            <div class="cal-weekday">СР</div>
+            <div class="cal-weekday">ЧТ</div>
+            <div class="cal-weekday">ПТ</div>
+            <div class="cal-weekday">СБ</div>
+            <div class="cal-weekday">ВС</div>
+          </div>
+
+          <!-- Grid: июнь 2026 начинается с ПН (1 июня = понедельник) -->
+          <!-- 30 дней, ПН-старт, 5 строк -->
+          <div class="cal-grid">
+            <!-- Week 1: 1-7 -->
+            <div class="cal-cell normal num">1</div>
+            <div class="cal-cell normal num">2</div>
+            <div class="cal-cell normal num">3</div>
+            <div class="cal-cell normal num">4</div>
+            <div class="cal-cell normal num">5</div>
+            <div class="cal-cell normal num">6</div>
+            <div class="cal-cell low num">7</div>
+            <!-- Week 2: 8-14 -->
+            <div class="cal-cell normal num">8</div>
+            <div class="cal-cell low num">9</div>
+            <div class="cal-cell normal num">10</div>
+            <div class="cal-cell normal num">11</div>
+            <div class="cal-cell high num">12</div>
+            <div class="cal-cell high num">13</div>
+            <div class="cal-cell normal num">14</div>
+            <!-- Week 3: 15-21 -->
+            <div class="cal-cell normal num">15</div>
+            <div class="cal-cell normal num">16</div>
+            <div class="cal-cell low num">17</div>
+            <div class="cal-cell low num">18</div>
+            <div class="cal-cell normal num">19</div>
+            <div class="cal-cell normal num">20</div>
+            <div class="cal-cell normal num">21</div>
+            <!-- Week 4: 22-28 -->
+            <div class="cal-cell normal num">22</div>
+            <div class="cal-cell high today num" aria-label="Сегодня, 23 июня">23</div>
+            <div class="cal-cell no-data num">24</div>
+            <div class="cal-cell no-data num">25</div>
+            <div class="cal-cell no-data num">26</div>
+            <div class="cal-cell no-data num">27</div>
+            <div class="cal-cell no-data num">28</div>
+            <!-- Week 5: 29-30 -->
+            <div class="cal-cell no-data num">29</div>
+            <div class="cal-cell no-data num">30</div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+            <div class="cal-cell empty"></div>
+          </div>
+        </div>
+
+        <!-- List header -->
+        <div class="list-eyebrow">Последние замеры</div>
+
+        <!-- List items -->
+        <div class="list-card">
+          <!-- 23.06 today -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">23 июня</div>
+              <div class="row-weekday">Вторник · сегодня</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">52</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta up num">+12%</span>
+          </div>
+          <!-- 22.06 -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">22 июня</div>
+              <div class="row-weekday">Понедельник</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">48</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta up num">+4%</span>
+          </div>
+          <!-- 21.06 -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">21 июня</div>
+              <div class="row-weekday">Воскресенье</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">50</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta up num">+8%</span>
+          </div>
+          <!-- 20.06 -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">20 июня</div>
+              <div class="row-weekday">Суббота</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">45</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta flat num">0%</span>
+          </div>
+          <!-- 19.06 -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">19 июня</div>
+              <div class="row-weekday">Пятница</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">43</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta down num">−2%</span>
+          </div>
+          <!-- 18.06 -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">18 июня</div>
+              <div class="row-weekday">Четверг</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">41</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta down num">−7%</span>
+          </div>
+          <!-- 17.06 — warning -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">17 июня</div>
+              <div class="row-weekday">Среда</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">38</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta down num">−15%</span>
+          </div>
+          <!-- 16.06 -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">16 июня</div>
+              <div class="row-weekday">Вторник</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">42</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta down num">−5%</span>
+          </div>
+          <!-- 15.06 -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">15 июня</div>
+              <div class="row-weekday">Понедельник</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">44</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta flat num">−1%</span>
+          </div>
+          <!-- 14.06 -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">14 июня</div>
+              <div class="row-weekday">Воскресенье</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">46</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta up num">+3%</span>
+          </div>
+          <!-- 13.06 -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">13 июня</div>
+              <div class="row-weekday">Суббота</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">49</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta up num">+9%</span>
+          </div>
+          <!-- 12.06 -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">12 июня</div>
+              <div class="row-weekday">Пятница</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">51</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta up num">+13%</span>
+          </div>
+          <!-- 11.06 -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">11 июня</div>
+              <div class="row-weekday">Четверг</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">48</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta up num">+6%</span>
+          </div>
+          <!-- 10.06 -->
+          <div class="list-row">
+            <div>
+              <div class="row-date">10 июня</div>
+              <div class="row-weekday">Среда</div>
+            </div>
+            <div class="row-hrv">
+              <span class="row-hrv-val num">45</span>
+              <span class="row-hrv-unit">ms</span>
+            </div>
+            <span class="delta flat num">0%</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom tab-bar — MVP scope: 4 элемента (Дом / HRV / История / Настройки) -->
+      <nav class="tabbar" aria-label="Главная навигация">
+        <button class="tab" aria-label="Главная">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+          Дом
+        </button>
+        <button class="tab" aria-label="HRV">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12 H7 L9 7 L12 17 L15 10 L17 13 H21"/></svg>
+          HRV
+        </button>
+        <button class="tab active" aria-current="page" aria-label="История">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+          История
+        </button>
+        <button class="tab" aria-label="Настройки">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Настройки
+        </button>
+      </nav>
+
+    </section>
+  </main>
+</body>
+</html>
