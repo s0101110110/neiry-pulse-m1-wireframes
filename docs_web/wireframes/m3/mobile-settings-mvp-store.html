@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulse · Mobile Settings · Настройки · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* Global box-sizing — lesson 2026-06-14 R2 hotfix */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      /* shadcn light tokens + warm tint (Bevel-leaning) — 1:1 с main экраном */
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;             /* Neiry wine — PROTECTED */
+      --primary-foreground: #ffffff;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --destructive: #b91c1c;
+      /* Settings-специфика */
+      --toggle-off: #d4cfc0;          /* beige knob track */
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Golos Text', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Number rendering — load-bearing for live values */
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    /* Status bar */
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    /* App bar — таб «Ещё», без back-кнопки */
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      background: var(--card);
+      border-bottom: 1px solid transparent;
+    }
+    .app-bar h1 {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+    }
+
+    /* Feed scroll */
+    .feed {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--background);
+      padding: 0 0 88px 0; /* bottom padding clears tabbar */
+    }
+    .feed::-webkit-scrollbar { display: none; }
+
+    /* Profile inline — top white surface, под app-bar */
+    .profile-inline {
+      background: var(--card);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      transition: background 140ms ease;
+    }
+    .profile-inline:hover { background: var(--card-warm); }
+    .profile-inline:hover .row-chevron { transform: translateX(2px); }
+    .profile-inline:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: -2px;
+    }
+    /* Reusable chevron glyph wrapper — Emil-style "lean into action" on hover */
+    .row-chevron {
+      flex-shrink: 0;
+      color: #a8a29e;
+      display: inline-flex;
+      align-items: center;
+      transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .device-card:hover .row-chevron,
+    .entry-row:hover .row-chevron,
+    .action-row:hover .row-chevron,
+    .manage-link:hover .row-chevron {
+      transform: translateX(2px);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .row-chevron { transition: none; }
+      .profile-inline:hover .row-chevron,
+      .device-card:hover .row-chevron,
+      .entry-row:hover .row-chevron,
+      .action-row:hover .row-chevron,
+      .manage-link:hover .row-chevron { transform: none; }
+    }
+    .avatar-40 {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600; font-size: 14px;
+      flex-shrink: 0;
+    }
+    .profile-name {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--foreground);
+      line-height: 1.2;
+    }
+    .profile-email {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted-foreground);
+      margin-top: 1px;
+    }
+
+    /* Device card — warm bevel surface, 16px margin */
+    .device-card {
+      margin: 8px 16px 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: calc(100% - 32px);
+      text-align: left;
+      cursor: pointer;
+      transition: background 140ms ease;
+    }
+    .device-card:hover { background: var(--card-warm); }
+    .device-card:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .device-icon {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      background: #fdf2f8; /* wine-tinted, 1:1 с Здоровье icon в main */
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .device-name {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--foreground);
+      line-height: 1.2;
+    }
+    .device-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted-foreground);
+      margin-top: 2px;
+      letter-spacing: 0.02em;
+    }
+    .battery-pct {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--success);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.01em;
+    }
+
+    /* Section blocks */
+    .section { padding: 8px 16px 0; }
+    .section-header {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      margin: 0 0 6px 0;
+      padding: 0 4px;
+    }
+    .section-header-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 0 0 6px 0;
+      padding: 0 4px;
+    }
+    .section-header-row .section-header {
+      margin: 0;
+      padding: 0;
+    }
+    .section-header-link {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--primary);
+      letter-spacing: 0.005em;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: gap 200ms cubic-bezier(0.22, 1, 0.36, 1), background 140ms ease;
+    }
+    .section-header-link:hover {
+      gap: 7px;
+      background: var(--primary-soft, #fdf2f8);
+    }
+    .section-header-link:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .section-header-link { transition: none; }
+      .section-header-link:hover { gap: 4px; }
+    }
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    /* Toggle rows */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      padding: 7px 12px;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      cursor: pointer;
+      transition: background 140ms ease;
+    }
+    .toggle-row:last-child { border-bottom: 0; }
+    .toggle-row:hover { background: var(--card-warm); }
+    .toggle-row:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: -2px;
+    }
+    .row-icon {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(131, 24, 67, 0.08);
+      color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .row-icon.muted {
+      background: var(--muted);
+      color: var(--muted-foreground);
+    }
+    .row-text-wrap { flex: 1; min-width: 0; }
+    .row-label {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--foreground);
+      line-height: 1.25;
+    }
+    .row-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted-foreground);
+      margin-top: 2px;
+      letter-spacing: 0.01em;
+    }
+
+    /* Toggle switch — 32×18, ON green, OFF beige */
+    .switch {
+      flex-shrink: 0;
+      width: 32px;
+      height: 18px;
+      border-radius: 9px;
+      background: var(--success);
+      position: relative;
+      transition: background 140ms ease;
+    }
+    .switch::after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border-radius: 50%;
+      top: 2px;
+      right: 2px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+      transition: right 160ms ease, left 160ms ease;
+    }
+    .switch.off { background: var(--toggle-off); }
+    .switch.off::after { right: auto; left: 2px; }
+
+    /* Person row (Здоровье) — same as toggle-row, just avatar */
+    .row-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+
+    /* Manage link row — text-only, wine */
+    .manage-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 8px 12px;
+      background: transparent;
+      border-top: 1px solid var(--border);
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--primary);
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: background 140ms ease;
+    }
+    .manage-link:hover { background: var(--card-warm); }
+    .manage-link:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: -2px;
+    }
+
+    /* Entry row (Экспорт, Приватность) — label + meta-badge + chevron, NO toggle */
+    .entry-row {
+      display: flex;
+      align-items: center;
+      padding: 7px 12px;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      cursor: pointer;
+      transition: background 140ms ease;
+    }
+    .entry-row:last-child { border-bottom: 0; }
+    .entry-row:hover { background: var(--card-warm); }
+    .entry-row:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: -2px;
+    }
+    .badge-demo {
+      background: var(--warning-soft);
+      color: #b45309;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      padding: 3px 7px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    /* Action rows — utility links, label + chevron */
+    .action-row {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      cursor: pointer;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--primary);
+      transition: background 140ms ease;
+    }
+    .action-row:last-child { border-bottom: 0; }
+    .action-row:hover { background: var(--card-warm); }
+    .action-row:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: -2px;
+    }
+    .action-label { flex: 1; }
+
+    /* Destructive — centered, no chevron, red */
+    .destructive-row {
+      padding: 10px 14px;
+      width: 100%;
+      text-align: center;
+      background: transparent;
+      cursor: pointer;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--destructive);
+      letter-spacing: 0.01em;
+      transition: background 140ms ease;
+    }
+    .destructive-row:hover { background: rgba(185, 28, 28, 0.04); }
+    .destructive-row:focus-visible {
+      outline: 2px solid var(--destructive);
+      outline-offset: -2px;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 10px 16px 6px;
+      text-align: center;
+    }
+    .footer-version {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.04em;
+    }
+    .footer-flourish {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: #c5bfac;
+      margin-top: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    /* Tab-bar — 1:1 с main экраном */
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 8px 16px 8px;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Golos Text', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .tab-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+    .tab.active { color: var(--primary); }
+    .tab.active .tab-icon { stroke: var(--primary); }
+    .tab:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    /* Page chrome */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+      gap: 16px;
+    }
+    .page-title {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Pulse · Mobile Settings («Настройки») · v0 · 390×844</div>
+
+    <section class="device-frame" aria-label="Экран настроек мобильного приложения">
+      <div class="device-notch" aria-hidden="true"></div>
+
+      <!-- Status bar (static mock) -->
+      <div class="status-bar" aria-hidden="true">
+        <span class="num">9:41</span>
+        <div class="flex items-center gap-1.5">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+          <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+        </div>
+      </div>
+
+      <!-- App bar — title «Настройки», без back -->
+      <div class="app-bar">
+        <h1>Настройки</h1>
+      </div>
+
+      <!-- Feed (scrollable) -->
+      <div class="feed">
+
+        <!-- Profile inline → C1 Profile edit -->
+        <button class="profile-inline" aria-label="Открыть профиль Кости Леонова">
+          <div class="avatar-40" aria-hidden="true">КЛ</div>
+          <div class="flex-1 min-w-0">
+            <div class="profile-name">Костя Леонов</div>
+            <div class="profile-email">kostya@neiry.com</div>
+          </div>
+          <span class="row-chevron" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+          </span>
+        </button>
+
+        <!-- Device card → C2 BT pairing detail (hybrid: entry + chevron)
+             P2 fix (impeccable): chevron removed — battery 87% уже сильный visual signal,
+             вся card это tap-target. Hover translateX все ещё работает на battery-pct через :hover на .device-card. -->
+        <button class="device-card" aria-label="Браслет VIGOR-XYZ123, подключён, заряд 87%, открыть детали">
+          <div class="device-icon" aria-hidden="true">
+            <!-- watch glyph -->
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#831843" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="5" width="10" height="10" rx="2.5"/>
+              <path d="M7 5 L7.5 2 H12.5 L13 5"/>
+              <path d="M7 15 L7.5 18 H12.5 L13 15"/>
+              <circle cx="10" cy="10" r="2"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="device-name mono">VIGOR-XYZ123 · подключён</div>
+            <div class="device-meta">синк <span class="num">9:52</span></div>
+          </div>
+          <span class="battery-pct"><span class="num">87</span>%</span>
+        </button>
+
+        <!-- Section: Уведомления (hybrid: inline toggles + «Все настройки ›» → C2 Phone 2) -->
+        <div class="section">
+          <div class="section-header-row">
+            <h2 class="section-header">Уведомления</h2>
+            <button class="section-header-link" aria-label="Открыть все настройки уведомлений">
+              Все настройки
+              <svg width="11" height="11" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l5 5-5 5"/></svg>
+            </button>
+          </div>
+          <div class="section-card">
+            <!-- 1. HRV-инсайты ON -->
+            <button class="toggle-row" aria-pressed="true" aria-label="HRV-инсайты, ежедневно утром, включено">
+              <div class="row-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 17s-6-4-6-9a3.5 3.5 0 0 1 6-2.5A3.5 3.5 0 0 1 16 8c0 5-6 9-6 9z"/>
+                </svg>
+              </div>
+              <div class="row-text-wrap">
+                <div class="row-label">HRV-инсайты</div>
+                <div class="row-sub">ежедневно утром</div>
+              </div>
+              <div class="switch" aria-hidden="true"></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section: Данные -->
+        <div class="section">
+          <h2 class="section-header">Данные</h2>
+          <div class="section-card">
+            <!-- 1. Экспорт данных -->
+            <button class="entry-row" aria-label="Экспорт данных в JSON или CSV">
+              <div class="row-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 3 V13"/>
+                  <path d="M6 9 L10 13 L14 9"/>
+                  <path d="M4 16 H16"/>
+                </svg>
+              </div>
+              <div class="row-text-wrap">
+                <div class="row-label">Экспорт данных</div>
+                <div class="row-sub">JSON или CSV</div>
+              </div>
+              <span class="row-chevron" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+              </span>
+            </button>
+            <!-- 2. Приватность 152-ФЗ -->
+            <button class="entry-row" aria-label="Приватность 152-ФЗ — управление данными">
+              <div class="row-icon" aria-hidden="true">
+                <!-- shield-check -->
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 2 L16 4 V10 C16 13.5 13 16.5 10 17.5 C7 16.5 4 13.5 4 10 V4 Z"/>
+                  <path d="M7.5 10 L9.5 12 L13 8.5"/>
+                </svg>
+              </div>
+              <div class="row-text-wrap">
+                <div class="row-label">Приватность 152-ФЗ</div>
+                <div class="row-sub">управление данными</div>
+              </div>
+              <span class="row-chevron" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section: Действия (utility links) -->
+        <div class="section">
+          <h2 class="section-header">Прочее</h2>
+          <div class="section-card">
+            <!-- 1. Калибровка браслета -->
+            <button class="action-row" aria-label="Калибровка браслета">
+              <div class="row-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="10" cy="10" r="3"/>
+                  <path d="M10 1.5 V4 M10 16 V18.5 M1.5 10 H4 M16 10 H18.5 M4 4 L5.8 5.8 M14.2 14.2 L16 16 M4 16 L5.8 14.2 M14.2 5.8 L16 4"/>
+                </svg>
+              </div>
+              <span class="action-label">Калибровка браслета</span>
+              <span class="row-chevron" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+              </span>
+            </button>
+            <!-- 2. Поддержка -->
+            <button class="action-row" aria-label="Поддержка">
+              <div class="row-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="10" cy="10" r="7.5"/>
+                  <path d="M7.5 8 a2.5 2.5 0 0 1 5 0 c0 1.5 -2.5 2 -2.5 3.5"/>
+                  <circle cx="10" cy="14.5" r="0.7" fill="currentColor"/>
+                </svg>
+              </div>
+              <span class="action-label">Поддержка</span>
+              <span class="row-chevron" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+              </span>
+            </button>
+            <!-- 4. О приложении -->
+            <button class="action-row" aria-label="О приложении">
+              <div class="row-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="4" y="2.5" width="12" height="15" rx="2"/>
+                  <path d="M7 7 H13 M7 10 H13 M7 13 H10.5"/>
+                </svg>
+              </div>
+              <span class="action-label">О приложении</span>
+              <span class="row-chevron" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l5 5-5 5"/></svg>
+              </span>
+            </button>
+            <!-- 5. Выйти (destructive) -->
+            <button class="destructive-row" aria-label="Выйти из аккаунта">
+              Выйти из аккаунта
+            </button>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+          <div class="footer-version">Pulse · v2.6.0</div>
+          <div class="footer-flourish">Сделано в Москве ❤</div>
+        </div>
+
+      </div>
+
+      <!-- Bottom tab-bar — MVP scope: 4 элемента (Дом / HRV / История / Настройки), Настройки active -->
+      <nav class="tabbar" aria-label="Главная навигация">
+        <button class="tab" aria-label="Главная">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+          Дом
+        </button>
+        <button class="tab" aria-label="HRV">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12 H7 L9 7 L12 17 L15 10 L17 13 H21"/></svg>
+          HRV
+        </button>
+        <button class="tab" aria-label="История">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+          История
+        </button>
+        <button class="tab active" aria-current="page" aria-label="Настройки">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Настройки
+        </button>
+      </nav>
+
+    </section>
+  </main>
+</body>
+</html>

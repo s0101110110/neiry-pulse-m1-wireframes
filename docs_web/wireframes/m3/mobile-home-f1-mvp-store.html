@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulse · Mobile Home · Ф1 · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      /* shadcn light tokens + warm tint (Bevel-leaning) */
+      --background: #f7f5ef;          /* page outside frame */
+      --foreground: #0c0a09;          /* primary text */
+      --card: #ffffff;                /* default card surface */
+      --card-warm: #faf8f3;           /* subtle warm card */
+      --muted: #f1ede4;               /* muted surface */
+      --muted-foreground: #78716c;    /* secondary text */
+      --border: #e8e4d8;              /* hairline border */
+      --border-strong: #d4cfc0;       /* stronger separator */
+      --primary: #831843;             /* Neiry wine - PROTECTED */
+      --primary-foreground: #ffffff;
+      --success: #65a30d;             /* lime-600 */
+      --success-soft: #f0f7e1;
+      --warning: #d97706;             /* amber-600 */
+      --warning-soft: #fdf3e1;
+      --destructive: #b91c1c;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Golos Text', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Number rendering — load-bearing for live values */
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    .hero-num {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+    }
+
+    /* Device frame */
+    .device-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .device-notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    /* Status bar */
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+      background: var(--card);
+    }
+
+    /* App bar */
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid transparent;
+    }
+
+    /* Feed scroll */
+    .feed {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: var(--background);
+      padding: 12px 16px 88px 16px; /* bottom padding clears tabbar */
+    }
+    .feed::-webkit-scrollbar { display: none; }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .card-warm {
+      background: var(--card-warm);
+    }
+
+    /* Delta chip */
+    .chip-success {
+      background: var(--success-soft);
+      color: #4d7c0f;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.02em;
+      padding: 4px 8px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .chip-warning {
+      background: var(--warning-soft);
+      color: #b45309;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    /* Labels */
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    /* Buttons */
+    .btn {
+      height: 48px;
+      border-radius: 12px;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 140ms ease-out, background 140ms ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+    .btn-primary:hover { background: #6b1238; }
+    .btn-outline {
+      background: var(--card);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Tab-bar */
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding: 8px 8px 16px 8px;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      color: var(--muted-foreground);
+      font-family: 'Golos Text', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .tab-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+    .tab.active { color: var(--primary); }
+    .tab.active .tab-icon { stroke: var(--primary); }
+    .tab:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    /* Sparkline */
+    .sparkline {
+      width: 100%;
+      height: 44px;
+      display: block;
+    }
+    .spark-line {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .spark-area {
+      fill: var(--primary);
+      opacity: 0.08;
+    }
+    .spark-dot {
+      fill: var(--primary);
+    }
+
+    /* Page chrome */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+      gap: 16px;
+    }
+    .page-title {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Pulse · Mobile Home · Ф1 v0 · 390×844</div>
+
+    <section class="device-frame" aria-label="Главный экран мобильного приложения">
+      <div class="device-notch" aria-hidden="true"></div>
+
+      <!-- Status bar (static mock) -->
+      <div class="status-bar" aria-hidden="true">
+        <span class="num">9:41</span>
+        <div class="flex items-center gap-1.5">
+          <!-- signal -->
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+          <!-- wifi -->
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+          <!-- battery -->
+          <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+        </div>
+      </div>
+
+      <!-- App bar -->
+      <div class="app-bar">
+        <div class="flex items-center gap-2">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="9.5" stroke="#831843" stroke-width="1.6"/>
+            <path d="M6 11 L9 8 L11 14 L13 9 L16 11" stroke="#831843" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+          <span style="font-family:'Golos Text'; font-weight:600; font-size:16px; letter-spacing:-0.01em;">Pulse</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button aria-label="Уведомления" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0c0a09" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14H4l1.5-1.8V8.5a4.5 4.5 0 0 1 9 0v3.7L16 14z"/><path d="M8 17a2 2 0 0 0 4 0"/></svg>
+          </button>
+          <button aria-label="Профиль" class="w-9 h-9 rounded-full bg-stone-200 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#831843]" style="font-family:'Golos Text'; font-weight:600; font-size:13px; color:#57534e;">КЛ</button>
+        </div>
+      </div>
+
+      <!-- Feed -->
+      <div class="feed">
+
+        <!-- 1. HRV card (compact, ~148px) -->
+        <article class="card card-warm mb-3" aria-labelledby="hrv-label">
+          <div class="flex items-start justify-between">
+            <div>
+              <div id="hrv-label" class="eyebrow">HRV сегодня</div>
+              <div class="mt-2 flex items-baseline gap-2">
+                <span class="hero-num num" style="font-size:40px; line-height:1;">47</span>
+                <span class="mono" style="font-size:14px; color:var(--muted-foreground); font-weight:500;">ms</span>
+              </div>
+            </div>
+            <span class="chip-success" aria-label="Прирост 12% к вчера">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 1.5 L8.5 6.5 L1.5 6.5 Z"/></svg>
+              <span class="num">+12%</span>
+              <span style="opacity:0.7; font-weight:500;">к вчера</span>
+            </span>
+          </div>
+          <p style="margin-top:10px; font-size:14px; line-height:1.45; color:var(--muted-foreground);">
+            Вы набираете форму и справляетесь со стрессом лучше
+          </p>
+        </article>
+
+        <!-- 2. HRV trend hero — крупный график HRV за 7 дней (MVP-core: HRV) -->
+        <article class="card mb-3" style="padding:18px;" aria-labelledby="hrv-trend-headline">
+          <div class="flex items-center justify-between">
+            <div class="eyebrow">Тренд HRV · 7 дней</div>
+            <span class="mono" style="font-size:10px; color:var(--success); font-weight:600; letter-spacing:0.08em;">РАСТЁТ</span>
+          </div>
+
+          <h2 id="hrv-trend-headline" style="margin-top:8px; font-family:'Golos Text'; font-weight:600; font-size:20px; letter-spacing:-0.01em; line-height:1.25;">
+            Восстановление улучшается
+          </h2>
+          <p style="margin-top:6px; font-size:13px; line-height:1.45; color:var(--muted-foreground);">
+            Третий день подряд HRV выше личной нормы
+          </p>
+
+          <!-- Большой HRV-график (hero вместо sparkline) -->
+          <div class="mt-4" aria-label="График HRV за 7 дней">
+            <svg viewBox="0 0 320 130" preserveAspectRatio="none" style="width:100%; height:130px; display:block;" aria-hidden="true">
+              <line x1="0" y1="20"  x2="320" y2="20"  stroke="#e8e4d8" stroke-width="1"/>
+              <line x1="0" y1="65"  x2="320" y2="65"  stroke="#e8e4d8" stroke-width="1"/>
+              <line x1="0" y1="110" x2="320" y2="110" stroke="#e8e4d8" stroke-width="1"/>
+              <line x1="0" y1="72"  x2="320" y2="72"  stroke="#d4cfc0" stroke-width="1" stroke-dasharray="3 3"/>
+              <text x="316" y="68" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9" fill="#78716c" letter-spacing="0.04em">личная норма</text>
+              <path d="M10,92 L62,80 L114,82 L166,70 L218,58 L270,46 L310,38 L310,118 L10,118 Z"
+                    fill="#831843" opacity="0.08"/>
+              <path d="M10,92 L62,80 L114,82 L166,70 L218,58 L270,46 L310,38"
+                    fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="10"  cy="92" r="2.5" fill="#831843" opacity="0.6"/>
+              <circle cx="62"  cy="80" r="2.5" fill="#831843" opacity="0.6"/>
+              <circle cx="114" cy="82" r="2.5" fill="#831843" opacity="0.6"/>
+              <circle cx="166" cy="70" r="2.5" fill="#831843" opacity="0.6"/>
+              <circle cx="218" cy="58" r="2.5" fill="#831843" opacity="0.6"/>
+              <circle cx="270" cy="46" r="2.5" fill="#831843" opacity="0.6"/>
+              <circle cx="310" cy="38" r="6"   fill="none" stroke="#831843" stroke-width="1.5" opacity="0.32"/>
+              <circle cx="310" cy="38" r="3.5" fill="#831843"/>
+            </svg>
+            <div class="flex items-center justify-between mt-2" style="padding:0 4px;">
+              <span class="mono" style="font-size:10px; color:var(--muted-foreground); letter-spacing:0.18em;">ПОН  ВТР  СРД  ЧТВ  ПТН  СБТ  СГД</span>
+            </div>
+            <div class="flex items-center justify-end mt-1.5">
+              <span class="mono" style="font-size:11px; color:var(--success); font-weight:600;">+18% за неделю</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Bottom tab-bar — MVP scope: 4 элемента (Дом / HRV / История / Настройки) -->
+      <nav class="tabbar" aria-label="Главная навигация">
+        <button class="tab active" aria-current="page" aria-label="Главная">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#831843" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 L12 4 L21 11.5"/><path d="M5 10.5 V20 H19 V10.5"/></svg>
+          Дом
+        </button>
+        <button class="tab" aria-label="HRV">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12 H7 L9 7 L12 17 L15 10 L17 13 H21"/></svg>
+          HRV
+        </button>
+        <button class="tab" aria-label="История">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+          История
+        </button>
+        <button class="tab" aria-label="Настройки">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Настройки
+        </button>
+      </nav>
+
+    </section>
+  </main>
+</body>
+</html>
