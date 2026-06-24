@@ -77,7 +77,7 @@
 - `mobile-history-mvp-store.html` (новый)
 - `mobile-settings-mvp-store.html`
 - `mobile-settings-detail-mvp-store.html` (4 subscreens)
-- `mobile-state-bt-disconnect-charging-low-v0.html`
+- `mobile-state-bt-disconnect-charging-low-mvp-store.html`
 - `mobile-state-permission-denied-v0.html`
 
 ## История изменений
