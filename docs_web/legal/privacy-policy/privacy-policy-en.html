@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Privacy Policy — Neiry Pulse</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --ink: #0c0a09;
+  --ink-soft: #3a3835;
+  --muted: #6b665e;
+  --line: #e4e0d6;
+  --line-strong: #c9c3b3;
+  --wine: #831843;
+  --bg: #fafaf7;
+  --card: #ffffff;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Golos Text', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.doc {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 64px 56px 96px;
+  background: var(--card);
+  min-height: 100vh;
+}
+
+/* Top language switcher */
+.lang-switch {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 0;
+  margin: -64px -56px 40px;
+  padding-left: 56px;
+  padding-right: 56px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  z-index: 10;
+}
+
+.lang-switch a {
+  color: var(--muted);
+  text-decoration: none;
+  margin-right: 16px;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+
+.lang-switch a.active {
+  color: var(--wine);
+  border-bottom-color: var(--wine);
+}
+
+.lang-switch a:hover {
+  color: var(--ink);
+}
+
+/* Header */
+h1 {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 8px;
+}
+
+.doc-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Sections */
+h2 {
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 40px 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+}
+
+h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 24px 0 10px;
+  color: var(--ink);
+}
+
+p, li {
+  margin: 0 0 12px;
+  color: var(--ink-soft);
+}
+
+p strong, li strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+ul, ol {
+  margin: 0 0 16px;
+  padding-left: 22px;
+}
+
+li::marker { color: var(--muted); }
+
+li {
+  margin-bottom: 4px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 40px 0;
+}
+
+a {
+  color: var(--wine);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(131, 24, 67, 0.3);
+}
+a:hover { border-bottom-color: var(--wine); }
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  background: #f1ede4;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+  .doc { padding: 32px 20px 64px; }
+  .lang-switch {
+    margin: -32px -20px 24px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  h1 { font-size: 24px; }
+  h2 { font-size: 18px; }
+}
+
+@media print {
+  @page { size: A4; margin: 16mm 14mm 18mm 14mm; }
+  body { background: white; font-size: 11pt; line-height: 1.5; }
+  .doc { max-width: 100%; padding: 0; background: white; }
+  .lang-switch { display: none; }
+  h2 { page-break-after: avoid; }
+  h3 { page-break-after: avoid; }
+}
+</style>
+</head>
+<body>
+<article class="doc">
+<nav class="lang-switch">
+  <a href="privacy-policy-ru.html" class="">RU</a>
+  <a href="privacy-policy-en.html" class="active">EN</a>
+</nav>
+<h1 id="privacy-policy-for-neiry-pulse">Privacy Policy for Neiry
+Pulse</h1>
+<p><strong>Effective date:</strong> June 24, 2026 <strong>Last
+updated:</strong> June 24, 2026</p>
+<p>This Privacy Policy describes how the Neiry Pulse mobile application
+and related services (collectively, the “App”) access, collect, use,
+store, protect, and disclose information when you use Neiry Pulse
+together with compatible Neiry wristband devices.</p>
+<p>The operator of the App and controller of your personal data depends
+on the channel through which you obtained the App:</p>
+<ul>
+<li>If you downloaded the App from the <strong>Apple App Store</strong>,
+the operator is <strong>Konstantin Dvugroshev</strong>, a private
+individual using a personal Apple Developer account (hereinafter — “we”,
+“us”, or “our”) — full name: Konstantin Valeryevich Dvugroshev; email:
+hello.solomono@gmail.com; address: Moscow, Vysokaya str., bldg. 20, apt.
+41, Russian Federation.</li>
+<li>If you downloaded the App from <strong>Google Play</strong>, the
+operator is <strong>LLC “Neirotech”</strong> (ООО «Нейротех») — LLC NMF
+“Neirotech” (ООО НМФ «Нейротех»); OGRN 1026102573419, INN 6154082572;
+address: 347905, Rostov Region, Taganrog, Dzerzhinskogo str., 119-a,
+Russian Federation; email: privacy@neiry-bci.com.</li>
+</ul>
+<p>Both operators apply the same data-handling practices described in
+this Privacy Policy.</p>
+<p>Neiry Pulse is a <strong>wellness and fitness application</strong>.
+It is classified under the <strong>Health &amp; Fitness
+category</strong> in both the Apple App Store and Google Play,
+<strong>not under Medical</strong>. The App is <strong>not a medical
+device</strong>. It does <strong>not</strong> diagnose, treat, cure,
+mitigate, monitor, or prevent any disease, injury, or medical condition,
+and it is <strong>not intended for clinical decision-making</strong> or
+for use by patients in clinical contexts. The App is designed for
+general wellness and fitness tracking by healthy adults who want to
+better understand their everyday wellbeing.</p>
+<p>For any health-related questions or before making decisions that may
+affect your health, please consult a qualified healthcare
+professional.</p>
+<p>The App requires compatible external hardware (Neiry wristband) to
+provide its core functionality.</p>
+<p>By using the App, you agree to the practices described in this
+Privacy Policy.</p>
+<p><strong>Important Android permission notice:</strong> on some Android
+versions, Neiry Pulse may request approximate location and/or precise
+location permission solely to support Bluetooth Low Energy (BLE)
+scanning and connection to compatible Neiry wristband devices, as
+required by the operating system. Neiry Pulse does not use these
+permissions to determine, collect, store, or transmit a user’s physical
+location.</p>
+<hr />
+<h2 id="information-we-access-and-collect">1. Information We Access and
+Collect</h2>
+<p>Depending on how you use the App, we may access or collect the
+following categories of data:</p>
+<h3 id="account-and-profile-information">1.1 Account and profile
+information</h3>
+<p>We may collect and store:</p>
+<ul>
+<li>your name;</li>
+<li>your email address;</li>
+<li>your unique user ID;</li>
+<li>your date of birth or age group;</li>
+<li>your sex/gender;</li>
+<li>your height and weight (used to refine personal baseline
+calculations);</li>
+<li>your wellness goals (e.g., recovery, stress management,
+fitness);</li>
+<li>your preferred interface language;</li>
+<li>your country or region, if you choose to provide it in your account
+settings or if it is derived from your language or locale settings
+rather than from your device geolocation.</li>
+</ul>
+<p>We use this information to create and maintain your account, enable
+login, personalize your experience, send service-related notifications,
+and provide more relevant recommendations. We do not use device
+geolocation for these purposes.</p>
+<h3 id="wellness-and-fitness-data">1.2 Wellness and fitness data</h3>
+<p>When you use the App with a compatible Neiry wristband, the App may
+access and process wellness- and fitness-related data (used for
+informational purposes only and not for medical assessment),
+including:</p>
+<ul>
+<li>heart rate (HR) and resting heart rate;</li>
+<li>heart rate variability (HRV), including derived metrics such as
+RMSSD, SDNN, or pNN50;</li>
+<li>raw R-R intervals (the time intervals between consecutive
+heartbeats);</li>
+<li>inertial measurement unit (IMU) data: accelerometer and, where
+supported, gyroscope and magnetometer readings used to determine
+activity state and to filter heart-rate signal artifacts;</li>
+<li>step count and physical activity summaries;</li>
+<li>sleep phases (light, deep, REM, awake), total sleep duration, and
+overnight HRV trends;</li>
+<li>SpO2 (blood oxygen saturation) readings, where the wristband model
+supports it;</li>
+<li>calibration data — your personalized HRV baseline calculated during
+the first 36–48 hours of use;</li>
+<li>training session records: duration, average and maximum heart rate,
+heart-rate zones, distance and route (GPS, where supported by the
+wristband model), estimated calories.</li>
+</ul>
+<h3 id="important-clarification-about-raw-biometric-data">Important
+clarification about raw biometric data</h3>
+<p>Raw R-R intervals and IMU readings are transmitted from your Neiry
+wristband to the App over Bluetooth Low Energy (BLE), then sent to our
+servers for processing into derived health metrics (HRV, baseline,
+composite stress indicators). Raw biometric data is stored on our
+servers solely to enable retroactive recalculation in case our
+methodology changes, and is retained for limited periods (see Section
+6).</p>
+<h3
+id="health-related-data-that-may-be-transmitted-to-our-servers">Health-related
+data that may be transmitted to our servers</h3>
+<p>We transmit and store the following derived wellness and fitness data
+on our servers:</p>
+<ul>
+<li>aggregated daily, weekly, and monthly HRV values;</li>
+<li>personal HRV baseline (your “personal norm”);</li>
+<li>HRV deltas (deviation from your personal baseline);</li>
+<li>composite stress metric (where applicable);</li>
+<li>session results and training history;</li>
+<li>sleep records and overnight metrics;</li>
+<li>text-based recommendations generated for you based on your
+data.</li>
+</ul>
+<p>We use this data to:</p>
+<ul>
+<li>provide real-time and historical feedback in the App;</li>
+<li>display your personal HRV baseline and deviations from it;</li>
+<li>generate personalized recommendations and wellness insights;</li>
+<li>support continuity across sessions and devices where
+applicable;</li>
+<li>enable the Sharing functionality (see Section 4.3) when you
+explicitly choose to share your wellness metrics with a trusted
+contact;</li>
+<li>improve and maintain the functionality of the App.</li>
+</ul>
+<h3 id="device-bluetooth-and-hardware-related-information">1.3 Device,
+Bluetooth, and hardware-related information</h3>
+<p>We may access or collect:</p>
+<ul>
+<li>Bluetooth-related data needed to discover, connect to, and
+communicate with compatible Neiry wristband devices;</li>
+<li>device identifiers associated with the wristband hardware;</li>
+<li>wristband serial number;</li>
+<li>wristband firmware version;</li>
+<li>wristband model (VITRO, VANTA, VIGOR, or other supported Neiry
+models);</li>
+<li>mobile device model, operating system version, and technical
+configuration.</li>
+</ul>
+<p>We use this information to connect the App to the appropriate
+wristband, maintain stable operation, provide firmware-related notices,
+troubleshoot hardware/software issues, and improve compatibility.</p>
+<h3 id="location-information">1.4 Location information</h3>
+<p>On certain Android versions, the App may request approximate location
+and/or precise location permission solely because the Android operating
+system historically required location access for Bluetooth Low Energy
+(BLE) scanning and discovery of nearby external devices. Neiry Pulse
+does not use these permissions to determine, collect, track, or store a
+user’s physical location for advertising, profiling, analytics, or any
+location-based feature.</p>
+<p>Device geolocation obtained through these permissions is not
+transmitted off-device by the App and is not stored on our servers
+(except as noted below for training GPS routes).</p>
+<p><strong>Exception for training mode:</strong> if your wristband
+supports GPS (VIGOR model) and you explicitly start a workout session
+with route tracking, the App will collect and store the GPS coordinates
+of your route for the duration of that workout. This GPS data is
+associated with the specific training session, displayed to you in
+session history, and stored on our servers as part of your training
+records. You can delete individual training sessions and their
+associated GPS data at any time from the in-app history screen.</p>
+<p>If country or region information is associated with your account, it
+is provided by you or derived from language or locale settings rather
+than from device geolocation.</p>
+<h3 id="analytics-diagnostics-and-performance-information">1.5
+Analytics, diagnostics, and performance information</h3>
+<p>We may collect:</p>
+<ul>
+<li>crash logs;</li>
+<li>diagnostics data;</li>
+<li>app performance information;</li>
+<li>interaction events, such as screens viewed and buttons tapped;</li>
+<li>installation attribution or source-related information;</li>
+<li>device or other identifiers used for analytics and service
+performance.</li>
+</ul>
+<p>We use this information to analyze product usage, fix bugs, monitor
+app performance, understand the user experience, improve the App, and
+measure the effectiveness of product changes. For clarity, analytics and
+diagnostics data collected through the App do not include the user’s
+physical device geolocation.</p>
+<hr />
+<h2 id="how-we-use-information">2. How We Use Information</h2>
+<p>We use the information described above to:</p>
+<ul>
+<li>provide the core functionality of Neiry Pulse;</li>
+<li>connect the App with compatible Neiry wristband hardware;</li>
+<li>perform calibration of your personal HRV baseline;</li>
+<li>calculate and display HRV, heart rate, sleep, and activity
+metrics;</li>
+<li>generate personalized recommendations and wellness insights;</li>
+<li>provide session history and progress tracking;</li>
+<li>create and manage user accounts;</li>
+<li>send essential service notifications (e.g., “Your personal baseline
+is ready”);</li>
+<li>personalize parts of the user experience;</li>
+<li>maintain security, integrity, and reliability of the App;</li>
+<li>troubleshoot bugs, errors, and compatibility issues;</li>
+<li>analyze usage and improve the App.</li>
+</ul>
+<p>We do not use your data for selling data, cross-context behavioral
+advertising, or advertising-based profiling. When location permission is
+requested on supported Android versions, it is used solely to enable
+Bluetooth device discovery and connection as required by the operating
+system, and not to determine or use a user’s physical location.</p>
+<hr />
+<h2 id="where-information-is-stored">3. Where Information Is Stored</h2>
+<h3 id="data-stored-locally-on-your-device">3.1 Data stored locally on
+your device</h3>
+<p>The App stores certain data locally on your device in a local
+database (SQLite) to support offline functionality and reduce server
+roundtrips. This includes:</p>
+<ul>
+<li>a buffer of recently received biometric data from the wristband,
+which is synchronized to our servers when network connectivity is
+available;</li>
+<li>cached display values for current heart rate, recent HRV readings,
+and the current calibration progress;</li>
+<li>your authentication tokens (JWT) for secure session management.</li>
+</ul>
+<p>Locally stored biometric data is purged after successful
+synchronization with our servers.</p>
+<h3 id="data-stored-on-our-servers">3.2 Data stored on our servers</h3>
+<p>We store the following categories of data on our servers, located in
+the Russian Federation in compliance with Federal Law 152-FZ on personal
+data:</p>
+<ul>
+<li>unique user ID;</li>
+<li>name and email address;</li>
+<li>date of birth or age group;</li>
+<li>sex/gender;</li>
+<li>height, weight, goals;</li>
+<li>country or region, if provided by you;</li>
+<li>preferred interface language;</li>
+<li>wristband model and serial number;</li>
+<li>raw R-R intervals (retained for the period specified in Section
+6);</li>
+<li>aggregated HRV and heart rate metrics;</li>
+<li>personal HRV baseline value and history;</li>
+<li>training session records, including GPS routes if collected;</li>
+<li>sleep records;</li>
+<li>composite stress metric values and recommendation history;</li>
+<li>de-identified or pseudonymized interaction events used for analytics
+and product improvement.</li>
+</ul>
+<p>Hosting infrastructure: Yandex Cloud (servers located in Moscow /
+St. Petersburg, Russian Federation).</p>
+<hr />
+<h2 id="sharing-of-information">4. Sharing of Information</h2>
+<p>We do not sell your personal data or health-related data.</p>
+<p>We may share personal data or health-related data only in the
+following limited circumstances:</p>
+<ul>
+<li>with service providers and processors acting on our behalf and only
+as necessary to provide, host, support, secure, and improve the
+App;</li>
+<li>where required by applicable law, regulation, legal process, or
+enforceable governmental request;</li>
+<li>to protect the rights, safety, security, or integrity of the
+operator, our users, or the public.</li>
+</ul>
+<h3 id="wellness-data-sharing-with-third-parties">4.1 Wellness data
+sharing with third parties</h3>
+<p>Wellness and fitness data are not shared with third parties for their
+own independent purposes, are never sold, and are not used for
+advertising or data-broker resale. Such data may be processed only by
+service providers acting on our behalf, or disclosed when required by
+law.</p>
+<h3 id="third-party-services-and-sdks">4.2 Third-party services and
+SDKs</h3>
+<p>We may use the following third-party tools and services:</p>
+<ul>
+<li><strong>Firebase (by Google LLC)</strong> — used for push
+notifications, crash reporting (Crashlytics), and analytics. Firebase
+may collect device identifiers, OS data, and interaction events. We do
+not use Firebase to collect or transmit device physical
+geolocation.</li>
+<li><strong>Sentry</strong> — used for crash and error reporting in the
+backend.</li>
+<li><strong>Yandex Cloud</strong> — used for hosting account data,
+settings, biometric data, session results, and related server-side
+information.</li>
+<li><strong>Veepoo SDK</strong> — used to enable communication between
+the App and Neiry wristband over Bluetooth. Communication with the
+wristband is local between your phone and the wristband; data is sent to
+our servers separately and not to Veepoo’s servers for independent
+use.</li>
+</ul>
+<h3 id="sharing-your-wellness-metrics-with-another-user">4.3 Sharing
+your wellness metrics with another user</h3>
+<p>The App provides an opt-in feature that allows you to share your
+wellness and fitness metrics with a trusted contact (e.g., a family
+member or training partner) for informational purposes only. When you
+generate a QR code or invitation link for sharing, the recipient — once
+they scan or accept it — gains the ability to view your selected metrics
+inside their own Neiry Pulse app.</p>
+<p>You retain full control:</p>
+<ul>
+<li>you choose which metrics are shared;</li>
+<li>you can revoke access at any time from in-app settings;</li>
+<li>the recipient cannot modify your data or download it outside the
+App.</li>
+</ul>
+<hr />
+<h2 id="security">5. Security</h2>
+<p>We take reasonable technical and organizational measures to protect
+the information processed through the App. These measures include:</p>
+<ul>
+<li>encryption in transit using TLS 1.3 for all client-server
+communication;</li>
+<li>encryption at rest for data stored in our PostgreSQL databases
+hosted on Yandex Cloud;</li>
+<li>role-based access controls;</li>
+<li>audit logs for all access to wellness and fitness data;</li>
+<li>pseudonymization of analytics events;</li>
+<li>backups and infrastructure security measures provided by Yandex
+Cloud.</li>
+</ul>
+<p>No method of electronic storage or transmission is completely secure.
+However, we take commercially reasonable steps designed to protect your
+information.</p>
+<hr />
+<h2 id="data-retention">6. Data Retention</h2>
+<p>We retain data for as long as necessary to provide the App and its
+features, maintain your account, comply with legal obligations, resolve
+disputes, and enforce our agreements.</p>
+<p>In general:</p>
+<ul>
+<li>locally stored buffer data is purged after successful
+synchronization;</li>
+<li>raw R-R intervals and IMU readings are retained on our servers for
+90 days, after which they are aggregated into derived metrics and the
+raw data is deleted (this enables retroactive recalculation if our
+methodology changes within the retention window);</li>
+<li>aggregated daily HRV values, baseline values, training sessions,
+sleep records, and recommendation history are retained while your
+account remains active;</li>
+<li>analytics and diagnostics data may be retained as needed for product
+improvement, security, and operational purposes.</li>
+</ul>
+<p>If your account is deactivated, we may retain your account data so
+that your account may be restored later if you choose to reactivate
+it.</p>
+<p>If you request permanent deletion, we will permanently delete your
+account data and associated personal data within 30 days of receiving
+and verifying your request, except where retention is required by
+applicable law or necessary for security, fraud prevention, or similar
+legitimate purposes.</p>
+<hr />
+<h2 id="account-deactivation-and-permanent-deletion">7. Account
+Deactivation and Permanent Deletion</h2>
+<h3 id="deactivation-in-the-app">7.1 Deactivation in the App</h3>
+<p>The App provides an in-app option to deactivate your account
+(Settings → Privacy → Deactivate Account). Deactivation is not the same
+as permanent deletion.</p>
+<p>If you deactivate your account:</p>
+<ul>
+<li>access to the account is disabled;</li>
+<li>your data may remain stored so that the account can later be
+restored if you choose to reactivate it.</li>
+</ul>
+<h3 id="permanent-deletion-request">7.2 Permanent deletion request</h3>
+<p>If you want your personal data and associated account data to be
+permanently deleted, you may submit a deletion request:</p>
+<ul>
+<li><strong>In-app:</strong> Settings → Privacy → Delete Account
+Permanently</li>
+<li><strong>By email:</strong> privacy@neiry-bci.com</li>
+</ul>
+<p>Subject line recommendation:
+<code>Neiry Pulse — Permanent Data Deletion Request</code></p>
+<p>Upon receiving and verifying your request, we will permanently delete
+your personal data and associated account data within 30 days, unless a
+longer retention period is required by law or for legitimate security or
+fraud-prevention reasons.</p>
+<h3 id="deleting-individual-records">7.3 Deleting individual
+records</h3>
+<p>The App also allows you to delete specific records without deleting
+the entire account:</p>
+<ul>
+<li>individual training sessions (with associated GPS data) — from the
+in-app history screen;</li>
+<li>Health Sharing connections — from in-app Settings;</li>
+<li>recommendation cards — from your in-app feed.</li>
+</ul>
+<hr />
+<h2 id="your-choices">8. Your Choices</h2>
+<p>You may choose whether to:</p>
+<ul>
+<li>create and use an account;</li>
+<li>connect compatible Neiry wristband hardware;</li>
+<li>grant permissions such as Bluetooth, notifications, and location
+access where required for core functionality;</li>
+<li>enable or disable Health Sharing;</li>
+<li>enable or disable training mode and GPS tracking;</li>
+<li>deactivate your account in the App;</li>
+<li>request permanent deletion of your account and associated data.</li>
+</ul>
+<p>Please note that denying certain permissions or disconnecting
+compatible hardware may limit or prevent the App’s core
+functionality.</p>
+<hr />
+<h2 id="permissions">9. Permissions</h2>
+<p>Depending on your device and operating system version, the App may
+request permissions such as:</p>
+<ul>
+<li><strong>Bluetooth permissions</strong> (scan, connect, and related)
+to discover and communicate with Neiry wristband devices;</li>
+<li><strong>Approximate and/or precise location permissions</strong> on
+certain Android versions, solely where required by Android for Bluetooth
+scanning and discovery; these permissions are not used by the App to
+determine, collect, store, or transmit the user’s physical location
+(except in training mode with explicit user start);</li>
+<li><strong>Notification permissions</strong> to send service-related
+notifications (e.g., “Your personal baseline is ready”);</li>
+<li><strong>Health permissions</strong> (HealthKit on iOS, Google Fit on
+Android) — only if you explicitly opt in to sync your Pulse data with
+external health platforms (future release).</li>
+</ul>
+<p>We request permissions only for functions relevant to the operation
+of the App.</p>
+<hr />
+<h2 id="childrens-privacy">10. Children’s Privacy</h2>
+<p>The App is intended for healthy adults aged 16 and older. The App is
+not intended for use by children under 16, by patients in clinical care,
+or for medical monitoring of any kind. We do not knowingly collect
+personal data from children under 16. If you believe we have
+inadvertently collected such data, please contact us immediately at the
+email provided in Section 12 and we will take steps to delete it.</p>
+<hr />
+<h2 id="international-processing">11. International Processing</h2>
+<p>If you access the App from outside the Russian Federation, you
+understand that your information will be processed and stored on servers
+located in the Russian Federation in compliance with Federal Law 152-FZ
+on personal data.</p>
+<hr />
+<h2 id="changes-to-this-privacy-policy">12. Changes to This Privacy
+Policy</h2>
+<p>We may update this Privacy Policy from time to time. If we make
+material changes, we will post the updated version on this page
+(https://pulse.neiry-bci.com/privacy-policy/) and update the “Last
+updated” date above. Your continued use of the App after the updated
+Privacy Policy becomes effective means that you accept the updated
+Policy.</p>
+<hr />
+<h2 id="contact-us">13. Contact Us</h2>
+<p>If you have any questions about this Privacy Policy, our data
+practices, account deactivation, or permanent deletion requests, please
+contact us:</p>
+<p><strong>For App Store users (data controller — Konstantin Valeryevich
+Dvugroshev, private individual):</strong> Email:
+hello.solomono@gmail.com Address: Moscow, Vysokaya str., bldg. 20, apt.
+41, Russian Federation</p>
+<p><strong>For Google Play users (data controller — LLC NMF “Neirotech”
+/ ООО НМФ «Нейротех»):</strong> Email: privacy@neiry-bci.com Address:
+347905, Rostov Region, Taganrog, Dzerzhinskogo str., 119-a, Russian
+Federation OGRN 1026102573419, INN 6154082572</p>
+<p><strong>General privacy inquiries:</strong> privacy@neiry-bci.com</p>
+</article>
+</body>
+</html>
