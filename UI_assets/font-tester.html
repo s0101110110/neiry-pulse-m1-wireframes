@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neiry Pulse · Пробник моноширинных шрифтов</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;600;700&family=JetBrains+Mono:wght@400;700&family=IBM+Plex+Mono:wght@400;600&family=Source+Code+Pro:wght@400;600&family=Spline+Sans+Mono:wght@400;600&family=PT+Mono&display=swap" rel="stylesheet">
+<style>
+  body { background:#0f0e0b; color:#f7f6f1; }
+  .card { background:#1a1814; border:1px solid #2a2620; }
+  .f-martian  { font-family:'Martian Mono', monospace; }
+  .f-jetbrains{ font-family:'JetBrains Mono', monospace; }
+  .f-plex     { font-family:'IBM Plex Mono', monospace; }
+  .f-source   { font-family:'Source Code Pro', monospace; }
+  .f-spline   { font-family:'Spline Sans Mono', monospace; }
+  .f-pt       { font-family:'PT Mono', monospace; }
+  /* критичные глифы подсвечиваем accent-цветом проекта */
+  .hot { color:#e0608f; }
+  .spec { font-feature-settings: "zero" 0; font-variant-numeric: normal; transition: color .15s; }
+  /* лёгкая сетка-направляющая под числом пульса, чтобы оценить выравнивание */
+  .ruler { background-image:linear-gradient(#2a2620 1px, transparent 1px); background-size:100% 50%; }
+</style>
+</head>
+<body class="min-h-screen antialiased">
+
+  <!-- ── Шапка с контролами ───────────────────────────────────── -->
+  <header class="sticky top-0 z-10 border-b border-[#2a2620] bg-[#0f0e0b]/95 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 class="text-lg font-semibold tracking-tight">Пробник моноширинных шрифтов</h1>
+          <p class="text-sm text-[#7a766d]">Критерии: ноль плоский (без точки/слэша) · 4 открытая сверху · 5 / 7 геометричные · кириллица</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-5 text-sm">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" id="slashZero" class="accent-[#831843] w-4 h-4">
+            <span>Слэш в нуле <code class="text-[#7a766d]">"zero" 1</code></span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" id="tnum" class="accent-[#831843] w-4 h-4" checked>
+            <span>Tabular-nums</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" id="bigOnly" class="accent-[#831843] w-4 h-4">
+            <span>Только крупные цифры</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <div id="grid" class="grid gap-6" style="grid-template-columns:repeat(auto-fit,minmax(360px,1fr));"></div>
+
+    <p class="mt-10 text-xs text-[#7a766d] leading-relaxed max-w-3xl">
+      Подсвечены <span class="hot">критичные глифы 0 4 5 7</span>. Тоггл «Слэш в нуле» включает стандартную
+      OpenType-фичу <code>zero</code> (диагональ) — где её нет, ноль не изменится. «Плоский без отметки» —
+      это состояние при <span class="text-[#f7f6f1]">выключенном</span> слэше: у Martian Mono / Spline Sans Mono
+      он плоский нативно, у JetBrains/Plex/Source Code Pro в дефолте может оставаться точка — её убирает уже
+      стилистический сет конкретного шрифта (номер сверь в Wakamai Fondue).
+      Строка <code>O0 О0</code> — проверка отличимости латинской/кириллической «О» от нуля.
+    </p>
+  </main>
+
+<script>
+  const FONTS = [
+    { cls:'f-martian',   name:'Martian Mono',     by:'Evil Martians',      cyr:'ok',   note:'нативно плоский ноль · очень геометричные цифры · variable' },
+    { cls:'f-jetbrains', name:'JetBrains Mono',   by:'JetBrains',          cyr:'ok',   note:'твой эталон открытой 4 · ноль dotted → плоский через ss' },
+    { cls:'f-plex',      name:'IBM Plex Mono',    by:'IBM',                cyr:'ok',   note:'спокойный гуманистичный · слэш в нуле отключаемый' },
+    { cls:'f-source',    name:'Source Code Pro',  by:'Adobe',              cyr:'ok',   note:'есть вариант plain-ноль · 4 открытая' },
+    { cls:'f-spline',    name:'Spline Sans Mono', by:'Eben Sorkin',        cyr:'risk', note:'UI-grotesque, плоский ноль — но кириллица под вопросом, проверь строку ниже' },
+    { cls:'f-pt',        name:'PT Mono',          by:'ParaType',           cyr:'ok',   note:'нативная русская кириллица · цифры спокойнее, ноль со слэшем' },
+  ];
+
+  const badge = (cyr) => cyr === 'ok'
+    ? '<span class="text-[11px] px-2 py-0.5 rounded-full bg-[#14331f] text-[#5fd08a] border border-[#1f4d2e]">кириллица ✓</span>'
+    : '<span class="text-[11px] px-2 py-0.5 rounded-full bg-[#332414] text-[#d0a45f] border border-[#4d3a1f]">кириллица ?</span>';
+
+  const card = (f) => `
+    <section class="card rounded-2xl p-6 flex flex-col gap-5">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="${f.cls} text-base font-semibold">${f.name}</h2>
+            ${badge(f.cyr)}
+          </div>
+          <p class="text-xs text-[#7a766d] mt-1">${f.by} · ${f.note}</p>
+        </div>
+      </div>
+
+      <!-- число-пульс крупно -->
+      <div class="ruler rounded-lg px-4 py-3 flex items-baseline gap-3">
+        <span class="${f.cls} spec leading-none" style="font-size:72px;font-weight:700;">72</span>
+        <span class="text-[#7a766d] text-sm pb-1">уд/мин</span>
+      </div>
+
+      <!-- критичные глифы -->
+      <div class="${f.cls} spec text-5xl tracking-wider"><span class="hot">0&nbsp;4&nbsp;5&nbsp;7</span></div>
+
+      <!-- полный ряд + O/0 -->
+      <div class="more flex flex-col gap-3">
+        <div class="${f.cls} spec text-3xl tracking-wide">0123456789</div>
+        <div class="${f.cls} spec text-2xl text-[#7a766d]">O0&nbsp;&nbsp;О0&nbsp;&nbsp;Оо0</div>
+        <div class="${f.cls} text-xl tracking-wide pt-1 border-t border-[#2a2620]">СЕГОДНЯ · ДНЕЙ · ПЕРИОД</div>
+        <div class="${f.cls} text-base text-[#7a766d]">сегодня · период · нагрузка · восстановление</div>
+      </div>
+    </section>`;
+
+  document.getElementById('grid').innerHTML = FONTS.map(card).join('');
+
+  // ── Контролы ──────────────────────────────────────────────
+  const specs = () => document.querySelectorAll('.spec');
+  const apply = () => {
+    const slash = document.getElementById('slashZero').checked ? '"zero" 1' : '"zero" 0';
+    const feat = slash;
+    const tnum = document.getElementById('tnum').checked ? 'tabular-nums' : 'normal';
+    specs().forEach(el => {
+      el.style.fontFeatureSettings = feat;
+      el.style.fontVariantNumeric = tnum;
+    });
+    document.querySelectorAll('.more').forEach(el =>
+      el.style.display = document.getElementById('bigOnly').checked ? 'none' : 'flex');
+  };
+  ['slashZero','tnum','bigOnly'].forEach(id =>
+    document.getElementById(id).addEventListener('change', apply));
+  apply();
+</script>
+</body>
+</html>

@@ -7,8 +7,13 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Onest:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Onest:wght@400;500;600;700&display=swap">
 <style>
+  /* Pulse Mono — локальная mono-константа проекта (JetBrains Mono с плоским нулём) */
+  @font-face{font-family:'Pulse Mono';font-weight:400;src:url('../../../UI_assets/fonts/pulse-mono/PulseMono-Regular.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:500;src:url('../../../UI_assets/fonts/pulse-mono/PulseMono-Medium.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:600;src:url('../../../UI_assets/fonts/pulse-mono/PulseMono-SemiBold.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:700;src:url('../../../UI_assets/fonts/pulse-mono/PulseMono-Bold.woff2') format('woff2');}
   /* ============================================
      SHADCN-STYLE SEMANTIC TOKENS (zinc base + wine accent)
      ============================================ */
@@ -79,7 +84,7 @@
   :root {
     --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
     --font-display: 'Onest', 'Space Grotesk', system-ui, sans-serif;
-    --font-mono: 'Geist Mono', ui-monospace, monospace;
+    --font-mono: 'Pulse Mono', ui-monospace, monospace;
   }
 
   /* Map shadcn vars → Tailwind utility classes via CSS */
@@ -390,7 +395,7 @@
     </div>
     <div class="text-[11px] text-muted-foreground border-t border-border pt-4 leading-relaxed">
       <p class="font-data">shadcn/ui (zinc) + Neiry wine #831843</p>
-      <p class="mt-1">Space Grotesk · Onest · Geist Mono</p>
+      <p class="mt-1">Space Grotesk · Onest · Pulse Mono</p>
     </div>
   </aside>
 
@@ -403,7 +408,7 @@
       <h2 class="text-3xl font-bold text-foreground">Neiry <span class="font-display text-primary">Pulse</span> · UI Kit</h2>
       <p class="text-muted-foreground max-w-3xl text-sm leading-relaxed">
         Живой стайлгайд дизайн-системы. Семантические токены shadcn (zinc base) + Neiry wine accent (<span class="font-data text-primary">#831843</span>),
-        две темы (тёмная для плазмы, светлая для админ-ноута), Space Grotesk / Onest / Geist Mono.
+        две темы (тёмная для плазмы, светлая для админ-ноута), Space Grotesk / Onest / Pulse Mono.
         Все компоненты для рестайла собраны в одном месте: токены, base shadcn-компоненты, кастомные био-виджеты и Tremor-стиль для дашборда корпоратов.
       </p>
     </section>
@@ -489,7 +494,7 @@
       <!-- 1.2 TYPOGRAPHY -->
       <article id="typography" class="space-y-4">
         <h3 class="text-lg font-semibold text-foreground">1.2 Типографика</h3>
-        <p class="text-sm text-muted-foreground">Три семейства: Space Grotesk (UI), Onest 700 (hero/display, tight tracking -0.04em), Geist Mono (data).</p>
+        <p class="text-sm text-muted-foreground">Три семейства: Space Grotesk (UI), Onest 700 (hero/display, tight tracking -0.04em), Pulse Mono (data — JetBrains Mono с плоским нулём).</p>
 
         <div class="grid grid-cols-3 gap-4">
           <!-- Space Grotesk -->
@@ -525,10 +530,10 @@
             <p class="text-[11px] text-muted-foreground pt-2 border-t border-border">Weight 700 + letter-spacing -0.04em. Только для hero-чисел (BPM, NSI, KPI) и слова «Pulse». Не для body.</p>
           </div>
 
-          <!-- Geist Mono -->
+          <!-- Pulse Mono -->
           <div class="bg-card border border-border rounded-lg p-5 space-y-3">
             <div class="flex items-baseline justify-between border-b border-border pb-2">
-              <h4 class="text-sm font-semibold text-foreground">Geist Mono</h4>
+              <h4 class="text-sm font-semibold text-foreground">Pulse Mono</h4>
               <span class="badge bg-muted text-muted-foreground">Data</span>
             </div>
             <div class="space-y-2.5">
@@ -537,7 +542,8 @@
               <div class="flex items-baseline justify-between gap-3"><span class="font-data text-[12px] font-normal leading-none text-muted-foreground">14:23:08</span><span class="font-data text-[10px] text-muted-foreground">12 · timestamp</span></div>
               <div class="border-t border-border my-3"></div>
               <div class="space-y-1.5">
-                <p class="text-[11px] text-muted-foreground">Weights: 400 / 500 / 600. Примеры: BPM, NSI, RMSSD, временные метки, hex-коды, ID браслетов.</p>
+                <p class="text-[11px] text-muted-foreground">Weights: 400 / 500 / 600 / 700. Плоский ноль (без точки/слэша), открытая 4, геометричные 5/7, кириллица. Примеры: BPM, NSI, RMSSD, временные метки, hex-коды, ID браслетов.</p>
+                <p class="font-data text-[16px] text-foreground tracking-wider">0 4 5 7 · O0</p>
                 <p class="font-data text-[11px] text-foreground">#831843 · 0xA1B3 · 142/85</p>
               </div>
             </div>

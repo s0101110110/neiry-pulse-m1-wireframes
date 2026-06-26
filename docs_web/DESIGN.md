@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: Neiry-Pulse-design-analysis
-description: "Neiry Pulse — экосистема носимых биосенсоров (браслет + recovery-устройства) с тремя поверхностями: kiosk (выставочный стенд 1.5–2м, full-screen 1920×1080), corporate dashboard (плотный продуктовый интерфейс на 1440+), мобильное приложение (390×844, Android+iOS). Визуальный код — shadcn dark zinc/slate как baseline с единственным хроматическим акцентом wine `#831843`. Эстетический эталон — Linear / Vercel по продуктовой плотности и Hume Band по био-виджетам. Типографика: Space Grotesk (UI sans), Onest (display), Geist Mono (tabular numerics для пульса, HRV, NSI). Сетка 4px. Цвета хранятся как HSL-токены shadcn, тёмная тема — primary surface, light — паритетная альтернатива."
+description: "Neiry Pulse — экосистема носимых биосенсоров (браслет + recovery-устройства) с тремя поверхностями: kiosk (выставочный стенд 1.5–2м, full-screen 1920×1080), corporate dashboard (плотный продуктовый интерфейс на 1440+), мобильное приложение (390×844, Android+iOS). Визуальный код — shadcn dark zinc/slate как baseline с единственным хроматическим акцентом wine `#831843`. Эстетический эталон — Linear / Vercel по продуктовой плотности и Hume Band по био-виджетам. Типографика: Space Grotesk (UI sans), Onest (display), Pulse Mono — JetBrains Mono с плоским нулём — (tabular numerics для пульса, HRV, NSI). Сетка 4px. Цвета хранятся как HSL-токены shadcn, тёмная тема — primary surface, light — паритетная альтернатива."
 
 colors:
   primary: "hsl(336 76% 33%)"
@@ -41,21 +41,21 @@ typography:
     letterSpacing: -6px
     fontFeatureSettings: "'tnum' 1"
   metric-xl:
-    fontFamily: "Geist Mono, ui-monospace, monospace"
+    fontFamily: "Pulse Mono, ui-monospace, monospace"
     fontSize: 128px
     fontWeight: 500
     lineHeight: 1.0
     letterSpacing: -3px
     fontFeatureSettings: "'tnum' 1"
   metric-lg:
-    fontFamily: "Geist Mono, ui-monospace, monospace"
+    fontFamily: "Pulse Mono, ui-monospace, monospace"
     fontSize: 64px
     fontWeight: 500
     lineHeight: 1.0
     letterSpacing: -1.5px
     fontFeatureSettings: "'tnum' 1"
   metric-md:
-    fontFamily: "Geist Mono, ui-monospace, monospace"
+    fontFamily: "Pulse Mono, ui-monospace, monospace"
     fontSize: 32px
     fontWeight: 500
     lineHeight: 1.1
@@ -104,7 +104,7 @@ typography:
     lineHeight: 1.4
     letterSpacing: 0.1px
   eyebrow:
-    fontFamily: "Geist Mono, ui-monospace, monospace"
+    fontFamily: "Pulse Mono, ui-monospace, monospace"
     fontSize: 11px
     fontWeight: 500
     lineHeight: 1.3
@@ -268,14 +268,14 @@ Neiry Pulse — это **продуктовая био-система**, а не
 
 **Bio-палитра** — четыре служебных hue для биометрики: `{colors.bio-pulse}` (пульс/HR, тот же wine), `{colors.bio-hrv}` (HRV, cyan), `{colors.bio-stress-low/mid/high}` (NSI mint→amber→red). Цвета привязаны к семантике, не к декору.
 
-**Типографика** — три family: **Space Grotesk** (UI body/buttons), **Onest** (display/headlines), **Geist Mono** (любые числа с tabular-nums — пульс не должен прыгать при смене 78→79).
+**Типографика** — три family: **Space Grotesk** (UI body/buttons), **Onest** (display/headlines), **Pulse Mono** (любые числа с tabular-nums — пульс не должен прыгать при смене 78→79).
 
 **Сетка** — 4px base, 24px gutter в карточках, 48px в kiosk-блоках. Spacing-токены кратны 4.
 
 **Key Characteristics:**
 - Dark-first интерфейс. Light-тема существует, но primary surface — `{colors.background-dark}`.
 - Wine как единственный chromatic accent. Никаких вторых акцентных hue ради «премиума».
-- Tabular numerics на всех биометриках (Geist Mono + `font-feature-settings: 'tnum' 1`).
+- Tabular numerics на всех биометриках (Pulse Mono + `font-feature-settings: 'tnum' 1`).
 - Layered SVG-gauge с outer-ring (стресс) + inner-ring (HR-zone) — фирменный био-виджет.
 - ECG-плашка с псевдо-live-данными — fake sin-волна для визуального витализма стенда.
 - Hairline-borders (1px `{colors.border-dark}`), нулевые decorative shadows. Иерархия через surface ladder.
@@ -320,7 +320,7 @@ Neiry Pulse — это **продуктовая био-система**, а не
 ### Font Families
 - **Onest** — display family. Headlines kiosk и dashboard hero. Fallback: Space Grotesk → system-ui.
 - **Space Grotesk** — UI body, buttons, labels. Fallback: system-ui → -apple-system.
-- **Geist Mono** — **обязательно** для всех числовых метрик (BPM, мс HRV, NSI score, минуты). `font-feature-settings: 'tnum' 1, 'lnum' 1` всегда.
+- **Pulse Mono** — **обязательно** для всех числовых метрик (BPM, мс HRV, NSI score, минуты). `font-feature-settings: 'tnum' 1, 'lnum' 1` всегда.
 
 ### Hierarchy
 
@@ -392,7 +392,7 @@ Neiry Pulse — это **продуктовая био-система**, а не
 ## Principles
 
 1. **Wine — единственный chromatic accent.** Никаких вторых брендовых hue. Bio-палитра — служебная, не декоративная.
-2. **Tabular nums обязательны** на всех живых метриках. `font-feature-settings: 'tnum' 1` на Geist Mono.
+2. **Tabular nums обязательны** на всех живых метриках. `font-feature-settings: 'tnum' 1` на Pulse Mono.
 3. **Hairline-borders, не shadows.** Иерархия через surface ladder (`background` → `card` → `muted`).
 4. **4px grid строго.** Дизайн-агент проверяет арифметику пикселей через viewBox-math (см. memory `feedback_neiry_design_iteration_workflow`).
 5. **Skills — подсказка, не закон.** Если skill советует тёплую палитру / убрать tnum / поменять шрифт — игнорировать. Источник истины: этот файл + `wireframes/m2/ui-kit.html`.
@@ -406,13 +406,13 @@ Neiry Pulse — это **продуктовая био-система**, а не
 - ❌ Менять `--primary` / шрифты M2 даже «временно для эксперимента».
 - ❌ Добавлять gradients ради «премиума». Surface ladder делает работу.
 - ❌ Сокращать плотность данных в dashboard в угоду «дыхания» — это медицинский интерфейс, не лендинг.
-- ❌ Заменять Geist Mono на Inter в метриках. Цифры будут прыгать.
+- ❌ Заменять Pulse Mono на Inter в метриках. Цифры будут прыгать.
 - ❌ Использовать `impeccable init / document / craft / extract` без явного OK PM — затрёт DESIGN.md.
 - ❌ Превентивный вызов skill'ов «на всякий случай» — экономия токенов.
 
 ## Notes on Substitutes
 
-- Onest и Space Grotesk — open-source, Google Fonts. Geist Mono — Vercel, open-source.
+- Onest и Space Grotesk — open-source, Google Fonts. Pulse Mono — производная JetBrains Mono (SIL OFL 1.1, без Reserved Font Name) с плоским нулём; локальные файлы в `UI_assets/fonts/pulse-mono/`.
 - На системах без шрифтов fallback `system-ui` → `-apple-system` приемлем, но **метрики обязательно** в mono-fallback (`ui-monospace`).
 
 ## Version & Source-of-Truth

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse Mono · моноширинная константа Neiry Pulse</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- оригинал JetBrains Mono — только для сравнения нуля -->
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  @font-face{font-family:'Pulse Mono';font-weight:400;src:url('PulseMono-Regular.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:500;src:url('PulseMono-Medium.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:600;src:url('PulseMono-SemiBold.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:700;src:url('PulseMono-Bold.woff2') format('woff2');}
+  body{background:#0f0e0b;color:#f7f6f1;}
+  .card{background:#1a1814;border:1px solid #2a2620;}
+  .orig{font-family:'JetBrains Mono',monospace;}
+  .pulse{font-family:'Pulse Mono',monospace;}
+  .hot{color:#e0608f;}
+  .ruler{background-image:linear-gradient(#2a2620 1px,transparent 1px);background-size:100% 50%;}
+</style>
+</head>
+<body class="min-h-screen antialiased">
+  <header class="border-b border-[#2a2620]">
+    <div class="max-w-6xl mx-auto px-6 py-6">
+      <div class="flex items-center gap-3">
+        <h1 class="pulse text-2xl font-bold tracking-tight">Pulse Mono</h1>
+        <span class="text-[11px] px-2 py-0.5 rounded-full bg-[#3a0f22] text-[#e0608f] border border-[#831843]">константа Neiry Pulse</span>
+      </div>
+      <p class="text-sm text-[#7a766d] mt-1">JetBrains Mono с плоским нулём (точка удалена из контура). Открытая 4 · геометричные 5/7 · кириллица — без изменений. Лицензия SIL OFL 1.1.</p>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-8 grid gap-6 md:grid-cols-2">
+    <!-- ОРИГИНАЛ -->
+    <section class="card rounded-2xl p-6 flex flex-col gap-5">
+      <div class="flex items-center justify-between">
+        <h2 class="orig text-base font-semibold">JetBrains Mono (оригинал)</h2>
+        <span class="text-[11px] px-2 py-0.5 rounded-full bg-[#332414] text-[#d0a45f] border border-[#4d3a1f]">ноль с точкой</span>
+      </div>
+      <div class="ruler rounded-lg px-4 py-3 flex items-baseline gap-3">
+        <span class="orig leading-none" style="font-size:84px;font-weight:700;">100</span>
+        <span class="text-[#7a766d] text-sm pb-1">уд/мин</span>
+      </div>
+      <div class="orig text-6xl tracking-wider"><span class="hot">0&nbsp;4&nbsp;5&nbsp;7</span></div>
+      <div class="orig text-3xl tracking-wide">0123456789</div>
+      <div class="orig text-2xl text-[#7a766d]">O0&nbsp;&nbsp;О0&nbsp;&nbsp;Оо0</div>
+      <div class="orig text-xl pt-3 border-t border-[#2a2620]">СЕГОДНЯ · ДНЕЙ · ПЕРИОД</div>
+    </section>
+
+    <!-- PULSE MONO -->
+    <section class="card rounded-2xl p-6 flex flex-col gap-5" style="border-color:#831843;">
+      <div class="flex items-center justify-between">
+        <h2 class="pulse text-base font-semibold">Pulse Mono</h2>
+        <span class="text-[11px] px-2 py-0.5 rounded-full bg-[#14331f] text-[#5fd08a] border border-[#1f4d2e]">ноль плоский ✓</span>
+      </div>
+      <div class="ruler rounded-lg px-4 py-3 flex items-baseline gap-3">
+        <span class="pulse leading-none" style="font-size:84px;font-weight:700;">100</span>
+        <span class="text-[#7a766d] text-sm pb-1">уд/мин</span>
+      </div>
+      <div class="pulse text-6xl tracking-wider"><span class="hot">0&nbsp;4&nbsp;5&nbsp;7</span></div>
+      <div class="pulse text-3xl tracking-wide">0123456789</div>
+      <div class="pulse text-2xl text-[#7a766d]">O0&nbsp;&nbsp;О0&nbsp;&nbsp;Оо0</div>
+      <div class="pulse text-xl pt-3 border-t border-[#2a2620]">СЕГОДНЯ · ДНЕЙ · ПЕРИОД</div>
+    </section>
+  </main>
+
+  <section class="max-w-6xl mx-auto px-6 pb-12">
+    <h3 class="text-sm text-[#7a766d] mb-3">Pulse Mono — начертания</h3>
+    <div class="card rounded-2xl p-6 flex flex-col gap-3">
+      <div class="pulse text-3xl" style="font-weight:400;">400 Regular&nbsp;&nbsp;0123456789 · ПЕРИОД</div>
+      <div class="pulse text-3xl" style="font-weight:500;">500 Medium&nbsp;&nbsp;&nbsp;0123456789 · ПЕРИОД</div>
+      <div class="pulse text-3xl" style="font-weight:600;">600 SemiBold&nbsp;0123456789 · ПЕРИОД</div>
+      <div class="pulse text-3xl" style="font-weight:700;">700 Bold&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0123456789 · ПЕРИОД</div>
+    </div>
+  </section>
+</body>
+</html>
