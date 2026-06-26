@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: Neiry-Pulse-design-analysis
-description: "Neiry Pulse — экосистема носимых биосенсоров (браслет + recovery-устройства) с тремя поверхностями: kiosk (выставочный стенд 1.5–2м, full-screen 1920×1080), corporate dashboard (плотный продуктовый интерфейс на 1440+), мобильное приложение (390×844, Android+iOS). Визуальный код — shadcn dark zinc/slate как baseline с единственным хроматическим акцентом wine `#831843`. Эстетический эталон — Linear / Vercel по продуктовой плотности и Hume Band по био-виджетам. Типографика: Space Grotesk (UI sans), Onest (display), Pulse Mono — JetBrains Mono с плоским нулём — (tabular numerics для пульса, HRV, NSI). Сетка 4px. Цвета хранятся как HSL-токены shadcn, тёмная тема — primary surface, light — паритетная альтернатива."
+description: "Neiry Pulse — экосистема носимых биосенсоров (браслет + recovery-устройства) с тремя поверхностями: kiosk (выставочный стенд 1.5–2м, full-screen 1920×1080), corporate dashboard (плотный продуктовый интерфейс на 1440+), мобильное приложение (390×844, Android+iOS). Визуальный код — shadcn dark zinc/slate как baseline с единственным хроматическим акцентом wine `#831843`. Эстетический эталон — Linear / Vercel по продуктовой плотности и Hume Band по био-виджетам. Типографика: Golos Text (заголовки + UI/body), Pulse Mono — JetBrains Mono с плоским нулём — (все числа и табличные данные: пульс, HRV, NSI, таймстемпы, списки замеров). Сетка 4px. Цвета хранятся как HSL-токены shadcn, тёмная тема — primary surface, light — паритетная альтернатива."
 
 colors:
   primary: "hsl(336 76% 33%)"
@@ -34,7 +34,7 @@ colors:
 
 typography:
   display-kiosk:
-    fontFamily: "Onest, Space Grotesk, system-ui, sans-serif"
+    fontFamily: "Golos Text, system-ui, sans-serif"
     fontSize: 180px
     fontWeight: 600
     lineHeight: 1.0
@@ -62,43 +62,43 @@ typography:
     letterSpacing: -0.5px
     fontFeatureSettings: "'tnum' 1"
   display-xl:
-    fontFamily: "Onest, Space Grotesk, system-ui, sans-serif"
+    fontFamily: "Golos Text, system-ui, sans-serif"
     fontSize: 56px
     fontWeight: 600
     lineHeight: 1.1
     letterSpacing: -1.8px
   display-lg:
-    fontFamily: "Onest, Space Grotesk, system-ui, sans-serif"
+    fontFamily: "Golos Text, system-ui, sans-serif"
     fontSize: 40px
     fontWeight: 600
     lineHeight: 1.15
     letterSpacing: -1px
   headline:
-    fontFamily: "Space Grotesk, system-ui, sans-serif"
+    fontFamily: "Golos Text, system-ui, sans-serif"
     fontSize: 24px
     fontWeight: 600
     lineHeight: 1.25
     letterSpacing: -0.4px
   card-title:
-    fontFamily: "Space Grotesk, system-ui, sans-serif"
+    fontFamily: "Golos Text, system-ui, sans-serif"
     fontSize: 18px
     fontWeight: 500
     lineHeight: 1.3
     letterSpacing: -0.2px
   body:
-    fontFamily: "Space Grotesk, system-ui, sans-serif"
+    fontFamily: "Golos Text, system-ui, sans-serif"
     fontSize: 14px
     fontWeight: 400
     lineHeight: 1.5
     letterSpacing: 0
   body-sm:
-    fontFamily: "Space Grotesk, system-ui, sans-serif"
+    fontFamily: "Golos Text, system-ui, sans-serif"
     fontSize: 13px
     fontWeight: 400
     lineHeight: 1.45
     letterSpacing: 0
   caption:
-    fontFamily: "Space Grotesk, system-ui, sans-serif"
+    fontFamily: "Golos Text, system-ui, sans-serif"
     fontSize: 12px
     fontWeight: 400
     lineHeight: 1.4
@@ -111,7 +111,7 @@ typography:
     letterSpacing: 0.6px
     textTransform: uppercase
   button:
-    fontFamily: "Space Grotesk, system-ui, sans-serif"
+    fontFamily: "Golos Text, system-ui, sans-serif"
     fontSize: 14px
     fontWeight: 500
     lineHeight: 1.2
@@ -268,7 +268,7 @@ Neiry Pulse — это **продуктовая био-система**, а не
 
 **Bio-палитра** — четыре служебных hue для биометрики: `{colors.bio-pulse}` (пульс/HR, тот же wine), `{colors.bio-hrv}` (HRV, cyan), `{colors.bio-stress-low/mid/high}` (NSI mint→amber→red). Цвета привязаны к семантике, не к декору.
 
-**Типографика** — три family: **Space Grotesk** (UI body/buttons), **Onest** (display/headlines), **Pulse Mono** (любые числа с tabular-nums — пульс не должен прыгать при смене 78→79).
+**Типографика** — две family: **Golos Text** (заголовки/hero + body/UI/buttons, веса 400–800), **Pulse Mono** (все числа И табличные/тайм-серийные списки целиком — метрики, время, таймстемпы, замеры; tabular-nums — пульс не прыгает при 78→79).
 
 **Сетка** — 4px base, 24px gutter в карточках, 48px в kiosk-блоках. Spacing-токены кратны 4.
 
@@ -318,9 +318,8 @@ Neiry Pulse — это **продуктовая био-система**, а не
 ## Typography
 
 ### Font Families
-- **Onest** — display family. Headlines kiosk и dashboard hero. Fallback: Space Grotesk → system-ui.
-- **Space Grotesk** — UI body, buttons, labels. Fallback: system-ui → -apple-system.
-- **Pulse Mono** — **обязательно** для всех числовых метрик (BPM, мс HRV, NSI score, минуты). `font-feature-settings: 'tnum' 1, 'lnum' 1` всегда.
+- **Golos Text** — единая sans для display и UI: headlines/hero (600–800) и body/buttons/labels (400–500). Иерархия несётся весом, не сменой гарнитуры. Fallback: system-ui → -apple-system.
+- **Pulse Mono** — **обязательно** для всех чисел (BPM, мс HRV, NSI score, минуты) И табличных/тайм-серийных списков **целиком** — время, значения и метки строк (напр. «ПЕРИОД · 7 ДНЕЙ» + `09:14 · 78`). `font-feature-settings: 'tnum' 1, 'lnum' 1` всегда.
 
 ### Hierarchy
 
@@ -343,8 +342,8 @@ Neiry Pulse — это **продуктовая био-система**, а не
 ### Principles
 - **Tabular nums везде, где цифра обновляется в реальном времени.** Иначе BPM 78→79 «прыгает».
 - **Negative tracking растёт с размером.** -6px на kiosk-180px ≈ 3.3% от size.
-- **Eyebrow — это единственный mono в маркетинговой иерархии.** Остальной mono — внутри метрик.
-- **Onest и Space Grotesk — один голос.** Семья переключается тихо.
+- **Pulse Mono несёт всё «приборное»** — числа, метрики, таймстемпы и табличные списки целиком. Текст и заголовки — Golos Text.
+- **Golos Text — единый голос UI и display.** Иерархию несут веса (400→800), а не смена гарнитуры.
 
 ## Layout
 
@@ -412,7 +411,7 @@ Neiry Pulse — это **продуктовая био-система**, а не
 
 ## Notes on Substitutes
 
-- Onest и Space Grotesk — open-source, Google Fonts. Pulse Mono — производная JetBrains Mono (SIL OFL 1.1, без Reserved Font Name) с плоским нулём; локальные файлы в `UI_assets/fonts/pulse-mono/`.
+- Golos Text — open-source, Google Fonts (ParaType, отличная кириллица). Pulse Mono — производная JetBrains Mono (SIL OFL 1.1, без Reserved Font Name) с плоским нулём; локальные файлы в `UI_assets/fonts/pulse-mono/`.
 - На системах без шрифтов fallback `system-ui` → `-apple-system` приемлем, но **метрики обязательно** в mono-fallback (`ui-monospace`).
 
 ## Version & Source-of-Truth

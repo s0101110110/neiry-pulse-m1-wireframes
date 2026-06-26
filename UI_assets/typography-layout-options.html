@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neiry Pulse · раскладка типографики — варианты</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  @font-face{font-family:'Pulse Mono';font-weight:400;src:url('fonts/pulse-mono/PulseMono-Regular.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:500;src:url('fonts/pulse-mono/PulseMono-Medium.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:600;src:url('fonts/pulse-mono/PulseMono-SemiBold.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:700;src:url('fonts/pulse-mono/PulseMono-Bold.woff2') format('woff2');}
+
+  body{background:#0f0e0b;color:#f7f6f1;}
+  .card{background:#1a1814;border:1px solid #2a2620;}
+  .golos{font-family:'Golos Text',system-ui,sans-serif;}
+  .pulse{font-family:'Pulse Mono',ui-monospace,monospace;}
+  .num{font-variant-numeric:tabular-nums;}
+  .muted{color:#7a766d;}
+  .wine{color:#e0608f;}
+  .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;}
+</style>
+</head>
+<body class="min-h-screen antialiased">
+  <header class="border-b border-[#2a2620]">
+    <div class="max-w-6xl mx-auto px-6 py-6">
+      <h1 class="golos text-xl font-bold tracking-tight">Раскладка типографики · два варианта</h1>
+      <p class="golos text-sm muted mt-1">Один и тот же экран приложения. Слева — <b class="text-[#f7f6f1]">body на Pulse Mono</b> (всё моноширинное), справа — <b class="text-[#f7f6f1]">body на Golos Text, Pulse Mono только акценты/числа</b>. Hero-число и заголовки в обоих — Golos Text.</p>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-8 grid gap-6 md:grid-cols-2">
+
+    <!-- ВАРИАНТ A — mono body -->
+    <section class="flex flex-col gap-3">
+      <div class="flex items-center gap-2">
+        <span class="golos text-sm font-semibold">Вариант A</span>
+        <span class="pulse tag wine">Golos hero · Pulse Mono body</span>
+      </div>
+      <div class="card rounded-2xl p-6 flex flex-col gap-5">
+        <div class="pulse tag muted">СЕГОДНЯ</div>
+        <div class="flex items-baseline gap-3">
+          <span class="golos num leading-none" style="font-size:80px;font-weight:700;letter-spacing:-3px;">72</span>
+          <span class="pulse text-sm muted pb-2">уд/мин</span>
+        </div>
+        <div class="golos text-lg font-semibold -mt-3">Пульс в покое</div>
+        <p class="pulse text-[13px] leading-relaxed">Ваш пульс сегодня на 4 удара ниже недельного среднего. Восстановление идёт штатно — нагрузку можно повышать.</p>
+        <div class="flex gap-4 border-t border-b border-[#2a2620] py-3">
+          <div class="flex flex-col"><span class="pulse num text-xl">45</span><span class="pulse tag muted mt-1">HRV · мс</span></div>
+          <div class="flex flex-col"><span class="pulse num text-xl">22</span><span class="pulse tag muted mt-1">NSI</span></div>
+          <div class="flex flex-col"><span class="pulse num text-xl">68%</span><span class="pulse tag muted mt-1">Нагрузка</span></div>
+        </div>
+        <button class="pulse text-sm font-medium rounded-lg py-3" style="background:#831843;color:#f7f6f1;">Начать тренировку</button>
+        <div class="flex flex-col gap-2">
+          <div class="pulse tag muted">ПЕРИОД · 7 ДНЕЙ</div>
+          <div class="flex justify-between pulse num text-[13px]"><span class="muted">09:14</span><span>78</span></div>
+          <div class="flex justify-between pulse num text-[13px]"><span class="muted">12:30</span><span>65</span></div>
+          <div class="flex justify-between pulse num text-[13px]"><span class="muted">18:45</span><span>80</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ВАРИАНТ B — golos body, mono акценты -->
+    <section class="flex flex-col gap-3">
+      <div class="flex items-center gap-2">
+        <span class="golos text-sm font-semibold">Вариант B</span>
+        <span class="pulse tag wine">Golos body · Pulse Mono акценты/числа</span>
+      </div>
+      <div class="card rounded-2xl p-6 flex flex-col gap-5">
+        <div class="pulse tag muted">СЕГОДНЯ</div>
+        <div class="flex items-baseline gap-3">
+          <span class="golos num leading-none" style="font-size:80px;font-weight:700;letter-spacing:-3px;">72</span>
+          <span class="golos text-sm muted pb-2">уд/мин</span>
+        </div>
+        <div class="golos text-lg font-semibold -mt-3">Пульс в покое</div>
+        <p class="golos text-[13px] leading-relaxed">Ваш пульс сегодня на 4 удара ниже недельного среднего. Восстановление идёт штатно — нагрузку можно повышать.</p>
+        <div class="flex gap-4 border-t border-b border-[#2a2620] py-3">
+          <div class="flex flex-col"><span class="pulse num text-xl">45</span><span class="golos tag muted mt-1">HRV · мс</span></div>
+          <div class="flex flex-col"><span class="pulse num text-xl">22</span><span class="golos tag muted mt-1">NSI</span></div>
+          <div class="flex flex-col"><span class="pulse num text-xl">68%</span><span class="golos tag muted mt-1">Нагрузка</span></div>
+        </div>
+        <button class="golos text-sm font-semibold rounded-lg py-3" style="background:#831843;color:#f7f6f1;">Начать тренировку</button>
+        <div class="flex flex-col gap-2">
+          <div class="golos tag muted">ПЕРИОД · 7 ДНЕЙ</div>
+          <div class="flex justify-between text-[13px]"><span class="golos muted">09:14</span><span class="pulse num">78</span></div>
+          <div class="flex justify-between text-[13px]"><span class="golos muted">12:30</span><span class="pulse num">65</span></div>
+          <div class="flex justify-between text-[13px]"><span class="golos muted">18:45</span><span class="pulse num">80</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="max-w-6xl mx-auto px-6 pb-12">
+    <div class="card rounded-2xl p-6 golos text-sm leading-relaxed">
+      <p class="font-semibold mb-2">Как читать</p>
+      <ul class="muted space-y-1.5 list-disc pl-5">
+        <li><b class="text-[#f7f6f1]">Hero-число «72» и «Пульс в покое»</b> — в обоих вариантах Golos Text (display). Разницы нет.</li>
+        <li><b class="text-[#f7f6f1]">Абзац описания</b> — главное отличие: A моноширинный (техно, плотный, чуть тяжелее для чтения), B — гуманистичный Golos (мягче, привычнее для длинного текста).</li>
+        <li><b class="text-[#f7f6f1]">Числа (45 / 22 / 68% / время)</b> — Pulse Mono в обоих (tabular, не прыгают).</li>
+        <li><b class="text-[#f7f6f1]">Кнопка и мелкие подписи</b> — A на Pulse Mono, B на Golos.</li>
+      </ul>
+    </div>
+  </section>
+</body>
+</html>

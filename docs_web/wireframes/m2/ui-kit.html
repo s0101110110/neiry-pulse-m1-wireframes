@@ -7,7 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Onest:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap">
 <style>
   /* Pulse Mono — локальная mono-константа проекта (JetBrains Mono с плоским нулём) */
   @font-face{font-family:'Pulse Mono';font-weight:400;src:url('../../../UI_assets/fonts/pulse-mono/PulseMono-Regular.woff2') format('woff2');}
@@ -82,8 +82,8 @@
 
   /* Font tokens */
   :root {
-    --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-    --font-display: 'Onest', 'Space Grotesk', system-ui, sans-serif;
+    --font-sans: 'Golos Text', system-ui, -apple-system, sans-serif;
+    --font-display: 'Golos Text', system-ui, sans-serif;
     --font-mono: 'Pulse Mono', ui-monospace, monospace;
   }
 
@@ -395,7 +395,7 @@
     </div>
     <div class="text-[11px] text-muted-foreground border-t border-border pt-4 leading-relaxed">
       <p class="font-data">shadcn/ui (zinc) + Neiry wine #831843</p>
-      <p class="mt-1">Space Grotesk · Onest · Pulse Mono</p>
+      <p class="mt-1">Golos Text · Pulse Mono</p>
     </div>
   </aside>
 
@@ -408,7 +408,7 @@
       <h2 class="text-3xl font-bold text-foreground">Neiry <span class="font-display text-primary">Pulse</span> · UI Kit</h2>
       <p class="text-muted-foreground max-w-3xl text-sm leading-relaxed">
         Живой стайлгайд дизайн-системы. Семантические токены shadcn (zinc base) + Neiry wine accent (<span class="font-data text-primary">#831843</span>),
-        две темы (тёмная для плазмы, светлая для админ-ноута), Space Grotesk / Onest / Pulse Mono.
+        две темы (тёмная для плазмы, светлая для админ-ноута), Golos Text / Pulse Mono.
         Все компоненты для рестайла собраны в одном месте: токены, base shadcn-компоненты, кастомные био-виджеты и Tremor-стиль для дашборда корпоратов.
       </p>
     </section>
@@ -494,13 +494,13 @@
       <!-- 1.2 TYPOGRAPHY -->
       <article id="typography" class="space-y-4">
         <h3 class="text-lg font-semibold text-foreground">1.2 Типографика</h3>
-        <p class="text-sm text-muted-foreground">Три семейства: Space Grotesk (UI), Onest 700 (hero/display, tight tracking -0.04em), Pulse Mono (data — JetBrains Mono с плоским нулём).</p>
+        <p class="text-sm text-muted-foreground">Две семьи: Golos Text (UI + display, веса 400–800, иерархия весом), Pulse Mono (data — JetBrains Mono с плоским нулём).</p>
 
         <div class="grid grid-cols-3 gap-4">
-          <!-- Space Grotesk -->
+          <!-- Golos Text · body/UI -->
           <div class="bg-card border border-border rounded-lg p-5 space-y-3">
             <div class="flex items-baseline justify-between border-b border-border pb-2">
-              <h4 class="text-sm font-semibold text-foreground">Space Grotesk</h4>
+              <h4 class="text-sm font-semibold text-foreground">Golos Text · body</h4>
               <span class="badge bg-muted text-muted-foreground">UI sans-serif</span>
             </div>
             <div class="space-y-2.5">
@@ -514,10 +514,10 @@
             </div>
           </div>
 
-          <!-- Onest 700 — Hero/Display -->
+          <!-- Golos Text 700 — Hero/Display -->
           <div class="bg-card border border-border rounded-lg p-5 space-y-3">
             <div class="flex items-baseline justify-between border-b border-border pb-2">
-              <h4 class="text-sm font-semibold text-foreground">Onest 700</h4>
+              <h4 class="text-sm font-semibold text-foreground">Golos Text · display 700</h4>
               <span class="badge bg-muted text-muted-foreground">Hero/Display</span>
             </div>
             <div class="space-y-2.5">
@@ -886,7 +886,7 @@
       <!-- 3.1 BPM-card · 3 states -->
       <article id="bpm-card" class="space-y-4">
         <h3 class="text-lg font-semibold text-foreground">3.1 BPM-card · 3 состояния</h3>
-        <p class="text-sm text-muted-foreground">Hero-число (Onest 700, 64-80px, tracking -0.04em) + sparkline 60 сек + status-pill. Используется на kiosk для якорей и гостя.</p>
+        <p class="text-sm text-muted-foreground">Hero-число (Golos Text 700, 64-80px, tracking -0.04em) + sparkline 60 сек + status-pill. Используется на kiosk для якорей и гостя.</p>
 
         <div class="grid grid-cols-3 gap-4">
           <!-- NORM -->
@@ -959,7 +959,7 @@
             <h4 class="text-sm font-semibold text-foreground">3.2.A · Apple Rings (270° arc)</h4>
             <span class="text-[11px] text-muted-foreground">для kiosk · далёкая дистанция</span>
           </div>
-          <p class="text-xs text-muted-foreground">Дуга открыта снизу как Apple Watch Activity. Огромное число в центре (Onest 700). Хорошо читается с 2-3м.</p>
+          <p class="text-xs text-muted-foreground">Дуга открыта снизу как Apple Watch Activity. Огромное число в центре (Golos Text 700). Хорошо читается с 2-3м.</p>
 
           <div class="grid grid-cols-3 gap-4">
             <!-- NSI 22 — success -->
@@ -1383,7 +1383,7 @@
       <!-- 4.1 KPI cards -->
       <article id="kpi" class="space-y-4">
         <h3 class="text-lg font-semibold text-foreground">4.1 KPI-card · 4 примера</h3>
-        <p class="text-sm text-muted-foreground">Заголовок (uppercase small) + hero-число (Onest 700, 48px) + delta + sparkline.</p>
+        <p class="text-sm text-muted-foreground">Заголовок (uppercase small) + hero-число (Golos Text 700, 48px) + delta + sparkline.</p>
 
         <div class="grid grid-cols-4 gap-4">
           <!-- Recovery -->
