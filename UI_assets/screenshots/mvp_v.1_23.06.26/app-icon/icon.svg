@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" fill="none">
+  <!-- Squircle background: wine #831843 -->
+  <rect x="0" y="0" width="1024" height="1024" rx="225" ry="225" fill="#831843"/>
+
+  <!-- Pulse logo: circle + waveform, white, scaled from 64x64 viewBox to ~640px (62.5%) centered -->
+  <g transform="translate(192, 192) scale(10)">
+    <circle cx="32" cy="32" r="28" stroke="#ffffff" stroke-width="2.4" fill="none"/>
+    <path d="M14 32 L22 24 L28 40 L36 20 L42 36 L50 28"
+          stroke="#ffffff"
+          stroke-width="2.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill="none"/>
+  </g>
+</svg>
