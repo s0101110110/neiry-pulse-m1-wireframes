@@ -1,0 +1,425 @@
+/*!
+ * Neiry Pulse · Bevel-clone · components
+ * v1.0.0 — 2026-06-29 — initial extraction (14 atomic + modifiers)
+ * Зависит от: tokens.css v1.0.2
+ *
+ * Конвенции:
+ *   BEM — `--` variant · `__` internal element · `.is-` state
+ *   Все цвета/радиусы/типографика/spacing — через var(--bv-*).
+ *   Тинты и alpha — через color-mix(in srgb, var(--bv-*) N%, transparent) (нет hardcoded hex).
+ *   Литеральные px — только structural geometry компонента (фикс. размеры, бордеры, knob/dot).
+ *   Wine — строго 5 зон (DESIGN.md Wine Policy): nav-active · chip--badge ·
+ *          button--primary · toggle ON · app-bar--back. В content wine запрещён.
+ */
+
+/* ============================================================
+   ICONOGRAPHY CONVENTION
+   ============================================================ */
+.bv-icon {
+  stroke: currentColor;
+  stroke-width: var(--bv-icon-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.bv-icon--filled { fill: currentColor; stroke: none; }   /* для home-active и т.п. */
+
+/* ============================================================
+   GROUP A — Surface & Layout
+   ============================================================ */
+.bv-screen {
+  background: var(--bv-bg-screen);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bv-card {
+  background: var(--bv-bg-card);
+  border: 1px solid var(--bv-hairline);
+  border-radius: var(--bv-r-card);
+  box-shadow: var(--bv-shadow-card);
+  padding: var(--bv-sp-4);
+}
+.bv-card--hero  { padding: var(--bv-sp-6); }
+.bv-card--bento {
+  padding: var(--bv-sp-3);
+  min-height: 122px;   /* structural: единая высота bento-ячеек 2×3 */
+}
+
+.bv-section-header {
+  font-family: var(--bv-font-sans);
+  font-size: var(--bv-fs-section-h2);
+  font-weight: var(--bv-fw-bold);
+  letter-spacing: var(--bv-ls-tight);
+  line-height: var(--bv-lh-display);
+  color: var(--bv-ink);
+}
+
+/* ============================================================
+   GROUP B — Chrome
+   ============================================================ */
+.bv-app-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--bv-sp-2);
+  padding: var(--bv-sp-2);
+  border: 1px solid var(--bv-hairline);
+  border-radius: var(--bv-r-pill);
+  box-shadow: var(--bv-shadow-header);
+  flex-shrink: 0;
+}
+/* home-style: calendar · date · share · avatar */
+.bv-app-bar--pill {
+  background: var(--bv-bg-card);
+  justify-content: space-between;
+}
+/* sub-screens: back · title · info — wine-tint chrome (Wine zone) */
+.bv-app-bar--back {
+  display: grid;
+  grid-template-columns: 32px 1fr 32px;   /* structural: фикс. иконки по краям */
+  align-items: center;
+  background: var(--bv-wine-tint);                                    /* fallback — нет color-mix */
+  background: color-mix(in srgb, var(--bv-wine) 5%, transparent);
+  border-color: var(--bv-hairline);                                  /* fallback */
+  border-color: color-mix(in srgb, var(--bv-wine) 10%, transparent);
+}
+.bv-app-bar__icon-btn {
+  width: 32px; height: 32px;              /* structural */
+  border-radius: var(--bv-r-pill);
+  background: var(--bv-bg-screen);
+  display: grid; place-items: center;
+  color: var(--bv-ink);
+  flex-shrink: 0;
+  transition: background 160ms ease-out;
+}
+.bv-app-bar__icon-btn:hover { background: var(--bv-bg-subtle); }
+.bv-app-bar--back .bv-app-bar__icon-btn {
+  background: transparent;
+  color: var(--bv-wine);                  /* wine icons — chrome zone */
+}
+.bv-app-bar--back .bv-app-bar__icon-btn:hover {
+  background: color-mix(in srgb, var(--bv-wine) 10%, transparent);
+}
+.bv-app-bar__date,
+.bv-app-bar__title {
+  flex: 1;
+  text-align: center;
+  font-family: var(--bv-font-sans);
+  font-size: var(--bv-fs-headline);
+  font-weight: var(--bv-fw-bold);
+  color: var(--bv-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.bv-nav-pill {
+  position: absolute;
+  left: var(--bv-sp-4); right: var(--bv-sp-4); bottom: var(--bv-sp-4);
+  display: flex;
+  gap: 2px;                               /* structural micro-gap между табами */
+  padding: var(--bv-sp-1);
+  background: var(--bv-bg-card);                                       /* fallback — нет color-mix */
+  background: color-mix(in srgb, var(--bv-bg-card) 85%, transparent);  /* glass */
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid var(--bv-hairline);                               /* fallback */
+  border: 1px solid color-mix(in srgb, var(--bv-bg-card) 90%, transparent);
+  border-radius: var(--bv-r-nav);
+  box-shadow: var(--bv-shadow-nav);
+  z-index: 3;
+}
+.bv-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bv-sp-1);
+  padding: var(--bv-sp-2) 0;
+  font-family: var(--bv-font-sans);
+  font-size: var(--bv-fs-tab-label);
+  font-weight: var(--bv-fw-medium);
+  color: var(--bv-ink-dim);
+  border-radius: var(--bv-r-pill);
+  transition: color 160ms ease-out, background 160ms ease-out;
+}
+.bv-nav-item.is-active {                  /* Wine zone #1 */
+  color: var(--bv-wine);
+  background: var(--bv-wine-tint);
+  font-weight: var(--bv-fw-semibold);
+}
+
+.bv-avatar {
+  width: 32px; height: 32px;             /* structural */
+  border-radius: var(--bv-r-pill);
+  background: var(--bv-avatar-bg);
+  color: var(--bv-avatar-ink);
+  font-family: var(--bv-font-mono);
+  font-size: var(--bv-fs-tab-label);     /* 10px — осознанный reuse для micro-инициалов (НЕ coupling с nav) */
+  font-weight: var(--bv-fw-medium);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   GROUP C — Health Monitor
+   ============================================================ */
+.bv-capsule {
+  position: relative;
+  width: 14px;                            /* structural: ширина вертикального индикатора */
+  border-radius: var(--bv-r-pill);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.bv-capsule--full { min-height: 120px; } /* structural — HRV hero */
+.bv-capsule--mini { min-height: 92px; }  /* structural — bento */
+
+.bv-capsule__track {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--bv-r-pill);
+  background: var(--bv-capsule-track);
+}
+.bv-capsule__fill {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  border-radius: var(--bv-r-pill);
+  background: var(--bv-capsule-fill-norm);   /* default norm; статус-модификатор переопределяет */
+}
+.bv-capsule__dot {
+  position: absolute;
+  left: 50%;
+  width: 10px; height: 10px;              /* structural */
+  border-radius: 50%;
+  background: var(--bv-bg-card);
+  transform: translate(-50%, 50%);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--bv-bg-card) 70%, transparent),
+              var(--bv-shadow-header);
+  z-index: 2;
+}
+/* status-модификаторы капсулы (track tint + fill) */
+.bv-capsule--norm .bv-capsule__track { background: var(--bv-capsule-track-norm); }
+.bv-capsule--norm .bv-capsule__fill  { background: var(--bv-capsule-fill-norm); }
+.bv-capsule--warn .bv-capsule__track { background: var(--bv-capsule-track-warn); }
+.bv-capsule--warn .bv-capsule__fill  { background: var(--bv-capsule-fill-warn); }
+.bv-capsule--high .bv-capsule__track { background: var(--bv-capsule-track-high); }
+.bv-capsule--high .bv-capsule__fill  { background: var(--bv-capsule-fill-high); }
+.bv-capsule--empty .bv-capsule__track { background: var(--bv-capsule-track); }
+.bv-capsule--empty .bv-capsule__fill,
+.bv-capsule--empty .bv-capsule__dot   { display: none; }
+
+.bv-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bv-sp-1);
+  padding: var(--bv-sp-1) var(--bv-sp-2);
+  font-family: var(--bv-font-sans);
+  font-size: var(--bv-fs-caption);
+  font-weight: var(--bv-fw-semibold);
+  line-height: var(--bv-lh-tight);
+  border-radius: var(--bv-r-pill);
+  white-space: nowrap;
+}
+/* status — 2-level severity taxonomy + empty */
+.bv-chip--status-low   { background: var(--bv-sem-norm-bg); color: var(--bv-sem-norm-ink); }
+.bv-chip--status-mid   { background: var(--bv-sem-warn-bg); color: var(--bv-sem-warn-ink); }
+.bv-chip--status-high  { background: var(--bv-sem-high-bg); color: var(--bv-sem-high-ink); }
+.bv-chip--status-empty { background: var(--bv-bg-subtle);   color: var(--bv-ink-faded); }
+/* delta — mono, tabular */
+.bv-chip--delta-up,
+.bv-chip--delta-down {
+  font-family: var(--bv-font-mono);
+  font-weight: var(--bv-fw-medium);
+  font-variant-numeric: tabular-nums;
+}
+.bv-chip--delta-up   { background: var(--bv-sem-norm-bg); color: var(--bv-sem-norm-ink); }
+.bv-chip--delta-down { background: var(--bv-sem-high-bg); color: var(--bv-sem-high-ink); }
+/* badge — Wine zone #2 (wine-tint bg + wine ink, per Stage 3 spec) */
+.bv-chip--badge { background: var(--bv-wine-tint); color: var(--bv-wine); }
+
+/* ============================================================
+   GROUP D — Settings
+   ============================================================ */
+.bv-row {
+  display: flex;
+  align-items: center;
+  gap: var(--bv-sp-3);
+  padding: var(--bv-sp-3) var(--bv-sp-4);
+  min-height: 56px;                       /* structural — единая высота строки */
+  border-bottom: 1px solid var(--bv-hairline);
+  transition: background 160ms ease-out;
+}
+.bv-row:last-child { border-bottom: 0; }
+.bv-row:hover { background: color-mix(in srgb, var(--bv-bg-subtle) 50%, transparent); }
+
+.bv-icon-square {
+  width: 32px; height: 32px;             /* structural */
+  border-radius: var(--bv-r-icon);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.bv-icon-square--default { background: var(--bv-bg-subtle); color: var(--bv-ink-mute); }
+.bv-icon-square--wine {
+  background: var(--bv-wine-tint);                                     /* fallback */
+  background: color-mix(in srgb, var(--bv-wine) 8%, transparent);
+  color: var(--bv-wine);
+}
+.bv-icon-square--danger {
+  background: var(--bv-sem-high-bg);                                   /* fallback */
+  background: color-mix(in srgb, var(--bv-sem-high) 10%, transparent);
+  color: var(--bv-sem-high-ink);
+}
+.bv-icon-square--success {
+  background: var(--bv-sem-norm-bg);                                   /* fallback */
+  background: color-mix(in srgb, var(--bv-sem-norm) 10%, transparent);
+  color: var(--bv-sem-norm-ink);
+}
+
+/* ============================================================
+   GROUP E — Controls
+   ============================================================ */
+.bv-button {
+  font-family: var(--bv-font-sans);
+  font-size: var(--bv-fs-label);
+  font-weight: var(--bv-fw-semibold);
+  line-height: var(--bv-lh-tight);
+  padding: var(--bv-sp-3) var(--bv-sp-5);
+  border: 1px solid transparent;
+  border-radius: var(--bv-r-button);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 160ms ease-out, border-color 160ms ease-out;
+}
+.bv-button--primary {                     /* Wine zone #3 */
+  background: var(--bv-wine);
+  color: var(--bv-bg-card);               /* white — нет отдельного on-wine токена */
+}
+.bv-button--primary:hover { background: color-mix(in srgb, var(--bv-wine) 88%, black); }
+.bv-button--secondary {
+  background: var(--bv-bg-card);
+  color: var(--bv-ink);
+  border-color: var(--bv-hairline);
+}
+.bv-button--secondary:hover { background: var(--bv-bg-subtle); }
+.bv-button--ghost { background: transparent; color: var(--bv-wine); }
+.bv-button--ghost:hover { background: var(--bv-wine-tint); }
+
+.bv-toggle {
+  position: relative;
+  width: 38px; height: 22px;             /* structural — switch geometry */
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.bv-toggle__track {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--bv-r-pill);
+  background: var(--bv-toggle-track-off);
+  transition: background 200ms ease-out;
+}
+.bv-toggle.is-on .bv-toggle__track { background: var(--bv-wine); }  /* Wine zone #4 */
+.bv-toggle__knob {
+  position: absolute;
+  top: 2px; left: 2px;                   /* structural */
+  width: 18px; height: 18px;             /* structural — knob */
+  border-radius: 50%;
+  background: var(--bv-bg-card);
+  box-shadow: var(--bv-shadow-header);
+  transition: transform 200ms ease-out;
+}
+.bv-toggle.is-on .bv-toggle__knob { transform: translateX(16px); }  /* structural: track 38 − knob 18 − insets 4 */
+
+.bv-eyebrow {
+  font-family: var(--bv-font-mono);
+  font-size: var(--bv-fs-eyebrow);
+  font-weight: var(--bv-fw-medium);
+  letter-spacing: var(--bv-ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--bv-ink-mute);
+}
+
+/* ============================================================
+   A11Y — focus-visible + reduced-motion
+   ============================================================ */
+.bv-button:focus-visible,
+.bv-nav-item:focus-visible,
+.bv-row:focus-visible,
+.bv-toggle:focus-visible,
+.bv-app-bar__icon-btn:focus-visible {
+  outline: 2px solid var(--bv-wine);
+  outline-offset: 2px;
+}
+/* высококонтрастный focus-ring на wine-поверхностях (WCAG 2.4.11 — wine на wine невидим) */
+.bv-button--primary:focus-visible,
+.bv-app-bar--back .bv-app-bar__icon-btn:focus-visible {
+  outline-color: var(--bv-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   ВОЗРАЖЕНИЯ SKILL'ОВ / РЕШЕНИЯ ПРИ ЭКСТРАКЦИИ — на разбор PM
+   ============================================================
+
+   1. CHIP--BADGE — КОНФЛИКТ С DESIGN.md. Stage 3-бриф: «wine-tint bg + wine ink».
+      DESIGN.md Wine Policy zone #2 + preview-DRAFT: «solid wine bg + white». Реализовано
+      ПО БРИФУ (wine-tint + wine ink — мягче). PM: согласовать с DESIGN.md (solid?) — одно из двух.
+
+   2. WHITE-НА-WINE НЕТ ТОКЕНА — bv-button--primary color = var(--bv-bg-card) (белый).
+      Семантически нужен --bv-ink-on-wine / --bv-white. Сейчас переиспользую bg-card. PM: добавить токен.
+
+   3. WINE-HOVER НЕТ ТОКЕНА — button--primary:hover = color-mix(wine 88%, black). В tokens.css
+      нет --bv-wine-hover (был в legacy settings). PM: добавить --bv-wine-hover или оставить color-mix.
+
+   4. GLASS НЕ ТОКЕНИЗИРОВАН — nav-pill/app-bar glass = color-mix(bg-card N%, transparent) +
+      backdrop-filter blur(14px) saturate(180%). blur/saturate — structural литералы (нет токенов
+      для glass). Приемлемо как Bevel-DNA; при желании ввести --bv-glass-blur.
+
+   5. EYEBROW COLOR — реализован var(--bv-ink-mute) (= эталон .eyebrow + Stage 3-бриф).
+      DESIGN.md mirror указывает ink-dim. Рассинхрон — поправить DESIGN.md (ink-mute).
+
+   6. CARD BORDER — var(--bv-hairline) (= эталон .hero/.mcard + Stage 3-бриф). DESIGN.md mirror
+      указывает hairline-2. Рассинхрон — поправить DESIGN.md (hairline).
+
+   7. OFF-GRID NORMALIZATION — источники имеют off-grid px (pill padding 6/10, row 14, chip 5/10,
+      tab 7/6/9.5px, gap 2/3). Снэпнуто к 4px-токенам (sp-1/2/3 + fs-tab-label 10). Визуально
+      ~идентично; строгий 4px-grid соблюдён. Микро-gap nav (2px) оставлен structural.
+
+   8. STRUCTURAL PX — фикс. геометрия компонентов оставлена литералами: avatar/icon-square/
+      app-bar-icon 32, capsule width 14, dot 10, toggle 38×22, knob 18, card min-h 122/120/92,
+      borders 1px. Это размеры, не дизайн-значения (self-review «structural sizes» допускает).
+
+   ── ВЕРИФИКАЦИЯ (adversarial workflow, 5 lenses; 0 high · 0 missing · 4 med) ──
+
+   ПРИМЕНЕНО по findings:
+   A. toggle knob travel: var(--bv-sp-4) → 16px literal (derived-геометрия 38−18−4, не spacing).
+   B. reduced-motion: explicit-list → wildcard `*` (future-proof + animation/scroll coverage).
+   C. focus-ring: +outline-color var(--bv-ink) на primary-button и app-bar--back icons
+      (WCAG 2.4.11 — wine-ring на wine-фоне был невидим).
+   D. avatar font-size: добавлен комментарий про осознанный reuse fs-tab-label (не coupling).
+
+   9. WINE ВНЕ 5 ЗОН (med ×2, task-mandated) — bv-button--ghost (wine text) и
+      bv-icon-square--wine (8% wine tint) требует Stage 3-спек, но их НЕТ в Wine Policy (5 зон).
+      Content-data они не нарушают (контролы/иконки), но политику расширяют. PM: добавить как
+      зоны #6/#7 в DESIGN.md ЛИБО перевести ghost→neutral-ink, icon-square→--default.
+
+  10. NAV-PILL GLASS vs ЭТАЛОН — bv-nav-pill = glass (по DESIGN.md + health-monitor). Но
+      home-main-etalon .bottom-nav — SOLID white (без backdrop-filter). Рассинхрон canon: glass
+      принят как Bevel-DNA, эталонный bottom-nav мигрировать в Stage 5 ЛИБО подтвердить solid.
+
+  11. CAPSULE DOT — токен-гигиена: dot-lift тень сейчас var(--bv-shadow-header) (0.04, мягкая);
+      источник = 0 1px 3px rgba(22,22,32,.18) (заметнее, поднимает индикатор). Не вводил литерал
+      ради token-чистоты. PM: добавить --bv-shadow-dot в tokens.css. Также dot унифицирован 9→10px
+      (bento-источник был 9). --bv-ink-on-wine (#2) и --bv-wine-hover (#3) — те же token-гэпы.
+
+  12. HOST-КОНТРАКТ (a11y) — :focus-visible на bv-row/bv-toggle сработает ТОЛЬКО если хост —
+      фокусируемый элемент. DS-гайд: bv-toggle рендерить как <button role="switch" aria-checked>,
+      навигируемый bv-row — как <button>/<a> (или tabindex=0 + role). CSS-правок не нужно.
+   ============================================================ */
