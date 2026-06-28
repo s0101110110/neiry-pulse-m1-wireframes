@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Neiry Pulse · Дизайн-система · Первая волна — DRAFT для approval</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     PULSE MONO — локальные начертания (JetBrains Mono с плоским нулём)
+     ============================================================ */
+  @font-face{font-family:'Pulse Mono';font-weight:400;src:url('../../fonts/pulse-mono/PulseMono-Regular.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:500;src:url('../../fonts/pulse-mono/PulseMono-Medium.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:600;src:url('../../fonts/pulse-mono/PulseMono-SemiBold.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:700;src:url('../../fonts/pulse-mono/PulseMono-Bold.woff2') format('woff2');}
+
+  /* ============================================================
+     TOKENS — Bevel-clone v3 (source: home/home-health-monitor.html)
+     ============================================================ */
+  :root {
+    --bg:          #F0F0F3;   /* cool-gray surface */
+    --bg-2:        #E8E8EE;
+    --card:        #FFFFFF;
+    --card-soft:   #F9F9FC;
+
+    --hairline:    #E5E5EA;
+    --hairline-2:  #EEEEF2;
+
+    --ink:         #1B1B21;
+    --ink-mute:    #62626C;
+    --ink-dim:     #8E8E97;
+    --ink-faded:   #B5B5BD;
+
+    /* Wine — БРЕНД-анкер. Solid только: nav.is-active · chip--badge · button--primary · toggle ON */
+    --wine:        #831843;
+    --wine-hover:  #A11D52;
+    --wine-tint:   #F7E3EC;
+
+    /* Semantic (Bevel severity) */
+    --sem-norm:    #1DA049;  --sem-norm-ink:#117A38;  --sem-norm-bg:#E5F7EE;  --sem-norm-track:#D6F0E2;
+    --sem-warn:    #F2752B;  --sem-warn-ink:#C2511A;  --sem-warn-bg:#FBE9DA;  --sem-warn-track:#F8DEC8;
+    --sem-high:    #E11D48;  --sem-high-ink:#C20D2E;  --sem-high-bg:#FBDDE3;  --sem-high-track:#F4C7D0;
+    --sem-empty-track:#EAEAEF;
+
+    /* Avatar blue (spec) — НЕ wine */
+    --avatar-bg:   #D5E3F0;
+    --avatar-ink:  #3A6FA0;
+
+    /* Toggle OFF — cool muted (v3, заменяет тёплый #D6D2C8 из settings) */
+    --toggle-off:  #D5D5DD;
+
+    --shadow-1: 0 1px 2px rgba(22,22,32,0.05), 0 1px 1px rgba(22,22,32,0.03);
+    --shadow-2: 0 1px 2px rgba(22,22,32,0.05), 0 4px 12px rgba(22,22,32,0.07);
+    --shadow-3: 0 1px 2px rgba(22,22,32,0.05), 0 8px 24px rgba(22,22,32,0.09);
+    --shadow-pill: 0 8px 24px rgba(22,22,32,0.12), 0 2px 6px rgba(22,22,32,0.06);
+
+    --sans: 'Golos Text', system-ui, -apple-system, sans-serif;
+    --mono: 'Pulse Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+    --r-card: 22px;
+    --r-md:   16px;
+    --r-sm:   12px;
+    --r-btn:  14px;
+    --r-icon: 10px;
+    --r-pill: 999px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:.01ms!important; transition-duration:.01ms!important; }
+  }
+  /* harden: keyboard focus-ring (sync с home/settings-эталонами) */
+  :focus-visible { outline: 2px solid var(--wine); outline-offset: 2px; border-radius: 4px; }
+  button { cursor: pointer; }
+
+  /* ============================================================
+     PAGE SHELL
+     ============================================================ */
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px; }
+
+  .page-head { padding: 16px 0 12px; border-bottom: 1px solid var(--hairline); margin-bottom: 8px; }
+  .page-eyebrow {
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.7px; text-transform: uppercase; color: var(--wine);
+  }
+  .page-head h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.9px; margin-top: 10px; line-height: 1.1; }
+  .page-head p { font-size: 14px; color: var(--ink-mute); margin-top: 12px; max-width: 64ch; line-height: 1.55; }
+  .page-head .meta { font-family: var(--mono); font-size: 11.5px; color: #62626C; margin-top: 14px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .legend .tag {
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    padding: 4px 10px; border-radius: 999px; background: var(--card);
+    border: 1px solid var(--hairline); color: var(--ink-mute);
+  }
+  .legend .tag b { color: var(--wine); font-weight: 600; }
+
+  /* ============================================================
+     GROUP SECTION
+     ============================================================ */
+  .grp { margin-top: 44px; }
+  .grp-head { margin-bottom: 18px; }
+  .grp-num {
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.6px; text-transform: uppercase; color: #62626C;
+  }
+  .grp-head h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-top: 5px; }
+  .grp-head p { font-size: 13.5px; color: var(--ink-mute); margin-top: 7px; max-width: 70ch; line-height: 1.5; }
+
+  /* specimen grid */
+  .specs { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+  .spec {
+    background: var(--card-soft);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    padding: 22px 20px 14px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 14px;
+  }
+  .spec.center { align-items: center; }
+  .spec-stage { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; width: 100%; }
+  .spec-stage.col { flex-direction: column; align-items: stretch; }
+  .cap {
+    font-family: var(--mono); font-size: 11px; line-height: 1.5; color: #62626C;
+    border-top: 1px dashed var(--hairline); padding-top: 9px; width: 100%; margin-top: auto;
+  }
+  .cap code { color: var(--ink); font-weight: 600; }
+  .cap .tok { color: #6C6C76; }
+  .lbl { font-size: 11px; font-weight: 600; color: #62626C; text-align: center; }
+
+  /* ============================================================
+     bv-screen
+     ============================================================ */
+  .bv-screen {
+    width: 200px; height: 132px; border-radius: 18px;
+    background: var(--bg); border: 1px solid var(--hairline);
+    display: grid; place-items: center;
+  }
+  .bv-screen .inner-card {
+    width: 150px; height: 78px; background: var(--card);
+    border: 1px solid var(--hairline-2); border-radius: var(--r-card);
+    box-shadow: var(--shadow-2);
+  }
+
+  /* ============================================================
+     bv-card (base / --hero / --bento)
+     ============================================================ */
+  .bv-card {
+    background: var(--card); border: 1px solid var(--hairline-2);
+    border-radius: var(--r-card); box-shadow: var(--shadow-2);
+    padding: 14px 16px;
+  }
+  .bv-card--base  { width: 200px; min-height: 96px; }
+  .bv-card--hero  { width: 280px; min-height: 150px; padding: 20px 22px; box-shadow: var(--shadow-3); }
+  .bv-card--bento { width: 150px; min-height: 122px; padding: 13px 14px; }
+  .card-demo-eyebrow { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .5px; text-transform: uppercase; color: var(--ink-dim); }
+  .card-demo-num { font-family: var(--mono); font-weight: 500; font-size: 34px; letter-spacing: -1px; color: var(--ink); margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .card-demo-num .u { font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--ink-mute); }
+  .card-demo-hero-num { font-family: var(--mono); font-weight: 600; font-size: 52px; letter-spacing: -2px; color: var(--ink); font-variant-numeric: tabular-nums; line-height: .95; }
+  .card-demo-line { font-size: 13px; color: var(--ink-mute); margin-top: 6px; }
+
+  /* ============================================================
+     bv-section-header (22 / 24 / 28)
+     ============================================================ */
+  .bv-section-header { font-family: var(--sans); font-weight: 700; color: var(--ink); letter-spacing: -0.6px; line-height: 1.1; }
+  .bv-section-header.s22 { font-size: 22px; }
+  .bv-section-header.s24 { font-size: 24px; }
+  .bv-section-header.s28 { font-size: 28px; letter-spacing: -0.7px; }
+
+  /* ============================================================
+     bv-app-bar (--pill home / --back settings)
+     ============================================================ */
+  .bv-app-bar { width: 320px; display: flex; align-items: center; border-radius: 999px; flex-shrink: 0; }
+  .bv-app-bar--pill {
+    justify-content: space-between; padding: 4px 6px;
+    background: rgba(255,255,255,0.86); border: 1px solid var(--hairline);
+    box-shadow: var(--shadow-pill);
+  }
+  .ab-icon {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--card);
+    display: grid; place-items: center; color: var(--ink);
+    border: 1px solid var(--hairline-2); flex-shrink: 0;
+  }
+  .ab-date { flex: 1; text-align: center; font-size: 15px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -.1px; }
+  .ab-actions { display: flex; gap: 6px; align-items: center; }
+
+  .bv-app-bar--back {
+    display: grid; grid-template-columns: 32px 1fr 32px; padding: 6px 10px;
+    background: rgba(131,24,67,0.05); border: 1px solid rgba(131,24,67,0.10);
+  }
+  .ab-back, .ab-right { display: grid; place-items: center; color: var(--wine); height: 32px; width: 32px; border-radius: 50%; }
+  .ab-title { text-align: center; font-size: 17px; font-weight: 700; letter-spacing: -0.3px; color: var(--ink); }
+
+  /* ============================================================
+     bv-avatar
+     ============================================================ */
+  .bv-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--avatar-bg); color: var(--avatar-ink);
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    display: grid; place-items: center; letter-spacing: 0.4px; flex-shrink: 0;
+  }
+
+  /* ============================================================
+     bv-nav-pill (5-tab) + bv-nav-item
+     ============================================================ */
+  .bv-nav-pill {
+    width: 332px; display: flex; gap: 2px; padding: 6px;
+    background: rgba(255,255,255,0.88); border: 1px solid var(--hairline);
+    border-radius: 999px; box-shadow: var(--shadow-pill);
+  }
+  .bv-nav-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 7px 0 6px; font-size: 9.5px; font-weight: 500; color: var(--ink-dim);
+    border-radius: 999px;
+  }
+  .bv-nav-item svg { color: var(--ink-dim); }
+  .bv-nav-item.is-active { color: var(--wine); background: var(--wine-tint); font-weight: 600; }
+  .bv-nav-item.is-active svg { color: var(--wine); }
+
+  /* standalone nav-item pair */
+  .nav-item-solo { width: 78px; }
+
+  /* ============================================================
+     bv-capsule (--full with caps / --mini)
+     ============================================================ */
+  .bv-capsule {
+    position: relative; width: 14px; border-radius: var(--r-pill);
+    background: var(--sem-empty-track); flex-shrink: 0; overflow: hidden;
+  }
+  .bv-capsule--full { height: 120px; }
+  .bv-capsule--mini { height: 92px; }
+  .bv-capsule .fill { position: absolute; left: 0; right: 0; bottom: 0; border-radius: var(--r-pill); }
+  .bv-capsule .dot {
+    position: absolute; left: 50%; width: 9px; height: 9px; border-radius: 50%;
+    background: #FFF; transform: translate(-50%, 50%); z-index: 2;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.7), 0 1px 3px rgba(22,22,32,0.18);
+  }
+  .bv-capsule.s-norm  { background: var(--sem-norm-track); }  .bv-capsule.s-norm  .fill { background: var(--sem-norm); }
+  .bv-capsule.s-warn  { background: var(--sem-warn-track); }  .bv-capsule.s-warn  .fill { background: var(--sem-warn); }
+  .bv-capsule.s-high  { background: var(--sem-high-track); }  .bv-capsule.s-high  .fill { background: var(--sem-high); }
+  .bv-capsule.s-empty { background: var(--sem-empty-track); } .bv-capsule.s-empty .dot { display: none; }
+
+  .capsule-full-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .capsule-bound { font-family: var(--mono); font-size: 10px; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+  .capsule-mini-cell { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+  /* ============================================================
+     bv-chip (--status / --delta / --badge)
+     ============================================================ */
+  .bv-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--sans); font-size: 12.5px; font-weight: 600; line-height: 1;
+    padding: 5px 10px; border-radius: 999px; white-space: nowrap;
+  }
+  .bv-chip svg { flex-shrink: 0; }
+  /* status */
+  .bv-chip--status.s-norm  { background: var(--sem-norm-bg);  color: var(--sem-norm-ink); }
+  .bv-chip--status.s-warn  { background: var(--sem-warn-bg);  color: var(--sem-warn-ink); }
+  .bv-chip--status.s-high  { background: var(--sem-high-bg);  color: var(--sem-high-ink); }
+  .bv-chip--status.s-empty { background: var(--bg-2);         color: var(--ink-faded); }
+  /* delta */
+  .bv-chip--delta { font-family: var(--mono); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .bv-chip--delta.up   { background: var(--sem-norm-bg); color: var(--sem-norm-ink); }
+  .bv-chip--delta.down { background: var(--sem-high-bg); color: var(--sem-high-ink); }
+  /* badge (solid wine) */
+  .bv-chip--badge { background: var(--wine); color: #fff; font-weight: 600; }
+
+  /* ============================================================
+     bv-row (settings list row)
+     ============================================================ */
+  .bv-row-group {
+    width: 340px; background: var(--card); border: 1px solid var(--hairline-2);
+    border-radius: var(--r-md); box-shadow: var(--shadow-2); overflow: hidden;
+  }
+  .bv-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; min-height: 56px; border-bottom: 1px solid rgba(227,227,234,0.6); }
+  .bv-row:last-child { border-bottom: 0; }
+  .bv-row-body { flex: 1; min-width: 0; }
+  .bv-row-label { font-size: 14px; font-weight: 500; color: var(--ink); letter-spacing: -0.1px; line-height: 1.3; }
+  .bv-row-sub { font-size: 12px; color: var(--ink-mute); margin-top: 3px; }
+  .bv-row-trail { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .bv-row .chev { color: var(--ink-dim); display: grid; place-items: center; }
+
+  /* ============================================================
+     bv-icon-square (4 tints)
+     ============================================================ */
+  .bv-icon-square { width: 38px; height: 38px; border-radius: var(--r-icon); display: grid; place-items: center; flex-shrink: 0; }
+  .bv-icon-square--default { background: var(--bg-2);                 color: var(--ink-mute); }
+  .bv-icon-square--wine    { background: rgba(131,24,67,0.08);        color: var(--wine); }
+  .bv-icon-square--danger  { background: rgba(225,29,72,0.10);        color: var(--sem-high-ink); }
+  .bv-icon-square--success { background: rgba(29,160,73,0.10);        color: var(--sem-norm-ink); }
+
+  /* ============================================================
+     bv-button (--primary / --secondary / --ghost)
+     ============================================================ */
+  .bv-button {
+    font-family: var(--sans); font-size: 15px; font-weight: 600; letter-spacing: -0.1px;
+    padding: 13px 22px; border-radius: var(--r-btn); border: 1px solid transparent;
+    cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    transition: background 160ms ease-out, border-color 160ms ease-out;
+  }
+  .bv-button--primary   { background: var(--wine); color: #fff; }
+  .bv-button--primary:hover { background: var(--wine-hover); }
+  .bv-button--secondary { background: var(--card); color: var(--ink); border-color: var(--hairline); box-shadow: var(--shadow-1); }
+  .bv-button--secondary:hover { background: var(--card-soft); }
+  .bv-button--ghost     { background: transparent; color: var(--wine); }
+  .bv-button--ghost:hover { background: var(--wine-tint); }
+
+  /* ============================================================
+     bv-toggle (ON wine / OFF muted)
+     ============================================================ */
+  .bv-toggle { width: 38px; height: 22px; border-radius: 999px; background: var(--toggle-off); position: relative; flex-shrink: 0; transition: background 200ms ease-out; }
+  .bv-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.15); transition: transform 200ms ease-out; }
+  .bv-toggle.is-on { background: var(--wine); }
+  .bv-toggle.is-on::after { transform: translateX(16px); box-shadow: 0 1px 3px rgba(0,0,0,0.22); }
+
+  /* ============================================================
+     bv-eyebrow
+     ============================================================ */
+  .bv-eyebrow { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase; color: var(--ink-dim); }
+
+  .toggle-pair { display: flex; align-items: center; gap: 22px; }
+  .toggle-cell { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===================== PAGE HEAD ===================== -->
+  <header class="page-head">
+    <div class="page-eyebrow">Neiry Pulse · Bevel-clone</div>
+    <h1>Дизайн-система · Первая волна</h1>
+    <p>
+      DRAFT для approval: 14 атомарных компонентов в 5 группах. Каждый показан с живыми
+      состояниями и модификаторами. Токены — из v3-эталона (cool-gray #F0F0F3 + мультисемантика).
+      После утверждения PM — formal implementation отдельной задачей.
+    </p>
+    <div class="meta">component-level preview · без phone-bezel · Golos Text + Pulse Mono · 4px grid</div>
+    <div class="legend">
+      <span class="tag">surface <b>#F0F0F3</b></span>
+      <span class="tag">card #FFFFFF</span>
+      <span class="tag"><b>wine #831843</b> — solid: nav.is-active · chip--badge · button--primary · toggle ON</span>
+      <span class="tag">semantic: green · orange · red · grey</span>
+    </div>
+  </header>
+
+  <!-- ===================== ГРУППА 1 ===================== -->
+  <section class="grp">
+    <div class="grp-head">
+      <div class="grp-num">Группа 1 — 3 компонента</div>
+      <h2>Surface &amp; Layout</h2>
+      <p>Базовые поверхности и заголовки. Карточка — несущий примитив всех экранов; три варианта покрывают hero-метрику, bento-ячейку и базовый блок.</p>
+    </div>
+    <div class="specs">
+
+      <!-- bv-screen -->
+      <div class="spec center">
+        <div class="bv-screen"><div class="inner-card"></div></div>
+        <div class="cap"><code>bv-screen</code> · <span class="tok">bg #F0F0F3 · card #FFF на shadow-2</span></div>
+      </div>
+
+      <!-- bv-card ×3 -->
+      <div class="spec">
+        <div class="spec-stage">
+          <div class="bv-card bv-card--hero">
+            <div class="card-demo-eyebrow">HRV сегодня</div>
+            <div class="card-demo-hero-num">52<span class="u" style="font-size:18px;color:var(--ink-mute)"> ms</span></div>
+            <div class="card-demo-line">в норме · коридор 42–58</div>
+          </div>
+          <div class="bv-card bv-card--base">
+            <div class="card-demo-eyebrow">RHR</div>
+            <div class="card-demo-num">58<span class="u"> bpm</span></div>
+          </div>
+          <div class="bv-card bv-card--bento">
+            <div class="card-demo-eyebrow">NSI</div>
+            <div class="card-demo-num">78</div>
+          </div>
+        </div>
+        <div class="cap">
+          <code>bv-card</code> · <code>--hero</code> <span class="tok">(r22, pad20, shadow-3)</span> ·
+          <code>--base</code> <span class="tok">(r22, pad14)</span> ·
+          <code>--bento</code> <span class="tok">(r22, pad13, min-h122)</span>
+        </div>
+      </div>
+
+      <!-- bv-section-header 22/24/28 -->
+      <div class="spec">
+        <div class="spec-stage col" style="gap:10px">
+          <div class="bv-section-header s22">Монитор показателей <span style="color:var(--ink-faded);font-size:12px;font-family:var(--mono)">/ 22</span></div>
+          <div class="bv-section-header s24">Монитор показателей <span style="color:var(--ink-faded);font-size:12px;font-family:var(--mono)">/ 24</span></div>
+          <div class="bv-section-header s28">Монитор показателей <span style="color:var(--ink-faded);font-size:12px;font-family:var(--mono)">/ 28</span></div>
+        </div>
+        <div class="cap"><code>bv-section-header</code> · <span class="tok">Golos 700, -0.6px · 3 размера на выбор PM</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== ГРУППА 2 ===================== -->
+  <section class="grp">
+    <div class="grp-head">
+      <div class="grp-num">Группа 2 — 5 компонентов</div>
+      <h2>Chrome — навигация и app-bar</h2>
+      <p>Зона chrome (не content): здесь допустим wine как brand-anchor. App-bar --pill (Home) — нейтральный; --back (Settings) — wine-tinted по canon. Bottom-nav active — wine.</p>
+    </div>
+    <div class="specs">
+
+      <!-- app-bar --pill -->
+      <div class="spec">
+        <div class="bv-app-bar bv-app-bar--pill">
+          <div class="ab-icon" aria-label="Календарь"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="6"/><line x1="16" y1="3" x2="16" y2="6"/></svg></div>
+          <div class="ab-date">27 Июн 2026</div>
+          <div class="ab-actions">
+            <div class="ab-icon" aria-label="Поделиться"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16 V4"/><path d="M7 9 L12 4 L17 9"/><path d="M5 14 V19 A2 2 0 0 0 7 21 H17 A2 2 0 0 0 19 19 V14"/></svg></div>
+            <div class="bv-avatar">КЛ</div>
+          </div>
+        </div>
+        <div class="cap"><code>bv-app-bar--pill</code> <span class="tok">· glass, нейтральные иконки, avatar blue · home-style</span></div>
+      </div>
+
+      <!-- app-bar --back -->
+      <div class="spec">
+        <div class="bv-app-bar bv-app-bar--back">
+          <div class="ab-back" aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+          <div class="ab-title">HRV</div>
+          <div class="ab-right" aria-label="Инфо"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+        </div>
+        <div class="cap"><code>bv-app-bar--back</code> <span class="tok">· wine-tint pill (canon chrome) · settings-style</span></div>
+      </div>
+
+      <!-- bv-nav-pill 5-tab -->
+      <div class="spec" style="flex-basis:100%">
+        <div class="bv-nav-pill">
+          <a class="bv-nav-item is-active" aria-current="page"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>Дом</a>
+          <a class="bv-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 L17.5 17.5"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/></svg>Спорт</a>
+          <a class="bv-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg>История</a>
+          <a class="bv-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7z"/></svg>Здоровье</a>
+          <a class="bv-nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg>Ещё</a>
+        </div>
+        <div class="cap"><code>bv-nav-pill</code> <span class="tok">· floating glass, 5-tab · active = <code>.is-active</code> (wine + wine-tint bg)</span></div>
+      </div>
+
+      <!-- bv-nav-item active vs inactive -->
+      <div class="spec">
+        <div class="spec-stage">
+          <div class="bv-nav-pill" style="width:auto;padding:6px">
+            <a class="bv-nav-item is-active nav-item-solo" aria-current="page"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>Дом</a>
+            <a class="bv-nav-item nav-item-solo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 L17.5 17.5"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/></svg>Спорт</a>
+          </div>
+        </div>
+        <div class="cap"><code>bv-nav-item.is-active</code> <span class="tok">vs default — wine vs ink-dim</span></div>
+      </div>
+
+      <!-- bv-avatar -->
+      <div class="spec center">
+        <div class="bv-avatar" style="width:48px;height:48px;font-size:15px">КЛ</div>
+        <div class="cap"><code>bv-avatar</code> <span class="tok">· bg #D5E3F0 / ink #3A6FA0 · НЕ wine</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== ГРУППА 3 ===================== -->
+  <section class="grp">
+    <div class="grp-head">
+      <div class="grp-num">Группа 3 — 5 компонентов</div>
+      <h2>Health Monitor — данные и статусы</h2>
+      <p>Content-зона: wine запрещён, цвет несёт severity (green · orange · red · grey). Капсула — позиция относительно личного коридора; чипы — статус, дельта, бренд-бейдж.</p>
+    </div>
+    <div class="specs">
+
+      <!-- bv-capsule --full -->
+      <div class="spec center">
+        <div class="capsule-full-wrap">
+          <span class="capsule-bound">55</span>
+          <div class="bv-capsule bv-capsule--full s-norm" aria-label="HRV — 60% коридора">
+            <div class="fill" style="height:60%"></div>
+            <div class="dot" style="bottom:60%"></div>
+          </div>
+          <span class="capsule-bound">35</span>
+        </div>
+        <div class="cap"><code>bv-capsule--full</code> <span class="tok">· bounds 55/35, dot 60% · HRV hero</span></div>
+      </div>
+
+      <!-- bv-capsule --mini ×4 -->
+      <div class="spec">
+        <div class="spec-stage">
+          <div class="capsule-mini-cell">
+            <div class="bv-capsule bv-capsule--mini s-norm"><div class="fill" style="height:60%"></div><div class="dot" style="bottom:60%"></div></div>
+            <span class="lbl" style="color:var(--sem-norm-ink)">Норма</span>
+          </div>
+          <div class="capsule-mini-cell">
+            <div class="bv-capsule bv-capsule--mini s-warn"><div class="fill" style="height:22%"></div><div class="dot" style="bottom:22%"></div></div>
+            <span class="lbl" style="color:var(--sem-warn-ink)">Ниже</span>
+          </div>
+          <div class="capsule-mini-cell">
+            <div class="bv-capsule bv-capsule--mini s-high"><div class="fill" style="height:87%"></div><div class="dot" style="bottom:87%"></div></div>
+            <span class="lbl" style="color:var(--sem-high-ink)">Внимание</span>
+          </div>
+          <div class="capsule-mini-cell">
+            <div class="bv-capsule bv-capsule--mini s-empty"></div>
+            <span class="lbl" style="color:var(--ink-faded)">Нет данных</span>
+          </div>
+        </div>
+        <div class="cap"><code>bv-capsule--mini</code> <span class="tok">· 14×92 · 4 состояния (bento)</span></div>
+      </div>
+
+      <!-- bv-chip --status ×5 -->
+      <div class="spec" style="flex-basis:100%">
+        <div class="spec-stage">
+          <span class="bv-chip bv-chip--status s-norm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>Норма</span>
+          <span class="bv-chip bv-chip--status s-warn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7 V15"/><path d="M8 11 L12 15 L16 11"/></svg>Ниже</span>
+          <span class="bv-chip bv-chip--status s-warn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 17 V9"/><path d="M8 13 L12 9 L16 13"/></svg>Выше</span>
+          <span class="bv-chip bv-chip--status s-high"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Внимание</span>
+          <span class="bv-chip bv-chip--status s-empty">Нет данных</span>
+        </div>
+        <div class="cap"><code>bv-chip--status</code> <span class="tok">· 5 состояний · bg = sem-*-bg, текст = sem-*-ink (WCAG AA)</span></div>
+      </div>
+
+      <!-- bv-chip --delta ×2 -->
+      <div class="spec">
+        <div class="spec-stage">
+          <span class="bv-chip bv-chip--delta up"><svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M6 2 L11 9 H1 Z"/></svg>+12% к вчера</span>
+          <span class="bv-chip bv-chip--delta down"><svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M6 10 L11 3 H1 Z"/></svg>-8%</span>
+        </div>
+        <div class="cap"><code>bv-chip--delta</code> <span class="tok">· .up green / .down red · Pulse Mono, tnum</span></div>
+      </div>
+
+      <!-- bv-chip --badge -->
+      <div class="spec center">
+        <span class="bv-chip bv-chip--badge">v 2.4 доступно</span>
+        <div class="cap"><code>bv-chip--badge</code> <span class="tok">· solid wine #831843 (1 из 4 wine-зон)</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== ГРУППА 4 ===================== -->
+  <section class="grp">
+    <div class="grp-head">
+      <div class="grp-num">Группа 4 — 2 компонента</div>
+      <h2>Settings — строки и иконки</h2>
+      <p>Списочные строки iOS-класса (toggle / chevron / badge) и квадратные иконки-плитки с семантическими тинтами.</p>
+    </div>
+    <div class="specs">
+
+      <!-- bv-row examples -->
+      <div class="spec">
+        <div class="bv-row-group">
+          <div class="bv-row">
+            <div class="bv-icon-square bv-icon-square--default"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+            <div class="bv-row-body"><div class="bv-row-label">Уведомления</div><div class="bv-row-sub">Пуш о готовности данных</div></div>
+            <div class="bv-row-trail"><div class="bv-toggle is-on"></div></div>
+          </div>
+          <div class="bv-row">
+            <div class="bv-icon-square bv-icon-square--wine"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 H7 L9 7 L13 17 L15 12 H21"/></svg></div>
+            <div class="bv-row-body"><div class="bv-row-label">Личная норма HRV</div><div class="bv-row-sub">42–58 ms</div></div>
+            <div class="bv-row-trail"><span class="chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+          </div>
+          <div class="bv-row">
+            <div class="bv-icon-square bv-icon-square--success"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg></div>
+            <div class="bv-row-body"><div class="bv-row-label">Версия приложения</div></div>
+            <div class="bv-row-trail"><span class="bv-chip bv-chip--badge">v 2.4 доступно</span></div>
+          </div>
+        </div>
+        <div class="cap"><code>bv-row</code> <span class="tok">· trail: toggle / chevron / badge · min-h 56, pad 14/16</span></div>
+      </div>
+
+      <!-- bv-icon-square 4 tints -->
+      <div class="spec">
+        <div class="spec-stage">
+          <div class="capsule-mini-cell"><div class="bv-icon-square bv-icon-square--default"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><span class="lbl">default</span></div>
+          <div class="capsule-mini-cell"><div class="bv-icon-square bv-icon-square--wine"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 H7 L9 7 L13 17 L15 12 H21"/></svg></div><span class="lbl">wine 8%</span></div>
+          <div class="capsule-mini-cell"><div class="bv-icon-square bv-icon-square--danger"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><span class="lbl">danger 10%</span></div>
+          <div class="capsule-mini-cell"><div class="bv-icon-square bv-icon-square--success"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg></div><span class="lbl">success 10%</span></div>
+        </div>
+        <div class="cap"><code>bv-icon-square</code> <span class="tok">· 4 тинта · 38px, r10</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== ГРУППА 5 ===================== -->
+  <section class="grp">
+    <div class="grp-head">
+      <div class="grp-num">Группа 5 — 3 компонента</div>
+      <h2>Controls — действия</h2>
+      <p>Интерактивные примитивы. Wine — только в primary-кнопке и ON-состоянии тоггла (action-зоны). Eyebrow — Pulse Mono для микро-меток над секциями.</p>
+    </div>
+    <div class="specs">
+
+      <!-- bv-button ×3 -->
+      <div class="spec" style="flex-basis:100%">
+        <div class="spec-stage">
+          <button class="bv-button bv-button--primary">Начать тренировку</button>
+          <button class="bv-button bv-button--secondary">Подробнее</button>
+          <button class="bv-button bv-button--ghost">Пропустить</button>
+        </div>
+        <div class="cap"><code>bv-button</code> · <code>--primary</code> <span class="tok">(solid wine)</span> · <code>--secondary</code> <span class="tok">(card + hairline)</span> · <code>--ghost</code> <span class="tok">(wine text)</span> · r14</div>
+      </div>
+
+      <!-- bv-toggle ON/OFF -->
+      <div class="spec">
+        <div class="toggle-pair">
+          <div class="toggle-cell"><div class="bv-toggle is-on"></div><span class="lbl">ON · wine</span></div>
+          <div class="toggle-cell"><div class="bv-toggle"></div><span class="lbl">OFF · muted</span></div>
+        </div>
+        <div class="cap"><code>bv-toggle.is-on</code> <span class="tok">· 38×22 · ON=wine track / OFF=#D5D5DD</span></div>
+      </div>
+
+      <!-- bv-eyebrow -->
+      <div class="spec center">
+        <div class="bv-eyebrow">HRV сегодня</div>
+        <div class="cap"><code>bv-eyebrow</code> <span class="tok">· Pulse Mono 11px UPPERCASE, ls 0.6 · ink-dim</span></div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
