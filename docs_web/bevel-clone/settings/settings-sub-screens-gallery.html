@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280" />
+<title>Neiry Pulse — Settings sub-screens (Bevel-clone preview)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:          #F0F0F3;
+    --bg-2:        #E8E8EE;
+    --card:        #FFFFFF;
+    --hairline:    #E3E3EA;
+    --hairline-2:  #ECECF1;
+    --ink:         #1B1B21;
+    --ink-mute:    #62626C;
+    --ink-dim:     #6C6C77;
+    --wine:        #831843;
+    --wine-tint:   #F7E3EC;
+    --shadow-2: 0 1px 2px rgba(22,22,32,0.05), 0 4px 12px rgba(22,22,32,0.07);
+    --sans: 'Golos Text', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    padding: 56px 40px 80px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  :focus-visible { outline: 2px solid var(--wine); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Header */
+  .hero {
+    padding: 0 0 24px;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 40px;
+  }
+  .hero .brand {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--wine);
+    font-weight: 500;
+  }
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-top: 12px;
+  }
+  .hero p {
+    color: var(--ink-mute);
+    font-size: 15px;
+    line-height: 1.55;
+    margin-top: 12px;
+    max-width: 76ch;
+  }
+  .hero-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    font-weight: 500;
+    margin-top: 18px;
+  }
+
+  /* Phones row */
+  .phones-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 36px;
+    align-items: start;
+    margin-bottom: 24px;
+  }
+  .phone-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .phone-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--wine);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .phone-h2 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  .phone-sub {
+    font-size: 13px;
+    color: var(--ink-mute);
+    line-height: 1.5;
+    margin-bottom: 20px;
+    max-width: 300px;
+    text-align: center;
+  }
+
+  /* iframe wrapper — embed phone-mockup */
+  .phone-iframe-wrap {
+    width: 360px;
+    height: 800px;
+    overflow: hidden;
+    border-radius: 48px;
+  }
+  .phone-iframe {
+    width: 372px;
+    height: 800px;
+    border: 0;
+    transform: translate(-6px, -16px);
+    background: transparent;
+  }
+
+  /* Spec table per phone */
+  .spec {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 320px;
+    background: var(--card);
+    border: 1px solid var(--hairline-2);
+    border-radius: 14px;
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+  }
+  .spec-row {
+    display: grid;
+    grid-template-columns: 86px 1fr;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--hairline-2);
+    font-size: 12px;
+    line-height: 1.4;
+    align-items: start;
+  }
+  .spec-row:last-child { border-bottom: 0; }
+  .spec-key {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    font-weight: 600;
+    padding-top: 1px;
+  }
+  .spec-val { color: var(--ink); }
+
+  /* Open-link footer */
+  .open-link {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--wine);
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--mono);
+    letter-spacing: 0.3px;
+  }
+  .open-link:hover { color: #A11D52; }
+
+  /* Objections section */
+  .objections {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid var(--hairline);
+  }
+  .objections h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  .objections p.intro {
+    font-size: 13px;
+    color: var(--ink-mute);
+    margin-bottom: 18px;
+    max-width: 720px;
+    line-height: 1.55;
+  }
+  .obj-list {
+    background: var(--card);
+    border: 1px solid var(--hairline-2);
+    border-radius: 14px;
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+  }
+  .obj-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 16px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--hairline-2);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .obj-row:last-child { border-bottom: 0; }
+  .obj-skill {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--wine);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .obj-body { color: var(--ink); }
+  .obj-body b { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="brand">Neiry Pulse · Design preview</div>
+  <h1>Settings — sub-screens (Bevel-clone)</h1>
+  <p>
+    Три экрана 2-го уровня настроек: <b>Браслет Neiry</b> · <b>Уведомления</b> · <b>Конфиденциальность</b>.
+    Заимствуют принятый Bevel-clone v3 язык: cool-gray surface <code style="font-family:var(--mono); font-size:12px; background:var(--bg-2); padding:1px 5px; border-radius:4px;">#F0F0F3</code>,
+    white cards + hairline + soft-shadow, grouped soft cards с section eyebrow (JetBrains Mono 11px UPPERCASE),
+    wine <code style="font-family:var(--mono); font-size:12px; background:var(--bg-2); padding:1px 5px; border-radius:4px;">#831843</code>
+    только в active toggles + опасных primary-actions. Шрифты — Golos Text + Pulse Mono (JetBrains fallback в demo).
+  </p>
+  <div class="hero-meta">Bevel-clone v3 · 27 июня 2026 · UX-агент drafts (waiting acceptance)</div>
+</header>
+
+<!-- ===== 3 phones side-by-side ===== -->
+<section class="phones-row">
+
+  <!-- Phone 1: BT pairing -->
+  <div class="phone-cell">
+    <div class="phone-title">21a — BT-устройство</div>
+    <div class="phone-h2">Браслет Neiry</div>
+    <div class="phone-sub">Сопряжённое устройство: статус, действия, параметры, отвязка.</div>
+    <div class="phone-iframe-wrap">
+      <iframe class="phone-iframe" src="settings-bt-pairing.html" title="Settings · BT pairing"></iframe>
+    </div>
+    <div class="spec">
+      <div class="spec-row"><span class="spec-key">Title</span><span class="spec-val">«Браслет Neiry» · 17px Golos 700</span></div>
+      <div class="spec-row"><span class="spec-key">Sections</span><span class="spec-val">Устройство · Действия · Параметры · Опасная зона</span></div>
+      <div class="spec-row"><span class="spec-key">Accents</span><span class="spec-val">Wine toggle ON · wine badge «v 2.4» · red danger-zone</span></div>
+    </div>
+    <a class="open-link" href="settings-bt-pairing.html" target="_blank">→ Open standalone</a>
+  </div>
+
+  <!-- Phone 2: Notifications -->
+  <div class="phone-cell">
+    <div class="phone-title">21b — Уведомления</div>
+    <div class="phone-h2">Уведомления</div>
+    <div class="phone-sub">5 групп: разрешения · браслет · здоровье · тренировки · тишина.</div>
+    <div class="phone-iframe-wrap">
+      <iframe class="phone-iframe" src="settings-notifications.html" title="Settings · Notifications"></iframe>
+    </div>
+    <div class="spec">
+      <div class="spec-row"><span class="spec-key">Title</span><span class="spec-val">«Уведомления» · 17px Golos 700</span></div>
+      <div class="spec-row"><span class="spec-key">Sections</span><span class="spec-val">Разрешения · Браслет · Здоровье · Тренировки · Время тишины</span></div>
+      <div class="spec-row"><span class="spec-key">Accents</span><span class="spec-val">Info-card green check · 8 toggles (5 ON / 3 OFF) · time 22:00 — 07:00 в Pulse Mono</span></div>
+    </div>
+    <a class="open-link" href="settings-notifications.html" target="_blank">→ Open standalone</a>
+  </div>
+
+  <!-- Phone 3: Privacy -->
+  <div class="phone-cell">
+    <div class="phone-title">21c — Конфиденциальность</div>
+    <div class="phone-h2">Конфиденциальность</div>
+    <div class="phone-sub">Данные · обмен · аналитика · согласия + danger-zone с удалением аккаунта.</div>
+    <div class="phone-iframe-wrap">
+      <iframe class="phone-iframe" src="settings-privacy.html" title="Settings · Privacy"></iframe>
+    </div>
+    <div class="spec">
+      <div class="spec-row"><span class="spec-key">Title</span><span class="spec-val">«Конфиденциальность» · 17px Golos 700</span></div>
+      <div class="spec-row"><span class="spec-key">Sections</span><span class="spec-val">Данные · Обмен · Аналитика · Согласия · Опасная зона</span></div>
+      <div class="spec-row"><span class="spec-key">Accents</span><span class="spec-val">Green checks для активных согласий · red «Удалить аккаунт» bold · 6 toggles</span></div>
+    </div>
+    <a class="open-link" href="settings-privacy.html" target="_blank">→ Open standalone</a>
+  </div>
+
+</section>
+
+<!-- ===== Skill objections — на разбор PM ===== -->
+<section class="objections">
+  <h2>Возражения skill'ов — на разбор PM</h2>
+  <p class="intro">
+    Skills формально недоступны из этой cwd (<code style="font-family:var(--mono); font-size:12px; background:var(--bg-2); padding:1px 5px; border-radius:4px;">docs_web/</code>), методология применена вручную.
+    Возражения, которые предположительно подняли бы <i>redesign-existing-projects</i> / <i>impeccable typeset</i> / <i>impeccable harden</i>:
+  </p>
+  <div class="obj-list">
+    <div class="obj-row">
+      <span class="obj-skill">impeccable typeset</span>
+      <span class="obj-body">
+        <b>«Размер 15px для row-label — не в твоей шкале (cap 10 · sub 12 · body 13 · label 14 · subhead 18).»</b>
+        Решение оставил 15px намеренно — список настроек требует читаемости на 320px-экране, label 14px смотрелся бы тонко рядом с 56-пиксельной row-height. Trade-off зафиксирован — на разбор PM.
+      </span>
+    </div>
+    <div class="obj-row">
+      <span class="obj-skill">redesign-existing-projects</span>
+      <span class="obj-body">
+        <b>«Floating pill-nav (5-tab круглые иконки) — отступление от base bevel-clone, где использовался полноширинный bottom-nav с подписями „Дом / Тренировка / История / Здоровье / Ещё“.»</b>
+        Брифом затребован 5-tab floating pill (Дом / История / Sharing / Настройки / Ещё). На разбор PM: сохраняем pill или возвращаемся к full-width nav?
+      </span>
+    </div>
+    <div class="obj-row">
+      <span class="obj-skill">impeccable harden</span>
+      <span class="obj-body">
+        <b>«Pulse Mono подключён через JetBrains Mono web-fallback (Google Fonts), а не через локальные .woff2 как в DESIGN-bevel-clone.html.»</b>
+        Path <code style="font-family:var(--mono); font-size:12px; background:var(--bg-2); padding:1px 5px; border-radius:4px;">../UI_assets/fonts/pulse-mono/</code> из standalone-файлов <code style="font-family:var(--mono); font-size:12px; background:var(--bg-2); padding:1px 5px; border-radius:4px;">docs_web/bevel-clone/settings/</code> требует <code style="font-family:var(--mono); font-size:12px; background:var(--bg-2); padding:1px 5px; border-radius:4px;">../../../UI_assets/fonts/...</code> — путь сломается при перемещении файлов. JetBrains Mono (open-source SIL OFL, та же баз гарнитура) даёт идентичную глифику без зависимости от файловой структуры.
+      </span>
+    </div>
+    <div class="obj-row">
+      <span class="obj-skill">impeccable typeset</span>
+      <span class="obj-body">
+        <b>«В Settings → BT иконки в row-icon показаны без круглой подложки (rounded square с tint) — это отступление от Bevel-style где settings-icon = 32×32 square 8px-radius.»</b>
+        Сознательный выбор: thin-line иконки без подложки дают более «тонкий» feel списка настроек, и согласуются с iOS Health/Apple Settings (raw line-icons + chevron). Bevel-style icon с tinted background оставлен только для device-card (Section 1, hero of list).
+      </span>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

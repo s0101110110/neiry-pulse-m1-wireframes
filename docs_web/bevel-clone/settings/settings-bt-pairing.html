@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=420" />
+<title>Neiry Pulse — Settings · Браслет Neiry (Bevel-clone)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+
+  /* ============================================================
+     TOKENS — Bevel-clone v3 (cool-gray surface, Neiry brand-wine)
+     Замкнуто: Golos Text + Pulse Mono (JetBrains Mono с плоским нулём
+     как локальный fallback); wine #831843 — только бренд-акцент.
+     ============================================================ */
+  :root {
+    --bg:          #F0F0F3;
+    --bg-2:        #E8E8EE;
+    --card:        #FFFFFF;
+    --card-warm:   #F9F9FC;
+    --hairline:    #E3E3EA;
+    --hairline-2:  #ECECF1;
+    --ink:         #1B1B21;
+    --ink-mute:    #62626C;
+    --ink-dim:     #6C6C77;
+    --wine:        #831843;
+    --wine-hover:  #A11D52;
+    --wine-tint:   #F7E3EC;
+    --wine-tint-2: #F0D6E2;
+    --sem-norm:    #1DA049;
+    --sem-norm-ink:#117A38;
+    --sem-high:    #E11D48;
+    --sem-high-ink:#C20D2E;
+    --danger-tint: #FBE7EC;     /* light red tint для "Опасной зоны" */
+
+    --shadow-1: 0 1px 2px rgba(22,22,32,0.05), 0 1px 1px rgba(22,22,32,0.03);
+    --shadow-2: 0 1px 2px rgba(22,22,32,0.05), 0 4px 12px rgba(22,22,32,0.07);
+    --shadow-3: 0 1px 2px rgba(22,22,32,0.05), 0 8px 24px rgba(22,22,32,0.09);
+
+    --sans: 'Golos Text', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+    --r-lg: 20px;
+    --r-md: 16px;
+    --r-sm: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-kerning: normal;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    padding: 48px 24px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  :focus-visible {
+    outline: 2px solid var(--wine);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  .page-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--wine);
+    margin-bottom: 6px;
+  }
+  .page-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .page-sub {
+    font-size: 13px;
+    color: var(--ink-mute);
+    line-height: 1.5;
+    max-width: 320px;
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  /* Phone frame */
+  .phone {
+    position: relative;
+    width: 320px;
+    height: 680px;
+    border-radius: 44px;
+    background: #1B1B21;
+    padding: 10px;
+    box-shadow:
+      0 0 0 2px #2A2620,
+      0 30px 60px rgba(28,24,18,0.18),
+      0 12px 24px rgba(28,24,18,0.12);
+  }
+  .screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 36px;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .notch {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 88px;
+    height: 22px;
+    background: #1B1B21;
+    border-radius: 999px;
+    z-index: 5;
+  }
+
+  /* Status bar */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 22px 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+  .status-bar .right { display: flex; gap: 6px; align-items: center; }
+  .status-bar svg { display: block; }
+
+  /* App-bar — wine-tinted pill (canon: home-health-monitor) */
+  .app-bar {
+    display: grid;
+    grid-template-columns: 32px 1fr 32px;
+    align-items: center;
+    margin: 8px 16px 4px;
+    padding: 6px 10px;
+    background: rgba(131, 24, 67, 0.05);
+    border: 1px solid rgba(131, 24, 67, 0.10);
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .app-bar-back, .app-bar-right {
+    display: grid;
+    place-items: center;
+    color: var(--wine);
+    cursor: pointer;
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    transition: background 160ms ease-out;
+  }
+  .app-bar-back:hover, .app-bar-right:hover { background: rgba(131, 24, 67, 0.10); }
+  .app-bar-title {
+    font-family: var(--sans);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--ink);
+    text-align: center;
+  }
+
+  /* Body / scrollable */
+  .body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 4px 16px 88px;
+  }
+  .body::-webkit-scrollbar { width: 0; }
+
+  /* Section header (eyebrow) */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    padding: 0 4px 8px;
+    margin-top: 14px;
+  }
+  .eyebrow:first-child { margin-top: 4px; }
+
+  /* Settings group (grouped soft card) */
+  .group {
+    background: var(--card);
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+  .group.danger {
+    background: var(--danger-tint);
+    border-color: #F4C7CF;
+  }
+
+  /* List row (52-56px height) */
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(240,237,231,0.5);
+    border-bottom-color: rgba(227,227,234,0.6);
+    min-height: 56px;
+    transition: background 160ms ease-out;
+  }
+  .row:last-child { border-bottom: 0; }
+  .row:hover { background: rgba(232,232,238,0.4); }
+  .group.danger .row:hover { background: rgba(225,29,72,0.06); }
+
+  /* Row-icon — 32×32 tinted square (Bevel-style), 18×18 line-icon inside */
+  .row-icon {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    background: var(--bg-2);            /* default cool-gray tint */
+    color: var(--ink-mute);              /* default icon stroke */
+    flex-shrink: 0;
+    display: grid; place-items: center;
+  }
+  .row-icon.wine {
+    background: rgba(131, 24, 67, 0.08);
+    color: var(--wine);
+  }
+  .row-icon.success {
+    background: rgba(29, 160, 73, 0.10);
+    color: var(--sem-norm-ink);
+  }
+  .row-icon.danger {
+    background: rgba(225, 29, 72, 0.10);
+    color: var(--sem-high-ink);
+  }
+  .row-body { flex: 1; min-width: 0; }
+  .row-label {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.3;
+    letter-spacing: -0.1px;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+  .row-label.danger { color: var(--sem-high-ink); }
+  .row-label.danger.bold { font-weight: 700; }
+  .row-sub {
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-top: 3px;
+    line-height: 1.3;
+  }
+  .row-sub.mono {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .row-trail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .chev {
+    color: var(--ink-dim);
+    display: grid; place-items: center;
+  }
+  .badge-wine {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--wine);
+    background: var(--wine-tint);
+    padding: 3px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.2px;
+  }
+  .green-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--sem-norm);
+    box-shadow: 0 0 0 3px rgba(29,160,73,0.15);
+  }
+
+  /* Toggle */
+  .toggle {
+    width: 38px; height: 22px;
+    border-radius: 999px;
+    background: #D6D2C8;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 200ms ease-out;
+    cursor: pointer;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: transform 200ms ease-out;
+  }
+  .toggle.on { background: var(--wine); }
+  .toggle.on::after {
+    transform: translateX(16px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.22);
+  }
+
+  /* Device "big card" — Section 1 special */
+  .device-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: var(--card);
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-2);
+    margin-bottom: 4px;
+  }
+  .device-avatar {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: var(--wine-tint);
+    color: var(--wine);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .device-body { flex: 1; min-width: 0; }
+  .device-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.2px;
+    font-family: var(--mono);
+  }
+  .device-sub {
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-top: 3px;
+    line-height: 1.3;
+  }
+  .device-sub.last {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .device-trail {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .batt {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--sem-norm-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Bottom floating pill nav (canon: home-health-monitor) */
+  .pill-nav-wrap {
+    position: absolute;
+    left: 16px; right: 16px;
+    bottom: 16px;
+    z-index: 4;
+  }
+  .pill-nav {
+    display: flex;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.9);
+    border-radius: 999px;
+    padding: 6px;
+    gap: 2px;
+    box-shadow: 0 4px 16px rgba(26, 24, 21, 0.08);
+  }
+  .pill-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 0 5px;
+    gap: 2px;
+    font-size: 9px;
+    color: var(--ink-dim);
+    font-weight: 500;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 160ms ease-out, background 160ms ease-out;
+  }
+  .pill-tab svg { color: var(--ink-dim); }
+  .pill-tab:hover { color: var(--ink-mute); }
+  .pill-tab.active {
+    color: var(--wine);
+    background: var(--wine-tint);
+    font-weight: 600;
+  }
+  .pill-tab.active svg { color: var(--wine); }
+
+</style>
+</head>
+<body>
+
+<div class="page-eyebrow">Settings · Bluetooth-устройство</div>
+<div class="page-title">Браслет Neiry</div>
+<div class="page-sub">Грануляр-настройки сопряжённого устройства: статус, действия, параметры, отвязка.</div>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span style="font-variant-numeric: tabular-nums;">9:41</span>
+      <div class="right">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="0.5"/><rect x="4" y="5" width="3" height="6" rx="0.5"/><rect x="8" y="3" width="3" height="8" rx="0.5"/><rect x="12" y="1" width="3" height="10" rx="0.5"/></svg>
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4 C5 1, 11 1, 15 4"/><path d="M3 6.5 C6 4.5, 10 4.5, 13 6.5"/><path d="M5.5 8.5 C7 7.5, 9 7.5, 10.5 8.5"/><circle cx="8" cy="10" r="0.6" fill="currentColor"/></svg>
+        <svg width="24" height="11" viewBox="0 0 24 11" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="10" rx="2"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/><rect x="21" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor"/></svg>
+      </div>
+    </div>
+
+    <!-- App-bar -->
+    <div class="app-bar">
+      <div class="app-bar-back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="app-bar-title">Браслет Neiry</div>
+      <div class="app-bar-right">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="body">
+
+      <!-- Section 1: УСТРОЙСТВО -->
+      <div class="eyebrow">Устройство</div>
+      <div class="device-card">
+        <div class="device-avatar">
+          <!-- bracelet thin -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="14" height="6" rx="3"/><path d="M9 6 V9"/><path d="M15 6 V9"/><path d="M9 15 V18"/><path d="M15 15 V18"/></svg>
+        </div>
+        <div class="device-body">
+          <div class="device-name">VIGOR-XYZ123</div>
+          <div class="device-sub">Подключено · батарея 87%</div>
+          <div class="device-sub last">Last sync 2 мин назад</div>
+        </div>
+        <div class="device-trail">
+          <span class="green-dot" title="онлайн"></span>
+          <span class="batt">
+            <svg width="18" height="11" viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="1" width="19" height="12" rx="2"/><rect x="3" y="3" width="13" height="8" rx="1" fill="currentColor"/><line x1="22" y1="5" x2="22" y2="9"/></svg>
+            87
+          </span>
+        </div>
+      </div>
+
+      <!-- Section 2: ДЕЙСТВИЯ -->
+      <div class="eyebrow">Действия</div>
+      <div class="group">
+        <div class="row">
+          <div class="row-icon wine">
+            <!-- bluetooth thin -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5 12 22 12 2 17.5 6.5 6.5 17.5"/></svg>
+          </div>
+          <div class="row-body">
+            <div class="row-label">Переподключить</div>
+          </div>
+          <div class="row-trail">
+            <span class="chev">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-icon wine">
+            <!-- refresh -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+          </div>
+          <div class="row-body">
+            <div class="row-label">Синхронизировать сейчас</div>
+          </div>
+          <div class="row-trail">
+            <span class="chev">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-icon wine">
+            <!-- upload (firmware) -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><polyline points="7 8 12 3 17 8"/><path d="M5 21h14"/></svg>
+          </div>
+          <div class="row-body">
+            <div class="row-label">Прошивка</div>
+            <div class="row-sub">v 2.4 доступна</div>
+          </div>
+          <div class="row-trail">
+            <span class="badge-wine">Обновить</span>
+            <span class="chev">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: ПАРАМЕТРЫ -->
+      <div class="eyebrow">Параметры</div>
+      <div class="group">
+        <div class="row">
+          <div class="row-body">
+            <div class="row-label">Автосинхронизация</div>
+          </div>
+          <div class="row-trail">
+            <div class="toggle on"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-body">
+            <div class="row-label">Уведомлять о низком заряде</div>
+          </div>
+          <div class="row-trail">
+            <div class="toggle on"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: ОПАСНАЯ ЗОНА -->
+      <div class="eyebrow">Опасная зона</div>
+      <div class="group danger">
+        <div class="row">
+          <div class="row-icon danger">
+            <!-- unlink -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/><line x1="4" y1="4" x2="20" y2="20"/></svg>
+          </div>
+          <div class="row-body">
+            <div class="row-label danger bold">Отвязать устройство</div>
+          </div>
+          <div class="row-trail">
+            <span class="chev" style="color: var(--sem-high-ink);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div style="height: 32px;"></div>
+    </div>
+
+    <!-- Floating pill nav (5-tab, canon) -->
+    <div class="pill-nav-wrap">
+      <div class="pill-nav">
+        <a class="pill-tab" title="Дом">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Дом
+        </a>
+        <a class="pill-tab" title="История">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg>
+          История
+        </a>
+        <a class="pill-tab" title="Sharing">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Sharing
+        </a>
+        <a class="pill-tab active" title="Настройки">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Настройки
+        </a>
+        <a class="pill-tab" title="Ещё">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg>
+          Ещё
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

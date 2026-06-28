@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Neiry Pulse · Bevel-clone — gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #F0F0F3;
+    --card: #FFFFFF;
+    --border: #E5E5EA;
+    --ink: #1B1B21;
+    --ink-mute: #62626C;
+    --ink-dim: #9C9CA8;
+    --wine: #831843;
+    --wine-tint: rgba(131, 24, 67, 0.08);
+    --accepted: #117A38;
+    --accepted-tint: rgba(17, 122, 56, 0.10);
+    --sans: 'Golos Text', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; padding-bottom: 80px; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 56px 32px 0; }
+
+  /* Hero */
+  .hero { padding-bottom: 32px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
+  .hero-brand { font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase; color: var(--wine); }
+  .hero h1 { font-size: 44px; font-weight: 700; letter-spacing: -1.2px; line-height: 1.1; margin-top: 12px; }
+  .hero h1 em { font-style: normal; color: var(--wine); }
+  .hero p { color: var(--ink-mute); font-size: 16px; line-height: 1.6; max-width: 680px; margin-top: 16px; }
+  .hero p code { font-family: var(--mono); font-size: 13px; background: var(--card); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); }
+  .hero-meta { display: flex; gap: 24px; margin-top: 24px; flex-wrap: wrap; font-family: var(--mono); font-size: 11px; color: var(--ink-dim); }
+  .hero-meta span strong { color: var(--ink); display: block; margin-top: 2px; font-weight: 500; font-size: 13px; font-family: var(--sans); }
+
+  /* Section */
+  .section { margin-bottom: 48px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .section-head h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.6px; }
+  .section-head .count { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); letter-spacing: 0.4px; }
+
+  /* Cards grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    box-shadow: 0 1px 3px rgba(22, 22, 32, 0.03), 0 6px 18px rgba(22, 22, 32, 0.04);
+    display: flex; flex-direction: column; gap: 14px;
+    position: relative;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(22, 22, 32, 0.06), 0 10px 32px rgba(22, 22, 32, 0.08); }
+
+  .card-header { display: flex; align-items: center; gap: 12px; }
+  .card-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--wine-tint);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .card-icon svg { width: 20px; height: 20px; stroke: var(--wine); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .card-title { font-size: 17px; font-weight: 600; letter-spacing: -0.2px; flex: 1; }
+  .card-badge {
+    font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 999px;
+    background: var(--accepted-tint); color: var(--accepted);
+    flex-shrink: 0;
+  }
+  .card-desc { font-size: 13px; line-height: 1.5; color: var(--ink-mute); }
+  .card-meta { display: flex; gap: 12px; font-family: var(--mono); font-size: 10px; color: var(--ink-dim); margin-top: auto; padding-top: 4px; flex-wrap: wrap; }
+
+  /* Empty state for upcoming sections */
+  .empty-state {
+    background: var(--card);
+    border: 1px dashed var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    color: var(--ink-dim);
+    font-size: 14px;
+  }
+
+  /* Footer */
+  .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; font-family: var(--mono); font-size: 11px; color: var(--ink-dim); }
+  .footer a { color: var(--wine); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="hero-brand">Neiry Pulse · Mobile · Bevel-clone</div>
+    <h1>Gallery — все <em>принятые редизайн-экраны</em></h1>
+    <p>Палитра cool-gray <code>#F0F0F3</code> + cards <code>#FFFFFF</code>. Шрифты — Golos Text + Pulse Mono (JetBrains Mono). Wine <code style="color: var(--wine);">#831843</code> в header/footer как brand-anchor, в content только semantic colors (green / orange / red / grey).</p>
+    <div class="hero-meta">
+      <span>Принято<strong>6 экранов</strong></span>
+      <span>Дата сборки<strong>28 июня 2026</strong></span>
+      <span>Версия<strong>Bevel-clone v3</strong></span>
+      <span>Источник истины<strong>docs_web/bevel-clone/</strong></span>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Home</h2>
+      <span class="count">2 экрана</span>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="../DESIGN-bevel-clone.html" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg></div>
+          <div class="card-title">Home (v2 baseline)</div>
+          <span class="card-badge">Accepted</span>
+        </div>
+        <div class="card-desc">Bevel-clone v2 — Home + HRV detail + Settings main в одном файле. Эталон, с которого начался переход на cool-gray палитру.</div>
+        <div class="card-meta">
+          <span>Принято 23.06</span>
+          <span>DESIGN-bevel-clone.html</span>
+        </div>
+      </a>
+
+      <a class="card" href="home/home-health-monitor.html" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></div>
+          <div class="card-title">Home — Health Monitor</div>
+          <span class="card-badge">Accepted</span>
+        </div>
+        <div class="card-desc">Bento 2×3 секции «Монитор показателей» с 6 cards: HRV / RHR / NSI / Сон / SpO₂ / Темп. Все 5 состояний (Норма / Ниже / Выше / Внимание / Нет данных) + capsule logic.</div>
+        <div class="card-meta">
+          <span>Принято 27.06</span>
+          <span>home/home-health-monitor.html</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>HRV</h2>
+      <span class="count">1 экран</span>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="../DESIGN-bevel-clone.html#hrv" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 12h3l2-5 3 10 2-3h2l2-4 3 7h2"/></svg></div>
+          <div class="card-title">HRV Detail</div>
+          <span class="card-badge">Accepted</span>
+        </div>
+        <div class="card-desc">Hero metric 52 ms, deltas (vs week / vs baseline), 30-day chart с monotone smoothing, 3 stat cards и insight card. Часть DESIGN-bevel-clone.html v2.</div>
+        <div class="card-meta">
+          <span>Принято 23.06</span>
+          <span>DESIGN-bevel-clone.html · HRV section</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Settings</h2>
+      <span class="count">4 экрана + gallery</span>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="../DESIGN-bevel-clone.html#settings" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+          <div class="card-title">Settings main</div>
+          <span class="card-badge">Accepted</span>
+        </div>
+        <div class="card-desc">Основной экран Настроек — профиль КЛ + VIGOR-XYZ123 устройство + grouped soft cards с thin-icons. Часть DESIGN-bevel-clone.html v2.</div>
+        <div class="card-meta">
+          <span>Принято 23.06</span>
+          <span>DESIGN-bevel-clone.html · Settings section</span>
+        </div>
+      </a>
+
+      <a class="card" href="settings/settings-bt-pairing.html" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11-5.5 5.5V1l5.5 5.5-11 11"/></svg></div>
+          <div class="card-title">Settings → BT pairing</div>
+          <span class="card-badge">Accepted</span>
+        </div>
+        <div class="card-desc">Sub-screen «Браслет Neiry» — VIGOR-XYZ123 (батарея 87%) + действия (переподключить / sync / FW v2.4) + параметры + опасная зона (отвязать).</div>
+        <div class="card-meta">
+          <span>Принято 28.06</span>
+          <span>settings/settings-bt-pairing.html</span>
+        </div>
+      </a>
+
+      <a class="card" href="settings/settings-notifications.html" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+          <div class="card-title">Settings → Уведомления</div>
+          <span class="card-badge">Accepted</span>
+        </div>
+        <div class="card-desc">5 секций (Разрешения / Браслет / Здоровье / Тренировки / Время тишины) с 11 toggles в правильных ON/OFF состояниях + DND расписание 22:00–07:00.</div>
+        <div class="card-meta">
+          <span>Принято 28.06</span>
+          <span>settings/settings-notifications.html</span>
+        </div>
+      </a>
+
+      <a class="card" href="settings/settings-privacy.html" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="card-title">Settings → Конфиденциальность</div>
+          <span class="card-badge">Accepted</span>
+        </div>
+        <div class="card-desc">5 секций (Данные / Обмен / Аналитика / Согласия / Опасная зона) с green-checks для активных согласий + «Удалить аккаунт» в конце.</div>
+        <div class="card-meta">
+          <span>Принято 28.06</span>
+          <span>settings/settings-privacy.html</span>
+        </div>
+      </a>
+
+      <a class="card" href="settings/settings-sub-screens-gallery.html" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></div>
+          <div class="card-title">Settings → 3 sub-screens side-by-side</div>
+          <span class="card-badge">Accepted</span>
+        </div>
+        <div class="card-desc">Compare view для быстрого ревью: BT pairing + Notifications + Privacy в одной row. Полезно для проверки visual consistency и презентации.</div>
+        <div class="card-meta">
+          <span>Принято 28.06</span>
+          <span>settings/settings-sub-screens-gallery.html</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>В работе / на очереди</h2>
+      <span class="count">не начато</span>
+    </div>
+    <div class="empty-state">
+      Sleep · Training Active · Onboarding · HRV explainer modal · Modal pack · Legal compliance pack (9 экранов) — следующие итерации
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>Neiry Pulse · Bevel-clone v3 · gallery · 28.06.2026</span>
+    <a href="https://github.com/s0101110110/neiry-pulse-m1-wireframes" target="_blank">GitHub repo</a>
+  </footer>
+
+</div>
+
+</body>
+</html>
