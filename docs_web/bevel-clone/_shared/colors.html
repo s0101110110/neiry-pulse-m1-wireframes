@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280">
+<title>Neiry Pulse · Bevel-clone — Colors & AA contrast</title>
+
+<!-- tokens.css — single source of truth -->
+<link rel="stylesheet" href="tokens.css">
+
+<!-- Golos Text from Google Fonts CDN -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ============ Pulse Mono (local, 4 weights) ============ */
+@font-face {
+  font-family: 'Pulse Mono';
+  src: url('../../fonts/pulse-mono/PulseMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Pulse Mono';
+  src: url('../../fonts/pulse-mono/PulseMono-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Pulse Mono';
+  src: url('../../fonts/pulse-mono/PulseMono-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Pulse Mono';
+  src: url('../../fonts/pulse-mono/PulseMono-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============ Reset + base ============ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: var(--bv-font-sans);
+  background: var(--bv-bg-screen);
+  color: var(--bv-ink);
+  font-size: 14px;
+  line-height: var(--bv-lh-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: 48px 40px 80px;
+}
+
+.mono { font-family: var(--bv-font-mono); font-feature-settings: 'tnum' 1, 'zero' 1; }
+
+.wrap { max-width: 1200px; margin: 0 auto; }
+
+/* ============ Header ============ */
+header { margin-bottom: 48px; }
+header .eyebrow {
+  font-family: var(--bv-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--bv-ink-mute);
+  margin-bottom: 12px;
+}
+header h1 {
+  font-family: var(--bv-font-sans);
+  font-weight: 800;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.6px;
+  margin: 0 0 12px;
+  color: var(--bv-ink);
+}
+header .sub {
+  font-size: 14px;
+  color: var(--bv-ink-mute);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+header .sub a {
+  color: var(--bv-wine);
+  text-decoration: none;
+  font-family: var(--bv-font-mono);
+  font-size: 12px;
+}
+header .sub a:hover { text-decoration: underline; }
+header .sub .dot { color: var(--bv-ink-faded); }
+header .sub .ver {
+  font-family: var(--bv-font-mono);
+  font-size: 12px;
+  color: var(--bv-ink-mute);
+}
+
+/* ============ Section ============ */
+section { margin-bottom: 56px; }
+section > h2 {
+  font-family: var(--bv-font-sans);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+  margin: 0 0 6px;
+  color: var(--bv-ink);
+}
+section > .sec-sub {
+  font-size: 13px;
+  color: var(--bv-ink-mute);
+  margin: 0 0 24px;
+}
+
+/* ============ Swatches ============ */
+.group {
+  margin-bottom: 32px;
+}
+.group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--bv-hairline);
+}
+.group-head .num {
+  font-family: var(--bv-font-mono);
+  font-size: 11px;
+  color: var(--bv-ink-dim);
+  letter-spacing: 0.6px;
+}
+.group-head h3 {
+  font-family: var(--bv-font-sans);
+  font-weight: 600;
+  font-size: 15px;
+  margin: 0;
+  color: var(--bv-ink);
+  letter-spacing: -0.2px;
+}
+.group-head .note {
+  font-size: 12px;
+  color: var(--bv-ink-mute);
+  margin-left: auto;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+.swatch {
+  background: var(--bv-bg-card);
+  border: 1px solid var(--bv-hairline);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.swatch .chip {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  border: 1px solid rgba(22,22,32,0.06);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+.swatch .meta {
+  min-width: 0;
+  flex: 1;
+}
+.swatch .name {
+  font-family: var(--bv-font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bv-ink);
+  margin: 0 0 4px;
+  word-break: break-all;
+  line-height: 1.3;
+}
+.swatch .hex {
+  font-family: var(--bv-font-mono);
+  font-size: 11px;
+  color: var(--bv-ink-mute);
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+.swatch .role {
+  font-family: var(--bv-font-sans);
+  font-size: 12px;
+  color: var(--bv-ink-mute);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Special chip overlays so token colors near-white are still visible */
+.chip-white { background: var(--bv-bg-card); }
+.chip-bg-screen { background: var(--bv-bg-screen); }
+.chip-bg-subtle { background: var(--bv-bg-subtle); }
+.chip-wine-tint { background: var(--bv-wine-tint); }
+.chip-norm-bg { background: var(--bv-sem-norm-bg); }
+.chip-warn-bg { background: var(--bv-sem-warn-bg); }
+.chip-high-bg { background: var(--bv-sem-high-bg); }
+.chip-track { background: var(--bv-capsule-track); }
+.chip-track-norm { background: var(--bv-capsule-track-norm); }
+.chip-track-warn { background: var(--bv-capsule-track-warn); }
+.chip-track-high { background: var(--bv-capsule-track-high); }
+.chip-fill-norm { background: var(--bv-capsule-fill-norm); }
+.chip-fill-warn { background: var(--bv-capsule-fill-warn); }
+.chip-fill-high { background: var(--bv-capsule-fill-high); }
+.chip-norm-fill { background: var(--bv-sem-norm); }
+.chip-warn-fill { background: var(--bv-sem-warn); }
+.chip-high-fill { background: var(--bv-sem-high); }
+.chip-norm-ink { background: var(--bv-sem-norm-ink); }
+.chip-warn-ink { background: var(--bv-sem-warn-ink); }
+.chip-high-ink { background: var(--bv-sem-high-ink); }
+.chip-wine { background: var(--bv-wine); }
+.chip-ink { background: var(--bv-ink); }
+.chip-ink-mute { background: var(--bv-ink-mute); }
+.chip-ink-dim { background: var(--bv-ink-dim); }
+.chip-ink-faded { background: var(--bv-ink-faded); }
+.chip-ink-soft { background: var(--bv-ink-soft); }
+.chip-avatar-bg { background: var(--bv-avatar-bg); }
+.chip-avatar-ink { background: var(--bv-avatar-ink); }
+.chip-hairline { background: var(--bv-hairline); }
+.chip-hairline-2 { background: var(--bv-hairline-2); }
+
+/* ============ Contrast matrix ============ */
+.matrix-wrap {
+  background: var(--bv-bg-card);
+  border: 1px solid var(--bv-hairline);
+  border-radius: 16px;
+  padding: 24px;
+  overflow-x: auto;
+}
+table.matrix {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  min-width: 880px;
+}
+table.matrix th,
+table.matrix td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--bv-hairline-2);
+  vertical-align: middle;
+}
+table.matrix thead th {
+  font-family: var(--bv-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bv-ink-mute);
+  text-transform: lowercase;
+  letter-spacing: 0.3px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--bv-hairline);
+  background: var(--bv-bg-card);
+  white-space: nowrap;
+}
+table.matrix thead th .swatch-mini {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid rgba(22,22,32,0.08);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+table.matrix tbody th.row-head {
+  font-family: var(--bv-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bv-ink);
+  text-align: left;
+  white-space: nowrap;
+  padding-right: 16px;
+}
+table.matrix tbody th.row-head .swatch-mini {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid rgba(22,22,32,0.08);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.cell {
+  border-radius: 10px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  min-width: 110px;
+  border: 1px solid rgba(22,22,32,0.05);
+}
+.cell .sample {
+  font-family: var(--bv-font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.cell .ratio {
+  font-family: var(--bv-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.cell .badge {
+  font-family: var(--bv-font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.badge-aaa { background: var(--bv-sem-norm-bg); color: var(--bv-sem-norm-ink); }
+.badge-aa  { background: var(--bv-sem-norm-bg); color: var(--bv-sem-norm-ink); opacity: 0.85; }
+.badge-aalg{ background: var(--bv-sem-warn-bg); color: var(--bv-sem-warn-ink); }
+.badge-fail{ background: var(--bv-sem-high-bg); color: var(--bv-sem-high-ink); }
+
+/* Per-cell backgrounds (column-driven) */
+.bg-bg-screen   { background: var(--bv-bg-screen); }
+.bg-bg-card     { background: var(--bv-bg-card); }
+.bg-wine-tint   { background: var(--bv-wine-tint); }
+.bg-sem-norm-bg { background: var(--bv-sem-norm-bg); }
+.bg-sem-warn-bg { background: var(--bv-sem-warn-bg); }
+.bg-sem-high-bg { background: var(--bv-sem-high-bg); }
+
+/* Per-cell text (row-driven) */
+.tx-ink          { color: var(--bv-ink); }
+.tx-ink-mute     { color: var(--bv-ink-mute); }
+.tx-ink-dim      { color: var(--bv-ink-dim); }
+.tx-sem-norm-ink { color: var(--bv-sem-norm-ink); }
+.tx-sem-warn-ink { color: var(--bv-sem-warn-ink); }
+.tx-sem-high-ink { color: var(--bv-sem-high-ink); }
+.tx-wine         { color: var(--bv-wine); }
+
+/* ============ FAIL notes ============ */
+.fail-notes {
+  background: var(--bv-bg-card);
+  border: 1px solid var(--bv-hairline);
+  border-radius: 16px;
+  padding: 24px 28px;
+}
+.fail-notes ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.fail-notes li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: start;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--bv-hairline-2);
+}
+.fail-notes li:last-child { border-bottom: none; padding-bottom: 0; }
+.fail-notes .badge {
+  font-family: var(--bv-font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--bv-sem-high-bg);
+  color: var(--bv-sem-high-ink);
+  padding: 4px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+.fail-notes .pair {
+  font-family: var(--bv-font-mono);
+  font-size: 13px;
+  color: var(--bv-ink);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.fail-notes .ratio-inline {
+  font-family: var(--bv-font-mono);
+  font-size: 11px;
+  color: var(--bv-ink-mute);
+  font-weight: 500;
+  margin-left: 6px;
+}
+.fail-notes .why {
+  font-family: var(--bv-font-sans);
+  font-size: 13px;
+  color: var(--bv-ink-mute);
+  line-height: 1.5;
+}
+
+/* ============ Footer note ============ */
+footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--bv-hairline);
+  font-family: var(--bv-font-mono);
+  font-size: 11px;
+  color: var(--bv-ink-dim);
+  letter-spacing: 0.3px;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===================== Header ===================== -->
+<header>
+  <div class="eyebrow">NEIRY PULSE · BEVEL-CLONE</div>
+  <h1>Colors &amp; AA contrast</h1>
+  <div class="sub">
+    <span>Source:</span>
+    <a href="tokens.css">_shared/tokens.css</a>
+    <span class="dot">·</span>
+    <span class="ver">v1.0.0</span>
+    <span class="dot">·</span>
+    <span class="ver">2026-06-29</span>
+  </div>
+</header>
+
+<!-- ===================== Section 1: Swatches ===================== -->
+<section>
+  <h2>1 · Swatches palette</h2>
+  <p class="sec-sub">Все цвета подгружены через <span class="mono">var(--bv-*)</span> из <span class="mono">tokens.css</span>. Свотчи рендерятся напрямую переменной — это и есть proof of integration.</p>
+
+  <!-- Group 1: Brand & Accent -->
+  <div class="group">
+    <div class="group-head">
+      <span class="num">01</span>
+      <h3>Brand &amp; Accent</h3>
+      <span class="note">Wine — единственный chromatic accent</span>
+    </div>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="chip chip-wine"></div>
+        <div class="meta">
+          <p class="name">--bv-wine</p>
+          <p class="hex">#831843</p>
+          <p class="role">Bottom nav active, chip--badge solid</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-wine-tint"></div>
+        <div class="meta">
+          <p class="name">--bv-wine-tint</p>
+          <p class="hex">#F7E3EC</p>
+          <p class="role">≈8% wine — bg nav-active, chip-bg</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group 2: Surface -->
+  <div class="group">
+    <div class="group-head">
+      <span class="num">02</span>
+      <h3>Surface</h3>
+      <span class="note">Базовые поверхности (cool-gray screen)</span>
+    </div>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="chip chip-bg-screen"></div>
+        <div class="meta">
+          <p class="name">--bv-bg-screen</p>
+          <p class="hex">#F0F0F3</p>
+          <p class="role">Cool-gray фон экрана</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-white"></div>
+        <div class="meta">
+          <p class="name">--bv-bg-card</p>
+          <p class="hex">#FFFFFF</p>
+          <p class="role">Card / pill surface</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-bg-subtle"></div>
+        <div class="meta">
+          <p class="name">--bv-bg-subtle</p>
+          <p class="hex">#E8E8EE</p>
+          <p class="role">Разделители, empty-chip bg</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group 3: Ink -->
+  <div class="group">
+    <div class="group-head">
+      <span class="num">03</span>
+      <h3>Ink (text)</h3>
+      <span class="note">5 ступеней текстовой иерархии</span>
+    </div>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="chip chip-ink"></div>
+        <div class="meta">
+          <p class="name">--bv-ink</p>
+          <p class="hex">#1B1B21</p>
+          <p class="role">Основной текст / метрики</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-ink-mute"></div>
+        <div class="meta">
+          <p class="name">--bv-ink-mute</p>
+          <p class="hex">#62626C</p>
+          <p class="role">Вторичный (AA на белом)</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-ink-dim"></div>
+        <div class="meta">
+          <p class="name">--bv-ink-dim</p>
+          <p class="hex">#8E8E97</p>
+          <p class="role">Третичный / icon-label</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-ink-faded"></div>
+        <div class="meta">
+          <p class="name">--bv-ink-faded</p>
+          <p class="hex">#B5B5BD</p>
+          <p class="role">«Нет данных»</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-ink-soft"></div>
+        <div class="meta">
+          <p class="name">--bv-ink-soft</p>
+          <p class="hex">#9C9CA8</p>
+          <p class="role">Range-cap 55/35</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group 4: Semantic -->
+  <div class="group">
+    <div class="group-head">
+      <span class="num">04</span>
+      <h3>Semantic colors</h3>
+      <span class="note">Norm / Warn / High — 3 трёхтоновых триады</span>
+    </div>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="chip chip-norm-fill"></div>
+        <div class="meta">
+          <p class="name">--bv-sem-norm</p>
+          <p class="hex">#1DA049</p>
+          <p class="role">Green fill (норма)</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-norm-ink"></div>
+        <div class="meta">
+          <p class="name">--bv-sem-norm-ink</p>
+          <p class="hex">#117A38</p>
+          <p class="role">Green AA text</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-norm-bg"></div>
+        <div class="meta">
+          <p class="name">--bv-sem-norm-bg</p>
+          <p class="hex">#E5F7EE</p>
+          <p class="role">Green chip bg</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-warn-fill"></div>
+        <div class="meta">
+          <p class="name">--bv-sem-warn</p>
+          <p class="hex">#F2752B</p>
+          <p class="role">Orange fill (выход за норму)</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-warn-ink"></div>
+        <div class="meta">
+          <p class="name">--bv-sem-warn-ink</p>
+          <p class="hex">#C2511A</p>
+          <p class="role">Orange AA text</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-warn-bg"></div>
+        <div class="meta">
+          <p class="name">--bv-sem-warn-bg</p>
+          <p class="hex">#FBE9DA</p>
+          <p class="role">Warn chip bg</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-high-fill"></div>
+        <div class="meta">
+          <p class="name">--bv-sem-high</p>
+          <p class="hex">#E11D48</p>
+          <p class="role">Red fill (critical)</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-high-ink"></div>
+        <div class="meta">
+          <p class="name">--bv-sem-high-ink</p>
+          <p class="hex">#C20D2E</p>
+          <p class="role">Red AA text</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-high-bg"></div>
+        <div class="meta">
+          <p class="name">--bv-sem-high-bg</p>
+          <p class="hex">#FBDDE3</p>
+          <p class="role">Critical chip bg</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group 5: Capsule -->
+  <div class="group">
+    <div class="group-head">
+      <span class="num">05</span>
+      <h3>Capsule colors</h3>
+      <span class="note">Track + 3 trackVariants + 3 fills</span>
+    </div>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="chip chip-track"></div>
+        <div class="meta">
+          <p class="name">--bv-capsule-track</p>
+          <p class="hex">#EAEAEF</p>
+          <p class="role">Базовый / empty трек</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-track-norm"></div>
+        <div class="meta">
+          <p class="name">--bv-capsule-track-norm</p>
+          <p class="hex">#D6F0E2</p>
+          <p class="role">Трек под green fill</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-track-warn"></div>
+        <div class="meta">
+          <p class="name">--bv-capsule-track-warn</p>
+          <p class="hex">#F8DEC8</p>
+          <p class="role">Трек под orange fill</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-track-high"></div>
+        <div class="meta">
+          <p class="name">--bv-capsule-track-high</p>
+          <p class="hex">#F4C7D0</p>
+          <p class="role">Трек под red fill</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-fill-norm"></div>
+        <div class="meta">
+          <p class="name">--bv-capsule-fill-norm</p>
+          <p class="hex">#1DA049</p>
+          <p class="role">Fill: норма</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-fill-warn"></div>
+        <div class="meta">
+          <p class="name">--bv-capsule-fill-warn</p>
+          <p class="hex">#F2752B</p>
+          <p class="role">Fill: warn</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-fill-high"></div>
+        <div class="meta">
+          <p class="name">--bv-capsule-fill-high</p>
+          <p class="hex">#E11D48</p>
+          <p class="role">Fill: critical</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group 6: Avatar -->
+  <div class="group">
+    <div class="group-head">
+      <span class="num">06</span>
+      <h3>Avatar</h3>
+      <span class="note">Канон Bevel; экраны home/settings — refactor Stage 5</span>
+    </div>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="chip chip-avatar-bg"></div>
+        <div class="meta">
+          <p class="name">--bv-avatar-bg</p>
+          <p class="hex">#D5E3F0</p>
+          <p class="role">Light blue (avatar bg)</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-avatar-ink"></div>
+        <div class="meta">
+          <p class="name">--bv-avatar-ink</p>
+          <p class="hex">#3A6FA0</p>
+          <p class="role">Avatar text / initial</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group 7: Hairline -->
+  <div class="group">
+    <div class="group-head">
+      <span class="num">07</span>
+      <h3>Hairline / Border</h3>
+      <span class="note">Единый периметр + внутренняя</span>
+    </div>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="chip chip-hairline"></div>
+        <div class="meta">
+          <p class="name">--bv-hairline</p>
+          <p class="hex">#E5E5EA</p>
+          <p class="role">Граница cards / pills / nav</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="chip chip-hairline-2"></div>
+        <div class="meta">
+          <p class="name">--bv-hairline-2</p>
+          <p class="hex">#EEEEF2</p>
+          <p class="role">Внутренняя тонкая граница</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ===================== Section 2: AA contrast matrix ===================== -->
+<section>
+  <h2>2 · AA contrast matrix</h2>
+  <p class="sec-sub">
+    WCAG 2.1 relative luminance. Формула:
+    <span class="mono">L = 0.2126·R' + 0.7152·G' + 0.0722·B'</span>,
+    <span class="mono">contrast = (L_lighter + 0.05) / (L_darker + 0.05)</span>.
+    Пороги: AAA ≥ 7 · AA ≥ 4.5 · AA-LG ≥ 3 · FAIL &lt; 3.
+  </p>
+
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th>text \\ bg</th>
+          <th><span class="swatch-mini chip-bg-screen"></span>bg-screen</th>
+          <th><span class="swatch-mini chip-white"></span>bg-card</th>
+          <th><span class="swatch-mini chip-wine-tint"></span>wine-tint</th>
+          <th><span class="swatch-mini chip-norm-bg"></span>sem-norm-bg</th>
+          <th><span class="swatch-mini chip-warn-bg"></span>sem-warn-bg</th>
+          <th><span class="swatch-mini chip-high-bg"></span>sem-high-bg</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- ROW: ink -->
+        <tr>
+          <th class="row-head"><span class="swatch-mini chip-ink"></span>ink</th>
+          <td><div class="cell bg-bg-screen"><span class="sample tx-ink">Aa 14</span><span class="ratio tx-ink">15.07:1</span><span class="badge badge-aaa">AAA</span></div></td>
+          <td><div class="cell bg-bg-card"><span class="sample tx-ink">Aa 14</span><span class="ratio tx-ink">17.14:1</span><span class="badge badge-aaa">AAA</span></div></td>
+          <td><div class="cell bg-wine-tint"><span class="sample tx-ink">Aa 14</span><span class="ratio tx-ink">14.00:1</span><span class="badge badge-aaa">AAA</span></div></td>
+          <td><div class="cell bg-sem-norm-bg"><span class="sample tx-ink">Aa 14</span><span class="ratio tx-ink">15.40:1</span><span class="badge badge-aaa">AAA</span></div></td>
+          <td><div class="cell bg-sem-warn-bg"><span class="sample tx-ink">Aa 14</span><span class="ratio tx-ink">14.50:1</span><span class="badge badge-aaa">AAA</span></div></td>
+          <td><div class="cell bg-sem-high-bg"><span class="sample tx-ink">Aa 14</span><span class="ratio tx-ink">13.51:1</span><span class="badge badge-aaa">AAA</span></div></td>
+        </tr>
+        <!-- ROW: ink-mute -->
+        <tr>
+          <th class="row-head"><span class="swatch-mini chip-ink-mute"></span>ink-mute</th>
+          <td><div class="cell bg-bg-screen"><span class="sample tx-ink-mute">Aa 14</span><span class="ratio tx-ink-mute">5.30:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-bg-card"><span class="sample tx-ink-mute">Aa 14</span><span class="ratio tx-ink-mute">6.03:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-wine-tint"><span class="sample tx-ink-mute">Aa 14</span><span class="ratio tx-ink-mute">4.93:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-sem-norm-bg"><span class="sample tx-ink-mute">Aa 14</span><span class="ratio tx-ink-mute">5.42:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-sem-warn-bg"><span class="sample tx-ink-mute">Aa 14</span><span class="ratio tx-ink-mute">5.10:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-sem-high-bg"><span class="sample tx-ink-mute">Aa 14</span><span class="ratio tx-ink-mute">4.75:1</span><span class="badge badge-aa">AA</span></div></td>
+        </tr>
+        <!-- ROW: ink-dim -->
+        <tr>
+          <th class="row-head"><span class="swatch-mini chip-ink-dim"></span>ink-dim</th>
+          <td><div class="cell bg-bg-screen"><span class="sample tx-ink-dim">Aa 14</span><span class="ratio tx-ink-dim">2.86:1</span><span class="badge badge-fail">FAIL</span></div></td>
+          <td><div class="cell bg-bg-card"><span class="sample tx-ink-dim">Aa 14</span><span class="ratio tx-ink-dim">3.25:1</span><span class="badge badge-aalg">AA-LG</span></div></td>
+          <td><div class="cell bg-wine-tint"><span class="sample tx-ink-dim">Aa 14</span><span class="ratio tx-ink-dim">2.65:1</span><span class="badge badge-fail">FAIL</span></div></td>
+          <td><div class="cell bg-sem-norm-bg"><span class="sample tx-ink-dim">Aa 14</span><span class="ratio tx-ink-dim">2.92:1</span><span class="badge badge-fail">FAIL</span></div></td>
+          <td><div class="cell bg-sem-warn-bg"><span class="sample tx-ink-dim">Aa 14</span><span class="ratio tx-ink-dim">2.75:1</span><span class="badge badge-fail">FAIL</span></div></td>
+          <td><div class="cell bg-sem-high-bg"><span class="sample tx-ink-dim">Aa 14</span><span class="ratio tx-ink-dim">2.56:1</span><span class="badge badge-fail">FAIL</span></div></td>
+        </tr>
+        <!-- ROW: sem-norm-ink -->
+        <tr>
+          <th class="row-head"><span class="swatch-mini chip-norm-ink"></span>sem-norm-ink</th>
+          <td><div class="cell bg-bg-screen"><span class="sample tx-sem-norm-ink">Aa 14</span><span class="ratio tx-sem-norm-ink">4.78:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-bg-card"><span class="sample tx-sem-norm-ink">Aa 14</span><span class="ratio tx-sem-norm-ink">5.43:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-wine-tint"><span class="sample tx-sem-norm-ink">Aa 14</span><span class="ratio tx-sem-norm-ink">4.44:1</span><span class="badge badge-aalg">AA-LG</span></div></td>
+          <td><div class="cell bg-sem-norm-bg"><span class="sample tx-sem-norm-ink">Aa 14</span><span class="ratio tx-sem-norm-ink">4.88:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-sem-warn-bg"><span class="sample tx-sem-norm-ink">Aa 14</span><span class="ratio tx-sem-norm-ink">4.60:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-sem-high-bg"><span class="sample tx-sem-norm-ink">Aa 14</span><span class="ratio tx-sem-norm-ink">4.28:1</span><span class="badge badge-aalg">AA-LG</span></div></td>
+        </tr>
+        <!-- ROW: sem-warn-ink -->
+        <tr>
+          <th class="row-head"><span class="swatch-mini chip-warn-ink"></span>sem-warn-ink</th>
+          <td><div class="cell bg-bg-screen"><span class="sample tx-sem-warn-ink">Aa 14</span><span class="ratio tx-sem-warn-ink">4.12:1</span><span class="badge badge-aalg">AA-LG</span></div></td>
+          <td><div class="cell bg-bg-card"><span class="sample tx-sem-warn-ink">Aa 14</span><span class="ratio tx-sem-warn-ink">4.68:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-wine-tint"><span class="sample tx-sem-warn-ink">Aa 14</span><span class="ratio tx-sem-warn-ink">3.82:1</span><span class="badge badge-aalg">AA-LG</span></div></td>
+          <td><div class="cell bg-sem-norm-bg"><span class="sample tx-sem-warn-ink">Aa 14</span><span class="ratio tx-sem-warn-ink">4.21:1</span><span class="badge badge-aalg">AA-LG</span></div></td>
+          <td><div class="cell bg-sem-warn-bg"><span class="sample tx-sem-warn-ink">Aa 14</span><span class="ratio tx-sem-warn-ink">3.96:1</span><span class="badge badge-aalg">AA-LG</span></div></td>
+          <td><div class="cell bg-sem-high-bg"><span class="sample tx-sem-warn-ink">Aa 14</span><span class="ratio tx-sem-warn-ink">3.69:1</span><span class="badge badge-aalg">AA-LG</span></div></td>
+        </tr>
+        <!-- ROW: sem-high-ink -->
+        <tr>
+          <th class="row-head"><span class="swatch-mini chip-high-ink"></span>sem-high-ink</th>
+          <td><div class="cell bg-bg-screen"><span class="sample tx-sem-high-ink">Aa 14</span><span class="ratio tx-sem-high-ink">5.44:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-bg-card"><span class="sample tx-sem-high-ink">Aa 14</span><span class="ratio tx-sem-high-ink">6.19:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-wine-tint"><span class="sample tx-sem-high-ink">Aa 14</span><span class="ratio tx-sem-high-ink">5.06:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-sem-norm-bg"><span class="sample tx-sem-high-ink">Aa 14</span><span class="ratio tx-sem-high-ink">5.57:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-sem-warn-bg"><span class="sample tx-sem-high-ink">Aa 14</span><span class="ratio tx-sem-high-ink">5.24:1</span><span class="badge badge-aa">AA</span></div></td>
+          <td><div class="cell bg-sem-high-bg"><span class="sample tx-sem-high-ink">Aa 14</span><span class="ratio tx-sem-high-ink">4.88:1</span><span class="badge badge-aa">AA</span></div></td>
+        </tr>
+        <!-- ROW: wine -->
+        <tr>
+          <th class="row-head"><span class="swatch-mini chip-wine"></span>wine</th>
+          <td><div class="cell bg-bg-screen"><span class="sample tx-wine">Aa 14</span><span class="ratio tx-wine">8.48:1</span><span class="badge badge-aaa">AAA</span></div></td>
+          <td><div class="cell bg-bg-card"><span class="sample tx-wine">Aa 14</span><span class="ratio tx-wine">9.65:1</span><span class="badge badge-aaa">AAA</span></div></td>
+          <td><div class="cell bg-wine-tint"><span class="sample tx-wine">Aa 14</span><span class="ratio tx-wine">7.88:1</span><span class="badge badge-aaa">AAA</span></div></td>
+          <td><div class="cell bg-sem-norm-bg"><span class="sample tx-wine">Aa 14</span><span class="ratio tx-wine">8.67:1</span><span class="badge badge-aaa">AAA</span></div></td>
+          <td><div class="cell bg-sem-warn-bg"><span class="sample tx-wine">Aa 14</span><span class="ratio tx-wine">8.16:1</span><span class="badge badge-aaa">AAA</span></div></td>
+          <td><div class="cell bg-sem-high-bg"><span class="sample tx-wine">Aa 14</span><span class="ratio tx-wine">7.60:1</span><span class="badge badge-aaa">AAA</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===================== Section 3: FAIL notes ===================== -->
+<section>
+  <h2>3 · FAIL notes</h2>
+  <p class="sec-sub">5 пар не дотягивают до AA-large (≥3). Все — комбинации <span class="mono">ink-dim (#8E8E97)</span> на разных фонах. ink-dim никогда не должен нести смысловой текст — только декоративные lookups / иконки.</p>
+
+  <div class="fail-notes">
+    <ul>
+      <li>
+        <span class="badge">FAIL</span>
+        <div>
+          <div class="pair">ink-dim · bg-screen <span class="ratio-inline">2.86:1</span></div>
+          <div class="why">Не использовать для текста. Допустимо только для tab-label иконок (декоративные стрелки, точки-маркеры) и hairline-разделителей под крупным заголовком, где значение дублируется body-копией.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge">FAIL</span>
+        <div>
+          <div class="pair">ink-dim · wine-tint <span class="ratio-inline">2.65:1</span></div>
+          <div class="why">Самая низкая пара. Запрет на текст. Wine-tint используется только для активной nav-кнопки — в ней текст идёт var(--bv-wine), не ink-dim.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge">FAIL</span>
+        <div>
+          <div class="pair">ink-dim · sem-norm-bg <span class="ratio-inline">2.92:1</span></div>
+          <div class="why">В green chip-ах текст всегда sem-norm-ink (4.88:1 AA). ink-dim допустим лишь как icon-stroke ≥ 2px (декоративный чек-mark, не несёт текст).</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge">FAIL</span>
+        <div>
+          <div class="pair">ink-dim · sem-warn-bg <span class="ratio-inline">2.75:1</span></div>
+          <div class="why">В warn chip-ах текст — sem-warn-ink (3.96 AA-LG, ≥18pt) или ink (14.50 AAA для body). ink-dim — только icon-decorative.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge">FAIL</span>
+        <div>
+          <div class="pair">ink-dim · sem-high-bg <span class="ratio-inline">2.56:1</span></div>
+          <div class="why">Critical chip требует высокого контраста для readability. Текст: sem-high-ink (4.88 AA) или ink (13.51 AAA). ink-dim — запрет.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  Generated: 2026-06-29 · WCAG 2.1 relative luminance · sanity: wine on white = 9.65:1 (AAA)
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 /*!
  * Neiry Pulse · Bevel-clone · tokens
- * v1.0.0 — 2026-06-29 — initial extraction from home-main-etalon
+ * v1.0.1 — 2026-06-29 — PM-decisions patch: ink-dim AA-fix, toggle-track-off, section-h2 24px
  * Source of truth для CSS-переменных. Все --bv-* префиксированы.
  * Извлечено из: docs_web/bevel-clone/home/home-main-etalon.html (:root, lines 46–101)
  * Scope: ТОЛЬКО light-mode. Dark Mode — на Sleep-разделе (memory project_neiry_bevel_clone_v3),
@@ -21,7 +21,7 @@
   /* ========= 3 · Ink (text) ========= */
   --bv-ink:        #1B1B21;   /* основной текст / метрики */
   --bv-ink-mute:   #62626C;   /* вторичный (AA на белом) */
-  --bv-ink-dim:    #8E8E97;   /* третичный / иконки-лейблы */
+  --bv-ink-dim:    #6C6C76;   /* третичный — AA-compliant на всех bg (≥4.5:1; PM patch 29.06) */
   --bv-ink-faded:  #B5B5BD;   /* «Нет данных» */
   --bv-ink-soft:   #9C9CA8;   /* range-cap (55/35) — реальный токен эталона сверх шаблона */
 
@@ -53,6 +53,7 @@
   /* ========= 7 · Border / hairline ========= */
   --bv-hairline:   #E5E5EA;   /* единая граница cards/pills/nav */
   --bv-hairline-2: #EEEEF2;   /* более тонкая внутренняя граница (реальный токен эталона) */
+  --bv-toggle-track-off: #D5D5DD;   /* OFF-track для bv-toggle, cool-tone v3 (PM patch 29.06) */
 
   /* ========= 8 · Shadows ========= */
   --bv-shadow-card:   0 1px 3px rgba(22,22,32,.03), 0 6px 18px rgba(22,22,32,.04);  /* HRV hero + bento */
@@ -80,7 +81,7 @@
 
   /* ========= 12 · Typography sizes ========= (все подтверждены grep'ом по эталону) */
   --bv-fs-display-hero:   60px;   /* HRV hero число */
-  --bv-fs-section-h2:     28px;   /* «Монитор показателей» */
+  --bv-fs-section-h2:     24px;   /* «Монитор показателей» — компромисс из 22/24/28 (PM choice 29.06) */
   --bv-fs-metric-bento:   28px;   /* цифра в bento-карточке */
   --bv-fs-headline:       17px;   /* app-bar-title */
   --bv-fs-label:          14px;   /* mcard-label */
@@ -130,4 +131,16 @@
 
    7. WINE-TINT двойного назначения — оставлен один токен (#F7E3EC).
       YAGNI — разведём отдельные оттенки если возникнет конкретный кейс.
+
+   8. PATCH v1.0.1 (29.06) — добавлено из preview-DRAFT feedback:
+      - --bv-ink-dim #8E8E97 → #6C6C76 (AA-fix, 5 FAIL пар на colors.html матрице)
+      - --bv-toggle-track-off #D5D5DD (cool v3 канон vs legacy warm #D6D2C8)
+      - --bv-fs-section-h2 28px → 24px (PM choice из 22/24/28)
+
+   9. CARRY в Stage 5 refactor — задачи на потом:
+      - Экраны home/hrv/settings: миграция @font-face к локальному Pulse Mono
+        (вместо Google-CDN JetBrains fallback)
+      - Settings legacy avatar #B5DAF1 → spec #D5E3F0
+      - Settings legacy toggle off #D6D2C8 → канон #D5D5DD
+      - aria-hidden на 30+ декоративных SVG (Wave 2 backlog)
    ============================================================ */
