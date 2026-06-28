@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1440" />
+<title>Neiry Pulse — Bevel-clone proof-of-concept (Home / HRV / Settings)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+
+  /* ============================================================
+     TOKENS — Bevel-clone v3 (cool-gray surface, multi-semantic palette)
+     Замкнуто: Golos Text + Pulse Mono; wine #831843 (brand-accent);
+     light-mode primary (dark — на Sleep-разделе); 4px grid base.
+     v3 (PM 26.06): крем → прохладно-серый · single-accent → мультисемантика.
+     ============================================================ */
+
+  /* Pulse Mono — локальная mono-константа Neiry (JetBrains Mono с плоским нулём) */
+  @font-face{font-family:'Pulse Mono';font-weight:400;src:url('../UI_assets/fonts/pulse-mono/PulseMono-Regular.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:500;src:url('../UI_assets/fonts/pulse-mono/PulseMono-Medium.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:600;src:url('../UI_assets/fonts/pulse-mono/PulseMono-SemiBold.woff2') format('woff2');}
+  @font-face{font-family:'Pulse Mono';font-weight:700;src:url('../UI_assets/fonts/pulse-mono/PulseMono-Bold.woff2') format('woff2');}
+
+  :root {
+    /* Cool-gray surfaces (live-Bevel tone: холодный нейтрально-серый, НЕ тёплый крем) */
+    --bg:          #F0F0F3;   /* page bg — cool light gray */
+    --bg-2:        #E8E8EE;   /* deeper cool gray — section separators / tracks */
+    --card:        #FFFFFF;   /* card surface */
+    --card-warm:   #F9F9FC;   /* recessed cool card (alias сохранён) */
+    --card-2:      #F9F9FC;
+    --glass-bg:    rgba(255,255,255,0.64);
+    --glass-stroke:rgba(255,255,255,0.70);
+
+    /* Hairline tones (cool — soft shadows do the work) */
+    --hairline:    #E3E3EA;
+    --hairline-2:  #ECECF1;
+
+    /* Ink scale (cool neutral) */
+    --ink:         #1B1B21;
+    --ink-mute:    #62626C;
+    --ink-dim:     #6C6C77;       /* AA ≥4.5 на cool-gray/card */
+
+    /* Wine — БРЕНД-акцент (действия, фокус, логотип). Константа Neiry */
+    --wine:        #831843;
+    --wine-hover:  #A11D52;
+    --wine-tint:   #F7E3EC;
+    --wine-tint-2: #F0D6E2;
+
+    /* ── Мультисемантическая палитра (Bevel-style: цвет несёт severity) ── */
+    --sem-norm:    #1DA049;   /* норма / low / good (AA ≥3:1 на белом для UI/графики) */
+    --sem-norm-ink:#117A38;   /* AA-safe green text */
+    --sem-mid:     #F5A300;   /* med / caution — fill only */
+    --sem-mid-ink: #B45309;   /* AA-safe amber text */
+    --sem-warn:    #F2752B;   /* elevated — orange escalate */
+    --sem-warn-ink:#C2511A;
+    --sem-high:    #E11D48;   /* high / out-of-range */
+    --sem-high-ink:#C20D2E;   /* AA-safe red text */
+    --sem-hrv:     #0E9AA6;   /* HRV teal */
+    --sem-hrv-ink: #0A7682;   /* AA-safe teal text */
+    --sem-info:    #2E74E8;   /* info / «ниже нормы» / sleep-day */
+    --sem-info-ink:#1D5FD0;   /* AA-safe blue text */
+    --sleep-band:  #E4EAFB;   /* lavender-blue ночь-период (light) */
+    /* Stress-градиент (Bevel rainbow severity — для Stress-экрана, Dark/Sleep этап) */
+    --grad-stress: linear-gradient(180deg,#E11D48 0%,#F2752B 30%,#F5A300 55%,#2BB35A 100%);
+
+    /* legacy aliases — компоненты на bio-* читают семантику */
+    --bio-low:     var(--sem-norm);
+    --bio-low-ink: var(--sem-norm-ink);
+    --bio-mid:     var(--sem-mid);
+    --bio-mid-ink: var(--sem-mid-ink);
+    --bio-high:    var(--sem-high);
+    --bio-hrv:     var(--sem-hrv);
+
+    /* Soft-shadow ladder (Bevel-DNA: depth через shadow, cool-tone) */
+    --shadow-1: 0 1px 2px rgba(22,22,32,0.05), 0 1px 1px rgba(22,22,32,0.03);
+    --shadow-2: 0 1px 2px rgba(22,22,32,0.05), 0 4px 12px rgba(22,22,32,0.07);
+    --shadow-3: 0 1px 2px rgba(22,22,32,0.05), 0 8px 24px rgba(22,22,32,0.09);
+    --shadow-glass: 0 1px 2px rgba(22,22,32,0.05), 0 12px 28px rgba(46,46,70,0.09), inset 0 1px 0 rgba(255,255,255,0.92);
+
+    --sans: 'Golos Text', system-ui, -apple-system, sans-serif;
+    --mono: 'Pulse Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+    --r-lg: 20px;  /* big rounded — hero, modal */
+    --r-md: 16px;  /* card */
+    --r-sm: 12px;  /* inner element */
+
+    /* TYPE SCALE (fixed, product-register; px-locked for device-mockup
+       точности — не rem, см. «Возражения»). Полушаги вычищены в typeset:
+       cap 10 · sub 12 · body 13 · label 14 · subhead 18 · title 22 · metric 56/76 */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-kerning: normal;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* harden: видимый focus-ring для клавиатурной навигации (a11y).
+     wine outline + offset читается и на крем-, и на wine-поверхностях */
+  :focus-visible {
+    outline: 2px solid var(--wine);
+    outline-offset: 2px;
+  }
+  body {
+    padding: 64px 48px 96px;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  /* ============================================================
+     PAGE CHROME
+     ============================================================ */
+  .hero {
+    padding: 0 0 28px;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 56px;
+  }
+  .hero .brand {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--wine);
+  }
+  .hero h1 {
+    font-family: var(--sans);
+    font-size: 52px;
+    font-weight: 700;
+    letter-spacing: -1.6px;
+    line-height: 1.05;
+    margin-top: 16px;
+    text-wrap: balance;
+  }
+  .hero h1 em { font-style: normal; color: var(--wine); }
+  .hero p {
+    color: var(--ink-mute);
+    font-size: 17px;
+    line-height: 1.55;
+    margin-top: 20px;
+    max-width: 68ch;
+    text-wrap: pretty;
+  }
+  .hero-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-top: 28px;
+  }
+
+  /* Three phones row */
+  .phones-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+    align-items: start;
+    margin-top: 16px;
+  }
+  .phone-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .phone-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--wine);
+    margin-bottom: 8px;
+  }
+  .phone-h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 6px;
+    text-wrap: balance;
+  }
+  .phone-sub {
+    font-size: 13px;
+    color: var(--ink-mute);
+    line-height: 1.5;
+    margin-bottom: 24px;
+    max-width: 320px;
+    text-align: center;
+    text-wrap: pretty;
+  }
+
+  /* Phone frame (iPhone 15 outline) — bezel + screen */
+  .phone {
+    position: relative;
+    width: 360px;
+    height: 760px;
+    border-radius: 48px;
+    background: #1B1B21;
+    padding: 12px;
+    box-shadow:
+      0 0 0 2px #2A2620,
+      0 30px 60px rgba(28,24,18,0.18),
+      0 12px 24px rgba(28,24,18,0.12);
+  }
+  .screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 38px;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .notch {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 96px;
+    height: 24px;
+    background: #1B1B21;
+    border-radius: 999px;
+    z-index: 5;
+  }
+
+  /* status bar (iOS-like) */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+  .status-bar .right { display: flex; gap: 6px; align-items: center; }
+  .status-bar svg { display: block; }
+
+  /* App header (title + actions) */
+  .app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 20px 12px;
+    flex-shrink: 0;
+  }
+  .app-header-back {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--ink);
+  }
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .brand-mark {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--wine-tint);
+    display: grid; place-items: center;
+    color: var(--wine);
+  }
+  .brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--ink);
+  }
+  .app-header-actions { display: flex; gap: 12px; align-items: center; }
+  .icon-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--card);
+    display: grid; place-items: center;
+    color: var(--ink-mute);
+    box-shadow: var(--shadow-1);
+  }
+  .icon-btn:active { transform: scale(0.96); }
+  .avatar-sm {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--wine);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    display: grid; place-items: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), var(--shadow-1);
+  }
+
+  /* Screen page-title (centered) */
+  .page-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--ink);
+  }
+  .page-title-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 20px 14px;
+    flex-shrink: 0;
+  }
+
+  /* Body (scrolling area) */
+  .body {
+    flex: 1;
+    overflow: hidden;
+    padding: 4px 20px 0;
+  }
+
+  /* ============================================================
+     CARD — Bevel-clone (soft rounded + soft shadow + cream/white)
+     ============================================================ */
+  .card {
+    background: var(--card);
+    border-radius: var(--r-md);
+    padding: 18px 18px;
+    box-shadow: var(--shadow-2);
+    margin-bottom: 14px;
+    border: 1px solid var(--hairline-2);
+  }
+  .card-lg {
+    border-radius: var(--r-lg);
+    padding: 20px;
+  }
+  .card-hero {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-glass);
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Eyebrow (JetBrains Mono uppercase) */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  /* Trend chip (green up) — AA-safe text via deeper green ink */
+  .trend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #E5F7EE;
+    color: var(--bio-low-ink);
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--sans);
+  }
+  .trend-chip-wine {
+    background: var(--wine-tint);
+    color: var(--wine);
+  }
+
+  /* Hero metric (HRV) */
+  .metric-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 8px 0 6px;
+    animation: breathe 4s ease-in-out infinite;
+    transform-origin: left center;
+    will-change: transform;
+  }
+  .metric-num {
+    font-family: var(--sans);
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;  /* −0.036em — в пределах floor −0.04em (typeset) */
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .metric-num.mono {
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: -2.0px;
+  }
+  .metric-unit {
+    font-size: 14px;
+    color: var(--ink-mute);
+    font-family: var(--sans);
+    font-weight: 500;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.012); }
+  }
+  /* harden: глобальный reduced-motion — гасит ВСЕ анимации и transition,
+     не только breathe (a11y, motion-sensitivity) */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  .hero-body-text {
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--ink-mute);
+    margin-top: 2px;
+  }
+  .row-between {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  /* Workout card */
+  .card-heading {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+    color: var(--ink);
+    margin: 8px 0 4px;
+  }
+  .card-sub {
+    font-size: 13px;
+    color: var(--ink-mute);
+    line-height: 1.4;
+  }
+  .sparkline {
+    width: 100%;
+    height: 50px;
+    margin: 12px 0 8px;
+    display: block;
+  }
+  .meta-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-mute);
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .btn-row {
+    display: flex; gap: 10px; margin-top: 14px;
+  }
+  .btn {
+    flex: 1;
+    padding: 12px 8px;
+    border-radius: var(--r-sm);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    border: 0;
+    cursor: pointer;
+    line-height: 1;
+    font-family: var(--sans);
+    transition: transform 160ms ease-out, box-shadow 160ms ease-out;
+  }
+  .btn-primary {
+    background: var(--wine);
+    color: white;
+    box-shadow: 0 2px 6px rgba(131,24,67,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+  .btn-primary:hover { background: var(--wine-hover); box-shadow: 0 4px 12px rgba(131,24,67,0.32), inset 0 1px 0 rgba(255,255,255,0.18); }
+  .btn-primary:active { transform: scale(0.97); box-shadow: 0 1px 3px rgba(131,24,67,0.20); }
+  .btn-soft {
+    background: var(--card-warm);
+    color: var(--ink);
+    border: 1px solid var(--hairline);
+  }
+  .btn-soft:hover { background: var(--card); box-shadow: var(--shadow-1); }
+  .btn-soft:active { transform: scale(0.97); }
+
+  /* Banner alert (demo) */
+  .banner {
+    background: #FBF1DD;
+    border: 1px solid #F5E2C0;
+    border-radius: var(--r-sm);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #7E5B17;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .banner svg { flex-shrink: 0; color: #7E5B17; }  /* было #C58A1F (2.66:1 icon, fail) */
+
+  /* Soft list item (sleep / trainer) */
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--card);
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--r-sm);
+    box-shadow: var(--shadow-1);
+    margin-bottom: 10px;
+  }
+  .list-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--wine-tint);
+    color: var(--wine);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .list-icon.neutral {
+    background: var(--bg-2);
+    color: var(--ink-mute);
+  }
+  .list-body { flex: 1; min-width: 0; }
+  .list-title {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .list-sub {
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-top: 3px;
+    line-height: 1.25;
+  }
+  .list-sub b {
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    font-family: var(--mono);
+  }
+  .chevron { color: var(--ink-dim); flex-shrink: 0; }
+
+  /* Bottom nav */
+  .bottom-nav {
+    display: flex;
+    border-top: 1px solid var(--hairline);
+    background: rgba(250,248,244,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    flex-shrink: 0;
+    padding: 8px 0 10px;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 10px;
+    color: var(--ink-dim);
+    gap: 4px;
+    font-weight: 500;
+  }
+  .nav-item.active { color: var(--wine); font-weight: 600; }
+  .nav-item.active svg { color: var(--wine); }
+  .nav-item svg { color: var(--ink-dim); }
+
+  /* ============================================================
+     HRV CHART (monotone smoothed)
+     ============================================================ */
+  .chart-wrap {
+    background: var(--card);
+    border-radius: var(--r-md);
+    border: 1px solid var(--hairline-2);
+    box-shadow: var(--shadow-2);
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .chart-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .seg {
+    display: inline-flex;
+    background: var(--bg-2);
+    border-radius: 999px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .seg-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: var(--ink-mute);
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+  .seg-btn.active {
+    background: var(--wine);
+    color: white;
+    box-shadow: 0 1px 2px rgba(131,24,67,0.20);
+  }
+  .chart-svg {
+    width: 100%;
+    height: 140px;
+    display: block;
+  }
+
+  /* Three stats compact */
+  .stats-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .stat-cell {
+    background: var(--card);
+    border-radius: var(--r-sm);
+    border: 1px solid var(--hairline-2);
+    box-shadow: var(--shadow-1);
+    padding: 10px 12px;
+  }
+  .stat-cell .eyebrow { margin-bottom: 4px; }
+  .stat-cell .val {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-cell .val .u {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-weight: 500;
+    margin-left: 2px;
+  }
+
+  /* Recommendation card — surface tint + full hairline border + leading icon-glyph
+     (no border-left side-stripes — banned by colorize rules) */
+  .reco {
+    background: linear-gradient(180deg, var(--wine-tint) 0%, var(--card) 22%);
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--r-md);
+    padding: 14px 16px 16px;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-2);
+  }
+  .reco-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--wine-tint);
+    color: var(--wine);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .reco-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+    letter-spacing: -0.2px;
+  }
+  .reco-body {
+    font-size: 13px;
+    color: var(--ink-mute);
+    line-height: 1.4;
+  }
+
+  .deep-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--wine);
+    padding: 12px 0;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+  .deep-link .dot {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--wine-tint);
+    color: var(--wine);
+    text-align: center;
+    line-height: 14px;
+    font-size: 9px;
+    font-weight: 700;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  /* HRV today-row (timestamp eyebrow centered + big metric centered) */
+  .hrv-today {
+    text-align: center;
+    padding: 18px 8px 14px;
+  }
+  .hrv-eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--wine);
+    margin-bottom: 12px;
+  }
+  .hrv-big {
+    font-size: 76px;
+    font-weight: 800;
+    letter-spacing: -3px;
+    line-height: 0.95;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .hrv-big .u {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink-mute);
+    letter-spacing: 0;
+  }
+  .hrv-trends {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .hrv-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--bio-low-ink);
+    font-weight: 600;
+  }
+
+  /* ============================================================
+     RANGE-PILL — Bevel signature "позиция в норме"
+     (вертикальный трек + green-band зоны нормы + белый маркер) — v3 semantic
+     ============================================================ */
+  .hero-main { display: flex; gap: 18px; align-items: stretch; }
+  .hero-left { flex: 1; min-width: 0; }
+  .range-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .range-pill {
+    position: relative;
+    width: 8px;
+    flex: 1;
+    min-height: 64px;
+    border-radius: 999px;
+    background: #E6F5EC;   /* нейтральный светло-зелёный трек */
+  }
+  .range-pill .band {
+    position: absolute;
+    left: 0; right: 0;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #36C46A 0%, var(--sem-norm) 100%);  /* зона нормы — green */
+  }
+  .range-pill .marker {
+    position: absolute;
+    left: 50%;
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: #fff;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 3px rgba(43,179,90,0.24), 0 1px 3px rgba(22,22,32,0.22);
+    z-index: 2;
+  }
+  .range-cap {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.3px;
+    color: var(--ink-dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* "В норме · 42–58 ms" badge (Bevel "Normal range") */
+  .range-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #E5F7EE;
+    color: var(--bio-low-ink);
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    margin-top: 12px;
+  }
+  .range-badge svg { flex-shrink: 0; }
+
+  /* Status-chip с check-circle (Bevel "Normal"/"Good") */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--bio-low-ink);
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--sans);
+  }
+  .status-chip svg { color: var(--bio-low-ink); flex-shrink: 0; }
+
+  /* ===== HRV v3 — Bevel-layout: split-hero + severity-статус + bar-chart ===== */
+  .hrv-hero-split { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 16px 4px 16px; }
+  .hrv-hero-num { font-size: 60px; font-weight: 800; letter-spacing: -2.5px; line-height: 0.92; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .hrv-hero-num .u { font-size: 19px; font-weight: 600; color: var(--ink-mute); margin-left: 4px; letter-spacing: 0; }
+  .hrv-hero-date { font-size: 13px; color: var(--ink-mute); margin-top: 8px; }
+  .hrv-hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; padding-top: 8px; text-align: right; }
+  .sev-status { font-size: 15px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+  .sev-status.norm  { color: var(--sem-norm-ink); }
+  .sev-status.below { color: var(--sem-warn-ink); }
+  .sev-status.above { color: var(--sem-high-ink); }
+  .sev-range { font-size: 12.5px; color: var(--ink-mute); display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+  .sev-range .ic { width: 14px; height: 10px; border-radius: 3px; flex-shrink: 0; background: linear-gradient(90deg, #E6F5EC, var(--sem-norm)); }
+  .bar-chart-svg { width: 100%; height: 150px; display: block; }
+  /* severity-варианты статуса/индикатора/рекомендации */
+  .sev-status.crit { color: var(--sem-high-ink); }
+  .sev-range.below .ic { background: linear-gradient(90deg, #FBEFD8, var(--sem-mid)); }
+  .sev-range.crit  .ic { background: linear-gradient(90deg, #FBDDE3, var(--sem-high)); }
+  .reco.warn .reco-icon { background: #FBEFD8; color: var(--sem-mid-ink); }
+  .reco.crit .reco-icon { background: #FBDDE3; color: var(--sem-high-ink); }
+
+  /* ============================================================
+     TRENDS-TABLE — Bevel "Trends Analysis"
+     (Период / Изменение / мини-спарклайн на строку)
+     ============================================================ */
+  .trends-table {
+    background: var(--card);
+    border-radius: var(--r-md);
+    border: 1px solid var(--hairline-2);
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .trends-row {
+    display: grid;
+    grid-template-columns: 1fr auto 60px;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--hairline-2);
+  }
+  .trends-row.head {
+    padding: 11px 14px 9px;
+    background: var(--card);
+    border-bottom: 1.5px solid var(--hairline);
+  }
+  .trends-row:last-child { border-bottom: 0; }
+  .trends-row.head .th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 700;
+  }
+  .trends-row.head .th.r { text-align: right; }
+  .trends-period {
+    font-size: 13px;
+    color: var(--ink-mute);
+    font-weight: 500;
+  }
+  .trends-change {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    font-family: var(--mono);
+    justify-self: end;
+  }
+  .trends-change.up { color: var(--bio-low-ink); }
+  .trends-change svg { flex-shrink: 0; }
+  .trends-spark { width: 60px; height: 22px; display: block; }
+
+  /* ============================================================
+     SETTINGS — Bevel-style grouped cards
+     ============================================================ */
+  .settings-section { margin-bottom: 18px; }
+  .settings-section .eyebrow {
+    padding: 0 4px 6px;
+  }
+  .settings-group {
+    background: var(--card);
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+  }
+  .settings-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--hairline-2);
+  }
+  .settings-row:last-child { border-bottom: 0; }
+  .settings-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--bg-2);
+    color: var(--ink-mute);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .settings-icon.wine {
+    background: var(--wine-tint);
+    color: var(--wine);
+  }
+  .settings-body { flex: 1; min-width: 0; }
+  .settings-title {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .settings-sub {
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-top: 3px;
+    line-height: 1.25;
+  }
+
+  /* Toggle switch (wine when active) */
+  .toggle {
+    width: 38px; height: 22px;
+    border-radius: 999px;
+    background: #D6D2C8;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 200ms ease-out;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: transform 200ms ease-out;
+  }
+  .toggle.on {
+    background: var(--wine);
+  }
+  .toggle.on::after { transform: translateX(16px); }
+
+  .profile-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: var(--card);
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--r-md);
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-2);
+  }
+  .profile-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--wine);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    display: grid; place-items: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .profile-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+  .profile-email {
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-top: 2px;
+    font-family: var(--mono);
+    overflow-wrap: anywhere;  /* harden: длинные e-mail не выходят за карточку */
+  }
+
+  /* device card (with battery indicator) */
+  .device-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: var(--card);
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--r-md);
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-2);
+  }
+  .device-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--wine-tint);
+    color: var(--wine);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .device-body { flex: 1; min-width: 0; }
+  .device-title {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 600;
+    line-height: 1.2;
+    overflow-wrap: anywhere;  /* harden: длинные device-ID / i18n не ломают строку */
+  }
+  .device-sub {
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-top: 3px;
+    font-family: var(--mono);
+  }
+  .device-batt {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--bio-low-ink);
+    font-variant-numeric: tabular-nums;
+    font-family: var(--mono);
+  }
+
+  .section-actions {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--wine);
+    font-family: var(--sans);
+  }
+
+  /* "+ Управление" CTA row */
+  .ghost-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--card);
+    border: 1px dashed var(--wine);
+    border-radius: var(--r-sm);
+    color: var(--wine);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  /* badge "ДЕМО" */
+  .demo-pill {
+    background: var(--wine-tint);
+    color: var(--wine);
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  /* ============================================================
+     POLISH — interaction states: hover/transition на всех
+     кликабельных элементах (product-register: каждый интерактив
+     имеет default/hover/focus/active). Это кликабельный прототип.
+     ============================================================ */
+  .icon-btn, .seg-btn, .nav-item, .list-item, .settings-row,
+  .deep-link, .ghost-cta, .section-actions, .app-header-back,
+  .chevron, .toggle, .profile-row, .device-row {
+    cursor: pointer;
+  }
+  .icon-btn { transition: background 160ms ease-out, color 160ms ease-out, transform 160ms ease-out; }
+  .icon-btn:hover { background: var(--bg-2); color: var(--ink); }
+  .seg-btn { transition: color 160ms ease-out, background 160ms ease-out; }
+  .seg-btn:not(.active):hover { color: var(--ink); }
+  .nav-item { transition: color 160ms ease-out; }
+  .nav-item:not(.active):hover, .nav-item:not(.active):hover svg { color: var(--ink-mute); }
+  .settings-row { transition: background 160ms ease-out; }
+  .settings-row:hover { background: var(--bg-2); }
+  .list-item { transition: box-shadow 200ms ease-out; }
+  .list-item:hover { box-shadow: var(--shadow-2); }
+  .profile-row, .device-row { transition: box-shadow 200ms ease-out; }
+  .profile-row:hover, .device-row:hover { box-shadow: var(--shadow-3); }
+  .deep-link { transition: color 160ms ease-out; }
+  .deep-link:hover { color: var(--wine-hover); }
+  .ghost-cta { transition: background 160ms ease-out, border-color 160ms ease-out; }
+  .ghost-cta:hover { background: var(--wine-tint); border-color: var(--wine-hover); }
+  .section-actions { transition: color 160ms ease-out; }
+  .section-actions:hover { color: var(--wine-hover); }
+
+  /* ============================================================
+     SKILL-OBJECTIONS table at the bottom of the page
+     ============================================================ */
+  .objections {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--hairline);
+  }
+  .objections h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .objections p.intro {
+    font-size: 14px;
+    color: var(--ink-mute);
+    margin-bottom: 20px;
+    max-width: 760px;
+    line-height: 1.55;
+  }
+  .obj-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-2);
+    border: 1px solid var(--hairline-2);
+  }
+  .obj-table th, .obj-table td {
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 13px;
+    border-bottom: 1px solid var(--hairline-2);
+    vertical-align: top;
+  }
+  .obj-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--ink-dim);
+    font-weight: 600;
+    background: var(--bg-2);
+  }
+  .obj-table tr:last-child td { border-bottom: 0; }
+  .obj-table .skill-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--wine);
+    font-weight: 600;
+  }
+  .obj-table .verdict-keep { color: var(--bio-low-ink); font-weight: 600; }
+  .obj-table .verdict-amend { color: var(--bio-mid-ink); font-weight: 600; }
+  .obj-table .verdict-reject { color: var(--bio-high); font-weight: 600; }
+
+  /* Mapping table under phones */
+  .mapping {
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 1px solid var(--hairline);
+  }
+  .mapping h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .mapping table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-2);
+    border: 1px solid var(--hairline-2);
+  }
+  .mapping th, .mapping td {
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 13px;
+    border-bottom: 1px solid var(--hairline-2);
+    vertical-align: top;
+  }
+  .mapping th {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--ink-dim);
+    font-weight: 600;
+    background: var(--bg-2);
+  }
+  .mapping tr:last-child td { border-bottom: 0; }
+  .mapping code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--bg-2);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--wine);
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="brand">Neiry Pulse · Design</div>
+  <h1>Bevel-clone <em>v3</em><br />на трёх ключевых экранах</h1>
+  <p>
+    Светлая, прохладно-серая, glassmorphic-подача в духе Bevel — с нашими шрифтами
+    (Golos&nbsp;Text + Pulse&nbsp;Mono) и фирменным wine&nbsp;<code>#831843</code> как бренд-акцентом.
+    v3 (PM&nbsp;26.06): крем → прохладно-серый <code>#F0F0F3</code>, single-accent →
+    мультисемантическая палитра Bevel (норма зелёная, HRV teal, severity amber/red, ниже-нормы синий).
+    Range-pill, «Normal range» badge и trends-спарклайны переведены на семантику.
+    Dark&nbsp;Mode — на Sleep-разделе.
+  </p>
+  <div class="hero-meta">Home · HRV detail · Settings · v3 · 2026-06-26</div>
+</header>
+
+<section class="phones-row">
+
+  <!-- ================== PHONE 1: HOME ================== -->
+  <div class="phone-cell">
+    <div class="phone-title">01 — Home</div>
+    <div class="phone-h2">Лента дня</div>
+    <div class="phone-sub">Glass-hero c HRV-метрикой и breathing-pulse. Прохладно-серый фон, soft shadows, teal HRV-trend.</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+
+        <!-- Status bar -->
+        <div class="status-bar">
+          <span style="font-variant-numeric: tabular-nums;">9:41</span>
+          <div class="right">
+            <!-- signal -->
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="0.5"/><rect x="4" y="5" width="3" height="6" rx="0.5"/><rect x="8" y="3" width="3" height="8" rx="0.5"/><rect x="12" y="1" width="3" height="10" rx="0.5"/></svg>
+            <!-- wifi -->
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4 C5 1, 11 1, 15 4"/><path d="M3 6.5 C6 4.5, 10 4.5, 13 6.5"/><path d="M5.5 8.5 C7 7.5, 9 7.5, 10.5 8.5"/><circle cx="8" cy="10" r="0.6" fill="currentColor"/></svg>
+            <!-- battery -->
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="10" rx="2"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/><rect x="21" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor"/></svg>
+          </div>
+        </div>
+
+        <!-- App header -->
+        <div class="app-header">
+          <div class="brand-row">
+            <div class="brand-mark">
+              <!-- thin pulse glyph -->
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 H7 L9 7 L13 17 L15 12 H21"/></svg>
+            </div>
+            <div class="brand-name">Pulse</div>
+          </div>
+          <div class="app-header-actions">
+            <div class="icon-btn">
+              <!-- bell thin -->
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            </div>
+            <div class="avatar-sm">КЛ</div>
+          </div>
+        </div>
+
+        <!-- Body (feed) -->
+        <div class="body">
+
+          <!-- Glass HRV hero -->
+          <div class="card-hero">
+            <div class="hero-main">
+              <div class="hero-left">
+                <div class="row-between">
+                  <span class="eyebrow">HRV сегодня</span>
+                  <span class="trend-chip">
+                    <svg width="9" height="9" viewBox="0 0 12 12" fill="currentColor"><path d="M6 2 L11 9 H1 Z"/></svg>
+                    +12% к вчера
+                  </span>
+                </div>
+                <div class="metric-row pulse-soft">
+                  <span class="metric-num">47</span>
+                  <span class="metric-unit">ms</span>
+                </div>
+                <div class="hero-body-text">Вы набираете форму и справляетесь со&nbsp;стрессом лучше</div>
+              </div>
+              <!-- Bevel range-pill: 47 в личной норме 35–55 ms -->
+              <div class="range-col" title="Позиция в личной норме">
+                <span class="range-cap">55</span>
+                <div class="range-pill">
+                  <div class="band" style="top:22%; bottom:26%;"></div>
+                  <div class="marker" style="top:34%;"></div>
+                </div>
+                <span class="range-cap">35</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Workout card -->
+          <div class="card card-lg">
+            <div class="row-between">
+              <span class="eyebrow">Готовы тренироваться</span>
+              <span class="status-chip">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>
+                Готово
+              </span>
+            </div>
+            <h3 class="card-heading">Сегодня лёгкий бег</h3>
+            <p class="card-sub">3 дня форма растёт — идеальное время для нагрузки</p>
+
+            <!-- monotone smoothed HRV trend — teal (HRV semantic) -->
+            <svg class="sparkline" viewBox="0 0 280 50" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="hrv-fill-home" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#0E9AA6" stop-opacity="0.16"/>
+                  <stop offset="100%" stop-color="#0E9AA6" stop-opacity="0.0"/>
+                </linearGradient>
+              </defs>
+              <!-- baseline dashed -->
+              <line x1="0" y1="30" x2="280" y2="30" stroke="#CFCFD6" stroke-width="0.8" stroke-dasharray="3 3"/>
+              <!-- smoothed monotone line -->
+              <path d="M0,38 C20,38 30,36 50,34 C70,32 90,33 110,30 C130,27 150,28 170,22 C190,16 210,20 230,14 C250,9 270,12 280,10"
+                fill="none" stroke="#0E9AA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- fill under line -->
+              <path d="M0,38 C20,38 30,36 50,34 C70,32 90,33 110,30 C130,27 150,28 170,22 C190,16 210,20 230,14 C250,9 270,12 280,10 L280,50 L0,50 Z"
+                fill="url(#hrv-fill-home)"/>
+              <!-- current point -->
+              <circle cx="278" cy="10" r="3.2" fill="#0E9AA6"/>
+              <circle cx="278" cy="10" r="6" fill="#0E9AA6" fill-opacity="0.18"/>
+            </svg>
+
+            <div class="meta-row">
+              <span>HRV · 7 дней</span>
+              <span style="color: var(--sem-norm-ink);">тренд ↑</span>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary">Начать тренировку</button>
+              <button class="btn btn-soft">Подробнее</button>
+            </div>
+          </div>
+
+          <!-- Sleep card with banner -->
+          <div class="card">
+            <div class="banner">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Демо-режим
+            </div>
+            <div class="list-item" style="margin-bottom: 0; box-shadow: none; border: 0; padding: 6px 4px;">
+              <div class="list-icon neutral">
+                <!-- moon thin -->
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              </div>
+              <div class="list-body">
+                <div class="list-title">Сон прошлой ночью</div>
+                <div class="list-sub"><b>7ч 42м</b> · 22% / 15% / 63%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trainer row -->
+          <div class="list-item">
+            <div class="list-icon">
+              <!-- people thin -->
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="list-body">
+              <div class="list-title">Тренер видит ваши данные</div>
+              <div class="list-sub">Иван П. · с 03.06</div>
+            </div>
+            <span class="chevron">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+
+        </div>
+
+        <!-- Bottom nav -->
+        <div class="bottom-nav">
+          <a class="nav-item active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Дом
+          </a>
+          <a class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 L17.5 17.5"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M9 9 L11 7"/><path d="M13 17 L15 15"/></svg>
+            Тренировка
+          </a>
+          <a class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg>
+            История
+          </a>
+          <a class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7z"/></svg>
+            Здоровье
+          </a>
+          <a class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="19" cy="12" r="1.2" fill="currentColor"/></svg>
+            Ещё
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== PHONE 2: HRV DETAIL ================== -->
+  <div class="phone-cell">
+    <div class="phone-title">02 — HRV detail</div>
+    <div class="phone-h2">Глубокий разбор</div>
+    <div class="phone-sub">Split-hero (число+дата · severity+диапазон), столбчатый 30-дневный график, одна рекомендация под цифрами.</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+
+        <!-- Status bar -->
+        <div class="status-bar">
+          <span style="font-variant-numeric: tabular-nums;">9:55</span>
+          <div class="right">
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="0.5"/><rect x="4" y="5" width="3" height="6" rx="0.5"/><rect x="8" y="3" width="3" height="8" rx="0.5"/><rect x="12" y="1" width="3" height="10" rx="0.5"/></svg>
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4 C5 1, 11 1, 15 4"/><path d="M3 6.5 C6 4.5, 10 4.5, 13 6.5"/><path d="M5.5 8.5 C7 7.5, 9 7.5, 10.5 8.5"/><circle cx="8" cy="10" r="0.6" fill="currentColor"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="10" rx="2"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/><rect x="21" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor"/></svg>
+          </div>
+        </div>
+
+        <!-- Header with back / title / info -->
+        <div class="page-title-row">
+          <div class="app-header-back">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </div>
+          <div class="page-title">HRV</div>
+          <span style="color: var(--ink-mute);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </span>
+        </div>
+
+        <!-- Body -->
+        <div class="body">
+
+          <!-- Split hero — число+дата · severity+диапазон (Bevel-layout) -->
+          <div class="hrv-hero-split">
+            <div class="hrv-hero-left">
+              <div class="hrv-hero-num pulse-soft"><span>52</span><span class="u">ms</span></div>
+              <div class="hrv-hero-date">24 июня 2026</div>
+            </div>
+            <div class="hrv-hero-right">
+              <span class="sev-status norm">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>
+                В норме
+              </span>
+              <span class="sev-range"><span class="ic"></span>42–58 ms</span>
+            </div>
+          </div>
+
+          <!-- Рекомендация под цифрами -->
+          <div class="reco">
+            <div class="reco-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 H7 L9 7 L13 17 L15 12 H21"/></svg>
+            </div>
+            <div>
+              <div class="reco-title">В норме, форма растёт</div>
+              <div class="reco-body">52 ms в коридоре 42–58, рост третий день — можно повышать нагрузку.</div>
+            </div>
+          </div>
+
+          <!-- Chart card -->
+          <div class="chart-wrap">
+            <div class="chart-head">
+              <span class="eyebrow">30 дней</span>
+              <div class="seg">
+                <button class="seg-btn">7Д</button>
+                <button class="seg-btn active">30Д</button>
+                <button class="seg-btn">Год</button>
+              </div>
+            </div>
+            <svg class="bar-chart-svg" viewBox="0 0 280 150" preserveAspectRatio="none">
+              <rect x="20" y="45" width="258" height="44" rx="4" fill="#0E9AA6" opacity="0.10"/>
+              <line x1="20" y1="67" x2="278" y2="67" stroke="#CFCFD6" stroke-width="0.8" stroke-dasharray="3 3"/>
+              <text x="2" y="27" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">70</text>
+              <text x="2" y="71" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">50</text>
+              <text x="2" y="120" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">30</text>
+              <rect x="28"  y="83" width="8" height="39" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="42"  y="72" width="8" height="50" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="56"  y="78" width="8" height="44" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="70"  y="64" width="8" height="58" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="84"  y="70" width="8" height="52" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="98"  y="59" width="8" height="63" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="112" y="75" width="8" height="47" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="126" y="67" width="8" height="55" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="140" y="81" width="8" height="41" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="154" y="61" width="8" height="61" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="168" y="72" width="8" height="50" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="182" y="53" width="8" height="69" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="196" y="70" width="8" height="52" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="210" y="64" width="8" height="58" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="224" y="75" width="8" height="47" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="238" y="67" width="8" height="55" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="252" y="78" width="8" height="44" rx="2" fill="#0E9AA6" opacity="0.78"/>
+              <rect x="266" y="61" width="8" height="61" rx="2" fill="#0E9AA6"/>
+              <circle cx="270" cy="61" r="3" fill="#0E9AA6"/>
+              <circle cx="270" cy="61" r="6" fill="#0E9AA6" fill-opacity="0.18"/>
+              <text x="24"  y="143" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">29.05</text>
+              <text x="126" y="143" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">12.06</text>
+              <text x="248" y="143" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">24.06</text>
+            </svg>
+          </div>
+
+          <!-- Trends-table (Bevel "Trends Analysis") -->
+          <div class="trends-table">
+            <div class="trends-row head">
+              <span class="th">Период</span>
+              <span class="th r">Изменение</span>
+              <span class="th r">Тренд</span>
+            </div>
+            <div class="trends-row">
+              <span class="trends-period">3 дня</span>
+              <span class="trends-change up">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M6 2 L11 9 H1 Z"/></svg>
+                +4&nbsp;ms
+              </span>
+              <svg class="trends-spark" viewBox="0 0 60 22" preserveAspectRatio="none"><path d="M2,16 C12,15 18,13 30,11 C42,9 50,7 58,5" fill="none" stroke="#0E9AA6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="trends-row">
+              <span class="trends-period">7 дней</span>
+              <span class="trends-change up">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M6 2 L11 9 H1 Z"/></svg>
+                +8%
+              </span>
+              <svg class="trends-spark" viewBox="0 0 60 22" preserveAspectRatio="none"><path d="M2,17 C14,16 22,12 34,10 C44,8 52,6 58,4" fill="none" stroke="#0E9AA6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="trends-row">
+              <span class="trends-period">30 дней</span>
+              <span class="trends-change up">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M6 2 L11 9 H1 Z"/></svg>
+                +12%
+              </span>
+              <svg class="trends-spark" viewBox="0 0 60 22" preserveAspectRatio="none"><path d="M2,18 C16,17 24,14 36,11 C46,8 52,7 58,3" fill="none" stroke="#0E9AA6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+          <!-- Deep link CTA -->
+          <button class="deep-link">
+            <span class="dot">i</span>
+            Узнать больше про HRV
+          </button>
+
+        </div>
+
+        <!-- Bottom nav -->
+        <div class="bottom-nav">
+          <a class="nav-item active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Дом
+          </a>
+          <a class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 L17.5 17.5"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M9 9 L11 7"/><path d="M13 17 L15 15"/></svg>
+            Тренировка
+          </a>
+          <a class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg>
+            История
+          </a>
+          <a class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7z"/></svg>
+            Здоровье
+          </a>
+          <a class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="19" cy="12" r="1.2" fill="currentColor"/></svg>
+            Ещё
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== PHONE 3: SETTINGS ================== -->
+  <div class="phone-cell">
+    <div class="phone-title">03 — Settings</div>
+    <div class="phone-h2">Настройки</div>
+    <div class="phone-sub">Grouped soft cards с thin-line иконками и chevron. Toggle wine when active. Eyebrow mono uppercase 10px.</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+
+        <!-- Status bar -->
+        <div class="status-bar">
+          <span style="font-variant-numeric: tabular-nums;">9:41</span>
+          <div class="right">
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="0.5"/><rect x="4" y="5" width="3" height="6" rx="0.5"/><rect x="8" y="3" width="3" height="8" rx="0.5"/><rect x="12" y="1" width="3" height="10" rx="0.5"/></svg>
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4 C5 1, 11 1, 15 4"/><path d="M3 6.5 C6 4.5, 10 4.5, 13 6.5"/><path d="M5.5 8.5 C7 7.5, 9 7.5, 10.5 8.5"/><circle cx="8" cy="10" r="0.6" fill="currentColor"/></svg>
+            <svg width="24" height="11" viewBox="0 0 24 11" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="20" height="10" rx="2"/><rect x="2" y="2" width="16" height="7" rx="1" fill="currentColor"/><rect x="21" y="3.5" width="1.5" height="4" rx="0.5" fill="currentColor"/></svg>
+          </div>
+        </div>
+
+        <!-- App header (title only) -->
+        <div class="app-header">
+          <div class="brand-name">Настройки</div>
+        </div>
+
+        <!-- Body -->
+        <div class="body">
+
+          <!-- Profile card -->
+          <div class="profile-row">
+            <div class="profile-avatar">КЛ</div>
+            <div style="flex: 1; min-width: 0;">
+              <div class="profile-name">Костя Леонов</div>
+              <div class="profile-email">kostya@neiry.com</div>
+            </div>
+            <span class="chevron">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+
+          <!-- Device card -->
+          <div class="device-row">
+            <div class="device-icon">
+              <!-- bracelet thin -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="14" height="6" rx="3"/><path d="M9 6 V9"/><path d="M15 6 V9"/><path d="M9 15 V18"/><path d="M15 15 V18"/></svg>
+            </div>
+            <div class="device-body">
+              <div class="device-title">VIGOR-XYZ123 · подключён</div>
+              <div class="device-sub">синк 9:52</div>
+            </div>
+            <div class="device-batt">87%</div>
+          </div>
+
+          <!-- Section: Уведомления -->
+          <div class="settings-section">
+            <div class="row-between">
+              <div class="eyebrow">Уведомления</div>
+              <span class="section-actions">Все настройки <span style="margin-left:3px;">›</span></span>
+            </div>
+            <div style="height: 8px;"></div>
+            <div class="settings-group">
+              <div class="settings-row">
+                <div class="settings-icon wine">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L3 7 V13 C3 18 7 22 12 22 C17 22 21 18 21 13 V7 L12 2 Z"/></svg>
+                </div>
+                <div class="settings-body">
+                  <div class="settings-title">HRV-инсайты</div>
+                  <div class="settings-sub">ежедневно утром</div>
+                </div>
+                <div class="toggle on"></div>
+              </div>
+              <div class="settings-row">
+                <div class="settings-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M9 22l3-10 3 10"/><path d="M9 13l-3-2 3-3 3 2"/></svg>
+                </div>
+                <div class="settings-body">
+                  <div class="settings-title">Напоминания о тренировке</div>
+                  <div class="settings-sub">3 раза в неделю</div>
+                </div>
+                <div class="toggle on"></div>
+              </div>
+              <div class="settings-row">
+                <div class="settings-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div class="settings-body">
+                  <div class="settings-title">Алерты падения</div>
+                  <div class="settings-sub">для Здоровья — Тренер и Мама</div>
+                </div>
+                <div class="toggle on"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Здоровье -->
+          <div class="settings-section">
+            <div class="eyebrow">Здоровье</div>
+            <div style="height: 8px;"></div>
+            <div class="settings-group">
+              <div class="settings-row">
+                <div class="settings-icon" style="background: var(--wine); color: white; border-radius: 50%; font-family: var(--mono); font-size: 10px; font-weight: 700;">ИП</div>
+                <div class="settings-body">
+                  <div class="settings-title">Тренер Иван П.</div>
+                  <div class="settings-sub">HRV, пульс, шаги, падения · с 12.05</div>
+                </div>
+                <div class="toggle on"></div>
+              </div>
+              <div class="settings-row">
+                <div class="settings-icon" style="background: var(--wine); color: white; border-radius: 50%; font-family: var(--mono); font-size: 10px; font-weight: 700;">М67</div>
+                <div class="settings-body">
+                  <div class="settings-title">Мама 67 лет</div>
+                  <div class="settings-sub">видит ВСЕ · с 03.06</div>
+                </div>
+                <div class="toggle on"></div>
+              </div>
+            </div>
+            <div style="height: 10px;"></div>
+            <div class="ghost-cta">
+              <span>+ Управление</span>
+              <span class="chevron" style="color: var(--wine);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bottom nav -->
+        <div class="bottom-nav">
+          <a class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Дом
+          </a>
+          <a class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 L17.5 17.5"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M9 9 L11 7"/><path d="M13 17 L15 15"/></svg>
+            Тренировка
+          </a>
+          <a class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg>
+            История
+          </a>
+          <a class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7z"/></svg>
+            Здоровье
+          </a>
+          <a class="nav-item active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="19" cy="12" r="1.2" fill="currentColor"/></svg>
+            Ещё
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     Bevel-DNA mapping
+     ============================================================ -->
+<section class="phones-row" style="border-top:1px solid var(--hairline); margin-top:8px; padding-top:36px;">
+  <div style="flex-basis:100%; margin-bottom:8px;">
+    <h2 style="font-size:20px; font-weight:700; letter-spacing:-0.4px;">HRV — severity-состояния</h2>
+    <p style="font-size:13px; color:var(--ink-mute); max-width:700px; margin-top:6px; line-height:1.5;">
+      Один экран в трёх статусах: <b style="color:var(--sem-norm-ink)">норма</b> (зелёный) ·
+      <b style="color:var(--sem-mid-ink)">ниже нормы</b> (жёлтый) · <b style="color:var(--sem-high-ink)">сильно ниже</b> (красный).
+      Меняется severity-статус, индикатор диапазона, цвет падающих столбиков и тон рекомендации.
+      Зона нормы и baseline видны всегда — для сравнения «где ты относительно коридора».
+    </p>
+  </div>
+
+  <!-- ===== НОРМА (зелёный) ===== -->
+  <div class="phone-cell">
+    <div class="phone-title">HRV · Норма</div>
+    <div class="phone-h2" style="color:var(--sem-norm-ink)">Зелёный</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+        <div class="page-title-row" style="margin-top:30px;">
+          <div class="app-header-back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+          <div class="page-title">HRV</div>
+          <span style="color:var(--ink-mute)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="hrv-hero-split">
+            <div class="hrv-hero-left">
+              <div class="hrv-hero-num"><span>52</span><span class="u">ms</span></div>
+              <div class="hrv-hero-date">24 июня 2026</div>
+            </div>
+            <div class="hrv-hero-right">
+              <span class="sev-status norm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>В норме</span>
+              <span class="sev-range"><span class="ic"></span>42–58 ms</span>
+            </div>
+          </div>
+          <div class="reco">
+            <div class="reco-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 H7 L9 7 L13 17 L15 12 H21"/></svg></div>
+            <div><div class="reco-title">В норме, форма растёт</div><div class="reco-body">52 ms в коридоре 42–58 — можно повышать нагрузку.</div></div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-head"><span class="eyebrow">30 дней</span><div class="seg"><button class="seg-btn">7Д</button><button class="seg-btn active">30Д</button><button class="seg-btn">Год</button></div></div>
+            <svg class="bar-chart-svg" viewBox="0 0 280 150" preserveAspectRatio="none">
+              <rect x="20" y="45" width="258" height="44" rx="4" fill="#0E9AA6" opacity="0.10"/>
+              <line x1="20" y1="67" x2="278" y2="67" stroke="#CFCFD6" stroke-width="0.8" stroke-dasharray="3 3"/>
+              <text x="2" y="27" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">70</text>
+              <text x="2" y="71" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">50</text>
+              <text x="2" y="120" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">30</text>
+              <rect x="28"  y="72" width="8" height="50" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="43" y="66" width="8" height="56" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="58" y="70" width="8" height="52" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="73" y="64" width="8" height="58" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="88" y="68" width="8" height="54" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="103" y="62" width="8" height="60" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="118" y="71" width="8" height="51" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="133" y="65" width="8" height="57" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="148" y="69" width="8" height="53" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="163" y="63" width="8" height="59" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="178" y="70" width="8" height="52" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="193" y="67" width="8" height="55" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="208" y="68" width="8" height="54" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="223" y="64" width="8" height="58" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="238" y="69" width="8" height="53" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="253" y="66" width="8" height="56" rx="2" fill="#0E9AA6"/>
+              <circle cx="257" cy="66" r="3" fill="#0E9AA6"/><circle cx="257" cy="66" r="6" fill="#0E9AA6" fill-opacity="0.18"/>
+              <text x="24" y="143" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">29.05</text><text x="126" y="143" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">12.06</text><text x="248" y="143" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">24.06</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== НИЖЕ НОРМЫ (жёлтый) ===== -->
+  <div class="phone-cell">
+    <div class="phone-title">HRV · Ниже нормы</div>
+    <div class="phone-h2" style="color:var(--sem-mid-ink)">Жёлтый</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+        <div class="page-title-row" style="margin-top:30px;">
+          <div class="app-header-back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+          <div class="page-title">HRV</div>
+          <span style="color:var(--ink-mute)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="hrv-hero-split">
+            <div class="hrv-hero-left">
+              <div class="hrv-hero-num"><span>38</span><span class="u">ms</span></div>
+              <div class="hrv-hero-date">24 июня 2026</div>
+            </div>
+            <div class="hrv-hero-right">
+              <span class="sev-status below"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L22 20 H2 Z"/><line x1="12" y1="9" x2="12" y2="14"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Ниже нормы</span>
+              <span class="sev-range below"><span class="ic"></span>42–58 ms</span>
+            </div>
+          </div>
+          <div class="reco warn">
+            <div class="reco-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 H7 L9 7 L13 17 L15 12 H21"/></svg></div>
+            <div><div class="reco-title">HRV ниже коридора</div><div class="reco-body">38 ms против нормы 42–58. Снизьте нагрузку, добавьте сон и восстановление.</div></div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-head"><span class="eyebrow">30 дней</span><div class="seg"><button class="seg-btn">7Д</button><button class="seg-btn active">30Д</button><button class="seg-btn">Год</button></div></div>
+            <svg class="bar-chart-svg" viewBox="0 0 280 150" preserveAspectRatio="none">
+              <rect x="20" y="45" width="258" height="44" rx="4" fill="#0E9AA6" opacity="0.10"/>
+              <line x1="20" y1="67" x2="278" y2="67" stroke="#CFCFD6" stroke-width="0.8" stroke-dasharray="3 3"/>
+              <text x="2" y="27" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">70</text>
+              <text x="2" y="71" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">50</text>
+              <text x="2" y="120" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">30</text>
+              <rect x="28"  y="68" width="8" height="54" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="43" y="64" width="8" height="58" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="58" y="70" width="8" height="52" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="73" y="66" width="8" height="56" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="88" y="69" width="8" height="53" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="103" y="65" width="8" height="57" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="118" y="71" width="8" height="51" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="133" y="67" width="8" height="55" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="148" y="72" width="8" height="50" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="163" y="78" width="8" height="44" rx="2" fill="#F5A300" opacity="0.85"/><rect x="178" y="84" width="8" height="38" rx="2" fill="#F5A300" opacity="0.85"/><rect x="193" y="89" width="8" height="33" rx="2" fill="#F5A300" opacity="0.85"/><rect x="208" y="93" width="8" height="29" rx="2" fill="#F5A300" opacity="0.85"/><rect x="223" y="96" width="8" height="26" rx="2" fill="#F5A300" opacity="0.85"/><rect x="238" y="99" width="8" height="23" rx="2" fill="#F5A300" opacity="0.85"/><rect x="253" y="102" width="8" height="20" rx="2" fill="#F5A300"/>
+              <circle cx="257" cy="102" r="3" fill="#F5A300"/><circle cx="257" cy="102" r="6" fill="#F5A300" fill-opacity="0.20"/>
+              <text x="24" y="143" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">29.05</text><text x="126" y="143" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">12.06</text><text x="248" y="143" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">24.06</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== СИЛЬНО НИЖЕ (красный) ===== -->
+  <div class="phone-cell">
+    <div class="phone-title">HRV · Сильно ниже</div>
+    <div class="phone-h2" style="color:var(--sem-high-ink)">Красный</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+        <div class="page-title-row" style="margin-top:30px;">
+          <div class="app-header-back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+          <div class="page-title">HRV</div>
+          <span style="color:var(--ink-mute)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+        </div>
+        <div class="body">
+          <div class="hrv-hero-split">
+            <div class="hrv-hero-left">
+              <div class="hrv-hero-num"><span>27</span><span class="u">ms</span></div>
+              <div class="hrv-hero-date">24 июня 2026</div>
+            </div>
+            <div class="hrv-hero-right">
+              <span class="sev-status crit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L22 20 H2 Z"/><line x1="12" y1="9" x2="12" y2="14"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Сильно ниже</span>
+              <span class="sev-range crit"><span class="ic"></span>42–58 ms</span>
+            </div>
+          </div>
+          <div class="reco crit">
+            <div class="reco-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 H7 L9 7 L13 17 L15 12 H21"/></svg></div>
+            <div><div class="reco-title">Резкое падение HRV</div><div class="reco-body">27 ms — сильно ниже нормы. Признак перегрузки или болезни: отдых и восстановление.</div></div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-head"><span class="eyebrow">30 дней</span><div class="seg"><button class="seg-btn">7Д</button><button class="seg-btn active">30Д</button><button class="seg-btn">Год</button></div></div>
+            <svg class="bar-chart-svg" viewBox="0 0 280 150" preserveAspectRatio="none">
+              <rect x="20" y="45" width="258" height="44" rx="4" fill="#0E9AA6" opacity="0.10"/>
+              <line x1="20" y1="67" x2="278" y2="67" stroke="#CFCFD6" stroke-width="0.8" stroke-dasharray="3 3"/>
+              <text x="2" y="27" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">70</text>
+              <text x="2" y="71" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">50</text>
+              <text x="2" y="120" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">30</text>
+              <rect x="28"  y="67" width="8" height="55" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="43" y="64" width="8" height="58" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="58" y="69" width="8" height="53" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="73" y="66" width="8" height="56" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="88" y="70" width="8" height="52" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="103" y="65" width="8" height="57" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="118" y="72" width="8" height="50" rx="2" fill="#0E9AA6" opacity="0.78"/><rect x="133" y="80" width="8" height="42" rx="2" fill="#E11D48" opacity="0.85"/><rect x="148" y="87" width="8" height="35" rx="2" fill="#E11D48" opacity="0.85"/><rect x="163" y="93" width="8" height="29" rx="2" fill="#E11D48" opacity="0.85"/><rect x="178" y="98" width="8" height="24" rx="2" fill="#E11D48" opacity="0.85"/><rect x="193" y="102" width="8" height="20" rx="2" fill="#E11D48" opacity="0.85"/><rect x="208" y="105" width="8" height="17" rx="2" fill="#E11D48" opacity="0.85"/><rect x="223" y="108" width="8" height="14" rx="2" fill="#E11D48" opacity="0.85"/><rect x="238" y="110" width="8" height="12" rx="2" fill="#E11D48" opacity="0.85"/><rect x="253" y="112" width="8" height="10" rx="2" fill="#E11D48"/>
+              <circle cx="257" cy="112" r="3" fill="#E11D48"/><circle cx="257" cy="112" r="6" fill="#E11D48" fill-opacity="0.20"/>
+              <text x="24" y="143" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">29.05</text><text x="126" y="143" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">12.06</text><text x="248" y="143" font-family="'Pulse Mono', ui-monospace, monospace" font-size="9" fill="#6C6C77">24.06</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mapping">
+  <h2>Bevel-DNA mapping — что взято и где</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Bevel-pattern</th>
+        <th>Где применил</th>
+        <th>Как реализовано</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Cream surface, не белый</td>
+        <td>Page bg на всех 3 экранах</td>
+        <td><code>--bg: #FAF8F4</code> + <code>--bg-2: #F7F5EF</code></td>
+      </tr>
+      <tr>
+        <td>Glassmorphic hero card</td>
+        <td>HRV hero на Home</td>
+        <td><code>backdrop-filter: blur(16px) saturate(180%)</code> + soft glass-shadow</td>
+      </tr>
+      <tr>
+        <td>Soft rounded 16-20px</td>
+        <td>Все cards / chart / settings group</td>
+        <td><code>--r-md: 16px</code>, <code>--r-lg: 20px</code> — без 8/12 рамок</td>
+      </tr>
+      <tr>
+        <td>Soft shadows вместо hard borders</td>
+        <td>Cards, settings groups, profile, device</td>
+        <td>Многослойный <code>--shadow-2 / --shadow-3</code>, hairline borders ≤ 1px opacity ~30%</td>
+      </tr>
+      <tr>
+        <td>Monotone smoothed HRV chart</td>
+        <td>Sparkline на Home + 30-day chart на HRV detail</td>
+        <td>Cubic-Bezier path, wine stroke 2-2.2px, gradient fill 18%→0%, dashed baseline</td>
+      </tr>
+      <tr>
+        <td>Phosphor-thin SVG icons (stroke 1.5px)</td>
+        <td>Bottom nav, header, settings rows, list items</td>
+        <td>Inline SVG, <code>stroke-width="1.5"</code>, rounded caps — заменили emoji-иконки (луна, сердце, колокол)</td>
+      </tr>
+      <tr>
+        <td>Tonal contrast surfaces (cream → off-white → white)</td>
+        <td>Body → card → inner stat-cell</td>
+        <td>3-уровневая ladder: <code>#FAF8F4 → #FDFCFA → #FFFFFF</code></td>
+      </tr>
+      <tr>
+        <td>Eyebrow JetBrains Mono 10-11px uppercase</td>
+        <td>Все section headers, eyebrows, segmented buttons</td>
+        <td><code>font-family: var(--mono); letter-spacing: 0.6-0.8px; text-transform: uppercase;</code></td>
+      </tr>
+      <tr>
+        <td>Breathing pulse на hero metric</td>
+        <td>HRV hero (Home + HRV detail)</td>
+        <td><code>@keyframes breathe</code> 4s scale 1–1.012, ease-in-out — отключено через <code>prefers-reduced-motion</code></td>
+      </tr>
+      <tr>
+        <td><strong>NEW v2 —</strong> Range-pill «позиция в норме»</td>
+        <td>Glass-hero на Home (47 ms в норме 35–55)</td>
+        <td>Вертикальный <code>.range-pill</code>: трек <code>--wine-tint</code> + wine-band нормы + белый маркер с glow. Прямой аналог Bevel health-monitor pill</td>
+      </tr>
+      <tr>
+        <td><strong>NEW v2 —</strong> «Normal range» badge</td>
+        <td>HRV-detail hero</td>
+        <td><code>.range-badge</code> «В норме · 42–58 ms» — green bio-low chip + check-icon. Калька с Bevel «Normal range 80.3–92.7 ms»</td>
+      </tr>
+      <tr>
+        <td><strong>NEW v2 —</strong> Trends-таблица со спарклайнами</td>
+        <td>HRV detail (заменила 3 плоских stat-cell)</td>
+        <td><code>.trends-table</code>: Период / Изменение / мини-спарклайн на строку. Калька с Bevel «Trends Analysis» (3-day / 7-day / 30-day)</td>
+      </tr>
+      <tr>
+        <td><strong>NEW v2 —</strong> Status-chip с check-circle</td>
+        <td>Workout-card «Готово» (Home)</td>
+        <td><code>.status-chip</code>: green check-circle + текст. Калька с Bevel «Normal»/«Good»/«Excellent»</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================
+     SKILL OBJECTIONS (filled after skill runs)
+     ============================================================ -->
+<section class="objections">
+  <h2>Возражения skill'ов — на разбор PM</h2>
+  <p class="intro">
+    v2 собрана формальным прогоном skills: <code>redesign-existing-projects</code> →
+    <code>impeccable typeset</code> → <code>impeccable colorize</code> →
+    <code>impeccable harden</code> → <code>impeccable polish</code>. Сверка велась с 6 живыми
+    снимками Bevel в <code>screenshots/references/</code> (Home / HRV / Stress / Sleep / Recovery / Onboarding).
+    Замкнутые константы (тёплый крем · wine single-accent · Golos+JetBrains · light-mode)
+    оставлены даже там, где skill или живой Bevel предлагали иначе — по явной директиве PM.
+    Ниже — что Bevel делает иначе и почему мы отклонили или отложили.
+    <strong>Пересмотр PM 26.06 (v3):</strong> крем → прохладно-серый и single-accent →
+    мультисемантика <strong>приняты</strong>. Шрифт остаётся наш (Golos Text + Pulse Mono),
+    Dark Mode — на Sleep-разделе. Обновлённые вердикты отмечены ниже.
+  </p>
+  <table class="obj-table">
+    <thead>
+      <tr>
+        <th>Skill</th>
+        <th>Совет</th>
+        <th>Аргумент skill'а</th>
+        <th>Оценка агента</th>
+        <th>Что сделано</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="skill-tag">redesign · live-ref</td>
+        <td>Фон сделать прохладно-серым с лавандой (как живой Bevel), а не тёплым кремом</td>
+        <td>«Живой Bevel — холодный нейтрально-серый <code>#F2F2F5</code> с лавандовым свечением по краям. Тёплый крем — это Whoop/Oura, не Bevel»</td>
+        <td class="verdict-keep">ACCEPT — PM 26.06 (v3)</td>
+        <td>Пересмотрено: PM принял переход на прохладно-серый <code>#F0F0F3</code> (как живой Bevel). Крем <code>#FAF8F4</code> отменён. Wine остаётся бренд-акцентом, лавандовое свечение не берём</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">redesign · live-ref</td>
+        <td>Перейти на мультисемантическую палитру Bevel (зелёный=норма, оранж/красный=high, сине-фиолет=сон, радужный stress-график)</td>
+        <td>«Bevel НЕ single-accent: цвет несёт смысл severity. Один wine на всё = теряется мгновенная читаемость “норма/риск”»</td>
+        <td class="verdict-keep">ACCEPT — PM 26.06 (v3)</td>
+        <td>Пересмотрено: PM принял полную мультисемантическую палитру Bevel. Семантика (<code>--sem-norm/mid/warn/high/hrv/info</code>) несёт severity на статусах, метриках, трендах; wine = бренд и действия. Радужный stress-градиент — на Stress-экране (Dark/Sleep-этап)</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">redesign · live-ref</td>
+        <td>Заменить нижнюю навигацию на floating pill-nav + строку «Ask Bevel anything» + «+»</td>
+        <td>«Сигнатура Bevel — плавающая капсула с AI-ассистентом снизу. Статичный 5-таб tab-bar читается как обычный fitness-app»</td>
+        <td class="verdict-amend">DEFER — продуктовое решение</td>
+        <td>5-таб согласован в PRD v2.6. Плавающий «Спросить Pulse» — кандидат на отдельное продуктовое обсуждение (AI-ассистент пока вне MVP). Не выдумываю фичу в дизайн-прототипе</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">redesign · live-ref</td>
+        <td>Добавить neumorphic recovery/stress-dial (большой круговой gauge с % в центре)</td>
+        <td>«Recovery-кольцо и stress-полукольцо — самый узнаваемый элемент Bevel home/recovery»</td>
+        <td class="verdict-amend">DEFER → взят компромисс</td>
+        <td>В наборе из 3 экранов (Home / HRV / Settings) нет Recovery-экрана, куда dial встал бы органично. Вместо него взят вертикальный <strong>range-pill</strong> «позиция в норме» — та же идея «где ты относительно нормы», но в масштабе hero. Dial — для будущего Recovery-экрана</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">redesign · live-ref</td>
+        <td>Перейти на системный SF/гротеск (как у Bevel), убрать Golos</td>
+        <td>«Bevel-числа — системный SF-Bold, очень тяжёлые. Golos даёт чуть другой ритм цифр»</td>
+        <td class="verdict-reject">REJECT — замкнутый stack</td>
+        <td>Golos+JetBrains — фирменный stack Neiry (константа). Golos 800 + tabular-nums + tracking даёт сопоставимый «тяжёлый data»-эффект. Детали — в шаге <code>typeset</code></td>
+      </tr>
+      <tr>
+        <td class="skill-tag">redesign-existing-projects</td>
+        <td>Заменить wine на warm-orange (Bevel native amber)</td>
+        <td>«Cream + warm orange = canonical Bevel palette; wine читается как медицина, а не lifestyle»</td>
+        <td class="verdict-reject">REJECT — замкнутая константа</td>
+        <td>Не трогал. Wine — единственный chromatic accent (директива PM)</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">redesign-existing-projects</td>
+        <td>Добавить avatar-photo вместо инициалов «КЛ»</td>
+        <td>«Bevel users отождествляют себя через лицо, не аббревиатуру»</td>
+        <td class="verdict-amend">AMEND — частично</td>
+        <td>Оставил инициалы (M2 demo), но wine-фон avatar даёт человечный фокус. Photo подключим, когда появится загрузка фото в профиль (post-M2)</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">impeccable typeset</td>
+        <td>Использовать serif-italic accent на hero metric (как Bevel custom Sava Stoic)</td>
+        <td>«Bevel hero — это display-serif italic в 1 слове; sans для hero даёт “техно”, а не “editorial”»</td>
+        <td class="verdict-reject">REJECT — замкнутый stack</td>
+        <td>Golos Text 800 letter-spacing -2.4px даёт editorial-feel без serif. Italic-accent можно дать в copy («сегодня», «личная норма») без смены семейства</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">impeccable typeset</td>
+        <td>JetBrains Mono на hero metric (vs Golos 800)</td>
+        <td>«tabular-nums + mono = data-credibility, Bevel pattern для clinical context»</td>
+        <td class="verdict-amend">AMEND — split</td>
+        <td>На Home hero — оставил mono для micro-feel (47ms). На HRV detail — Golos 800 76px (editorial scale). Класс <code>.metric-num.mono</code> доступен для других экранов</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">impeccable typeset</td>
+        <td>Перевести все font-size с px на rem (NEVER-правило: уважать системный zoom)</td>
+        <td>«px для font-size игнорирует пользовательский масштаб шрифта — это провал доступности»</td>
+        <td class="verdict-amend">AMEND — px осознанно для mockup</td>
+        <td>Это device-mockup с фиксированным 360px-экраном в bezel: px даёт пиксельную точность пропорций (Material/Polaris фиксируют app-UI так же). rem-перевод — при переносе в продакшн-React (Кирилл), где вьюпорт резиновый. В прототипе вычищены полушаги: 11.5/12.5/13.5 → 12/13/14, убран неиспользуемый вес 900</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">impeccable colorize</td>
+        <td>«Добавить стратегическую палитру» — команда colorize по определению про обогащение цветом</td>
+        <td>«Single-accent монохром — это “timid grayscale”, который colorize и призван лечить»</td>
+        <td class="verdict-amend">AMEND — применён как contrast-hardening</td>
+        <td>Для product-register colorize сам предписывает Restrained + semantic-first — это и есть наша модель. Поэтому colorize применён не как «новые hue», а как <strong>WCAG AA</strong>: ink-dim <code>#9C968E→#726C62</code> (2.7→5.2:1), amber-text <code>#E89500→#B45309</code> (2.4→5.0:1), green-verdict <code>#00A653→#027038</code> (3.2→6.2:1), banner-icon <code>#C58A1F→#7E5B17</code>. Bio-severity (green/amber/red/teal) сохранена точечно как семантика состояния</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">impeccable colorize</td>
+        <td>Добавить 2-3 «mood»-цвета (sage, ochre, lavender) для секций recovery/strain/sleep</td>
+        <td>«Bevel использует один warm accent + multi-tonal pastels на category cards. Single-accent = монотонно»</td>
+        <td class="verdict-reject">REJECT — нарушает single-accent правило</td>
+        <td>Сохранил wine + tonal cream-ladder. Differentiation через layout/icon-shape, не через дополнительные hue. Bio-палитра <code>--bio-low/mid/high</code> — точечно на severity, не decorative</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">impeccable colorize</td>
+        <td>Banner «Демо-режим» сделать wine, а не amber</td>
+        <td>«Amber на cream-bg перегружает warm-spectrum, single-accent должно держать монохромию»</td>
+        <td class="verdict-amend">AMEND — оставил amber</td>
+        <td>Amber на Демо-плашке = warning-семантика (это инфо-предупреждение про fake data). Если делать wine — спутается с brand-action. Оставил amber, но сделал tone-down (border <code>#F5E2C0</code>, text <code>#7E5B17</code>)</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">impeccable harden</td>
+        <td>Добавить полные empty / loading / error экраны, per-element ARIA-labels, focusable nav-табы</td>
+        <td>«Product-register требует default/hover/focus/loading/error на каждом компоненте + SR-разметку»</td>
+        <td class="verdict-amend">DEFER — production-scope</td>
+        <td>Это статический визуальный пруф 3 экранов, не shipping-app. В пруфе сделано системно: глобальный reduced-motion, <code>:focus-visible</code> ring, overflow-защита (device-ID / e-mail / i18n). Полные state-экраны + per-element ARIA + клавиатурные nav-табы — при переносе в React (Кирилл). «Демо-режим»-banner уже демонстрирует state-паттерн</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">impeccable harden / copy</td>
+        <td>Убрать длинное тире «—» из копирайта (skill: «No em dashes»)</td>
+        <td>«Em-dash запрещён в copy-гайдлайне Impeccable»</td>
+        <td class="verdict-reject">REJECT — русская типографика</td>
+        <td>Бан «—» — англо-центричное правило. В русском длинное тире обязательно («Мама 67 лет», «для Здоровья — Тренер и Мама»). Орфографическая корректность RU (директива пользователя) выше англо-правила skill</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">impeccable polish / copy</td>
+        <td>Англицизмы в UI: «Алерты», «HRV-инсайты»</td>
+        <td>«RU-only интерфейс (правило PM): англицизмы кроме Pulse / Neiry / HRV / Bluetooth / QR / GPS запрещены»</td>
+        <td class="verdict-keep">KEEP — решение PM 26.06</td>
+        <td>Исправлен явный непереведённый токен <code>fall → падения</code>. По «Алерты» и «HRV-инсайты» <strong>PM решил оставить</strong> (26.06) — общепринятые заимствования, приемлемы в UI Pulse</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">impeccable polish</td>
+        <td>Удалить breathing-pulse на hero — «overdesigned для health-app»</td>
+        <td>«Bevel не использует breathing animation на hero, только на pulse-rate dial. Subtle motion → distracting»</td>
+        <td class="verdict-keep">KEEP — Bevel-DNA</td>
+        <td>Breathing-pulse 4s scale 1–1.012 — explicit запрос Никиты «как Bevel живой». Reduced-motion media-query отключает на a11y</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">impeccable polish</td>
+        <td>Pulse glyph в brand-mark заменить на heart</td>
+        <td>«Heart = canonical health-app icon, ECG-pulse line читается как clinical/Apple Health»</td>
+        <td class="verdict-reject">REJECT — brand</td>
+        <td>Pulse-line — фирменный glyph Neiry Pulse (есть в logo). Heart забивается с emoji-конкурентами. Сохранил</td>
+      </tr>
+      <tr>
+        <td class="skill-tag">impeccable polish</td>
+        <td>Bottom nav — 4 таба вместо 5 (Bevel-style ratio)</td>
+        <td>«5 табов на 360px frame = touch-target ниже 64px width, нарушает Apple HIG»</td>
+        <td class="verdict-keep">KEEP — продуктовая директива</td>
+        <td>5-таб глобально согласован в PRD v2.6 (Home / Тренировка / История / Здоровье / Ещё). Touch-target = 72×56px (frame 360px - 16px padding / 5 = 68.8px → проходит HIG ≥44px)</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+</body>
+</html>
