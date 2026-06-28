@@ -1,422 +1,357 @@
 ---
-version: alpha
-name: Neiry-Pulse-design-analysis
-description: "Neiry Pulse — экосистема носимых биосенсоров (браслет + recovery-устройства) с тремя поверхностями: kiosk (выставочный стенд 1.5–2м, full-screen 1920×1080), corporate dashboard (плотный продуктовый интерфейс на 1440+), мобильное приложение (390×844, Android+iOS). Визуальный код — shadcn dark zinc/slate как baseline с единственным хроматическим акцентом wine `#831843`. Эстетический эталон — Linear / Vercel по продуктовой плотности и Hume Band по био-виджетам. Типографика: Golos Text (заголовки + UI/body), Pulse Mono — JetBrains Mono с плоским нулём — (все числа и табличные данные: пульс, HRV, NSI, таймстемпы, списки замеров). Сетка 4px. Цвета хранятся как HSL-токены shadcn, тёмная тема — primary surface, light — паритетная альтернатива."
+version: v1.0.2
+name: Neiry-Pulse-bevel-clone-design-system
+description: "Neiry Pulse — мобильное приложение био-мониторинга (Android + iOS, 390×844). Дизайн-направление — Bevel-clone v3: прохладно-серый surface (#F0F0F3) + белые карточки на мягких тенях, мультисемантическая палитра (green/orange/red severity), light-mode primary. Wine #831843 — единственный хроматический акцент (бренд-якорь), живёт в bottom-nav active + chip-badge. Типографика: Golos Text (заголовки + UI/body) + Pulse Mono (все числа и табличные данные). Сетка 4px. Этот файл — YAML-зеркало docs_web/bevel-clone/_shared/tokens.css (--bv-* → bv-*) для Stitch / AI-tools. Dark Mode отложен на Sleep-раздел."
 
+# ============================================================
+# COLORS — зеркало tokens.css :root (--bv-* → bv-*)
+# Все hex в кавычках (YAML: # = комментарий вне кавычек).
+# ============================================================
 colors:
-  primary: "hsl(336 76% 33%)"
-  primary-hover: "hsl(336 76% 28%)"
-  primary-dark: "hsl(336 76% 45%)"
-  primary-dark-hover: "hsl(336 76% 52%)"
-  primary-foreground: "hsl(0 0% 98%)"
-  background-light: "hsl(0 0% 100%)"
-  background-dark: "hsl(240 10% 3.9%)"
-  foreground-light: "hsl(240 10% 3.9%)"
-  foreground-dark: "hsl(0 0% 98%)"
-  card-light: "hsl(0 0% 100%)"
-  card-dark: "hsl(240 10% 6%)"
-  muted-light: "hsl(240 4.8% 95.9%)"
-  muted-dark: "hsl(240 3.7% 15.9%)"
-  muted-foreground-light: "hsl(240 3.8% 46.1%)"
-  muted-foreground-dark: "hsl(240 5% 64.9%)"
-  border-light: "hsl(240 5.9% 90%)"
-  border-dark: "hsl(240 3.7% 15.9%)"
-  ring: "hsl(336 76% 33%)"
-  destructive: "hsl(348 100% 54%)"
-  success: "hsl(151 100% 45%)"
-  warning: "hsl(42 100% 50%)"
-  bio-pulse: "hsl(336 76% 45%)"
-  bio-hrv: "hsl(195 90% 55%)"
-  bio-stress-low: "hsl(151 100% 45%)"
-  bio-stress-mid: "hsl(42 100% 50%)"
-  bio-stress-high: "hsl(348 100% 54%)"
-  ecg-trace: "hsl(151 100% 55%)"
+  # Brand & Accent — wine = единственный chromatic accent
+  bv-wine: "#831843"
+  bv-wine-tint: "#F7E3EC"           # ≈8% wine — bg nav-active и chip-bg
+  # Surface — cool-gray v3
+  bv-bg-screen: "#F0F0F3"           # экран
+  bv-bg-card: "#FFFFFF"             # карточки / pills
+  bv-bg-subtle: "#E8E8EE"           # разделители, empty-chip bg
+  # Ink (text)
+  bv-ink: "#1B1B21"
+  bv-ink-mute: "#62626C"            # вторичный (AA на белом)
+  bv-ink-dim: "#6C6C76"             # третичный — AA на всех bg (≥4.5:1, PM patch v1.0.1)
+  bv-ink-faded: "#B5B5BD"           # «Нет данных»
+  bv-ink-soft: "#9C9CA8"            # range-cap (55/35)
+  # Semantic — severity (fill / AA-ink / chip-bg)
+  bv-sem-norm: "#1DA049"
+  bv-sem-norm-ink: "#117A38"
+  bv-sem-norm-bg: "#E5F7EE"
+  bv-sem-warn: "#F2752B"
+  bv-sem-warn-ink: "#C2511A"
+  bv-sem-warn-bg: "#FBE9DA"
+  bv-sem-high: "#E11D48"
+  bv-sem-high-ink: "#C20D2E"
+  bv-sem-high-bg: "#FBDDE3"
+  # Capsule — track + fill per status
+  bv-capsule-track: "#EAEAEF"
+  bv-capsule-track-norm: "#D6F0E2"
+  bv-capsule-track-warn: "#F8DEC8"
+  bv-capsule-track-high: "#F4C7D0"
+  bv-capsule-fill-norm: "#1DA049"
+  bv-capsule-fill-warn: "#F2752B"
+  bv-capsule-fill-high: "#E11D48"
+  # Avatar — light blue (НЕ wine)
+  bv-avatar-bg: "#D5E3F0"
+  bv-avatar-ink: "#3A6FA0"
+  # Border / hairline
+  bv-hairline: "#E5E5EA"
+  bv-hairline-2: "#EEEEF2"
+  bv-toggle-track-off: "#D5D5DD"    # OFF-track bv-toggle (cool v3, PM patch v1.0.1)
 
+# ============================================================
+# SHADOWS — мягкие cool-tone (Bevel-DNA: глубина тенью, не бордером)
+# ============================================================
+shadows:
+  bv-shadow-card: "0 1px 3px rgba(22,22,32,.03), 0 6px 18px rgba(22,22,32,.04)"
+  bv-shadow-nav: "0 4px 16px rgba(22,22,32,.08)"
+  bv-shadow-header: "0 1px 2px rgba(22,22,32,.04)"
+
+# ============================================================
+# TYPOGRAPHY — Golos Text + Pulse Mono only
+# ============================================================
 typography:
-  display-kiosk:
-    fontFamily: "Golos Text, system-ui, sans-serif"
-    fontSize: 180px
-    fontWeight: 600
-    lineHeight: 1.0
-    letterSpacing: -6px
-    fontFeatureSettings: "'tnum' 1"
-  metric-xl:
-    fontFamily: "Pulse Mono, ui-monospace, monospace"
-    fontSize: 128px
-    fontWeight: 500
-    lineHeight: 1.0
-    letterSpacing: -3px
-    fontFeatureSettings: "'tnum' 1"
-  metric-lg:
-    fontFamily: "Pulse Mono, ui-monospace, monospace"
-    fontSize: 64px
-    fontWeight: 500
-    lineHeight: 1.0
-    letterSpacing: -1.5px
-    fontFeatureSettings: "'tnum' 1"
-  metric-md:
-    fontFamily: "Pulse Mono, ui-monospace, monospace"
-    fontSize: 32px
-    fontWeight: 500
-    lineHeight: 1.1
-    letterSpacing: -0.5px
-    fontFeatureSettings: "'tnum' 1"
-  display-xl:
-    fontFamily: "Golos Text, system-ui, sans-serif"
-    fontSize: 56px
-    fontWeight: 600
-    lineHeight: 1.1
-    letterSpacing: -1.8px
-  display-lg:
-    fontFamily: "Golos Text, system-ui, sans-serif"
-    fontSize: 40px
-    fontWeight: 600
-    lineHeight: 1.15
-    letterSpacing: -1px
-  headline:
-    fontFamily: "Golos Text, system-ui, sans-serif"
-    fontSize: 24px
-    fontWeight: 600
-    lineHeight: 1.25
-    letterSpacing: -0.4px
-  card-title:
-    fontFamily: "Golos Text, system-ui, sans-serif"
-    fontSize: 18px
-    fontWeight: 500
-    lineHeight: 1.3
-    letterSpacing: -0.2px
-  body:
-    fontFamily: "Golos Text, system-ui, sans-serif"
-    fontSize: 14px
-    fontWeight: 400
-    lineHeight: 1.5
-    letterSpacing: 0
-  body-sm:
-    fontFamily: "Golos Text, system-ui, sans-serif"
-    fontSize: 13px
-    fontWeight: 400
-    lineHeight: 1.45
-    letterSpacing: 0
-  caption:
-    fontFamily: "Golos Text, system-ui, sans-serif"
-    fontSize: 12px
-    fontWeight: 400
-    lineHeight: 1.4
-    letterSpacing: 0.1px
-  eyebrow:
-    fontFamily: "Pulse Mono, ui-monospace, monospace"
-    fontSize: 11px
-    fontWeight: 500
-    lineHeight: 1.3
-    letterSpacing: 0.6px
-    textTransform: uppercase
-  button:
-    fontFamily: "Golos Text, system-ui, sans-serif"
-    fontSize: 14px
-    fontWeight: 500
-    lineHeight: 1.2
-    letterSpacing: 0
+  families:
+    sans: "'Golos Text', system-ui, -apple-system, sans-serif"
+    mono: "'Pulse Mono', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace"
+  sizes:
+    display-hero: 60px         # HRV hero число
+    section-h2: 24px           # «Монитор показателей» (PM choice из 22/24/28, v1.0.1)
+    metric-bento: 28px         # цифра в bento-карточке
+    headline: 17px             # app-bar-title
+    label: 14px                # mcard-label
+    body: 14px
+    caption: 12px
+    eyebrow: 11px
+    tab-label: 10px            # nav tab
+    capsule-bounds: 11px       # range-cap 55/35
+  weights:
+    regular: 400
+    medium: 500
+    semibold: 600
+    bold: 700
+    extrabold: 800             # Golos 800 — hero/display
+  rhythm:
+    lh-tight: 1                # метрики / hero
+    lh-display: 1.1            # заголовки
+    lh-body: 1.5               # body / проза
+    ls-tight: "-0.6px"         # section-header / display
+    ls-eyebrow: "0.6px"        # eyebrow / brand uppercase
 
+# ============================================================
+# ROUNDED — радиусы (зеркало tokens.css §9)
+# ============================================================
 rounded:
-  xs: 4px
-  sm: 6px
-  md: 8px
-  lg: 12px
-  xl: 16px
-  xxl: 24px
-  pill: 9999px
+  bv-r-card: 20px              # ОДНО значение для HRV hero И bento
+  bv-r-pill: 999px
+  bv-r-nav: 30px              # footer floating pill
+  bv-r-button: 14px           # CTA buttons (tokens.css v1.0.2)
+  bv-r-icon: 10px             # bv-icon-square (tokens.css v1.0.2)
 
+# ============================================================
+# SPACING — 4px grid (зеркало tokens.css §10)
+# ============================================================
 spacing:
-  px: 1px
-  0_5: 2px
-  1: 4px
-  2: 8px
-  3: 12px
-  4: 16px
-  5: 20px
-  6: 24px
-  8: 32px
-  10: 40px
-  12: 48px
-  16: 64px
-  20: 80px
-  24: 96px
-  section: 120px
+  bv-sp-1: 4px
+  bv-sp-2: 8px
+  bv-sp-3: 12px
+  bv-sp-4: 16px
+  bv-sp-5: 20px
+  bv-sp-6: 24px
+  bv-sp-8: 32px
+  bv-sp-section: 28px         # section-head padding
 
+# ============================================================
+# ICON
+# ============================================================
+icon:
+  bv-icon-stroke: 1.7         # единый stroke для line-иконок
+
+# ============================================================
+# COMPONENTS — первая волна DS (bv-* классы)
+# ============================================================
 components:
-  kiosk-metric-card:
-    backgroundColor: "{colors.card-dark}"
-    textColor: "{colors.foreground-dark}"
-    typography: "{typography.metric-xl}"
-    rounded: "{rounded.xl}"
-    padding: 48px
-    border: "1px solid {colors.border-dark}"
-  dashboard-kpi-card:
-    backgroundColor: "{colors.card-dark}"
-    textColor: "{colors.foreground-dark}"
-    typography: "{typography.metric-md}"
-    rounded: "{rounded.lg}"
-    padding: 20px
-    border: "1px solid {colors.border-dark}"
-  data-table-row:
-    backgroundColor: "{colors.background-dark}"
-    textColor: "{colors.foreground-dark}"
-    typography: "{typography.body-sm}"
-    rounded: "{rounded.xs}"
-    padding: "12px 16px"
-    borderBottom: "1px solid {colors.border-dark}"
-  button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.primary-foreground}"
-    typography: "{typography.button}"
-    rounded: "{rounded.md}"
-    padding: "10px 16px"
-  button-primary-dark:
-    backgroundColor: "{colors.primary-dark}"
-    textColor: "{colors.primary-foreground}"
-    typography: "{typography.button}"
-    rounded: "{rounded.md}"
-    padding: "10px 16px"
-  button-secondary:
-    backgroundColor: "{colors.muted-dark}"
-    textColor: "{colors.foreground-dark}"
-    typography: "{typography.button}"
-    rounded: "{rounded.md}"
-    padding: "10px 16px"
-  button-ghost:
-    backgroundColor: transparent
-    textColor: "{colors.muted-foreground-dark}"
-    typography: "{typography.button}"
-    rounded: "{rounded.md}"
-    padding: "10px 16px"
-  text-input:
-    backgroundColor: "{colors.card-dark}"
-    textColor: "{colors.foreground-dark}"
-    typography: "{typography.body}"
-    rounded: "{rounded.md}"
-    padding: "10px 12px"
-    border: "1px solid {colors.border-dark}"
-  status-badge-low:
-    backgroundColor: "hsl(151 100% 45% / 0.15)"
-    textColor: "{colors.bio-stress-low}"
-    typography: "{typography.caption}"
-    rounded: "{rounded.pill}"
-    padding: "2px 10px"
-  status-badge-mid:
-    backgroundColor: "hsl(42 100% 50% / 0.15)"
-    textColor: "{colors.bio-stress-mid}"
-    typography: "{typography.caption}"
-    rounded: "{rounded.pill}"
-    padding: "2px 10px"
-  status-badge-high:
-    backgroundColor: "hsl(348 100% 54% / 0.15)"
-    textColor: "{colors.bio-stress-high}"
-    typography: "{typography.caption}"
-    rounded: "{rounded.pill}"
-    padding: "2px 10px"
-  gauge-ring:
-    strokeWidth: 12px
-    backgroundColor: "{colors.muted-dark}"
-    strokeColor: "{colors.bio-pulse}"
-    rounded: "{rounded.pill}"
-  ecg-strip:
-    backgroundColor: "{colors.card-dark}"
-    strokeColor: "{colors.ecg-trace}"
-    strokeWidth: 2px
-    rounded: "{rounded.lg}"
-    padding: 16px
-  sparkline:
-    strokeWidth: 1.5px
-    strokeColor: "{colors.bio-pulse}"
-    fillOpacity: 0.1
-  top-nav:
-    backgroundColor: "{colors.background-dark}"
-    textColor: "{colors.foreground-dark}"
-    typography: "{typography.body-sm}"
-    height: 56px
-    borderBottom: "1px solid {colors.border-dark}"
-  side-panel-drilldown:
-    backgroundColor: "{colors.card-dark}"
-    textColor: "{colors.foreground-dark}"
-    rounded: "{rounded.lg}"
-    padding: 24px
-    border: "1px solid {colors.border-dark}"
-    width: 480px
-  tab-default:
-    backgroundColor: transparent
-    textColor: "{colors.muted-foreground-dark}"
-    typography: "{typography.button}"
-    rounded: "{rounded.md}"
-    padding: "8px 14px"
-  tab-selected:
-    backgroundColor: "{colors.muted-dark}"
-    textColor: "{colors.foreground-dark}"
-    typography: "{typography.button}"
-    rounded: "{rounded.md}"
-    padding: "8px 14px"
+  bv-screen:
+    backgroundColor: "{colors.bv-bg-screen}"
+    note: "cool-gray wrapper, light-mode primary"
+  bv-card:
+    backgroundColor: "{colors.bv-bg-card}"
+    border: "1px solid {colors.bv-hairline-2}"
+    rounded: "{rounded.bv-r-card}"
+    shadow: "{shadows.bv-shadow-card}"
+    variants: "--hero (pad 20–22) · --base (pad 14) · --bento (pad 13, min-h 122)"
+  bv-section-header:
+    typography: "section-h2 24 / Golos 700 / ls -0.6"
+    textColor: "{colors.bv-ink}"
+  bv-app-bar:
+    rounded: "{rounded.bv-r-pill}"
+    shadow: "{shadows.bv-shadow-header}"
+    variants: "--pill (home: glass, нейтральные иконки, avatar blue) · --back (settings: wine-tint pill + wine иконки — canon chrome)"
+  bv-nav-pill:
+    backgroundColor: "rgba(255,255,255,.88) glass"
+    border: "1px solid {colors.bv-hairline}"
+    rounded: "{rounded.bv-r-nav}"
+    shadow: "{shadows.bv-shadow-nav}"
+  bv-nav-item:
+    default: "{colors.bv-ink-dim}"
+    is-active: "color {colors.bv-wine} + bg {colors.bv-wine-tint}"   # WINE spot #1
+  bv-avatar:
+    backgroundColor: "{colors.bv-avatar-bg}"
+    textColor: "{colors.bv-avatar-ink}"
+    typography: "mono 12 / 600"
+  bv-capsule:
+    track: "{colors.bv-capsule-track}"
+    fills: "norm {colors.bv-capsule-fill-norm} · warn {colors.bv-capsule-fill-warn} · high {colors.bv-capsule-fill-high}"
+    variants: "--full (bounds-caps, 120px) · --mini (92px, 4 состояния)"
+  bv-chip:
+    variants: "--status (sem-*-bg + sem-*-ink, 5 состояний) · --delta (up green / down red, mono) · --badge (solid {colors.bv-wine})"   # WINE spot #2 (badge)
+  bv-row:
+    minHeight: 56px
+    padding: "14px 16px"
+    border: "1px solid {colors.bv-hairline}"
+    trail: "toggle / chevron / badge"
+  bv-icon-square:
+    size: 32px
+    rounded: "{rounded.bv-r-icon}"
+    tints: "default {colors.bv-bg-subtle} · wine 8% · danger 10% red · success 10% green"
+  bv-button:
+    rounded: "{rounded.bv-r-button}"
+    variants: "--primary (solid {colors.bv-wine}) · --secondary (card + hairline) · --ghost (wine text)"
+  bv-toggle:
+    size: "38×22"
+    on: "{colors.bv-wine} track"
+    off: "{colors.bv-toggle-track-off} (#D5D5DD cool-muted)"
+  bv-eyebrow:
+    typography: "mono 11 UPPERCASE / ls 0.6"
+    textColor: "{colors.bv-ink-dim}"
 ---
 
 ## Overview
 
-Neiry Pulse — это **продуктовая био-система**, а не маркетинговый лендинг. Поверхностей три, эстетический код единый:
+Neiry Pulse — **мобильное приложение био-мониторинга** (Android + iOS, 390×844). Дизайн-направление — **Bevel-clone v3**: прохладно-серое полотно, белые карточки на мягких тенях, мультисемантическая палитра, light-mode по умолчанию. Эстетический референс — Bevel Health (premium, calm, glassmorphic chrome), но с нашими шрифтами и wine-якорем.
 
-1. **Kiosk** (выставочный стенд, 1920×1080, читается с 1.5–2м) — крупные tabular-цифры пульса/HRV/NSI, layered SVG-gauge, ECG-плашка с fake live-данными синусоидой. Источник истины: `wireframes/m2/kiosk.html` + `project_neiry_kiosk_design_system` memory.
-2. **Dashboard** (B2B corporate, 1440+, плотный продукт) — три таба (Спорт / Офис / Драйверы-водители), KPI-strip, таблица сотрудников с sparkline-микро-графиками, drill-down side-panel с тестом Баевского. Эстетический baseline — Linear / Vercel: dark canvas, hairline borders, ноль декоративных градиентов.
-3. **Mobile** (Android + iOS, 390×844) — браслет-пэйринг, BPM-карточка, HRV-форма, результат, синхронизация. iOS публикация подтверждена post-M2 (см. memory `project_neiry_ios_post_m2`).
+**Scope: mobile-only** (PM-confirm 29.06). Kiosk и dashboard — archived в M2-эпоху; если понадобятся позже, заводятся отдельным DESIGN-файлом, не смешиваются с этим mobile DS.
 
-**Единственный хроматический акцент** — `{colors.primary}` (wine `#831843`). Это бренд-якорь Neiry, **не подлежит замене** ни по совету skill'а, ни по моде на тёплые палитры 2026. На тёмном фоне используется `{colors.primary-dark}` (35%→45% lightness) для контрастности.
+**Source-of-truth для CSS:** `docs_web/bevel-clone/_shared/tokens.css` (CSS-переменные `--bv-*`) + `components.css` (компонентные классы, _shared). Этот DESIGN.md — их **YAML-зеркало** для Stitch / AI-tools: значения совпадают 1:1, ключи `bv-*` соответствуют `--bv-*`. Эталонные экраны: `bevel-clone/home/home-main-etalon.html`, `home/home-health-monitor.html`, `hrv/hrv-detail.html`, `settings/*`.
 
-**Bio-палитра** — четыре служебных hue для биометрики: `{colors.bio-pulse}` (пульс/HR, тот же wine), `{colors.bio-hrv}` (HRV, cyan), `{colors.bio-stress-low/mid/high}` (NSI mint→amber→red). Цвета привязаны к семантике, не к декору.
-
-**Типографика** — две family: **Golos Text** (заголовки/hero + body/UI/buttons, веса 400–800), **Pulse Mono** (все числа И табличные/тайм-серийные списки целиком — метрики, время, таймстемпы, замеры; tabular-nums — пульс не прыгает при 78→79).
-
-**Сетка** — 4px base, 24px gutter в карточках, 48px в kiosk-блоках. Spacing-токены кратны 4.
-
-**Key Characteristics:**
-- Dark-first интерфейс. Light-тема существует, но primary surface — `{colors.background-dark}`.
-- Wine как единственный chromatic accent. Никаких вторых акцентных hue ради «премиума».
-- Tabular numerics на всех биометриках (Pulse Mono + `font-feature-settings: 'tnum' 1`).
-- Layered SVG-gauge с outer-ring (стресс) + inner-ring (HR-zone) — фирменный био-виджет.
-- ECG-плашка с псевдо-live-данными — fake sin-волна для визуального витализма стенда.
-- Hairline-borders (1px `{colors.border-dark}`), нулевые decorative shadows. Иерархия через surface ladder.
-- 4px grid строго. Отступы кратны 4. Никаких 18px / 22px / 30px.
+**Ключевые принципы:**
+- **Cool-gray light-first.** Полотно `{colors.bv-bg-screen}` (#F0F0F3, прохладный нейтрал — НЕ тёплый крем), карточки `{colors.bv-bg-card}` (#FFFFFF) на мягких тенях. Dark Mode отложен на Sleep-раздел (вводится override-слоем, не правкой токенов).
+- **Wine — единственный хроматический акцент.** Бренд-якорь `{colors.bv-wine}` (#831843). Не подлежит замене.
+- **Мультисемантика несёт смысл.** Данные/статусы/severity окрашены семантикой (green норма · orange выход за норму · red critical · grey нет данных), не одним акцентом.
+- **Две гарнитуры.** Golos Text (текст + заголовки) + Pulse Mono (все числа и табличные данные). Иерархию несёт вес, не смена семейства.
+- **Сетка 4px строго.** Все отступы кратны 4. Никаких 18 / 22 / 30px.
 
 ## Colors
 
-> Источники истины: `wireframes/m2/ui-kit.html` (canonical CSS-переменные), memory `project_neiry_ui_aesthetic`, `project_neiry_kiosk_design_system`.
+> Source-of-truth: `_shared/tokens.css`. Палитра принята PM 26–29.06 (cool-gray v3 + multi-semantic), memory `project_neiry_bevel_clone_v3`.
 
 ### Brand & Accent
-- **Wine Primary** (`{colors.primary}` `hsl(336 76% 33%)` / `#831843`) — единственный chromatic accent. CTA, focus rings, фокусные элементы. **НЕ менять.**
-- **Wine Primary Dark** (`{colors.primary-dark}` `hsl(336 76% 45%)`) — wine на тёмном фоне (повышенная lightness для контраста).
-- **Wine Hover** (`{colors.primary-hover}` / `{colors.primary-dark-hover}`) — hover-state в light / dark темах.
+- **Wine** (`{colors.bv-wine}` #831843) — единственный chromatic accent. Solid wine появляется только в действ./бренд-зонах (см. Principles · правило wine).
+- **Wine-tint** (`{colors.bv-wine-tint}` #F7E3EC) — ≈8% wine на белом: bg для nav-active и chip-bg.
 
-### Surface (Dark — primary)
-- **Background** (`{colors.background-dark}` `hsl(240 10% 3.9%)`) — главное полотно. На нём всё.
-- **Card** (`{colors.card-dark}` `hsl(240 10% 6%)`) — поднятые поверхности: KPI-карточки, side-panel, kiosk-блоки.
-- **Muted** (`{colors.muted-dark}` `hsl(240 3.7% 15.9%)`) — фон вторичных кнопок, выбранных табов.
-- **Border** (`{colors.border-dark}` `hsl(240 3.7% 15.9%)`) — все hairline-разделители. 1px, не 2px.
+### Wine Policy (5 зон)
 
-### Surface (Light — паритет)
-- Те же роли (`{colors.background-light}` / `{colors.card-light}` / `{colors.muted-light}` / `{colors.border-light}`).
-- Wine остаётся `#831843` без сдвига lightness.
+Wine — brand-anchor **только** для action/chrome. Solid/tint wine разрешён ровно в 5 зонах (PM-canon 29.06):
 
-### Text
-- **Foreground** (`{colors.foreground-dark}` `hsl(0 0% 98%)`) — основной текст и метрики на тёмном фоне.
-- **Muted Foreground** (`{colors.muted-foreground-dark}` `hsl(240 5% 64.9%)`) — вторичные подписи, лейблы осей, единицы (BPM, мс).
+1. **bottom nav-active** (`bv-nav-item.is-active`) — wine текст + wine-tint bg.
+2. **chip--badge** (`bv-chip--badge`) — solid wine bg.
+3. **button--primary** (`bv-button--primary`) — solid wine.
+4. **toggle ON** (`bv-toggle.is-on`) — wine track + knob.
+5. **app-bar--back** (`bv-app-bar--back`) — wine иконки + wine-tint bg (chrome canon).
 
-### Semantic
-- **Destructive** (`{colors.destructive}` `#FF1744`) — критические алерты, ошибки, NSI High.
-- **Success** (`{colors.success}` `#00E676`) — нормальные значения, NSI Low.
-- **Warning** (`{colors.warning}` `#FFB300`) — пограничные значения, NSI Mid.
+В **content** (metrics, status colors, capsule fills, charts) wine **ЗАПРЕЩЁН** — только semantic colors.
 
-### Bio (служебная палитра биометрик)
-- `{colors.bio-pulse}` — пульс / HR. Тот же wine для семантической связки бренда и главной метрики.
-- `{colors.bio-hrv}` — HRV. Cyan `hsl(195 90% 55%)`.
-- `{colors.bio-stress-low/mid/high}` — NSI ladder. Мapped на semantic success/warning/destructive.
-- `{colors.ecg-trace}` — линия ЭКГ на kiosk-плашке. Mint `hsl(151 100% 55%)` для визуального витализма.
+### Surface (cool-gray, light-first)
+- **Screen** (`{colors.bv-bg-screen}` #F0F0F3) — главное полотно.
+- **Card** (`{colors.bv-bg-card}` #FFFFFF) — карточки, pills, app-bar.
+- **Subtle** (`{colors.bv-bg-subtle}` #E8E8EE) — разделители секций, фон empty-chip.
+
+### Ink (text)
+- **Ink** (`{colors.bv-ink}` #1B1B21) — основной текст и метрики.
+- **Ink-mute** (`{colors.bv-ink-mute}` #62626C) — вторичный, AA на белом.
+- **Ink-dim** (`{colors.bv-ink-dim}` #6C6C76) — третичный; AA на всех bg (≥4.5:1, patch v1.0.1).
+- **Ink-faded** (`{colors.bv-ink-faded}` #B5B5BD) — «Нет данных».
+- **Ink-soft** (`{colors.bv-ink-soft}` #9C9CA8) — range-cap (55/35).
+
+### Semantic (severity)
+Каждый статус несёт тройку: **fill** (графика/иконка), **ink** (AA-текст на белом ≥4.5:1), **bg** (chip-фон).
+- **Норма** — `{colors.bv-sem-norm}` #1DA049 / ink #117A38 / bg #E5F7EE (green).
+- **Выход за норму** (выше/ниже) — `{colors.bv-sem-warn}` #F2752B / ink #C2511A / bg #FBE9DA (orange).
+- **Critical / Внимание** — `{colors.bv-sem-high}` #E11D48 / ink #C20D2E / bg #FBDDE3 (red).
+- **Нет данных** — нейтральный grey (`{colors.bv-bg-subtle}` / `{colors.bv-ink-faded}`).
+
+### Capsule (позиция в коридоре нормы)
+- **Track** базовый `{colors.bv-capsule-track}` #EAEAEF; per-status треки norm #D6F0E2 / warn #F8DEC8 / high #F4C7D0.
+- **Fill** norm #1DA049 / warn #F2752B / high #E11D48.
+
+### Avatar / Hairline
+- **Avatar** bg `{colors.bv-avatar-bg}` #D5E3F0 / ink #3A6FA0 — мягкий голубой (как у Bevel), **НЕ wine**.
+- **Hairline** `{colors.bv-hairline}` #E5E5EA (cards/pills/nav), `{colors.bv-hairline-2}` #EEEEF2 (тонкая внутренняя). **Toggle-off** `{colors.bv-toggle-track-off}` #D5D5DD — OFF-track bv-toggle.
 
 ## Typography
 
-### Font Families
-- **Golos Text** — единая sans для display и UI: headlines/hero (600–800) и body/buttons/labels (400–500). Иерархия несётся весом, не сменой гарнитуры. Fallback: system-ui → -apple-system.
-- **Pulse Mono** — **обязательно** для всех чисел (BPM, мс HRV, NSI score, минуты) И табличных/тайм-серийных списков **целиком** — время, значения и метки строк (напр. «ПЕРИОД · 7 ДНЕЙ» + `09:14 · 78`). `font-feature-settings: 'tnum' 1, 'lnum' 1` всегда.
+### Families
+- **Golos Text** — единая sans для display и UI: hero/headlines (600–800) и body/buttons/labels (400–500). Иерархия несётся весом. Fallback: system-ui → -apple-system.
+- **Pulse Mono** — **обязательно** для всех чисел (BPM, мс HRV, NSI, минуты) И табличных/тайм-серийных списков целиком (время, значения, метки строк). `font-feature-settings: 'tnum' 1` всегда. Pulse Mono = JetBrains Mono с плоским нулём; локальные woff2 в `docs_web/fonts/pulse-mono/`.
 
 ### Hierarchy
 
-| Token | Size | Weight | LH | Tracking | Use |
-|---|---|---|---|---|---|
-| `{typography.display-kiosk}` | 180px | 600 | 1.0 | -6px | Kiosk большая метрика (BPM на стенде) |
-| `{typography.metric-xl}` | 128px | 500 | 1.0 | -3px | Kiosk вторичная метрика (HRV) |
-| `{typography.metric-lg}` | 64px | 500 | 1.0 | -1.5px | Drill-down side-panel главная цифра |
-| `{typography.metric-md}` | 32px | 500 | 1.1 | -0.5px | Dashboard KPI-card цифра |
-| `{typography.display-xl}` | 56px | 600 | 1.1 | -1.8px | Hero headline (mobile splash) |
-| `{typography.display-lg}` | 40px | 600 | 1.15 | -1px | Section opener |
-| `{typography.headline}` | 24px | 600 | 1.25 | -0.4px | Dashboard tab title, mobile screen heading |
-| `{typography.card-title}` | 18px | 500 | 1.3 | -0.2px | KPI-card label, mobile-form label |
-| `{typography.body}` | 14px | 400 | 1.5 | 0 | Default body, table cells |
-| `{typography.body-sm}` | 13px | 400 | 1.45 | 0 | Dense table rows, footer columns |
-| `{typography.caption}` | 12px | 400 | 1.4 | 0.1px | Captions, axis labels, units |
-| `{typography.eyebrow}` | 11px | 500 | 1.3 | 0.6px | Section eyebrow, mono uppercase |
-| `{typography.button}` | 14px | 500 | 1.2 | 0 | All button labels |
+| Token | Size | Use |
+|---|---|---|
+| `{typography.sizes.display-hero}` | 60px | HRV hero число (Golos 800 / mono) |
+| `{typography.sizes.section-h2}` | 24px | «Монитор показателей» (Golos 700, ls -0.6) |
+| `{typography.sizes.metric-bento}` | 28px | Цифра в bento-карточке (Pulse Mono) |
+| `{typography.sizes.headline}` | 17px | app-bar-title (Golos 700) |
+| `{typography.sizes.label}` | 14px | mcard-label (Golos 500) |
+| `{typography.sizes.body}` | 14px | Body-текст (Golos 400) |
+| `{typography.sizes.caption}` | 12px | Подписи, единицы |
+| `{typography.sizes.eyebrow}` | 11px | Eyebrow (Pulse Mono UPPERCASE, ls 0.6) |
+| `{typography.sizes.tab-label}` | 10px | Подпись таба nav |
+| `{typography.sizes.capsule-bounds}` | 11px | range-cap 55/35 (Pulse Mono) |
 
-### Principles
-- **Tabular nums везде, где цифра обновляется в реальном времени.** Иначе BPM 78→79 «прыгает».
-- **Negative tracking растёт с размером.** -6px на kiosk-180px ≈ 3.3% от size.
-- **Pulse Mono несёт всё «приборное»** — числа, метрики, таймстемпы и табличные списки целиком. Текст и заголовки — Golos Text.
-- **Golos Text — единый голос UI и display.** Иерархию несут веса (400→800), а не смена гарнитуры.
+**Weights:** 400 / 500 / 600 / 700 / 800. **Rhythm:** lh-tight 1 (метрики), lh-display 1.1 (заголовки), lh-body 1.5 (проза); ls-tight -0.6px (display), ls-eyebrow 0.6px (eyebrow).
 
 ## Layout
 
-### Spacing System
-- **Base unit:** 4px. Все отступы кратны 4 — никаких 18px / 22px / 30px.
-- **Tokens (frontmatter):** `1`=4px, `2`=8px, `3`=12px, `4`=16px, `5`=20px, `6`=24px, `8`=32px, `10`=40px, `12`=48px, `16`=64px, `20`=80px, `24`=96px, `section`=120px.
-- **Kiosk-блок:** 48px внутренний padding, 64px между блоками.
-- **Dashboard KPI-card:** 20px padding, 16px gutter в strip.
-- **Side-panel:** 24px padding, 480px ширина.
-- **Mobile-screen:** 16px горизонтальный padding, 24px между секциями.
+### Spacing (4px grid)
+- **Base:** 4px. Все отступы кратны 4 — никаких 18 / 22 / 30px.
+- **Tokens:** 1=4 · 2=8 · 3=12 · 4=16 · 5=20 · 6=24 · 8=32 · section=28 (padding section-head).
+- **Mobile-screen:** 16px горизонтальный padding, gap между карточками ~10–16px (bento), 28px над section-head.
 
-### Grid & Container
-- **Kiosk:** viewport-fit 1920×1080. 12-column grid, 24px gutter, 48px outer padding.
-- **Dashboard:** max-content 1440px, 12-column, 16px gutter. KPI-strip — 4-up на desktop, 2-up на tablet.
-- **Mobile:** 390×844 baseline, единый column с 16px margins.
+### Radii
+- `{rounded.bv-r-card}` 20px — единый радиус карточек (HRV hero И bento). `{rounded.bv-r-pill}` 999px — pills/капсулы. `{rounded.bv-r-nav}` 30px — floating nav pill.
+- `{rounded.bv-r-button}` 14px — CTA buttons. `{rounded.bv-r-icon}` 10px — icon-square (оба в tokens.css v1.0.2).
 
-### Whitespace Philosophy
-Тёмное полотно **и есть** whitespace. Секции отделяются подъёмом на `{colors.card-dark}` (surface ladder), не белыми гэпами. Гэп внутри карточки — `{spacing.6}` (24px), между секциями kiosk — `{spacing.16}` (64px), между секциями dashboard — `{spacing.12}` (48px).
+### Depth
+Глубина — **мягкими тенями** (Bevel-DNA), не жирными бордерами: `{shadows.bv-shadow-card}` на карточках, `{shadows.bv-shadow-nav}` на floating nav, `{shadows.bv-shadow-header}` на header pill. Hairline 1px — тонкая граница, не основной разделитель.
 
 ## Components
 
-### Kiosk (Stand)
-- `kiosk-metric-card` — крупная метрика с layered SVG-gauge, ECG-плашкой, status-badge. Padding 48px, border 1px hairline.
-- `gauge-ring` — двойное кольцо (outer = NSI, inner = HR-zone), stroke 12px.
-- `ecg-strip` — fake sin-волна, mint stroke, 2px. Запрос: визуальная живость без реальных данных.
-- State machine: `empty` (нет браслета) → `live` (данные идут) → `drilldown` (тест Баевского).
+Первая волна DS — 14 атомарных `bv-*` (scope утверждён PM 29.06, memory `project_neiry_ds_wave1_approved`). Превью: `_shared/components-preview-DRAFT.html`.
 
-### Dashboard (Corporate)
-- `dashboard-kpi-card` — четыре в строке, цифра + дельта + sparkline.
-- `data-table-row` — 12px×16px padding, hairline borderBottom, hover bg `{colors.muted-dark}`.
-- `side-panel-drilldown` — 480px right slide-in, сотрудник profile + тест Баевского.
-- `tab-default` / `tab-selected` — три таба (Спорт / Офис / Драйверы).
-- `status-badge-low/mid/high` — NSI status pills, контраст 4.5:1 минимум.
-- `sparkline` — 1.5px stroke, 0.1 fillOpacity, без осей.
+### Surface & Layout
+- `bv-screen` — cool-gray wrapper полотна.
+- `bv-card` (+ `--hero` / `--base` / `--bento`) — белая карточка, hairline-2, r20, shadow-card.
+- `bv-section-header` — Golos 700, 24px, ls -0.6.
 
-### Mobile (App)
-- `button-primary-dark` — на wine background, белый текст. CTA в pairing/login.
-- `text-input` — card bg, hairline border, focus ring wine.
-- `kiosk-metric-card` адаптация для BPM-карточки (180px → 96px на 390px ширине).
+### Chrome (навигация)
+- `bv-app-bar--pill` (home — glass, нейтральные иконки, avatar blue) / `bv-app-bar--back` (settings — wine-tint pill + wine иконки, **canon chrome**, memory `bevel-clone-header-pill-footer-floating-nav-brand-anchor`).
+- `bv-nav-pill` — floating glass 5-tab; `bv-nav-item.is-active` — **wine + wine-tint bg** (главный wine-якорь).
+- `bv-avatar` — голубой, инициалы Pulse Mono.
 
-### Shared
-- `button-primary` / `button-secondary` / `button-ghost` — три кнопочные роли, без четвёртой.
-- `top-nav` — 56px height, hairline borderBottom.
+### Health Monitor (данные)
+- `bv-capsule--full` / `--mini` — вертикальная капсула «позиция в коридоре», fill снизу + dot, semantic per status.
+- `bv-chip--status` (5 состояний, sem-bg + sem-ink) / `--delta` (up green / down red, mono) / `--badge` (**solid wine**).
+
+### Settings
+- `bv-row` — list-row 56px (toggle / chevron / badge).
+- `bv-icon-square` — 32px r10, 4 тинта (default / wine 8% / danger 10% / success 10%).
+
+### Controls
+- `bv-button--primary` (solid wine) / `--secondary` (card + hairline) / `--ghost` (wine text).
+- `bv-toggle` — 38×22, ON = wine track, OFF = `{colors.bv-toggle-track-off}` #D5D5DD.
+- `bv-eyebrow` — Pulse Mono 11px UPPERCASE.
 
 ## Principles
 
-1. **Wine — единственный chromatic accent.** Никаких вторых брендовых hue. Bio-палитра — служебная, не декоративная.
-2. **Tabular nums обязательны** на всех живых метриках. `font-feature-settings: 'tnum' 1` на Pulse Mono.
-3. **Hairline-borders, не shadows.** Иерархия через surface ladder (`background` → `card` → `muted`).
-4. **4px grid строго.** Дизайн-агент проверяет арифметику пикселей через viewBox-math (см. memory `feedback_neiry_design_iteration_workflow`).
-5. **Skills — подсказка, не закон.** Если skill советует тёплую палитру / убрать tnum / поменять шрифт — игнорировать. Источник истины: этот файл + `wireframes/m2/ui-kit.html`.
-6. **PM acceptance gate.** Любая правка визуала идёт через preview → ждём «принято» → потом commit. Никогда не пушим до явного OK PM.
-7. **Dark-first, light — паритет.** Wine остаётся wine в обеих темах. Surface ladder параллельна.
-8. **Mobile = Android + iOS.** При компонентных решениях учитывать HIG (action sheets, back-gesture) где конфликтует с Material.
+1. **Wine — единственный chromatic accent.** Brand-anchor ровно для **5 action/chrome зон** (см. Wine Policy): nav-active · chip--badge · button--primary · toggle ON · app-bar--back. В **content** (metrics, status, capsule fills, charts) wine **запрещён** — только semantic colors.
+2. **Мультисемантика обязательна на данных.** Severity несёт цвет (green/orange/red/grey) + иконку/текст (не только цвет — a11y). Все `-ink` варианты AA ≥4.5:1 на белом.
+3. **Light-first.** Primary surface — cool-gray #F0F0F3. Dark Mode отложен на Sleep (override-слой).
+4. **Tabular nums везде на живых метриках.** Pulse Mono + `'tnum' 1` — пульс не «прыгает» при 78→79.
+5. **Глубина тенью, не бордером.** Soft shadows (Bevel-DNA); hairline 1px только как тонкая граница.
+6. **4px grid строго.** Арифметика пикселей проверяется (memory `feedback_neiry_design_iteration_workflow`).
+7. **Source-of-truth — tokens.css.** Этот DESIGN.md — зеркало. Правки значений идут в tokens.css, затем синхронизируются сюда. Skills — подсказка, не закон.
+8. **PM acceptance gate.** Любой визуал идёт через preview → «принято» → commit. Не пушим до OK PM.
 
 ## Anti-patterns
 
-- ❌ Inline-styles (`<div style="...">`) — только Tailwind / CSS-переменные.
-- ❌ Менять `--primary` / шрифты M2 даже «временно для эксперимента».
-- ❌ Добавлять gradients ради «премиума». Surface ladder делает работу.
-- ❌ Сокращать плотность данных в dashboard в угоду «дыхания» — это медицинский интерфейс, не лендинг.
-- ❌ Заменять Pulse Mono на Inter в метриках. Цифры будут прыгать.
-- ❌ Использовать `impeccable init / document / craft / extract` без явного OK PM — затрёт DESIGN.md.
-- ❌ Превентивный вызов skill'ов «на всякий случай» — экономия токенов.
-
-## Notes on Substitutes
-
-- Golos Text — open-source, Google Fonts (ParaType, отличная кириллица). Pulse Mono — производная JetBrains Mono (SIL OFL 1.1, без Reserved Font Name) с плоским нулём; локальные файлы в `UI_assets/fonts/pulse-mono/`.
-- На системах без шрифтов fallback `system-ui` → `-apple-system` приемлем, но **метрики обязательно** в mono-fallback (`ui-monospace`).
+- ❌ Wine в content data (metrics / status colors / capsule fills / charts). Wine — только в 5 action/chrome зонах (см. Wine Policy).
+- ❌ Тёплый крем / sand / warm-neutral surface (это Whoop/Oura, не Bevel). Только cool-gray.
+- ❌ Dark Mode сейчас (до Sleep-раздела).
+- ❌ Onest / Space Grotesk / Geist Mono — заменены на Golos Text + Pulse Mono.
+- ❌ Single-accent на всех данных — теряется мгновенная читаемость severity.
+- ❌ Inline-styles (`<div style="...">`) — только классы / CSS-переменные.
+- ❌ Жирные decorative shadows / gradients ради «премиума» — soft shadow делает работу.
+- ❌ 18 / 22 / 30px отступы — только 4px-grid.
 
 ## Version & Source-of-Truth
 
-- `version: alpha` — первая итерация. После acceptance PM статус → `stable`.
-- **Source-of-truth для CSS:** `wireframes/m2/ui-kit.html`. Этот DESIGN.md синхронизируется с ним.
-- **Memory якоря:** `project_neiry_ui_aesthetic`, `project_neiry_ui_stack`, `project_neiry_kiosk_design_system`, `feedback_neiry_design_iteration_workflow`.
-- Изменения вносятся только PM. UI-агент читает, не правит.
+- `version: v1.0.2` — зеркало `tokens.css` v1.0.2 (70 переменных). v1.0.1: ink-dim AA-fix · toggle-track-off · section-h2 24px. v1.0.2: +bv-r-button 14 · +bv-r-icon 10. Stage 1 commit a958cc0.
+- **Source-of-truth CSS:** `docs_web/bevel-clone/_shared/tokens.css` (+ `components.css` — Stage 3).
+- **Эталоны:** `bevel-clone/home/home-main-etalon.html` (главный), `home-health-monitor.html`, `hrv/hrv-detail.html`, `settings/*`.
+- **Memory якоря:** `project_neiry_bevel_clone_v3`, `project_neiry_typography_system`, `project_neiry_pulse_mono_font`, `bevel-clone-header-pill-footer-floating-nav-brand-anchor`, `project_neiry_ds_wave1_approved`.
+- Изменения значений — только в tokens.css, затем sync сюда. UI-агент читает, не правит произвольно.
+
+<!-- ============================================================
+     ВОЗРАЖЕНИЯ SKILL'ОВ (impeccable harden) — на разбор PM
+     ============================================================
+
+     1. ✅ RESOLVED (PM 29.06) — SCOPE WINE расширен до канон-списка 5 зон: nav-active ·
+        chip--badge · button--primary · toggle ON · app-bar--back. В content wine запрещён.
+        Зафиксировано: раздел «Wine Policy» + Principle #1 + Anti-patterns.
+
+     2. ✅ RESOLVED (PM 29.06) — SCOPE DOC подтверждён mobile-only. Kiosk/dashboard archived
+        в M2-эпоху (отдельный DESIGN-файл при необходимости). Зафиксировано в Overview · Scope.
+
+     3. ✅ RESOLVED (v1.0.2) — RADII: --bv-r-button 14px + --bv-r-icon 10px добавлены в
+        tokens.css §9, зеркалятся в YAML rounded; компоненты ссылаются на токены, не литералы.
+        NB: bv-icon-square size resolved → 32px (PM decision 29.06, исправлено перед commit).
+
+     4. ✅ RESOLVED (v1.0.1) — TOGGLE-OFF токенизирован: --bv-toggle-track-off #D5D5DD добавлен
+        в tokens.css §7. Также v1.0.1: ink-dim AA-fix (#8E8E97 → #6C6C76) и section-h2 = 24px (PM choice).
+
+     5. AVATAR DRIFT — tokens/DESIGN канон #D5E3F0/#3A6FA0; экраны home/settings пока
+        #B5DAF1/#0A4C7A. Привести экраны в Stage 5 refactor (уже зафиксировано в tokens.css).
+
+     6. YAML-КЛЮЧИ — префикс --bv-* в YAML недопустим (строка на «--» ломает парсер как
+        sequence). Зеркалю как bv-* (без двойного дефиса) + все hex и отрицательные значения
+        в кавычках. Mapping 1:1 однозначен, парсимость для Stitch сохранена.
+     ============================================================ -->
