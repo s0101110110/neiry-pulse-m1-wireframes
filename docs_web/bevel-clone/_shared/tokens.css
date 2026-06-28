@@ -1,6 +1,7 @@
 /*!
  * Neiry Pulse · Bevel-clone · tokens
- * v1.0.1 — 2026-06-29 — PM-decisions patch: ink-dim AA-fix, toggle-track-off, section-h2 24px
+ * v1.0.2 — 2026-06-29 — PM patch +2: r-button 14 + r-icon 10 (DESIGN.md sync feedback)
+ * v1.0.1 — 2026-06-29 — PM patch +3: ink-dim AA-fix, toggle-track-off, section-h2 24px
  * Source of truth для CSS-переменных. Все --bv-* префиксированы.
  * Извлечено из: docs_web/bevel-clone/home/home-main-etalon.html (:root, lines 46–101)
  * Scope: ТОЛЬКО light-mode. Dark Mode — на Sleep-разделе (memory project_neiry_bevel_clone_v3),
@@ -62,6 +63,8 @@
 
   /* ========= 9 · Radii ========= */
   --bv-r-card:     20px;   /* эталон: ОДНО значение для HRV hero И bento */
+  --bv-r-button:   14px;   /* CTA buttons (PM patch 29.06 v1.0.2) */
+  --bv-r-icon:     10px;   /* bv-icon-square 32×32 (PM patch 29.06 v1.0.2) */
   --bv-r-pill:     999px;
   --bv-r-nav:      30px;   /* footer floating pill */
 
