@@ -1,0 +1,133 @@
+/*!
+ * Neiry Pulse · Bevel-clone · tokens
+ * v1.0.0 — 2026-06-29 — initial extraction from home-main-etalon
+ * Source of truth для CSS-переменных. Все --bv-* префиксированы.
+ * Извлечено из: docs_web/bevel-clone/home/home-main-etalon.html (:root, lines 46–101)
+ * Scope: ТОЛЬКО light-mode. Dark Mode — на Sleep-разделе (memory project_neiry_bevel_clone_v3),
+ *        вводится отдельным override-слоем над семантикой, не правкой этих значений.
+ */
+:root {
+
+  /* ========= 1 · Brand & Accent ========= */
+  /* Wine — единственный chromatic accent. Только в bottom nav active (+ chip--badge solid). */
+  --bv-wine:       #831843;
+  --bv-wine-tint:  #F7E3EC;   /* ≈8% wine на белом — bg для nav-active и chip-bg */
+
+  /* ========= 2 · Surface ========= */
+  --bv-bg-screen:  #F0F0F3;   /* cool-gray screen bg */
+  --bv-bg-card:    #FFFFFF;   /* card / pill surface */
+  --bv-bg-subtle:  #E8E8EE;   /* секции-разделители, empty-chip bg (этал. --bg-2) */
+
+  /* ========= 3 · Ink (text) ========= */
+  --bv-ink:        #1B1B21;   /* основной текст / метрики */
+  --bv-ink-mute:   #62626C;   /* вторичный (AA на белом) */
+  --bv-ink-dim:    #8E8E97;   /* третичный / иконки-лейблы */
+  --bv-ink-faded:  #B5B5BD;   /* «Нет данных» */
+  --bv-ink-soft:   #9C9CA8;   /* range-cap (55/35) — реальный токен эталона сверх шаблона */
+
+  /* ========= 4 · Semantic colors ========= */
+  --bv-sem-norm:      #1DA049;   /* green fill */
+  --bv-sem-norm-ink:  #117A38;   /* green AA text variant (на белом) */
+  --bv-sem-norm-bg:   #E5F7EE;   /* green chip bg (реальный токен эталона) */
+  --bv-sem-warn:      #F2752B;   /* orange fill (выход за норму вверх/вниз) */
+  --bv-sem-warn-ink:  #C2511A;   /* orange AA text variant */
+  --bv-sem-high:      #E11D48;   /* red fill (critical) */
+  --bv-sem-high-ink:  #C20D2E;   /* red AA text variant */
+  --bv-sem-warn-bg:   #FBE9DA;   /* warn chip bg (PM decision 29.06 — симметрия с norm-bg) */
+  --bv-sem-high-bg:   #FBDDE3;   /* critical chip bg (PM decision 29.06 — симметрия с norm-bg) */
+
+  /* ========= 5 · Capsule colors ========= */
+  --bv-capsule-track:       #EAEAEF;   /* базовый / empty трек */
+  --bv-capsule-track-norm:  #D6F0E2;   /* трек под green fill */
+  --bv-capsule-track-warn:  #F8DEC8;   /* трек под orange fill */
+  --bv-capsule-track-high:  #F4C7D0;   /* трек под red fill */
+  --bv-capsule-fill-norm:   #1DA049;
+  --bv-capsule-fill-warn:   #F2752B;
+  --bv-capsule-fill-high:   #E11D48;
+
+  /* ========= 6 · Avatar ========= */
+  --bv-avatar-bg:  #D5E3F0;   /* light blue (Bevel real) */
+  --bv-avatar-ink: #3A6FA0;
+  /* NB: экраны home / settings используют #B5DAF1 / #0A4C7A — расходится со spec; см. возражения. */
+
+  /* ========= 7 · Border / hairline ========= */
+  --bv-hairline:   #E5E5EA;   /* единая граница cards/pills/nav */
+  --bv-hairline-2: #EEEEF2;   /* более тонкая внутренняя граница (реальный токен эталона) */
+
+  /* ========= 8 · Shadows ========= */
+  --bv-shadow-card:   0 1px 3px rgba(22,22,32,.03), 0 6px 18px rgba(22,22,32,.04);  /* HRV hero + bento */
+  --bv-shadow-nav:    0 4px 16px rgba(22,22,32,.08);                                /* footer floating pill */
+  --bv-shadow-header: 0 1px 2px rgba(22,22,32,.04);                                 /* header pill — лёгкая */
+
+  /* ========= 9 · Radii ========= */
+  --bv-r-card:     20px;   /* эталон: ОДНО значение для HRV hero И bento */
+  --bv-r-pill:     999px;
+  --bv-r-nav:      30px;   /* footer floating pill */
+
+  /* ========= 10 · Spacing (4px grid) ========= */
+  --bv-sp-1:       4px;
+  --bv-sp-2:       8px;
+  --bv-sp-3:       12px;
+  --bv-sp-4:       16px;
+  --bv-sp-5:       20px;
+  --bv-sp-6:       24px;
+  --bv-sp-8:       32px;
+  --bv-sp-section: 28px;   /* section-head padding (этал.) */
+
+  /* ========= 11 · Typography families ========= */
+  --bv-font-sans:  'Golos Text', system-ui, -apple-system, sans-serif;
+  --bv-font-mono:  'Pulse Mono', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* ========= 12 · Typography sizes ========= (все подтверждены grep'ом по эталону) */
+  --bv-fs-display-hero:   60px;   /* HRV hero число */
+  --bv-fs-section-h2:     28px;   /* «Монитор показателей» */
+  --bv-fs-metric-bento:   28px;   /* цифра в bento-карточке */
+  --bv-fs-headline:       17px;   /* app-bar-title */
+  --bv-fs-label:          14px;   /* mcard-label */
+  --bv-fs-body:           14px;
+  --bv-fs-caption:        12px;
+  --bv-fs-eyebrow:        11px;
+  --bv-fs-tab-label:      10px;   /* nav tab */
+  --bv-fs-capsule-bounds: 11px;   /* range-cap 55/35 */
+
+  /* ========= 13 · Typography weights ========= */
+  --bv-fw-regular:   400;
+  --bv-fw-medium:    500;
+  --bv-fw-semibold:  600;
+  --bv-fw-bold:      700;
+  --bv-fw-extrabold: 800;   /* Golos 800 — для hero/display (PM decision 29.06) */
+
+  /* ========= 14 · Typography rhythm ========= */
+  --bv-lh-tight:    1;       /* метрики / hero */
+  --bv-lh-display:  1.1;     /* заголовки */
+  --bv-lh-body:     1.5;     /* body / прозаический текст */
+  --bv-ls-tight:    -0.6px;  /* section-header / display */
+  --bv-ls-eyebrow:  0.6px;   /* eyebrow / brand uppercase */
+
+  /* ========= 15 · Icon stroke ========= */
+  --bv-icon-stroke: 1.7;     /* единое значение для всех line-иконок (этал. --stroke) */
+}
+
+/* ============================================================
+   ВОЗРАЖЕНИЯ SKILL'ОВ / РЕШЕНИЯ — PM checkpoint 29.06.2026
+   ============================================================
+
+   1. ✅ AVATAR BLUE — spec #D5E3F0/#3A6FA0 принят как канон.
+      Экраны home/settings (#B5DAF1/#0A4C7A) приводить к канону в Stage 5 refactor.
+
+   2. ✅ RESOLVED — --bv-r-card-sm удалён (YAGNI; эталон унифицирует 20px).
+
+   3. ✅ RESOLVED — --bv-sem-warn-bg #FBE9DA + --bv-sem-high-bg #FBDDE3 добавлены
+      для симметрии с --bv-sem-norm-bg.
+
+   4. ✅ MONO FALLBACK — 'JetBrains Mono' принят как канонический fallback
+      (базовая семья Pulse Mono).
+
+   5. ✅ ТОКЕНЫ СВЕРХ ШАБЛОНА (--bv-ink-soft, --bv-bg-subtle, --bv-hairline-2,
+      --bv-sem-norm-bg, --bv-capsule-track-norm/warn/high) — приняты как часть канона.
+
+   6. ✅ RESOLVED — --bv-fw-extrabold: 800 добавлен (Golos 800 для hero/display).
+
+   7. WINE-TINT двойного назначения — оставлен один токен (#F7E3EC).
+      YAGNI — разведём отдельные оттенки если возникнет конкретный кейс.
+   ============================================================ */
