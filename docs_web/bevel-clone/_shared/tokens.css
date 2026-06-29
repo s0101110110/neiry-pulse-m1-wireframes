@@ -1,5 +1,6 @@
 /*!
  * Neiry Pulse · Bevel-clone · tokens
+ * v1.0.4 — 2026-06-29 — PM patch (Stage 5 visual review): fs-label 14→12, fs-headline 17→16
  * v1.0.3 — 2026-06-29 — PM patch +3 token gaps: ink-on-wine, wine-hover, shadow-dot (components.css feedback)
  * v1.0.2 — 2026-06-29 — PM patch +2: r-button 14 + r-icon 10 (DESIGN.md sync feedback)
  * v1.0.1 — 2026-06-29 — PM patch +3: ink-dim AA-fix, toggle-track-off, section-h2 24px
@@ -90,8 +91,8 @@
   --bv-fs-display-hero:   60px;   /* HRV hero число */
   --bv-fs-section-h2:     24px;   /* «Монитор показателей» — компромисс из 22/24/28 (PM choice 29.06) */
   --bv-fs-metric-bento:   28px;   /* цифра в bento-карточке */
-  --bv-fs-headline:       17px;   /* app-bar-title */
-  --bv-fs-label:          14px;   /* mcard-label */
+  --bv-fs-headline:       16px;   /* app-bar-title · device-name (v1.0.4: 17→16) */
+  --bv-fs-label:          12px;   /* mcard-label · row-label (v1.0.4: 14→12) */
   --bv-fs-body:           14px;
   --bv-fs-caption:        12px;
   --bv-fs-eyebrow:        11px;

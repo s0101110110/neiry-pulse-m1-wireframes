@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Neiry Pulse · Row Typography — Option A vs B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  @font-face{font-family:'Pulse Mono';font-weight:400;src:url('../../fonts/pulse-mono/PulseMono-Regular.woff2') format('woff2');font-display:swap;}
+  @font-face{font-family:'Pulse Mono';font-weight:500;src:url('../../fonts/pulse-mono/PulseMono-Medium.woff2') format('woff2');font-display:swap;}
+  @font-face{font-family:'Pulse Mono';font-weight:600;src:url('../../fonts/pulse-mono/PulseMono-SemiBold.woff2') format('woff2');font-display:swap;}
+</style>
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="components.css" />
+<style>
+  /* SCAFFOLD (c-) — compare-каркас. Цвета/размеры через var(--bv-*); 10px sub в Option B —
+     не-токенизированный кандидат (предмет решения PM). Контент колонок идентичен, различие
+     ТОЛЬКО в размере sub-text → честное A/B-сравнение. */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bv-bg-screen); color: var(--bv-ink); font-family: var(--bv-font-sans); font-kerning: normal; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  .c-wrap { max-width: 980px; margin: 0 auto; padding: var(--bv-sp-8); }
+
+  .c-head { border-bottom: 1px solid var(--bv-hairline); padding-bottom: var(--bv-sp-5); margin-bottom: var(--bv-sp-6); }
+  .c-head h1 { font-size: 28px; font-weight: var(--bv-fw-extrabold); letter-spacing: -0.8px; margin-top: 10px; text-wrap: balance; }
+  .c-head p { font-size: var(--bv-fs-body); color: var(--bv-ink-mute); margin-top: 10px; max-width: 68ch; line-height: var(--bv-lh-body); text-wrap: pretty; }
+  .c-meta { font-family: var(--bv-font-mono); font-size: 11.5px; color: var(--bv-ink-mute); margin-top: 12px; font-variant-numeric: tabular-nums; }
+
+  /* two columns */
+  .c-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+  .c-col-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .c-col-head .name { font-size: 15px; font-weight: var(--bv-fw-bold); letter-spacing: -0.2px; }
+  .c-col-head .spec { font-family: var(--bv-font-mono); font-size: 11px; color: var(--bv-ink-mute); }
+  .c-col--b .c-col-head .name { color: var(--bv-wine); }
+
+  .c-card { background: var(--bv-bg-card); border: 1px solid var(--bv-hairline); border-radius: var(--bv-r-card); box-shadow: var(--bv-shadow-card); overflow: hidden; }
+
+  /* row body — label + sub. Label = var(--bv-fs-label) (12, реальный токен).
+     Sub-size задаётся per-column модификатором (.c-col--a / .c-col--b). */
+  .c-row-body { flex: 1; min-width: 0; }
+  .c-label { font-family: var(--bv-font-sans); font-size: var(--bv-fs-label); font-weight: var(--bv-fw-medium); color: var(--bv-ink); line-height: 1.3; }
+  .c-sub { font-weight: var(--bv-fw-regular); color: var(--bv-ink-mute); line-height: 1.35; margin-top: 2px; }
+  .c-sub.mono { font-family: var(--bv-font-mono); font-variant-numeric: tabular-nums; }
+  .c-col--a .c-sub { font-size: var(--bv-fs-caption); }   /* Option A: 12px */
+  .c-col--b .c-sub { font-size: 10px; }                    /* Option B: 10px (кандидат) */
+
+  .c-chev { color: var(--bv-ink-faded); flex-shrink: 0; display: flex; }
+
+  .c-foot { margin-top: 48px; border-top: 1px solid var(--bv-hairline); padding-top: 20px; display: flex; flex-wrap: wrap; gap: 18px; font-size: 13px; align-items: center; }
+  .c-foot .lbl { font-family: var(--bv-font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--bv-ink-dim); }
+  .c-foot a { color: var(--bv-wine); font-weight: var(--bv-fw-semibold); text-decoration: none; }
+  .c-foot a:hover { text-decoration: underline; }
+
+  .c-note { margin-top: 18px; background: var(--bv-bg-card); border: 1px solid var(--bv-hairline); border-radius: 14px; padding: 16px 18px; font-size: 13px; line-height: 1.5; color: var(--bv-ink-mute); max-width: 760px; }
+  .c-note b { color: var(--bv-ink); }
+
+  @media (max-width: 720px) {
+    .c-wrap { padding: var(--bv-sp-5); }
+    .c-cols { grid-template-columns: 1fr; gap: 28px; }
+  }
+</style>
+</head>
+<body>
+<div class="c-wrap">
+
+  <header class="c-head">
+    <span class="bv-eyebrow bv-eyebrow--brand">Neiry Pulse · Bevel-clone</span>
+    <h1>Row Typography — Option A vs Option B</h1>
+    <p>
+      Сравнение sub-text в строках списка. <b>Label = 12px / 500</b> в обоих вариантах (токен
+      <code>--bv-fs-label</code> v1.0.4). Различие только в размере sub-text. Контент колонок идентичен —
+      выбираешь по читаемости и плотности. Иерархия и так держится весом (500 vs 400) + цветом (ink vs ink-mute).
+    </p>
+    <div class="c-meta">tokens.css v1.0.4 · label 12 · A: sub 12 (caption) · B: sub 10 (кандидат, не токенизирован)</div>
+  </header>
+
+  <div class="c-cols">
+
+    <!-- ============ OPTION A ============ -->
+    <div class="c-col c-col--a">
+      <div class="c-col-head"><span class="name">Option A</span><span class="spec">label 12 · sub 12 — текущий</span></div>
+      <div class="c-card">
+
+        <div class="bv-row">
+          <div class="c-row-body"><div class="c-label">Bluetooth</div></div>
+          <span class="c-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+
+        <div class="bv-row">
+          <div class="c-row-body"><div class="c-label">Уведомления</div><div class="c-sub">Включены</div></div>
+          <span class="c-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+
+        <div class="bv-row">
+          <div class="c-row-body"><div class="c-label">Конфиденциальность данных</div><div class="c-sub">Управление доступом к показателям, экспортом и историей измерений</div></div>
+          <span class="c-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+
+        <div class="bv-row">
+          <div class="c-row-body"><div class="c-label">Автоматическая синхронизация с облаком Neiry</div><div class="c-sub">Каждые 15 минут</div></div>
+          <span class="c-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+
+        <div class="bv-row">
+          <div class="c-row-body"><div class="c-label">Версия прошивки</div><div class="c-sub mono">VIGOR-XYZ123 · 2.4.1</div></div>
+          <span class="c-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ OPTION B ============ -->
+    <div class="c-col c-col--b">
+      <div class="c-col-head"><span class="name">Option B</span><span class="spec">label 12 · sub 10 — компактнее</span></div>
+      <div class="c-card">
+
+        <div class="bv-row">
+          <div class="c-row-body"><div class="c-label">Bluetooth</div></div>
+          <span class="c-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+
+        <div class="bv-row">
+          <div class="c-row-body"><div class="c-label">Уведомления</div><div class="c-sub">Включены</div></div>
+          <span class="c-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+
+        <div class="bv-row">
+          <div class="c-row-body"><div class="c-label">Конфиденциальность данных</div><div class="c-sub">Управление доступом к показателям, экспортом и историей измерений</div></div>
+          <span class="c-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+
+        <div class="bv-row">
+          <div class="c-row-body"><div class="c-label">Автоматическая синхронизация с облаком Neiry</div><div class="c-sub">Каждые 15 минут</div></div>
+          <span class="c-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+
+        <div class="bv-row">
+          <div class="c-row-body"><div class="c-label">Версия прошивки</div><div class="c-sub mono">VIGOR-XYZ123 · 2.4.1</div></div>
+          <span class="c-chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="c-note">
+    <b>Трейд-офф.</b> A (sub 12) — sub-text лучше читается, особенно длинные описания и значения;
+    плотность строки чуть ниже. B (sub 10) — компактнее, sub визуально явно вторичен, но 10px на длинных
+    описаниях и mono-значениях («VIGOR-XYZ123») ближе к нижней границе комфортной читаемости.
+    Контраст ink-mute на белом ≈ 5.7:1 — проходит на обоих размерах. Решение за тобой; A — текущий primary.
+  </div>
+
+  <footer class="c-foot">
+    <span class="lbl">Source of truth</span>
+    <a href="tokens.css">tokens.css</a>
+    <a href="components.css">components.css</a>
+    <a href="typography.html">typography.html</a>
+    <a href="components-gallery.html">components-gallery.html</a>
+  </footer>
+
+</div>
+</body>
+</html>

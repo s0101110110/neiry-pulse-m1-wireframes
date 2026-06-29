@@ -7,75 +7,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Shared design system: tokens + atomic components (Stage 5 refactor) -->
+<link rel="stylesheet" href="../_shared/tokens.css" />
+<link rel="stylesheet" href="../_shared/components.css" />
+
 <style>
   /* ============================================================
-     TOKENS — Bevel-clone (Health Monitor / Монитор показателей)
-     заимствованы из /docs_web/DESIGN-bevel-clone.html v3
-     ВАЖНО: wine #831843 НЕ используется в content секции (semantic-зона).
-     Wine допустим только в bottom nav (active Дом) и app-bar pill.
+     PAGE-LEVEL FRAME — phone bezel mockup (НЕ компонент, локальный)
      ============================================================ */
-  :root {
-    /* Cool-gray surfaces (Bevel-tone, v3) */
-    --bg:          #F0F0F3;
-    --bg-2:        #E8E8EE;
-    --card:        #FFFFFF;
-    --card-soft:   #F9F9FC;
-
-    /* Hairline (Apple system gray cool-tone, sync с v3 палитрой) */
-    --hairline:    #E5E5EA;
-    --hairline-2:  #EEEEF2;
-
-    /* Ink scale (cool neutral) */
-    --ink:         #1B1B21;
-    --ink-mute:    #62626C;
-    --ink-dim:     #8E8E97;
-    --ink-faded:   #B5B5BD;   /* "Нет данных" текст */
-
-    /* Wine — БРЕНД-акцент. Только в bottom nav (active). */
-    --wine:        #831843;
-    --wine-tint:   #F7E3EC;
-
-    /* Semantic palette (Bevel severity rainbow) */
-    --sem-norm:    #1DA049;   /* Норма — green */
-    --sem-norm-ink:#117A38;
-    --sem-norm-bg: #E5F7EE;
-    --sem-norm-track: #D6F0E2;
-
-    --sem-warn:    #F2752B;   /* Внимание / выходит за норму (выше или ниже) — orange */
-    --sem-warn-ink:#C2511A;
-    --sem-warn-bg: #FBE9DA;
-    --sem-warn-track: #F8DEC8;
-
-    --sem-high:    #E11D48;   /* Critical — red */
-    --sem-high-ink:#C20D2E;
-    --sem-high-bg: #FBDDE3;
-    --sem-high-track: #F4C7D0;
-
-    --sem-empty-track: #EAEAEF;
-
-    /* Soft shadows (Bevel-DNA: cool-tone depth) */
-    --shadow-1: 0 1px 2px rgba(22,22,32,0.05), 0 1px 1px rgba(22,22,32,0.03);
-    --shadow-2: 0 1px 2px rgba(22,22,32,0.05), 0 4px 12px rgba(22,22,32,0.07);
-    --shadow-3: 0 1px 2px rgba(22,22,32,0.05), 0 8px 24px rgba(22,22,32,0.09);
-    --shadow-pill: 0 8px 24px rgba(22,22,32,0.12), 0 2px 6px rgba(22,22,32,0.06);
-
-    /* Type families */
-    --sans: 'Golos Text', system-ui, -apple-system, sans-serif;
-    /* Pulse Mono локально через @font-face не доступен в этом файле,
-       поэтому стек: 'Pulse Mono' (если установлен) → JetBrains Mono (Google Fonts) → ui-monospace.
-       JetBrains Mono — это исходник Pulse Mono (DESIGN.md), визуально идентичен. */
-    --mono: 'Pulse Mono', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
-
-    /* Radii */
-    --r-card: 22px;     /* card radius — внутри 20–24 диапазона */
-    --r-pill: 999px;
-  }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--sans);
+    background: var(--bv-bg-screen);
+    color: var(--bv-ink);
+    font-family: var(--bv-font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-kerning: normal;
@@ -88,54 +33,37 @@
     align-items: center;
     gap: 24px;
   }
-  :focus-visible { outline: 2px solid var(--wine); outline-offset: 2px; }
+  :focus-visible { outline: 2px solid var(--bv-wine); outline-offset: 2px; }
 
-  /* Reduced motion — гасит ВСЕ transitions/animations (a11y) */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-
-  /* ============================================================
-     PAGE CAPTION (debug-context, выше телефона)
-     ============================================================ */
-  .caption {
-    text-align: center;
-    max-width: 560px;
-  }
+  /* PAGE CAPTION (debug-context, выше телефона) */
+  .caption { text-align: center; max-width: 560px; }
   .caption .brand {
-    font-family: var(--mono);
+    font-family: var(--bv-font-mono);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.7px;
     text-transform: uppercase;
-    color: var(--wine);
+    color: var(--bv-wine);
   }
   .caption h1 {
     font-size: 28px;
     font-weight: 700;
     letter-spacing: -0.7px;
     line-height: 1.15;
-    color: var(--ink);
+    color: var(--bv-ink);
     margin-top: 8px;
   }
   .caption p {
     font-size: 14px;
     line-height: 1.55;
-    color: var(--ink-mute);
+    color: var(--bv-ink-mute);
     margin-top: 12px;
     max-width: 56ch;
     margin-left: auto;
     margin-right: auto;
   }
 
-  /* ============================================================
-     PHONE FRAME (iPhone 15-class, ~360×760)
-     ============================================================ */
+  /* PHONE FRAME (iPhone 15-class, ~360×760) */
   .phone {
     position: relative;
     width: 360px;
@@ -153,7 +81,7 @@
     width: 100%;
     height: 100%;
     border-radius: 38px;
-    background: var(--bg);
+    background: var(--bv-bg-screen);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -170,9 +98,7 @@
     z-index: 5;
   }
 
-  /* ============================================================
-     STATUS BAR (18:03 + signal/wifi/battery)
-     ============================================================ */
+  /* STATUS BAR (18:03 + signal/wifi/battery) */
   .status-bar {
     display: flex;
     justify-content: space-between;
@@ -180,7 +106,7 @@
     padding: 14px 26px 4px;
     font-size: 15px;
     font-weight: 600;
-    color: var(--ink);
+    color: var(--bv-ink);
     flex-shrink: 0;
     font-variant-numeric: tabular-nums;
   }
@@ -188,76 +114,19 @@
   .status-bar svg { display: block; }
 
   /* ============================================================
-     APP-BAR (calendar | date-center | share + avatar) — pill-shape
-     заимствуя Bevel "floating glass pill"
+     PAGE-LEVEL OVERRIDES & LOCAL BITS — health-monitor specifics
      ============================================================ */
-  .appbar {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 10px 16px 0;
-    padding: 4px 6px;
-    background: rgba(255,255,255,0.78);
-    backdrop-filter: blur(14px) saturate(180%);
-    -webkit-backdrop-filter: blur(14px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.9);
-    border-radius: 999px;
-    box-shadow: var(--shadow-pill);
-    flex-shrink: 0;
-  }
-  .appbar-icon {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: var(--card);
-    display: grid; place-items: center;
-    color: var(--ink);
-    border: 1px solid var(--hairline-2);
-    flex-shrink: 0;
-  }
-  .appbar-date {
-    flex: 1;
-    text-align: center;
-    font-family: var(--sans);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--ink);
-    letter-spacing: -0.1px;
-    font-variant-numeric: tabular-nums;
-  }
-  .appbar-actions { display: flex; gap: 6px; align-items: center; }
-  .avatar {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: #B5DAF1;          /* мягкий голубой (как KS у Bevel) — НЕ wine */
-    color: #0A4C7A;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 600;
-    display: grid; place-items: center;
-    flex-shrink: 0;
-    letter-spacing: 0.4px;
-  }
 
-  /* ============================================================
-     SECTION HEADER «Монитор показателей»
-     ============================================================ */
+  /* App-bar margin от status-bar (page-level layout, не часть компонента) */
+  .bv-app-bar { margin: 10px 16px 0; }
+
+  /* Section header — padding 28/22/16 (страничный layout) */
   .section-head {
     padding: 28px 22px 16px;
     flex-shrink: 0;
   }
-  .section-head h2 {
-    font-family: var(--sans);
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: -0.7px;
-    line-height: 1.1;
-    color: var(--ink);
-  }
 
-  /* ============================================================
-     BENTO GRID 2×3
-     ============================================================ */
+  /* Bento grid 2×3 — layout страницы */
   .body {
     flex: 1;
     overflow: hidden;
@@ -269,19 +138,13 @@
     gap: 10px;
   }
 
-  /* ============================================================
-     METRIC CARD
-     ============================================================ */
+  /* Metric card — composition над bv-card--bento (внутр. layout cell)
+     bv-card--bento даёт surface + border + radius + shadow + padding-12 + min-h-122 */
   .mcard {
-    background: var(--card);
-    border: 1px solid var(--hairline-2);
-    border-radius: var(--r-card);
-    padding: 13px 14px 12px;
-    box-shadow: var(--shadow-2);
     display: flex;
     gap: 8px;
     align-items: stretch;
-    min-height: 122px;
+    padding: 13px 14px 12px;   /* page-specific override (bento padding 12 + 1/2 nudge) */
   }
   .mcard-left {
     flex: 1;
@@ -294,18 +157,18 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    color: var(--ink-dim);
+    color: var(--bv-ink-dim);
   }
   .mcard-head svg {
     flex-shrink: 0;
-    color: var(--ink-dim);
+    color: var(--bv-ink-dim);
     stroke-width: 1.5;
   }
   .mcard-label {
-    font-family: var(--sans);
+    font-family: var(--bv-font-sans);
     font-size: 14px;
     font-weight: 500;
-    color: var(--ink-mute);
+    color: var(--bv-ink-mute);
     letter-spacing: -0.1px;
   }
   .mcard-num {
@@ -315,166 +178,95 @@
     margin-top: -2px;
   }
   .mcard-num .v {
-    font-family: var(--mono);
+    font-family: var(--bv-font-mono);
     font-weight: 500;
     font-size: 28px;
     line-height: 1;
-    color: var(--ink);
+    color: var(--bv-ink);
     letter-spacing: -0.6px;
     font-variant-numeric: tabular-nums lining-nums;
   }
   .mcard-num .u {
-    font-family: var(--sans);
+    font-family: var(--bv-font-sans);
     font-size: 12px;
     font-weight: 500;
-    color: var(--ink-mute);
+    color: var(--bv-ink-mute);
     line-height: 1;
   }
-  .mcard-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
+  /* Chip status — inline-flex + icon gap внутри карточки;
+     fontsize/lineheight перетягиваем выше bv-chip defaults для метрик. */
+  .bv-chip--metric {
     margin-top: auto;
-    font-family: var(--sans);
+    padding: 0;
+    background: transparent;
     font-size: 12.5px;
     font-weight: 600;
     line-height: 1;
+    gap: 4px;
   }
-  .mcard-status svg { flex-shrink: 0; }
+  .bv-chip--metric svg { flex-shrink: 0; }
+  .bv-chip--metric.bv-chip--status-low   { color: var(--bv-sem-norm-ink); }
+  .bv-chip--metric.bv-chip--status-low   svg { color: var(--bv-sem-norm); }
+  .bv-chip--metric.bv-chip--status-mid   { color: var(--bv-sem-warn-ink); }
+  .bv-chip--metric.bv-chip--status-mid   svg { color: var(--bv-sem-warn); }
+  .bv-chip--metric.bv-chip--status-high  { color: var(--bv-sem-high-ink); }
+  .bv-chip--metric.bv-chip--status-high  svg { color: var(--bv-sem-high); }
+  .bv-chip--metric.bv-chip--status-empty { color: var(--bv-ink-faded); }
 
-  .mcard-status.s-norm { color: var(--sem-norm-ink); }
-  .mcard-status.s-norm svg { color: var(--sem-norm); }
-  .mcard-status.s-warn { color: var(--sem-warn-ink); }
-  .mcard-status.s-warn svg { color: var(--sem-warn); }
-  .mcard-status.s-high { color: var(--sem-high-ink); }
-  .mcard-status.s-high svg { color: var(--sem-high); }
-  .mcard-status.s-empty { color: var(--ink-faded); }
-
-  /* No-data state — большая цифра становится faded двухстрочным "Нет\nданных" */
+  /* No-data state — большая цифра становится faded двухстрочным «Нет\nданных» */
   .mcard-nodata {
-    font-family: var(--sans);
+    font-family: var(--bv-font-sans);
     font-size: 22px;
     font-weight: 500;
-    color: var(--ink-faded);
+    color: var(--bv-ink-faded);
     line-height: 1.05;
     letter-spacing: -0.4px;
     margin-top: -2px;
   }
 
-  /* ============================================================
-     CAPSULE — vertical pill с fill от низа + dot
-     ширина 14px, высота 92px, radius 999px
-     ============================================================ */
-  .capsule {
-    position: relative;
+  /* Capsule mini — page-specific dimensions (14×92 точно под bento card 122) */
+  .bv-capsule--mini {
     width: 14px;
     height: 92px;
-    border-radius: var(--r-pill);
-    background: var(--sem-empty-track);
-    flex-shrink: 0;
+    min-height: 92px;
     align-self: center;
-    overflow: hidden;
   }
-  .capsule .fill {
-    position: absolute;
-    left: 0; right: 0;
-    bottom: 0;
-    border-radius: var(--r-pill);
-  }
-  .capsule .dot {
-    position: absolute;
-    left: 50%;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: #FFF;
-    transform: translate(-50%, 50%);   /* центр dot на верхней границе fill */
-    box-shadow: 0 0 0 2px rgba(255,255,255,0.7), 0 1px 3px rgba(22,22,32,0.18);
-    z-index: 2;
-  }
-
-  /* fill colors per status */
-  .capsule.s-norm  { background: var(--sem-norm-track); }
-  .capsule.s-norm  .fill { background: var(--sem-norm); }
-  .capsule.s-warn  { background: var(--sem-warn-track); }
-  .capsule.s-warn  .fill { background: var(--sem-warn); }
-  .capsule.s-high  { background: var(--sem-high-track); }
-  .capsule.s-high  .fill { background: var(--sem-high); }
-  .capsule.s-empty { background: var(--sem-empty-track); }
-  .capsule.s-empty .dot { display: none; }
+  /* dot позиционируется через inline bottom: N% */
+  .bv-capsule__dot { box-shadow: 0 0 0 2px rgba(255,255,255,0.7), 0 1px 3px rgba(22,22,32,0.18); }
 
   /* ============================================================
-     BOTTOM NAV — floating pill 5-tab (заимствовано из v2)
-     ============================================================ */
-  .bottom-nav {
-    position: absolute;
-    left: 16px; right: 16px;
-    bottom: 16px;
-    display: flex;
-    background: rgba(255,255,255,0.82);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.9);
-    border-radius: 999px;
-    padding: 6px;
-    gap: 2px;
-    box-shadow: var(--shadow-pill);
-    z-index: 3;
-  }
-  .nav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 7px 0 6px;
-    gap: 3px;
-    font-size: 9.5px;
-    color: var(--ink-dim);
-    font-weight: 500;
-    border-radius: 999px;
-    transition: color 160ms ease-out, background 160ms ease-out;
-  }
-  .nav-item svg { color: var(--ink-dim); }
-  .nav-item.active {
-    color: var(--wine);
-    background: var(--wine-tint);
-    font-weight: 600;
-  }
-  .nav-item.active svg { color: var(--wine); }
-
-  /* ============================================================
-     SKILL-OBJECTIONS (если есть — внизу страницы под телефоном)
+     SKILL-OBJECTIONS (на разбор PM, под телефоном)
      ============================================================ */
   .objections {
     margin-top: 24px;
     max-width: 560px;
-    background: var(--card);
-    border: 1px solid var(--hairline-2);
+    background: var(--bv-bg-card);
+    border: 1px solid var(--bv-hairline-2);
     border-radius: 16px;
     padding: 20px 22px;
-    box-shadow: var(--shadow-2);
+    box-shadow: var(--bv-shadow-card);
   }
   .objections h3 {
     font-size: 14px;
     font-weight: 700;
-    color: var(--ink);
+    color: var(--bv-ink);
     margin-bottom: 8px;
     letter-spacing: -0.2px;
   }
   .objections ul {
     list-style: disc;
     padding-left: 18px;
-    color: var(--ink-mute);
+    color: var(--bv-ink-mute);
     font-size: 13px;
     line-height: 1.55;
   }
   .objections code {
-    font-family: var(--mono);
+    font-family: var(--bv-font-mono);
     font-size: 12px;
-    background: var(--bg-2);
+    background: var(--bv-bg-subtle);
     padding: 1px 5px;
     border-radius: 4px;
-    color: var(--wine);
+    color: var(--bv-wine);
   }
 </style>
 </head>
@@ -524,8 +316,8 @@
     </div>
 
     <!-- ===== APP-BAR (calendar · date · share + avatar) ===== -->
-    <div class="appbar">
-      <div class="appbar-icon" aria-label="Календарь">
+    <div class="bv-app-bar bv-app-bar--pill">
+      <div class="bv-app-bar__icon-btn" aria-label="Календарь">
         <!-- calendar thin -->
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="3" y="5" width="18" height="16" rx="2.5"/>
@@ -534,9 +326,9 @@
           <line x1="16" y1="3" x2="16" y2="6"/>
         </svg>
       </div>
-      <div class="appbar-date">27 Июн 2026</div>
-      <div class="appbar-actions">
-        <div class="appbar-icon" aria-label="Поделиться">
+      <div class="bv-app-bar__date">27 Июн 2026</div>
+      <div class="appbar-actions" style="display:flex; gap:6px; align-items:center;">
+        <div class="bv-app-bar__icon-btn" aria-label="Поделиться">
           <!-- share thin -->
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M12 16 V4"/>
@@ -544,13 +336,13 @@
             <path d="M5 14 V19 A2 2 0 0 0 7 21 H17 A2 2 0 0 0 19 19 V14"/>
           </svg>
         </div>
-        <div class="avatar" aria-label="Профиль КЛ">КЛ</div>
+        <div class="bv-avatar" aria-label="Профиль КЛ" style="background:#B5DAF1; color:#0A4C7A; font-size:12px; letter-spacing:0.4px;">КЛ</div>
       </div>
     </div>
 
     <!-- ===== SECTION HEAD ===== -->
     <div class="section-head">
-      <h2>Монитор показателей</h2>
+      <h2 class="bv-section-header">Монитор показателей</h2>
     </div>
 
     <!-- ===== BENTO 2×3 ===== -->
@@ -561,7 +353,7 @@
         <!-- HRV: value=65.4ms, personal range [60–100], position=14% (вблизи нижней границы).
              value-from-bottom = (65.4 − 60) / (100 − 60) = 5.4 / 40 = 13.5% → округлено 14%.
              status=Ниже (значение в нижней трети — недовосстановление, ниже личной нормы). -->
-        <div class="mcard">
+        <div class="bv-card bv-card--bento mcard">
           <div class="mcard-left">
             <div class="mcard-head">
               <!-- HRV — pulse wave thin -->
@@ -574,7 +366,7 @@
               <span class="v">65.4</span>
               <span class="u">ms</span>
             </div>
-            <span class="mcard-status s-warn">
+            <span class="bv-chip bv-chip--metric bv-chip--status-mid">
               <!-- arrow down circle -->
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 2 a10 10 0 1 0 0 20 a10 10 0 0 0 0-20 z M12 7 v8 m-4-4 l4 4 l4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -582,9 +374,10 @@
               Ниже
             </span>
           </div>
-          <div class="capsule s-warn" aria-label="HRV — позиция в норме 14%">
-            <div class="fill" style="height: 14%;"></div>
-            <div class="dot" style="bottom: 14%;"></div>
+          <div class="bv-capsule bv-capsule--mini bv-capsule--warn" aria-label="HRV — позиция в норме 14%">
+            <div class="bv-capsule__track"></div>
+            <div class="bv-capsule__fill" style="height: 14%;"></div>
+            <div class="bv-capsule__dot" style="bottom: 14%;"></div>
           </div>
         </div>
 
@@ -592,7 +385,7 @@
         <!-- RHR: value=58 bpm, personal range [50–70], position=40%.
              value-from-bottom = (58 − 50) / (70 − 50) = 8 / 20 = 40%.
              status=Норма (RHR ниже = лучше, 40% в середине-низу = здоровая зона). -->
-        <div class="mcard">
+        <div class="bv-card bv-card--bento mcard">
           <div class="mcard-left">
             <div class="mcard-head">
               <!-- heart thin -->
@@ -605,7 +398,7 @@
               <span class="v">58</span>
               <span class="u">bpm</span>
             </div>
-            <span class="mcard-status s-norm">
+            <span class="bv-chip bv-chip--metric bv-chip--status-low">
               <!-- check circle -->
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <circle cx="12" cy="12" r="10"/>
@@ -614,9 +407,10 @@
               Норма
             </span>
           </div>
-          <div class="capsule s-norm" aria-label="RHR — позиция в норме 40%">
-            <div class="fill" style="height: 40%;"></div>
-            <div class="dot" style="bottom: 40%;"></div>
+          <div class="bv-capsule bv-capsule--mini bv-capsule--norm" aria-label="RHR — позиция в норме 40%">
+            <div class="bv-capsule__track"></div>
+            <div class="bv-capsule__fill" style="height: 40%;"></div>
+            <div class="bv-capsule__dot" style="bottom: 40%;"></div>
           </div>
         </div>
 
@@ -624,7 +418,7 @@
         <!-- NSI: value=78, range [0–100], position=78%.
              value-from-bottom = 78 / 100 = 78%.
              status=Выше (стресс повышен — верхняя зона шкалы выходит за норму). -->
-        <div class="mcard">
+        <div class="bv-card bv-card--bento mcard">
           <div class="mcard-left">
             <div class="mcard-head">
               <!-- brain / activity -->
@@ -638,7 +432,7 @@
               <span class="v">78</span>
               <span class="u"></span>
             </div>
-            <span class="mcard-status s-warn">
+            <span class="bv-chip bv-chip--metric bv-chip--status-mid">
               <!-- arrow up circle -->
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <circle cx="12" cy="12" r="10"/>
@@ -648,9 +442,10 @@
               Выше
             </span>
           </div>
-          <div class="capsule s-warn" aria-label="NSI — позиция 78%">
-            <div class="fill" style="height: 78%;"></div>
-            <div class="dot" style="bottom: 78%;"></div>
+          <div class="bv-capsule bv-capsule--mini bv-capsule--warn" aria-label="NSI — позиция 78%">
+            <div class="bv-capsule__track"></div>
+            <div class="bv-capsule__fill" style="height: 78%;"></div>
+            <div class="bv-capsule__dot" style="bottom: 78%;"></div>
           </div>
         </div>
 
@@ -658,7 +453,7 @@
         <!-- Сон: value=7ч 12м = 7.2ч, range [5–10ч], position=44%.
              value-from-bottom = (7.2 − 5) / (10 − 5) = 2.2 / 5 = 44%.
              status=Норма (7–9ч = оптимум, 44% попадает в зелёную зону). -->
-        <div class="mcard">
+        <div class="bv-card bv-card--bento mcard">
           <div class="mcard-left">
             <div class="mcard-head">
               <!-- bed thin -->
@@ -674,7 +469,7 @@
             <div class="mcard-num">
               <span class="v">7ч&nbsp;12м</span>
             </div>
-            <span class="mcard-status s-norm">
+            <span class="bv-chip bv-chip--metric bv-chip--status-low">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <circle cx="12" cy="12" r="10"/>
                 <polyline points="8 12 11 15 16 9"/>
@@ -682,16 +477,17 @@
               Норма
             </span>
           </div>
-          <div class="capsule s-norm" aria-label="Сон — позиция 44%">
-            <div class="fill" style="height: 44%;"></div>
-            <div class="dot" style="bottom: 44%;"></div>
+          <div class="bv-capsule bv-capsule--mini bv-capsule--norm" aria-label="Сон — позиция 44%">
+            <div class="bv-capsule__track"></div>
+            <div class="bv-capsule__fill" style="height: 44%;"></div>
+            <div class="bv-capsule__dot" style="bottom: 44%;"></div>
           </div>
         </div>
 
         <!-- ─────────── CARD 5 · SpO2 · Нет данных (empty) ─────────── -->
         <!-- SpO2: сенсор не активен — capsule пустая (light grey track), без fill и dot.
              Большая цифра заменена двухстрочным "Нет данных" в faded цвете. -->
-        <div class="mcard">
+        <div class="bv-card bv-card--bento mcard">
           <div class="mcard-left">
             <div class="mcard-head">
               <!-- droplet thin -->
@@ -701,16 +497,20 @@
               <span class="mcard-label">SpO₂</span>
             </div>
             <div class="mcard-nodata">Нет<br/>данных</div>
-            <span class="mcard-status s-empty" style="visibility:hidden">·</span>
+            <span class="bv-chip bv-chip--metric bv-chip--status-empty" style="visibility:hidden">·</span>
           </div>
-          <div class="capsule s-empty" aria-label="SpO2 — нет данных"></div>
+          <div class="bv-capsule bv-capsule--mini bv-capsule--empty" aria-label="SpO2 — нет данных">
+            <div class="bv-capsule__track"></div>
+            <div class="bv-capsule__fill"></div>
+            <div class="bv-capsule__dot"></div>
+          </div>
         </div>
 
         <!-- ─────────── CARD 6 · Темп · Внимание (red, critical) ─────────── -->
         <!-- Темп: value=38.1°C, range [35.5–38.5°C], position=87%.
              value-from-bottom = (38.1 − 35.5) / (38.5 − 35.5) = 2.6 / 3.0 = 87%.
              status=Внимание (значение критически высокое — фебрильная зона, требует действия). -->
-        <div class="mcard">
+        <div class="bv-card bv-card--bento mcard">
           <div class="mcard-left">
             <div class="mcard-head">
               <!-- thermometer thin -->
@@ -724,7 +524,7 @@
               <span class="v">38.1</span>
               <span class="u">°C</span>
             </div>
-            <span class="mcard-status s-high">
+            <span class="bv-chip bv-chip--metric bv-chip--status-high">
               <!-- alert triangle filled -->
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
@@ -734,9 +534,10 @@
               Внимание
             </span>
           </div>
-          <div class="capsule s-high" aria-label="Темп — критическая позиция 87%">
-            <div class="fill" style="height: 87%;"></div>
-            <div class="dot" style="bottom: 87%;"></div>
+          <div class="bv-capsule bv-capsule--mini bv-capsule--high" aria-label="Темп — критическая позиция 87%">
+            <div class="bv-capsule__track"></div>
+            <div class="bv-capsule__fill" style="height: 87%;"></div>
+            <div class="bv-capsule__dot" style="bottom: 87%;"></div>
           </div>
         </div>
 
@@ -744,24 +545,24 @@
     </div>
 
     <!-- ===== BOTTOM NAV (floating pill) ===== -->
-    <div class="bottom-nav">
-      <a class="nav-item active" aria-current="page">
+    <div class="bv-nav-pill">
+      <a class="bv-nav-item is-active" aria-current="page">
         <!-- home filled -->
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/>
         </svg>
         Дом
       </a>
-      <a class="nav-item">
+      <a class="bv-nav-item">
         <!-- training -->
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M6.5 6.5 L17.5 17.5"/>
           <circle cx="6" cy="18" r="2"/>
           <circle cx="18" cy="6" r="2"/>
         </svg>
-        Спорт
+        Тренировка
       </a>
-      <a class="nav-item">
+      <a class="bv-nav-item">
         <!-- history -->
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <line x1="4" y1="7" x2="20" y2="7"/>
@@ -770,14 +571,14 @@
         </svg>
         История
       </a>
-      <a class="nav-item">
+      <a class="bv-nav-item">
         <!-- health -->
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7z"/>
         </svg>
         Здоровье
       </a>
-      <a class="nav-item">
+      <a class="bv-nav-item">
         <!-- more -->
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <circle cx="5" cy="12" r="1.4"/>

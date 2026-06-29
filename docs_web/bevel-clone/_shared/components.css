@@ -136,11 +136,10 @@
   font-weight: var(--bv-fw-medium);
   color: var(--bv-ink-dim);
   border-radius: var(--bv-r-pill);
-  transition: color 160ms ease-out, background 160ms ease-out;
+  transition: color 160ms ease-out;
 }
-.bv-nav-item.is-active {                  /* Wine zone #1 */
+.bv-nav-item.is-active {                  /* Wine zone #1 — wine color на icon+label, без chip-bg (PM Stage 5) */
   color: var(--bv-wine);
-  background: var(--bv-wine-tint);
   font-weight: var(--bv-fw-semibold);
 }
 
@@ -275,7 +274,7 @@
    ============================================================ */
 .bv-button {
   font-family: var(--bv-font-sans);
-  font-size: var(--bv-fs-label);
+  font-size: var(--bv-fs-body);          /* 14px — CTA не следует за label-токеном (v1.0.4: label→12, кнопки остаются 14) */
   font-weight: var(--bv-fw-semibold);
   line-height: var(--bv-lh-tight);
   padding: var(--bv-sp-3) var(--bv-sp-5);
