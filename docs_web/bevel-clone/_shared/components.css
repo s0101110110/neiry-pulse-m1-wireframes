@@ -334,6 +334,12 @@
   text-transform: uppercase;
   color: var(--bv-ink-mute);
 }
+/* In-content eyebrow (default, ink-mute 500) — для cards / sections внутри screens.
+   Brand-eyebrow (--brand, wine 600) — для catalog headers / chrome / brand signal зон. */
+.bv-eyebrow--brand {
+  font-weight: var(--bv-fw-semibold);
+  color: var(--bv-wine);
+}
 
 /* ============================================================
    A11Y — focus-visible + reduced-motion

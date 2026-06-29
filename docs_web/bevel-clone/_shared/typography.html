@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Neiry Pulse · Type Scale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  @font-face{font-family:'Pulse Mono';font-weight:400;src:url('../../fonts/pulse-mono/PulseMono-Regular.woff2') format('woff2');font-display:swap;}
+  @font-face{font-family:'Pulse Mono';font-weight:500;src:url('../../fonts/pulse-mono/PulseMono-Medium.woff2') format('woff2');font-display:swap;}
+  @font-face{font-family:'Pulse Mono';font-weight:600;src:url('../../fonts/pulse-mono/PulseMono-SemiBold.woff2') format('woff2');font-display:swap;}
+  @font-face{font-family:'Pulse Mono';font-weight:700;src:url('../../fonts/pulse-mono/PulseMono-Bold.woff2') format('woff2');font-display:swap;}
+</style>
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="components.css" />
+<style>
+  /* SCAFFOLD — type-scale specimen (t-). Образцы (.t-s-*) и ВСЕ цвета через var(--bv-*).
+     Размеры каркаса каталога (h1, .t-token, .t-attrs и т.п.) — литералы рамки, не часть продуктовой шкалы. НЕ переопределяет bv-*. */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bv-bg-screen); color: var(--bv-ink); font-family: var(--bv-font-sans); font-kerning: normal; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  .t-wrap { max-width: 1080px; margin: 0 auto; padding: var(--bv-sp-8); }
+
+  /* ---- header ---- */
+  .t-head { border-bottom: 1px solid var(--bv-hairline); padding-bottom: var(--bv-sp-5); margin-bottom: var(--bv-sp-6); }
+  .t-eyebrow { font-family: var(--bv-font-mono); font-size: var(--bv-fs-eyebrow); font-weight: var(--bv-fw-semibold); letter-spacing: var(--bv-ls-eyebrow); text-transform: uppercase; color: var(--bv-wine); }
+  .t-head h1 { font-size: 30px; font-weight: var(--bv-fw-extrabold); letter-spacing: -0.9px; margin-top: 10px; text-wrap: balance; overflow-wrap: break-word; }
+  .t-head p { font-size: var(--bv-fs-body); color: var(--bv-ink-mute); margin-top: 10px; max-width: 66ch; line-height: var(--bv-lh-body); text-wrap: pretty; }
+  .t-head p code { font-family: var(--bv-font-mono); font-size: 0.92em; color: var(--bv-ink); background: var(--bv-bg-subtle); padding: 1px 5px; border-radius: 5px; }
+  .t-meta { font-family: var(--bv-font-mono); font-size: 11.5px; color: var(--bv-ink-mute); margin-top: 12px; font-variant-numeric: tabular-nums; }
+
+  /* ---- scale row ---- */
+  .t-row { display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: center;
+           background: var(--bv-bg-card); border: 1px solid var(--bv-hairline); border-radius: 16px;
+           box-shadow: var(--bv-shadow-card); padding: 24px 26px; margin-bottom: 14px; }
+  .t-sample { min-width: 0; overflow: hidden; }
+  .t-sample > * { overflow-wrap: break-word; }
+
+  /* metadata panel */
+  .t-meta-panel { min-width: 0; border-left: 1px solid var(--bv-hairline-2); padding-left: 24px; }
+  .t-token { font-family: var(--bv-font-mono); font-size: 13px; font-weight: var(--bv-fw-semibold); color: var(--bv-ink); letter-spacing: -0.2px; }
+  .t-fam { display: inline-block; margin-top: 4px; font-size: 11px; color: var(--bv-ink-mute); }
+  .t-fam b { color: var(--bv-ink); font-weight: var(--bv-fw-semibold); }
+  .t-attrs { margin-top: 12px; border-collapse: collapse; width: 100%; font-size: 12px; }
+  .t-attrs td { padding: 3px 0; vertical-align: baseline; }
+  .t-attrs td.k { color: var(--bv-ink-mute); width: 40%; }
+  .t-attrs td.v { font-family: var(--bv-font-mono); color: var(--bv-ink); font-variant-numeric: tabular-nums; }
+  .t-attrs td.v small { color: var(--bv-ink-mute); font-size: 10.5px; }
+  .t-attrs td.v .flag { color: var(--bv-sem-warn-ink); }
+  .t-where { margin-top: 12px; font-size: 11.5px; color: var(--bv-ink-mute); line-height: 1.5; }
+  .t-where .lbl { font-family: var(--bv-font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--bv-ink-dim); display: block; margin-bottom: 3px; }
+
+  /* ---- live samples — все размеры/веса/интерлиньяж через var(--bv-*) ---- */
+  .t-s-hero    { font-family: var(--bv-font-mono); font-size: var(--bv-fs-display-hero); font-weight: var(--bv-fw-medium);   line-height: var(--bv-lh-tight);   letter-spacing: -1.5px; font-variant-numeric: tabular-nums; color: var(--bv-ink); }
+  .t-s-h2      { font-family: var(--bv-font-sans); font-size: var(--bv-fs-section-h2);   font-weight: var(--bv-fw-bold);     line-height: var(--bv-lh-display); letter-spacing: var(--bv-ls-tight); color: var(--bv-ink); }
+  .t-s-metric  { font-family: var(--bv-font-mono); font-size: var(--bv-fs-metric-bento); font-weight: var(--bv-fw-medium);   line-height: var(--bv-lh-tight);   letter-spacing: var(--bv-ls-tight); font-variant-numeric: tabular-nums; color: var(--bv-ink); }
+  .t-s-metric .u { font-family: var(--bv-font-sans); font-size: var(--bv-fs-body); font-weight: var(--bv-fw-regular); color: var(--bv-ink-mute); margin-left: 4px; letter-spacing: 0; }
+  .t-s-headline{ font-family: var(--bv-font-sans); font-size: var(--bv-fs-headline);    font-weight: var(--bv-fw-bold);     line-height: var(--bv-lh-display); color: var(--bv-ink); }
+  .t-s-label   { font-family: var(--bv-font-sans); font-size: var(--bv-fs-label);       font-weight: var(--bv-fw-medium);   line-height: var(--bv-lh-display); color: var(--bv-ink); }
+  .t-s-body    { font-family: var(--bv-font-sans); font-size: var(--bv-fs-body);        font-weight: var(--bv-fw-regular);  line-height: var(--bv-lh-body); color: var(--bv-ink-mute); max-width: 62ch; text-wrap: pretty; }
+  .t-s-caption { font-family: var(--bv-font-sans); font-size: var(--bv-fs-caption);     font-weight: var(--bv-fw-medium);   line-height: var(--bv-lh-body); color: var(--bv-ink-mute); }
+  .t-s-eyebrow { font-family: var(--bv-font-mono); font-size: var(--bv-fs-eyebrow);     font-weight: var(--bv-fw-semibold); line-height: var(--bv-lh-tight); letter-spacing: var(--bv-ls-eyebrow); text-transform: uppercase; color: var(--bv-wine); }
+  .t-s-tab     { font-family: var(--bv-font-mono); font-size: var(--bv-fs-tab-label);   font-weight: var(--bv-fw-medium);   line-height: var(--bv-lh-tight); letter-spacing: 0.4px; color: var(--bv-ink-mute); }
+  .t-s-bounds  { font-family: var(--bv-font-mono); font-size: var(--bv-fs-capsule-bounds); font-weight: var(--bv-fw-regular); line-height: var(--bv-lh-tight); font-variant-numeric: tabular-nums; color: var(--bv-ink-soft); }
+
+  /* ---- mixed composition ---- */
+  .t-section-title { font-size: 22px; font-weight: var(--bv-fw-bold); letter-spacing: -0.5px; margin: 48px 0 6px; text-wrap: balance; }
+  .t-section-sub { font-size: 13.5px; color: var(--bv-ink-mute); margin-bottom: 20px; max-width: 72ch; line-height: 1.5; text-wrap: pretty; }
+  .t-mixed { background: var(--bv-bg-card); border: 1px solid var(--bv-hairline); border-radius: var(--bv-r-card); box-shadow: var(--bv-shadow-card); padding: 30px 32px; max-width: 460px; }
+  .t-mixed .row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+  .t-mixed .hero-line { display: flex; align-items: baseline; gap: 8px; margin: 6px 0 2px; }
+  .t-mixed .hero-line .unit { font-family: var(--bv-font-sans); font-size: var(--bv-fs-headline); font-weight: var(--bv-fw-regular); color: var(--bv-ink-mute); }
+  .t-mixed .divider { height: 1px; background: var(--bv-hairline-2); margin: 18px 0; }
+  .t-mixed .metric-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+  .t-mixed .t-s-body { margin-bottom: 14px; }
+  .t-mixed .foot { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--bv-hairline-2); }
+  .t-mixed .foot + .foot { border-top: 0; padding-top: 0; margin-top: 12px; }
+  .t-mixed .nav { display: flex; gap: 14px; }
+
+  /* ---- footer ---- */
+  .t-foot { margin-top: 52px; border-top: 1px solid var(--bv-hairline); padding-top: 20px; display: flex; flex-wrap: wrap; gap: 18px; font-size: 13px; align-items: center; }
+  .t-foot .lbl { font-family: var(--bv-font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--bv-ink-dim); }
+  .t-foot a { color: var(--bv-wine); font-weight: var(--bv-fw-semibold); text-decoration: none; }
+  .t-foot a:hover { text-decoration: underline; }
+
+  /* polish — узкий вьюпорт: ступени и mixed коллапсируют */
+  @media (max-width: 760px) {
+    .t-wrap { padding: var(--bv-sp-5); }
+    .t-head h1 { font-size: 25px; }
+    .t-row { grid-template-columns: 1fr; gap: 20px; }
+    .t-meta-panel { border-left: 0; border-top: 1px solid var(--bv-hairline-2); padding-left: 0; padding-top: 18px; }
+    .t-mixed { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="t-wrap">
+
+  <header class="t-head">
+    <div class="t-eyebrow">Neiry Pulse · Bevel-clone</div>
+    <h1>Type Scale · 10 ступеней</h1>
+    <p>
+      Живая шкала всех размеров <code>--bv-fs-*</code> из tokens.css v1.0.3: реальный шрифт, токен,
+      метрики (размер · вес · интерлиньяж · трекинг · семья) и где применяется. Ниже — mixed-композиция,
+      где ступени стоят рядом и показывают иерархию.
+    </p>
+    <div class="t-meta">tokens.css v1.0.3 · Golos Text + Pulse Mono · 10 ступеней · по убыванию</div>
+  </header>
+
+  <!-- ============ 1 · DISPLAY HERO ============ -->
+  <div class="t-row">
+    <div class="t-sample"><div class="t-s-hero">47</div></div>
+    <div class="t-meta-panel">
+      <div class="t-token">--bv-fs-display-hero</div>
+      <span class="t-fam">Семья: <b>Pulse Mono</b></span>
+      <table class="t-attrs">
+        <tr><td class="k">Размер</td><td class="v">60px <small>--bv-fs-display-hero</small></td></tr>
+        <tr><td class="k">Вес</td><td class="v">500 <small>--bv-fw-medium</small></td></tr>
+        <tr><td class="k">Интерлиньяж</td><td class="v">1.0 <small>--bv-lh-tight</small></td></tr>
+        <tr><td class="k">Трекинг</td><td class="v">−1.5px <span class="flag">⚠ нет токена</span></td></tr>
+      </table>
+      <div class="t-where"><span class="lbl">Где</span>HRV detail · hero-число · Home health monitor · kiosk-режим</div>
+    </div>
+  </div>
+
+  <!-- ============ 2 · SECTION H2 ============ -->
+  <div class="t-row">
+    <div class="t-sample"><div class="t-s-h2">Монитор показателей</div></div>
+    <div class="t-meta-panel">
+      <div class="t-token">--bv-fs-section-h2</div>
+      <span class="t-fam">Семья: <b>Golos Text</b></span>
+      <table class="t-attrs">
+        <tr><td class="k">Размер</td><td class="v">24px <small>--bv-fs-section-h2</small></td></tr>
+        <tr><td class="k">Вес</td><td class="v">700 <small>--bv-fw-bold</small></td></tr>
+        <tr><td class="k">Интерлиньяж</td><td class="v">1.1 <small>--bv-lh-display</small></td></tr>
+        <tr><td class="k">Трекинг</td><td class="v">−0.6px <small>--bv-ls-tight</small></td></tr>
+      </table>
+      <div class="t-where"><span class="lbl">Где</span>Заголовки секций · History · Settings · экранные H2</div>
+    </div>
+  </div>
+
+  <!-- ============ 3 · METRIC BENTO ============ -->
+  <div class="t-row">
+    <div class="t-sample"><div class="t-s-metric">65.4<span class="u">ms</span></div></div>
+    <div class="t-meta-panel">
+      <div class="t-token">--bv-fs-metric-bento</div>
+      <span class="t-fam">Семья: <b>Pulse Mono</b> · tabular-nums</span>
+      <table class="t-attrs">
+        <tr><td class="k">Размер</td><td class="v">28px <small>--bv-fs-metric-bento</small></td></tr>
+        <tr><td class="k">Вес</td><td class="v">500 <small>--bv-fw-medium</small></td></tr>
+        <tr><td class="k">Интерлиньяж</td><td class="v">1.0 <small>--bv-lh-tight</small></td></tr>
+        <tr><td class="k">Трекинг</td><td class="v">−0.6px <small>--bv-ls-tight</small></td></tr>
+      </table>
+      <div class="t-where"><span class="lbl">Где</span>Цифра в bento-карточке · RHR · HRV · Темп · SpO₂</div>
+    </div>
+  </div>
+
+  <!-- ============ 4 · HEADLINE ============ -->
+  <div class="t-row">
+    <div class="t-sample"><div class="t-s-headline">27 Июн 2026</div></div>
+    <div class="t-meta-panel">
+      <div class="t-token">--bv-fs-headline</div>
+      <span class="t-fam">Семья: <b>Golos Text</b></span>
+      <table class="t-attrs">
+        <tr><td class="k">Размер</td><td class="v">17px <small>--bv-fs-headline</small></td></tr>
+        <tr><td class="k">Вес</td><td class="v">700 <small>--bv-fw-bold</small></td></tr>
+        <tr><td class="k">Интерлиньяж</td><td class="v">1.1 <small>--bv-lh-display</small></td></tr>
+        <tr><td class="k">Трекинг</td><td class="v">normal <small>эталон −0.1px</small></td></tr>
+      </table>
+      <div class="t-where"><span class="lbl">Где</span>App-bar title · дата-пилюля · заголовок detail-экрана</div>
+    </div>
+  </div>
+
+  <!-- ============ 5 · LABEL ============ -->
+  <div class="t-row">
+    <div class="t-sample"><div class="t-s-label">HRV</div></div>
+    <div class="t-meta-panel">
+      <div class="t-token">--bv-fs-label</div>
+      <span class="t-fam">Семья: <b>Golos Text</b></span>
+      <table class="t-attrs">
+        <tr><td class="k">Размер</td><td class="v">14px <small>--bv-fs-label</small></td></tr>
+        <tr><td class="k">Вес</td><td class="v">500 <small>--bv-fw-medium</small></td></tr>
+        <tr><td class="k">Интерлиньяж</td><td class="v">1.1 <small>--bv-lh-display</small></td></tr>
+        <tr><td class="k">Трекинг</td><td class="v">normal <small>эталон −0.1px</small></td></tr>
+      </table>
+      <div class="t-where"><span class="lbl">Где</span>Подпись метрики (HRV / RHR) · строки списков · поля</div>
+    </div>
+  </div>
+
+  <!-- ============ 6 · BODY ============ -->
+  <div class="t-row">
+    <div class="t-sample"><p class="t-s-body">Вариабельность сердечного ритма за ночь выросла на 8&nbsp;мс относительно вашей недельной нормы. Это сигнал хорошего восстановления: нервная система отдохнула, можно планировать нагрузку. Следите за трендом, а не за отдельным значением.</p></div>
+    <div class="t-meta-panel">
+      <div class="t-token">--bv-fs-body</div>
+      <span class="t-fam">Семья: <b>Golos Text</b></span>
+      <table class="t-attrs">
+        <tr><td class="k">Размер</td><td class="v">14px <small>--bv-fs-body</small></td></tr>
+        <tr><td class="k">Вес</td><td class="v">400 <small>--bv-fw-regular</small></td></tr>
+        <tr><td class="k">Интерлиньяж</td><td class="v">1.5 <small>--bv-lh-body</small></td></tr>
+        <tr><td class="k">Трекинг</td><td class="v">normal</td></tr>
+      </table>
+      <div class="t-where"><span class="lbl">Где</span>Описания · рекомендации · onboarding-копи · справка</div>
+    </div>
+  </div>
+
+  <!-- ============ 7 · CAPTION ============ -->
+  <div class="t-row">
+    <div class="t-sample"><div class="t-s-caption">Принято 28.06</div></div>
+    <div class="t-meta-panel">
+      <div class="t-token">--bv-fs-caption</div>
+      <span class="t-fam">Семья: <b>Golos Text</b></span>
+      <table class="t-attrs">
+        <tr><td class="k">Размер</td><td class="v">12px <small>--bv-fs-caption</small></td></tr>
+        <tr><td class="k">Вес</td><td class="v">500 <small>--bv-fw-medium</small></td></tr>
+        <tr><td class="k">Интерлиньяж</td><td class="v">1.5 <small>--bv-lh-body</small></td></tr>
+        <tr><td class="k">Трекинг</td><td class="v">normal</td></tr>
+      </table>
+      <div class="t-where"><span class="lbl">Где</span>Таймстемпы · helper-текст · подпись под чипом · сноски</div>
+    </div>
+  </div>
+
+  <!-- ============ 8 · EYEBROW ============ -->
+  <div class="t-row">
+    <div class="t-sample"><div class="t-s-eyebrow">HRV сегодня</div></div>
+    <div class="t-meta-panel">
+      <div class="t-token">--bv-fs-eyebrow</div>
+      <span class="t-fam">Семья: <b>Pulse Mono</b> · UPPERCASE</span>
+      <table class="t-attrs">
+        <tr><td class="k">Размер</td><td class="v">11px <small>--bv-fs-eyebrow</small></td></tr>
+        <tr><td class="k">Вес</td><td class="v">600 <small>--bv-fw-semibold</small></td></tr>
+        <tr><td class="k">Интерлиньяж</td><td class="v">1.0 <small>--bv-lh-tight</small></td></tr>
+        <tr><td class="k">Трекинг</td><td class="v">0.6px <small>--bv-ls-eyebrow</small></td></tr>
+      </table>
+      <div class="t-where"><span class="lbl">Где</span>Eyebrow секции · бренд-строка · надзаголовок detail</div>
+    </div>
+  </div>
+
+  <!-- ============ 9 · TAB LABEL ============ -->
+  <div class="t-row">
+    <div class="t-sample"><div class="t-s-tab">Дом&nbsp;&nbsp;·&nbsp;&nbsp;Тренировка</div></div>
+    <div class="t-meta-panel">
+      <div class="t-token">--bv-fs-tab-label</div>
+      <span class="t-fam">Семья: <b>Pulse Mono</b></span>
+      <table class="t-attrs">
+        <tr><td class="k">Размер</td><td class="v">10px <small>--bv-fs-tab-label</small></td></tr>
+        <tr><td class="k">Вес</td><td class="v">500 <small>--bv-fw-medium</small></td></tr>
+        <tr><td class="k">Интерлиньяж</td><td class="v">1.0 <small>--bv-lh-tight</small></td></tr>
+        <tr><td class="k">Трекинг</td><td class="v">0.4px <span class="flag">⚠ нет токена</span></td></tr>
+      </table>
+      <div class="t-where"><span class="lbl">Где</span>Bottom nav · Дом / Тренировка / История / Профиль</div>
+    </div>
+  </div>
+
+  <!-- ============ 10 · CAPSULE BOUNDS ============ -->
+  <div class="t-row">
+    <div class="t-sample"><div class="t-s-bounds">55&nbsp;/&nbsp;35</div></div>
+    <div class="t-meta-panel">
+      <div class="t-token">--bv-fs-capsule-bounds</div>
+      <span class="t-fam">Семья: <b>Pulse Mono</b> · tabular-nums</span>
+      <table class="t-attrs">
+        <tr><td class="k">Размер</td><td class="v">11px <small>--bv-fs-capsule-bounds</small></td></tr>
+        <tr><td class="k">Вес</td><td class="v">400 <small>--bv-fw-regular</small></td></tr>
+        <tr><td class="k">Интерлиньяж</td><td class="v">1.0 <small>--bv-lh-tight</small></td></tr>
+        <tr><td class="k">Трекинг</td><td class="v">normal</td></tr>
+      </table>
+      <div class="t-where"><span class="lbl">Где</span>Range-cap капсулы (мин / макс) · оси графиков</div>
+    </div>
+  </div>
+
+  <!-- ============ MIXED COMPOSITION ============ -->
+  <h2 class="t-section-title">Mixed composition — иерархия рядом</h2>
+  <p class="t-section-sub">Все ступени в одном фрагменте detail-экрана: видно, как масштаб и вес держат порядок чтения от eyebrow к hero, метрике, телу и навигации.</p>
+  <div class="t-mixed">
+    <div class="t-s-eyebrow">HRV сегодня</div>
+    <div class="hero-line">
+      <span class="t-s-hero">47</span>
+      <span class="unit">ms</span>
+    </div>
+    <div class="t-s-headline">27 Июн 2026</div>
+
+    <div class="divider"></div>
+
+    <div class="metric-row">
+      <span class="t-s-label">Вариабельность</span>
+      <span class="t-s-metric">65.4<span class="u">ms</span></span>
+    </div>
+    <p class="t-s-body">Показатель за ночь выше недельной нормы — нервная система восстановилась. Планируйте нагрузку спокойно.</p>
+
+    <div class="foot">
+      <span class="t-s-caption">Принято 28.06</span>
+      <span class="t-s-bounds">55&nbsp;/&nbsp;35</span>
+    </div>
+    <div class="foot">
+      <div class="nav">
+        <span class="t-s-tab" style="color:var(--bv-wine)">Дом</span>
+        <span class="t-s-tab">Тренировка</span>
+        <span class="t-s-tab">История</span>
+      </div>
+    </div>
+  </div>
+
+  <footer class="t-foot">
+    <span class="lbl">Source of truth</span>
+    <a href="tokens.css">tokens.css</a>
+    <a href="components.css">components.css</a>
+    <a href="components-gallery.html">components-gallery.html</a>
+    <a href="states.html">states.html</a>
+    <a href="colors.html">colors.html</a>
+  </footer>
+
+</div>
+</body>
+</html>
