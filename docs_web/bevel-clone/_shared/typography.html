@@ -24,7 +24,6 @@
 
   /* ---- header ---- */
   .t-head { border-bottom: 1px solid var(--bv-hairline); padding-bottom: var(--bv-sp-5); margin-bottom: var(--bv-sp-6); }
-  .t-eyebrow { font-family: var(--bv-font-mono); font-size: var(--bv-fs-eyebrow); font-weight: var(--bv-fw-semibold); letter-spacing: var(--bv-ls-eyebrow); text-transform: uppercase; color: var(--bv-wine); }
   .t-head h1 { font-size: 30px; font-weight: var(--bv-fw-extrabold); letter-spacing: -0.9px; margin-top: 10px; text-wrap: balance; overflow-wrap: break-word; }
   .t-head p { font-size: var(--bv-fs-body); color: var(--bv-ink-mute); margin-top: 10px; max-width: 66ch; line-height: var(--bv-lh-body); text-wrap: pretty; }
   .t-head p code { font-family: var(--bv-font-mono); font-size: 0.92em; color: var(--bv-ink); background: var(--bv-bg-subtle); padding: 1px 5px; border-radius: 5px; }
@@ -60,7 +59,6 @@
   .t-s-label   { font-family: var(--bv-font-sans); font-size: var(--bv-fs-label);       font-weight: var(--bv-fw-medium);   line-height: var(--bv-lh-display); color: var(--bv-ink); }
   .t-s-body    { font-family: var(--bv-font-sans); font-size: var(--bv-fs-body);        font-weight: var(--bv-fw-regular);  line-height: var(--bv-lh-body); color: var(--bv-ink-mute); max-width: 62ch; text-wrap: pretty; }
   .t-s-caption { font-family: var(--bv-font-sans); font-size: var(--bv-fs-caption);     font-weight: var(--bv-fw-medium);   line-height: var(--bv-lh-body); color: var(--bv-ink-mute); }
-  .t-s-eyebrow { font-family: var(--bv-font-mono); font-size: var(--bv-fs-eyebrow);     font-weight: var(--bv-fw-semibold); line-height: var(--bv-lh-tight); letter-spacing: var(--bv-ls-eyebrow); text-transform: uppercase; color: var(--bv-wine); }
   .t-s-tab     { font-family: var(--bv-font-mono); font-size: var(--bv-fs-tab-label);   font-weight: var(--bv-fw-medium);   line-height: var(--bv-lh-tight); letter-spacing: 0.4px; color: var(--bv-ink-mute); }
   .t-s-bounds  { font-family: var(--bv-font-mono); font-size: var(--bv-fs-capsule-bounds); font-weight: var(--bv-fw-regular); line-height: var(--bv-lh-tight); font-variant-numeric: tabular-nums; color: var(--bv-ink-soft); }
 
@@ -98,7 +96,7 @@
 <div class="t-wrap">
 
   <header class="t-head">
-    <div class="t-eyebrow">Neiry Pulse · Bevel-clone</div>
+    <span class="bv-eyebrow bv-eyebrow--brand">Neiry Pulse · Bevel-clone</span>
     <h1>Type Scale · 10 ступеней</h1>
     <p>
       Живая шкала всех размеров <code>--bv-fs-*</code> из tokens.css v1.0.3: реальный шрифт, токен,
@@ -222,17 +220,18 @@
 
   <!-- ============ 8 · EYEBROW ============ -->
   <div class="t-row">
-    <div class="t-sample"><div class="t-s-eyebrow">HRV сегодня</div></div>
+    <div class="t-sample"><span class="bv-eyebrow">HRV сегодня</span></div>
     <div class="t-meta-panel">
       <div class="t-token">--bv-fs-eyebrow</div>
-      <span class="t-fam">Семья: <b>Pulse Mono</b> · UPPERCASE</span>
+      <span class="t-fam">Семья: <b>Pulse Mono</b> · UPPERCASE · ink-mute</span>
       <table class="t-attrs">
         <tr><td class="k">Размер</td><td class="v">11px <small>--bv-fs-eyebrow</small></td></tr>
-        <tr><td class="k">Вес</td><td class="v">600 <small>--bv-fw-semibold</small></td></tr>
+        <tr><td class="k">Вес</td><td class="v">500 <small>--bv-fw-medium</small></td></tr>
         <tr><td class="k">Интерлиньяж</td><td class="v">1.0 <small>--bv-lh-tight</small></td></tr>
         <tr><td class="k">Трекинг</td><td class="v">0.6px <small>--bv-ls-eyebrow</small></td></tr>
+        <tr><td class="k">Класс</td><td class="v">.bv-eyebrow <small>+ --brand (wine 600)</small></td></tr>
       </table>
-      <div class="t-where"><span class="lbl">Где</span>Eyebrow секции · бренд-строка · надзаголовок detail</div>
+      <div class="t-where"><span class="lbl">Где</span>In-content eyebrow секций · надзаголовок detail. Вариант <code>--brand</code> — catalog headers / brand-chrome.</div>
     </div>
   </div>
 
@@ -272,7 +271,7 @@
   <h2 class="t-section-title">Mixed composition — иерархия рядом</h2>
   <p class="t-section-sub">Все ступени в одном фрагменте detail-экрана: видно, как масштаб и вес держат порядок чтения от eyebrow к hero, метрике, телу и навигации.</p>
   <div class="t-mixed">
-    <div class="t-s-eyebrow">HRV сегодня</div>
+    <span class="bv-eyebrow">HRV сегодня</span>
     <div class="hero-line">
       <span class="t-s-hero">47</span>
       <span class="unit">ms</span>
