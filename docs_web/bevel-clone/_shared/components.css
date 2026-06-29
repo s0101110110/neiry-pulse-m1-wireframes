@@ -118,12 +118,8 @@
   display: flex;
   gap: 2px;                               /* structural micro-gap между табами */
   padding: var(--bv-sp-1);
-  background: var(--bv-bg-card);                                       /* fallback — нет color-mix */
-  background: color-mix(in srgb, var(--bv-bg-card) 85%, transparent);  /* glass */
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
-  backdrop-filter: blur(14px) saturate(180%);
-  border: 1px solid var(--bv-hairline);                               /* fallback */
-  border: 1px solid color-mix(in srgb, var(--bv-bg-card) 90%, transparent);
+  background: var(--bv-bg-card);   /* solid white — канон DESIGN.md v1.0.3 + эталон bottom-nav (не glass) */
+  border: 1px solid var(--bv-hairline);
   border-radius: var(--bv-r-nav);
   box-shadow: var(--bv-shadow-nav);
   z-index: 3;
@@ -193,7 +189,7 @@
   background: var(--bv-bg-card);
   transform: translate(-50%, 50%);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--bv-bg-card) 70%, transparent),
-              var(--bv-shadow-header);
+              var(--bv-shadow-dot);
   z-index: 2;
 }
 /* status-модификаторы капсулы (track tint + fill) */
@@ -293,9 +289,9 @@
 }
 .bv-button--primary {                     /* Wine zone #3 */
   background: var(--bv-wine);
-  color: var(--bv-bg-card);               /* white — нет отдельного on-wine токена */
+  color: var(--bv-ink-on-wine);           /* текст на wine-фоне (v1.0.3 токен) */
 }
-.bv-button--primary:hover { background: color-mix(in srgb, var(--bv-wine) 88%, black); }
+.bv-button--primary:hover { background: var(--bv-wine-hover); }
 .bv-button--secondary {
   background: var(--bv-bg-card);
   color: var(--bv-ink);
@@ -368,58 +364,29 @@
    ВОЗРАЖЕНИЯ SKILL'ОВ / РЕШЕНИЯ ПРИ ЭКСТРАКЦИИ — на разбор PM
    ============================================================
 
-   1. CHIP--BADGE — КОНФЛИКТ С DESIGN.md. Stage 3-бриф: «wine-tint bg + wine ink».
-      DESIGN.md Wine Policy zone #2 + preview-DRAFT: «solid wine bg + white». Реализовано
-      ПО БРИФУ (wine-tint + wine ink — мягче). PM: согласовать с DESIGN.md (solid?) — одно из двух.
+   ── РЕШЕНО (v1.0.3 follow-up: tokens v1.0.3 + DESIGN.md v1.0.3 канон) ──
+   1. ✅ chip--badge = wine-tint bg + wine ink (subtle); DESIGN.md v1.0.3 согласован (не solid).
+   2. ✅ button--primary text = var(--bv-ink-on-wine) (новый токен вместо bg-card).
+   3. ✅ button--primary:hover = var(--bv-wine-hover) (новый токен вместо прежнего darken-микса).
+   4. ✅ glass снят: bv-nav-pill = solid white + shadow-nav + hairline (канон DESIGN.md + эталон).
+         blur-glass убран полностью; app-bar--back несёт лишь wine-tint, без blur.
+   5. ✅ capsule__dot box-shadow = var(--bv-shadow-dot) (новый токен 0.18 — поднимает индикатор).
+   6. ✅ eyebrow = var(--bv-ink-mute), card border = var(--bv-hairline) — DESIGN.md mirror синхронизирован.
+   7. ✅ Wine Policy → 7 зон (DESIGN.md v1.0.3): button--ghost (#6) + icon-square--wine (#7) легализованы.
 
-   2. WHITE-НА-WINE НЕТ ТОКЕНА — bv-button--primary color = var(--bv-bg-card) (белый).
-      Семантически нужен --bv-ink-on-wine / --bv-white. Сейчас переиспользую bg-card. PM: добавить токен.
+   ── ВЕРИФИКАЦИЯ (adversarial workflow, 5 lenses; 0 high · 0 missing) — применено ──
+   A. toggle knob travel → 16px literal (derived-геометрия 38−18−4, не spacing).
+   B. reduced-motion → wildcard `*` (future-proof: animation/scroll coverage).
+   C. focus-ring → outline-color var(--bv-ink) на primary-button + app-bar--back icons (WCAG 2.4.11).
+   D. avatar font-size → комментарий про осознанный reuse fs-tab-label.
 
-   3. WINE-HOVER НЕТ ТОКЕНА — button--primary:hover = color-mix(wine 88%, black). В tokens.css
-      нет --bv-wine-hover (был в legacy settings). PM: добавить --bv-wine-hover или оставить color-mix.
-
-   4. GLASS НЕ ТОКЕНИЗИРОВАН — nav-pill/app-bar glass = color-mix(bg-card N%, transparent) +
-      backdrop-filter blur(14px) saturate(180%). blur/saturate — structural литералы (нет токенов
-      для glass). Приемлемо как Bevel-DNA; при желании ввести --bv-glass-blur.
-
-   5. EYEBROW COLOR — реализован var(--bv-ink-mute) (= эталон .eyebrow + Stage 3-бриф).
-      DESIGN.md mirror указывает ink-dim. Рассинхрон — поправить DESIGN.md (ink-mute).
-
-   6. CARD BORDER — var(--bv-hairline) (= эталон .hero/.mcard + Stage 3-бриф). DESIGN.md mirror
-      указывает hairline-2. Рассинхрон — поправить DESIGN.md (hairline).
-
-   7. OFF-GRID NORMALIZATION — источники имеют off-grid px (pill padding 6/10, row 14, chip 5/10,
-      tab 7/6/9.5px, gap 2/3). Снэпнуто к 4px-токенам (sp-1/2/3 + fs-tab-label 10). Визуально
-      ~идентично; строгий 4px-grid соблюдён. Микро-gap nav (2px) оставлен structural.
-
-   8. STRUCTURAL PX — фикс. геометрия компонентов оставлена литералами: avatar/icon-square/
-      app-bar-icon 32, capsule width 14, dot 10, toggle 38×22, knob 18, card min-h 122/120/92,
-      borders 1px. Это размеры, не дизайн-значения (self-review «structural sizes» допускает).
-
-   ── ВЕРИФИКАЦИЯ (adversarial workflow, 5 lenses; 0 high · 0 missing · 4 med) ──
-
-   ПРИМЕНЕНО по findings:
-   A. toggle knob travel: var(--bv-sp-4) → 16px literal (derived-геометрия 38−18−4, не spacing).
-   B. reduced-motion: explicit-list → wildcard `*` (future-proof + animation/scroll coverage).
-   C. focus-ring: +outline-color var(--bv-ink) на primary-button и app-bar--back icons
-      (WCAG 2.4.11 — wine-ring на wine-фоне был невидим).
-   D. avatar font-size: добавлен комментарий про осознанный reuse fs-tab-label (не coupling).
-
-   9. WINE ВНЕ 5 ЗОН (med ×2, task-mandated) — bv-button--ghost (wine text) и
-      bv-icon-square--wine (8% wine tint) требует Stage 3-спек, но их НЕТ в Wine Policy (5 зон).
-      Content-data они не нарушают (контролы/иконки), но политику расширяют. PM: добавить как
-      зоны #6/#7 в DESIGN.md ЛИБО перевести ghost→neutral-ink, icon-square→--default.
-
-  10. NAV-PILL GLASS vs ЭТАЛОН — bv-nav-pill = glass (по DESIGN.md + health-monitor). Но
-      home-main-etalon .bottom-nav — SOLID white (без backdrop-filter). Рассинхрон canon: glass
-      принят как Bevel-DNA, эталонный bottom-nav мигрировать в Stage 5 ЛИБО подтвердить solid.
-
-  11. CAPSULE DOT — токен-гигиена: dot-lift тень сейчас var(--bv-shadow-header) (0.04, мягкая);
-      источник = 0 1px 3px rgba(22,22,32,.18) (заметнее, поднимает индикатор). Не вводил литерал
-      ради token-чистоты. PM: добавить --bv-shadow-dot в tokens.css. Также dot унифицирован 9→10px
-      (bento-источник был 9). --bv-ink-on-wine (#2) и --bv-wine-hover (#3) — те же token-гэпы.
-
-  12. HOST-КОНТРАКТ (a11y) — :focus-visible на bv-row/bv-toggle сработает ТОЛЬКО если хост —
-      фокусируемый элемент. DS-гайд: bv-toggle рендерить как <button role="switch" aria-checked>,
-      навигируемый bv-row — как <button>/<a> (или tabindex=0 + role). CSS-правок не нужно.
+   ── ОТКРЫТОЕ (косметика / DS-гайд, не блокеры) ──
+   8. OFF-GRID NORMALIZATION — off-grid px источников (pill 6/10, row 14, chip 5/10, tab 7/6/9.5,
+      gap 2/3) снэпнуты к 4px-токенам (sp-1/2/3 + fs-tab-label 10). Микро-gap nav (2px) — structural.
+   9. STRUCTURAL PX — фикс. геометрия литералами: avatar/icon-square/app-bar-icon 32, capsule 14,
+      dot 10, toggle 38×22, knob 18, card min-h 122/120/92, borders 1px (self-review «structural»).
+  10. CAPSULE DOT SIZE — dot унифицирован 9→10px (bento-источник был 9). Косметика; при желании
+      .bv-capsule--mini .bv-capsule__dot { width:9px; height:9px } для точной fidelity.
+  11. HOST-КОНТРАКТ (a11y) — :focus-visible на bv-row/bv-toggle активен только если хост фокусируемый.
+      DS-гайд: bv-toggle = <button role="switch" aria-checked>, навигируемый bv-row = <button>/<a>.
    ============================================================ */
