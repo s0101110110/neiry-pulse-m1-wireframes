@@ -42,7 +42,7 @@ Depending on the channel through which the User obtained the application, the Op
 
 ## 3. Rules for Using the Services
 
-3.1. The Operator's Services are designed to track the User's wellness and fitness indicators (heart rate variability, heart rate, sleep phases, activity) using a compatible Neiry wearable device (models VITRO, VANTA, VIGOR), calculate the User's personal baseline, and provide general wellness recommendations.
+3.1. The Operator's Services are designed to track the User's wellness and fitness indicators (heart rate variability, heart rate, sleep phases, activity) using a compatible Neiry wearable device, calculate the User's personal baseline, and provide general wellness recommendations.
 
 3.2. **The Services are a wellness and fitness tool, not a medical device.** The Services are classified under the **Health & Fitness category** in both the Apple App Store and Google Play, **not under Medical**. The Services are **not intended** to diagnose, treat, cure, mitigate, monitor, or prevent any disease, injury or medical condition; they are **not intended for clinical decision-making**; and they are **not intended for use by patients in clinical contexts**. The Services are designed for general wellness and fitness tracking by healthy adults. The information and recommendations provided by the Services are for general informational purposes only and do not replace consultation with a qualified healthcare professional. The User should consult a qualified healthcare professional for any health-related questions or before making decisions that may affect their health.
 
@@ -56,7 +56,7 @@ Depending on the channel through which the User obtained the application, the Op
 
 ## 4. Intellectual Property
 
-4.1. All rights to software, graphic materials, texts, logos and other elements placed on the Services belong to the Operator or its licensors and are protected by the legislation of the Russian Federation.
+4.1. All rights to software, graphic materials, texts, logos and other elements placed on the Services belong to the Operator or its licensors and are protected by the legislation of the Russian Federation. The trademark "neiry" (Russian Federation Certificate No. 981484) is owned by **LLC "Neiry"** (ООО «Нейри»; OGRN 1197746458073, INN 9701140612, registered address: 105082, Moscow, Bakuninskaya str., 73, building 2, Russian Federation). Use of the "Neiry" brand and the "Neiry Pulse" product name by the Operators is conducted under a licensing authorization from the rightsholder.
 
 4.2. The User may not copy, distribute, modify, transmit or otherwise use the content of the Services without the prior written consent of the Operator.
 

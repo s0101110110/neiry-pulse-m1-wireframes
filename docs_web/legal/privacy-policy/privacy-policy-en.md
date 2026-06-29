@@ -12,6 +12,8 @@ The operator of the App and controller of your personal data depends on the chan
 
 Both operators apply the same data-handling practices described in this Privacy Policy.
 
+The trademark "neiry" (Russian Federation Certificate No. 981484, registration date November 16, 2023, valid through July 13, 2033) is owned by **LLC "Neiry"** (ООО «Нейри»; OGRN 1197746458073, INN 9701140612, registered address: 105082, Moscow, Bakuninskaya str., 73, building 2, Russian Federation). Use of the "Neiry" brand and the "Neiry Pulse" product name by both Operators is conducted under a licensing authorization from the rightsholder.
+
 Neiry Pulse is a **wellness and fitness application**. It is classified under the **Health & Fitness category** in both the Apple App Store and Google Play, **not under Medical**. The App is **not a medical device**. It does **not** diagnose, treat, cure, mitigate, monitor, or prevent any disease, injury, or medical condition, and it is **not intended for clinical decision-making** or for use by patients in clinical contexts. The App is designed for general wellness and fitness tracking by healthy adults who want to better understand their everyday wellbeing.
 
 For any health-related questions or before making decisions that may affect your health, please consult a qualified healthcare professional.
@@ -91,7 +93,7 @@ We may access or collect:
 - device identifiers associated with the wristband hardware;
 - wristband serial number;
 - wristband firmware version;
-- wristband model (VITRO, VANTA, VIGOR, or other supported Neiry models);
+- supported Neiry wristband model;
 - mobile device model, operating system version, and technical configuration.
 
 We use this information to connect the App to the appropriate wristband, maintain stable operation, provide firmware-related notices, troubleshoot hardware/software issues, and improve compatibility.
@@ -102,7 +104,7 @@ On certain Android versions, the App may request approximate location and/or pre
 
 Device geolocation obtained through these permissions is not transmitted off-device by the App and is not stored on our servers (except as noted below for training GPS routes).
 
-**Exception for training mode:** if your wristband supports GPS (VIGOR model) and you explicitly start a workout session with route tracking, the App will collect and store the GPS coordinates of your route for the duration of that workout. This GPS data is associated with the specific training session, displayed to you in session history, and stored on our servers as part of your training records. You can delete individual training sessions and their associated GPS data at any time from the in-app history screen.
+**Exception for training mode:** if your wristband supports GPS and you explicitly start a workout session with route tracking, the App will collect and store the GPS coordinates of your route for the duration of that workout. This GPS data is associated with the specific training session, displayed to you in session history, and stored on our servers as part of your training records. You can delete individual training sessions and their associated GPS data at any time from the in-app history screen.
 
 If country or region information is associated with your account, it is provided by you or derived from language or locale settings rather than from device geolocation.
 
