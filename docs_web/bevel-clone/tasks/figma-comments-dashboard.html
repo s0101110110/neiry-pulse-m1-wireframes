@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pulse · Figma Comments Dashboard</title>
+<link rel="stylesheet" href="../shared/tokens.css" />
+<link rel="stylesheet" href="../shared/components.css" />
+<style>
+  body {
+    font-family: 'Golos Text', system-ui, sans-serif;
+    background: var(--bv-bg-screen);
+    color: var(--bv-ink);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px;
+  }
+
+  /* ===== HEADER ===== */
+  .hero {
+    margin-bottom: 32px;
+  }
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 800;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.6px;
+  }
+  .hero .subtitle {
+    color: var(--bv-ink-mute);
+    font-size: 16px;
+    margin: 0;
+  }
+
+  /* ===== STATS GRID ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--bv-bg-card);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: var(--bv-shadow-card);
+  }
+  .stat-card .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    color: var(--bv-ink-mute);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .stat-card .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--bv-ink);
+    line-height: 1;
+  }
+  .stat-card.wine .value { color: var(--bv-wine); }
+  .stat-card.norm .value { color: var(--bv-norm); }
+  .stat-card.warn .value { color: var(--bv-warn); }
+  .stat-card.high .value { color: var(--bv-high); }
+
+  /* ===== FILTERS ===== */
+  .filters {
+    background: var(--bv-bg-card);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--bv-shadow-card);
+    position: sticky;
+    top: 16px;
+    z-index: 10;
+  }
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .filter-group:last-child { margin-bottom: 0; }
+  .filter-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--bv-ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-right: 8px;
+    min-width: 80px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    background: var(--bv-bg-subtle);
+    color: var(--bv-ink-mute);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .15s ease;
+  }
+  .chip:hover {
+    background: var(--bv-hl);
+  }
+  .chip.active {
+    background: var(--bv-wine);
+    color: white;
+    border-color: var(--bv-wine);
+  }
+  .chip .count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    opacity: 0.7;
+  }
+
+  /* ===== TASK CARDS ===== */
+  .tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 16px;
+  }
+  .task-card {
+    background: var(--bv-bg-card);
+    border-radius: 20px;
+    box-shadow: var(--bv-shadow-card);
+    overflow: hidden;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .task-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(22,22,32,.08);
+  }
+  .task-card.hidden { display: none; }
+  .task-card.resolved {
+    opacity: 0.65;
+  }
+
+  .task-header {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid var(--bv-hl);
+    cursor: pointer;
+  }
+  .task-thumb {
+    width: 80px;
+    height: 130px;
+    background: var(--bv-bg-subtle);
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid var(--bv-hl);
+  }
+  .task-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .task-thumb.no-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bv-ink-faded);
+    font-size: 24px;
+  }
+  .task-meta {
+    flex: 1;
+    min-width: 0;
+  }
+  .task-id-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .task-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--bv-ink-soft);
+    font-weight: 600;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .badge-prio {
+    background: var(--bv-bg-subtle);
+    color: var(--bv-ink-mute);
+  }
+  .badge-prio.p0 { background: var(--bv-high-bg); color: var(--bv-high-ink); }
+  .badge-prio.p1 { background: var(--bv-warn-bg); color: var(--bv-warn-ink); }
+  .badge-prio.p2 { background: var(--bv-norm-bg); color: var(--bv-norm-ink); }
+  .badge-prio.p3 { background: var(--bv-bg-subtle); color: var(--bv-ink-mute); }
+  .badge-cat {
+    background: var(--bv-wine-tint);
+    color: var(--bv-wine);
+  }
+  .badge-status {
+    background: var(--bv-norm-bg);
+    color: var(--bv-norm-ink);
+  }
+  .badge-status.open {
+    background: var(--bv-warn-bg);
+    color: var(--bv-warn-ink);
+  }
+  .task-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+    color: var(--bv-ink);
+    line-height: 1.4;
+  }
+  .task-line {
+    font-size: 11px;
+    color: var(--bv-ink-soft);
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .task-line .dot { color: var(--bv-ink-faded); }
+  .task-line .screen-name {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bv-bg-subtle);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--bv-ink-mute);
+  }
+
+  .task-body {
+    padding: 16px;
+    display: none;
+    border-top: 1px solid var(--bv-hl-2);
+  }
+  .task-card.expanded .task-body {
+    display: block;
+  }
+  .task-card.expanded .task-header {
+    background: var(--bv-bg-subtle);
+  }
+
+  .task-section {
+    margin-bottom: 16px;
+  }
+  .task-section:last-child { margin-bottom: 0; }
+  .task-section h4 {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--bv-ink-mute);
+    margin: 0 0 6px 0;
+  }
+  .task-section p, .task-section li {
+    font-size: 13px;
+    color: var(--bv-ink);
+    line-height: 1.55;
+    margin: 0 0 6px 0;
+  }
+  .task-section ol, .task-section ul {
+    padding-left: 18px;
+    margin: 0;
+  }
+  .task-section .comment-quote {
+    background: var(--bv-bg-screen);
+    padding: 10px 14px;
+    border-left: 3px solid var(--bv-wine);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--bv-ink-mute);
+    font-style: italic;
+  }
+  .task-section .comment-quote .reply {
+    margin-top: 6px;
+    color: var(--bv-ink-soft);
+    font-size: 12px;
+  }
+  .task-section .comment-quote .reply b {
+    color: var(--bv-ink-mute);
+    font-style: normal;
+  }
+  .task-section a.figma-link {
+    display: inline-block;
+    margin-top: 4px;
+    color: var(--bv-wine);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .task-section a.figma-link:hover {
+    text-decoration: underline;
+  }
+
+  .toggle-icon {
+    align-self: flex-start;
+    color: var(--bv-ink-soft);
+    font-size: 20px;
+    margin-left: 8px;
+    transition: transform .2s ease;
+    user-select: none;
+  }
+  .task-card.expanded .toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--bv-ink-soft);
+    grid-column: 1 / -1;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    margin-top: 48px;
+    padding: 20px;
+    text-align: center;
+    color: var(--bv-ink-soft);
+    font-size: 12px;
+  }
+  .footer a {
+    color: var(--bv-wine);
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="hero">
+    <h1>Pulse · Задачи из Figma-комментариев</h1>
+    <p class="subtitle">49 комментариев · 29 задач · 21 экран · обновлено 1 июля 2026</p>
+  </header>
+
+  <!-- STATS -->
+  <section class="stats-grid">
+    <div class="stat-card"><div class="eyebrow">Всего</div><div class="value">29</div></div>
+    <div class="stat-card warn"><div class="eyebrow">🔴 Open</div><div class="value">27</div></div>
+    <div class="stat-card norm"><div class="eyebrow">✅ Done</div><div class="value">2</div></div>
+    <div class="stat-card high"><div class="eyebrow">P1 critical</div><div class="value">13</div></div>
+    <div class="stat-card wine"><div class="eyebrow">Авторов</div><div class="value">4</div></div>
+    <div class="stat-card"><div class="eyebrow">Экранов</div><div class="value">21</div></div>
+  </section>
+
+  <!-- FILTERS -->
+  <section class="filters">
+    <div class="filter-group">
+      <span class="filter-label">Статус</span>
+      <button class="chip active" data-filter="status" data-value="all">Все <span class="count" data-count-status-all>29</span></button>
+      <button class="chip" data-filter="status" data-value="open">🔴 Open <span class="count">27</span></button>
+      <button class="chip" data-filter="status" data-value="resolved">✅ Done <span class="count">2</span></button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Приоритет</span>
+      <button class="chip active" data-filter="priority" data-value="all">Все</button>
+      <button class="chip" data-filter="priority" data-value="P0">P0 <span class="count">1</span></button>
+      <button class="chip" data-filter="priority" data-value="P1">P1 <span class="count">13</span></button>
+      <button class="chip" data-filter="priority" data-value="P2">P2 <span class="count">11</span></button>
+      <button class="chip" data-filter="priority" data-value="P3">P3 <span class="count">2</span></button>
+      <button class="chip" data-filter="priority" data-value="—">— <span class="count">2</span></button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Категория</span>
+      <button class="chip active" data-filter="category" data-value="all">Все</button>
+      <button class="chip" data-filter="category" data-value="Copy/Wording">Copy/Wording</button>
+      <button class="chip" data-filter="category" data-value="UX-decision">UX-decision</button>
+      <button class="chip" data-filter="category" data-value="UI-fix">UI-fix</button>
+      <button class="chip" data-filter="category" data-value="Product-strategy">Product-strategy</button>
+      <button class="chip" data-filter="category" data-value="Context-only">Context-only</button>
+      <button class="chip" data-filter="category" data-value="Question">Question</button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Owner</span>
+      <button class="chip active" data-filter="owner" data-value="all">Все</button>
+      <button class="chip" data-filter="owner" data-value="PM">PM (Костя)</button>
+      <button class="chip" data-filter="owner" data-value="Kirill">Kirill</button>
+      <button class="chip" data-filter="owner" data-value="Designer">Designer</button>
+      <button class="chip" data-filter="owner" data-value="R&D">R&amp;D</button>
+      <button class="chip" data-filter="owner" data-value="Copy">Copy (Дина)</button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Автор</span>
+      <button class="chip active" data-filter="author" data-value="all">Все</button>
+      <button class="chip" data-filter="author" data-value="Alexandr Dymov">Дымов <span class="count">15</span></button>
+      <button class="chip" data-filter="author" data-value="Дина Митюрева">Дина <span class="count">9</span></button>
+      <button class="chip" data-filter="author" data-value="Константин Соломонов">Костя <span class="count">1</span></button>
+      <button class="chip" data-filter="author" data-value="Никита Подлипский">Никита <span class="count">2</span></button>
+    </div>
+  </section>
+
+  <!-- TASKS GRID -->
+  <section class="tasks-grid" id="tasksGrid">
+
+    <!-- #01 -->
+    <article class="task-card" data-status="open" data-priority="—" data-category="Context-only" data-owner="PM" data-author="Alexandr Dymov" data-screen="(referenс)">
+      <div class="task-header">
+        <div class="task-thumb no-thumb">📋</div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#01</span>
+            <span class="badge badge-cat">Context</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Главный экран в Coros (референс)</h3>
+          <div class="task-line"><span class="screen-name">(referенс)</span><span class="dot">·</span><span>Alexandr Dymov</span><span class="dot">·</span><span>16.06</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Главный экран в Coros.<div class="reply"><b>Дымов (reply):</b> Но это я сам его настроил таким. Изначально там больше блоков: я некоторые скрыл, некоторые переставил местами.</div></div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Не actionable item — Дымов показывает свой Coros home как референс. Сам признаёт что layout — его персональная настройка, не дефолт.</p>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Сохранить скриншот в <code>ui_assets/references/coros-home-dymov.png</code></li>
+            <li><b>Не копировать layout</b> — это кастомизация Дымова, не дефолт Coros</li>
+            <li>Опираться на наш ETALON (<code>home-main-etalon.html</code>)</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #02 -->
+    <article class="task-card" data-status="open" data-priority="P2" data-category="Product-strategy" data-owner="PM,R&D" data-author="Alexandr Dymov" data-screen="01-home">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/01-home.png" alt="01-home" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#02</span>
+            <span class="badge badge-prio p2">P2 · L</span>
+            <span class="badge badge-cat">Product-strategy</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Автоматический план тренировок (epic)</h3>
+          <div class="task-line"><span class="screen-name">01-home</span><span class="dot">·</span><span>Alexandr Dymov</span><span class="dot">·</span><span>16.06</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Автоматический план для тренировок — довольно ёмкая тема. У Garmin есть автотренер. У Coros такое только под марафон.<div class="reply"><b>Дымов (reply 1):</b> Эта фича — супер желанная, но пока есть только в Garmin более-менее в норм виде.</div><div class="reply"><b>Дымов (reply 2):</b> Если не хочешь бежать марафон — в библиотеке планов выбрать планчик. Но если ты пропустил тренировку, он не пересчитает план.</div></div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Принять product-decision о тиере рекомендаций на 01-home. Сейчас placeholder без логики. Сигнал: глубокая фича, поверхностная реализация будет слабее Garmin/Coros.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Поставить epic в roadmap: «Tier тренировочных рекомендаций» (P2, M4+)</li>
+            <li>R&D 2-3 дня: Garmin auto-trainer vs Coros library — что реалистично к M4</li>
+            <li>До решения — на 01-home <b>держать placeholder</b></li>
+            <li>Зафиксировать решение в <code>knowledge-base/decisions/2026-07-XX-training-tier.md</code></li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li><b>YAGNI:</b> для MVP достаточно «сегодня попробуйте бег 30 мин». Garmin строил алгоритм 5+ лет</li>
+            <li><b>Промежуточное:</b> rule-based на сервере (HRV + день недели) — UX выглядит «умно», техника простая</li>
+            <li><b>Низковисящий фрукт:</b> «Библиотека планов» — 3-4 готовых плана хардкодом</li>
+            <li><b>DS:</b> <code>bv-card</code> Type=Hero + <code>bv-eyebrow</code> Variant=Brand</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #03 -->
+    <article class="task-card" data-status="open" data-priority="P2" data-category="UI-fix" data-owner="Designer,PM" data-author="Alexandr Dymov" data-screen="01-home">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/01-home.png" alt="01-home" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#03</span>
+            <span class="badge badge-prio p2">P2 · S</span>
+            <span class="badge badge-cat">UI-fix</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Sleep card — убрать проценты, оставить time-values</h3>
+          <div class="task-line"><span class="screen-name">01-home</span><span class="dot">·</span><span>Alexandr Dymov</span><span class="dot">·</span><span>16.06</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">У Coros норм отображается количество элементов для сна: часы, вывод, время засыпания, время пробуждения. Процентами как будто можно тут не грузить юзера.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Переработать карточку Sleep на 01-home — заменить % на 4 конкретных time-value.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Eyebrow «Сон» + main value «7ч 42м» (общее время)</li>
+            <li>Verdict 1 строкой: «Хорошо отдохнул» / «Маловато»</li>
+            <li>Row 1: Засыпание 23:40 · Пробуждение 06:50</li>
+            <li>Row 2 (опц): Глубокий 1ч 50м · Лёгкий 5ч 52м</li>
+            <li>Убрать «85% качества» — не несёт смысла без объяснения</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Дымов прав: проценты ≠ понимание. «85% эффективности» — что это значит для меня?</li>
+            <li>Альтернатива: <b>один</b> ключевой процент (восстановление HRV) + 4 time-values</li>
+            <li>Время засыпания/пробуждения — самый интуитивный show</li>
+            <li><b>DS:</b> <code>bv-card</code> Base + <code>bv-eyebrow</code> + <code>bv-section-heading</code> + 4× <code>bv-row-label</code></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #04 -->
+    <article class="task-card" data-status="open" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="02a-training-start-step1">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/02a-training-start-step1.png" alt="02a" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#04</span>
+            <span class="badge badge-prio p1">P1 · S</span>
+            <span class="badge badge-cat">Copy</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">«Что тренируем?» → «Какая активность?»</h3>
+          <div class="task-line"><span class="screen-name">02a-training-start-step1</span><span class="dot">·</span><span>Дина Митюрева</span><span class="dot">·</span><span>17.06</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Режет формулировка «что тренируем?»<div class="reply"><b>Костя:</b> оке поправлю</div></div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Переписать заголовок шага 1 запуска тренировки. PM уже принял.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Текущая: «Что тренируем?»</li>
+            <li>Заменить на <b>«Какая активность?»</b></li>
+            <li>Применить везде где появляется этот заголовок (grep)</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>«Что тренируем?» звучит как «врач-пациент» — противоречит wellness-тону</li>
+            <li><b>«Какая активность?»</b> — лучший fit: нейтрально, неимперативно</li>
+            <li>Заменить также в Settings → описание training flow</li>
+            <li><b>DS:</b> <code>bv-section-heading</code></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #05 -->
+    <article class="task-card" data-status="open" data-priority="P2" data-category="UX-decision" data-owner="PM,Kirill" data-author="Alexandr Dymov" data-screen="02b-training-start-step2">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/02b-training-start-step2.png" alt="02b" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#05</span>
+            <span class="badge badge-prio p2">P2 · M</span>
+            <span class="badge badge-cat">UX-decision</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Варианты целей тренировки для MVP</h3>
+          <div class="task-line"><span class="screen-name">02b-training-start-step2</span><span class="dot">·</span><span>Alexandr Dymov</span><span class="dot">·</span><span>16.06</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">А какие варианты тут предполагаются? Обычно цель по времени, темпу, пульсовой зоне. Но для МВП чет рисково.<div class="reply"><b>Дымов:</b> Хотя Whoop предлагает выставить цель в показателе Strain.</div></div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Решить и зафиксировать минимально-достаточный набор «целей тренировки» для MVP.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>3 цели для MVP: <b>Без цели</b>, <b>По времени</b> (30/45/60 мин), <b>По дистанции</b> (3/5/10 км)</li>
+            <li>Post-MVP: pace-target, HR-zone, Strain</li>
+            <li>На UI 02b показывать только то что работает в логике — никаких заглушек</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Дымов сам говорит «рисково для MVP» — поддерживает 3 базовых</li>
+            <li><b>YAGNI:</b> без цели + по времени = достаточно</li>
+            <li>Whoop Strain — credible, но требует HRV-baseline которого ещё нет</li>
+            <li><b>DS:</b> список через <code>bv-row-label</code> + <code>bv-icon-square</code></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #06 -->
+    <article class="task-card" data-status="open" data-priority="P1" data-category="UI-fix" data-owner="Designer" data-author="Alexandr Dymov" data-screen="02b-training-start-step2">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/02b-training-start-step2.png" alt="02b" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#06</span>
+            <span class="badge badge-prio p1">P1 · S</span>
+            <span class="badge badge-cat">UI-fix</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">«Поймать пульс» — усилить визуальную акцентацию</h3>
+          <div class="task-line"><span class="screen-name">02b-training-start-step2</span><span class="dot">·</span><span>Alexandr Dymov</span><span class="dot">·</span><span>16.06</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Что в Coros, что в Whoop при переходе к тренировке «поймать пульс» — более явно подсвечивается.<div class="reply"><b>Дымов:</b> В часах Coros (из приложки не запустить, только с часов).</div></div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Усилить визуальную акцентацию состояния «Ловим сигнал с браслета» перед стартом.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Анимированный pulse-индикатор (пульсирующий круг с BPM)</li>
+            <li>Большой счётчик «73 уд/мин» — Pulse Mono Bold 60+</li>
+            <li>Eyebrow status: «ЛОВИМ ПУЛЬС…» / «ПУЛЬС НАЙДЕН ✓»</li>
+            <li>Когда стабилен — анимация останавливается, статус зелёный</li>
+            <li>Только тогда кнопка «Начать» становится активной</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Whoop делает большой пульсирующий circle — работает как «прибор живёт»</li>
+            <li>Apple Watch/Garmin — похожий паттерн</li>
+            <li><b>Edge case:</b> не ловится 10+ сек → кнопка «Попробовать без браслета»</li>
+            <li><b>DS:</b> <code>bv-metric-bento</code> для BPM + <code>bv-eyebrow</code> Brand + <code>bv-status-dot</code></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #07 -->
+    <article class="task-card" data-status="open" data-priority="P2" data-category="UX-decision" data-owner="PM,R&D" data-author="Alexandr Dymov" data-screen="03a-training-active-page1-zones">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/03a-training-active-page1-zones.png" alt="03a" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#07</span>
+            <span class="badge badge-prio p2">P2 · M</span>
+            <span class="badge badge-cat">UX-decision</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">HR-зоны для новых пользователей</h3>
+          <div class="task-line"><span class="screen-name">03a-training-active-page1-zones</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Круто, что пульс крупно. Темповые зоны — целая наука. Но в начале средние можно ставить. По сравнению с часами супер неудобно считывать.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Определить как высчитываются HR-зоны для нового пользователя без истории + признать ограничение mobile vs watch.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Формула: <b>220 − age</b> для max HR</li>
+            <li>Зоны как % от max: Z1 50-60%, Z2 60-70%, Z3 70-80%, Z4 80-90%, Z5 90%+</li>
+            <li>После 2-3 недель — пересчёт на основе наблюдений</li>
+            <li>Always-on mode (большой пульс на full screen) опционально</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Точные зоны требуют CPX-тестирования или 30+ дней. Возрастные средние — fair start</li>
+            <li>Не претендовать на watch-level — позиционировать как <b>дополнение</b> к часам</li>
+            <li><b>DS:</b> <code>bv-metric-bento</code> для large pulse + auto-rotate landscape</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #08 -->
+    <article class="task-card" data-status="open" data-priority="P2" data-category="UI-fix" data-owner="Designer,PM" data-author="Alexandr Dymov" data-screen="03b-training-active-page2-details">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/03b-training-active-page2-details.png" alt="03b" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#08</span>
+            <span class="badge badge-prio p2">P2 · S</span>
+            <span class="badge badge-cat">UI-fix</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Темп — заменить мгновенный на скользящее среднее</h3>
+          <div class="task-line"><span class="screen-name">03b-training-active-page2-details</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Этот элемент кажется отвлекающим и не информативным. У тебя темп может скакать во время пробежки.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Заменить мгновенный темп на 10s-rolling average + показывать avg за всю тренировку.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li><b>Не показывать live pace</b> (скачет каждую секунду)</li>
+            <li>Текущий темп (10 сек avg) + Средний темп тренировки</li>
+            <li>Layout: 5'42″ /км (большое) + caption «Средний: 5'34″ /км»</li>
+            <li>Опц: ⬆/⬇ индикатор vs avg</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Garmin/Strava/Nike — все используют 10s pace averaging</li>
+            <li>Мгновенный pace на mobile GPS особенно плох — GPS добавляет шум</li>
+            <li>При свайпе показывать графический темп за последние 5 мин (sparkline)</li>
+            <li><b>DS:</b> <code>bv-metric-bento</code> + caption</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #09 -->
+    <article class="task-card" data-status="open" data-priority="P3" data-category="Copy/Wording" data-owner="PM" data-author="Alexandr Dymov" data-screen="03b-training-active-page2-details">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/03b-training-active-page2-details.png" alt="03b" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#09</span>
+            <span class="badge badge-prio p3">P3 · S</span>
+            <span class="badge badge-cat">Copy</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">«Лучший км» вместо «Самый быстрый»</h3>
+          <div class="task-line"><span class="screen-name">03b-training-active-page2-details</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Обычно пишут «Лучший км»)<div class="reply"><b>Дымов:</b> Например тут в сводке.</div></div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Заменить формулировку «Самый быстрый километр» на «Лучший км».</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Найти все «самый быстрый км» / «fastest mile»</li>
+            <li>Заменить на <b>«Лучший км»</b></li>
+            <li>Применить паттерн: «Лучшая миля», «Лучшие 5 км», «Лучший отрезок»</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>«Лучший» — универсальное слово, работает и для скорости и для consistency</li>
+            <li>EN-локаль: «Best km» / «Best 5K» (Coros/Garmin convention)</li>
+            <li><b>DS:</b> <code>bv-row-label</code> + <code>bv-row-meta</code></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #10 -->
+    <article class="task-card" data-status="open" data-priority="P2" data-category="UX-decision" data-owner="PM,Designer" data-author="Alexandr Dymov" data-screen="03b-training-active-page2-details">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/03b-training-active-page2-details.png" alt="03b" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#10</span>
+            <span class="badge badge-prio p2">P2 · M</span>
+            <span class="badge badge-cat">UX-decision</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Убрать baseline 1-го километра, добавить best-km</h3>
+          <div class="task-line"><span class="screen-name">03b-training-active-page2-details</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Механика с baseline километра, тем более первого, выглядит неприменимой. Первый километр может быть разминочным. Более релевантно — средний пульс километра. А подсвечивать самый быстрый.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Убрать baseline-сравнение с 1-го км. Заменить на по-км таблицу + highlight best.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Удалить индикатор «отклонение от baseline 1-го км»</li>
+            <li>По-километровая таблица: Километр · Темп · Средний пульс</li>
+            <li>Маркер ⭐ или цветной highlight на лучшем км</li>
+            <li>Общая статистика под таблицей</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>1-й км часто разминка — сравнивать остальные с ним = искажение</li>
+            <li>Best-km highlight — классика (Strava, Garmin)</li>
+            <li>Цвет highlight: <code>bv-cap-fill-norm</code> или <code>brand/wine-tint</code></li>
+            <li>Опц: график темпа как sparkline под таблицей</li>
+            <li><b>DS:</b> <code>bv-row-label</code> + <code>bv-row-meta</code> + <code>bv-pill</code> для best</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #11 -->
+    <article class="task-card" data-status="open" data-priority="P1" data-category="UI-fix" data-owner="Designer,Kirill" data-author="Alexandr Dymov" data-screen="03c-training-active-page3-map">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/03c-training-active-page3-map.png" alt="03c" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#11</span>
+            <span class="badge badge-prio p1">P1 · M</span>
+            <span class="badge badge-cat">UI-fix</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Stop-кнопка в thumb-zone</h3>
+          <div class="task-line"><span class="screen-name">03c-training-active-page3-map</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Тут кнопка стоп выглядит очень далеко от пальца, когда несешь телефон. У Nike Run было круто сделан этот UX старт/стопа.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Переразместить Stop-кнопку в зону большого пальца (thumb zone).</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Floating action button в нижней трети по центру</li>
+            <li>Размер ≥ 64×64 (комфорт touch)</li>
+            <li>Wine fill, white icon (контрастно)</li>
+            <li>Long-press 1 сек или swipe-to-stop — против accidental tap</li>
+            <li>Landscape mode — тоже peripheral thumb zone</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li><b>Nike Run Club паттерн:</b> большая Pause снизу, long-press → Stop</li>
+            <li>Apple Health/Garmin: swipe across to confirm stop — против accidental</li>
+            <li>Thumb-zone research (Steven Hoober): нижняя треть = comfort zone</li>
+            <li><b>DS:</b> новый компонент <code>bv-cta-fab</code> (FAB) — добавить в библиотеку</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #12 -->
+    <article class="task-card" data-status="open" data-priority="P2" data-category="UX-decision" data-owner="PM,Designer" data-author="Alexandr Dymov" data-screen="04-history">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/04-history.png" alt="04-history" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#12</span>
+            <span class="badge badge-prio p2">P2 · M</span>
+            <span class="badge badge-cat">UX-decision</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">History: переключиться с календаря на список</h3>
+          <div class="task-line"><span class="screen-name">04-history</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Кажется, формат календаря месяца не супер удобно смотреть. Вот таким списком как у Coros вполне норм.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Переключить дефолтное представление с календаря на chronological list.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Список тренировок reverse-chronological</li>
+            <li>Группировка по дням: «Вчера», «Понедельник 24.06»</li>
+            <li>Каждая карточка: тип, время, дистанция, средний пульс</li>
+            <li>Toggle Список/Календарь в шапке (с сохранением в localStorage)</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Coros + Strava + Nike — все list-first. Календарь — opt-in</li>
+            <li>Календарь полезен только при 5+ тренировках/неделю</li>
+            <li>Casual users: список интуитивнее</li>
+            <li><b>DS:</b> <code>bv-card</code> Base + <code>bv-row-divider</code> между</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #13 -->
+    <article class="task-card" data-status="open" data-priority="—" data-category="Context-only" data-owner="PM" data-author="Alexandr Dymov" data-screen="06-settings">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/06-settings.png" alt="06-settings" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#13</span>
+            <span class="badge badge-cat">Context</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Menu Coros (референс)</h3>
+          <div class="task-line"><span class="screen-name">06-settings</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Менюшка Coros.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Сохранить как референс для Settings, не actionable.</p>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Сохранить в <code>ui_assets/references/coros-settings-menu.png</code></li>
+            <li>Учесть Coros structure — особенно группировку пунктов</li>
+            <li>Наш ETALON Settings уже в <code>bevel-clone/settings/</code></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #14 -->
+    <article class="task-card resolved" data-status="resolved" data-priority="P0" data-category="Copy/Wording" data-owner="PM" data-author="Никита Подлипский" data-screen="08a-onboarding-splash">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/08a-onboarding-splash.png" alt="08a" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#14</span>
+            <span class="badge badge-prio p0">P0 · S</span>
+            <span class="badge badge-cat">Copy</span>
+            <span class="badge badge-status">✅ RESOLVED</span>
+          </div>
+          <h3 class="task-title">Не писать «Neiry», только «Pulse»</h3>
+          <div class="task-line"><span class="screen-name">08a-onboarding-splash</span><span class="dot">·</span><span>Никита Подлипский</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Neiry не пишем пока заливаемся с амер акка, просто Pulse.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>✅ Уже выполнено. В onboarding/splash убрать «Neiry», оставить только «Pulse».</p>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Проверить в final build, нет ли «Neiry» в App Store screenshots</li>
+            <li>Info.plist: <code>CFBundleDisplayName = «Pulse»</code></li>
+            <li>«Neiry» допустим только в legal-документах</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #15 -->
+    <article class="task-card" data-status="open" data-priority="P1" data-category="UX-decision" data-owner="PM,Kirill" data-author="Константин Соломонов" data-screen="09a-onboarding-bracelet-scan">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/09a-onboarding-bracelet-scan.png" alt="09a" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#15</span>
+            <span class="badge badge-prio p1">P1 · M</span>
+            <span class="badge badge-cat">UX-decision</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Кнопка «Продолжить без браслета»</h3>
+          <div class="task-line"><span class="screen-name">09a-onboarding-bracelet-scan</span><span class="dot">·</span><span>Константин Соломонов</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Добавить кнопку «Продолжить без браслета».</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Добавить альтернативный путь onboarding для пользователей без браслета.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Под кнопкой «Сканировать» — secondary link «У меня пока нет браслета»</li>
+            <li>По нажатию — demo mode с mock-данными (HRV 67, пульс 72)</li>
+            <li>Везде где нужен браслет — баннер «Демо-режим — подключите Pulse»</li>
+            <li>В Settings всегда доступна кнопка «Подключить браслет»</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li><b>App Store reviewers</b> не пройдут без этой кнопки — это блокер для review</li>
+            <li>Demo mode показывает ценность до покупки → conversion-механика</li>
+            <li>Альтернативное название: «Попробовать без браслета»</li>
+            <li><b>DS:</b> primary CTA = wine button; secondary = ghost link с underline</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #16 -->
+    <article class="task-card resolved" data-status="resolved" data-priority="P1" data-category="Copy/Wording" data-owner="PM" data-author="Никита Подлипский" data-screen="10a-onboarding-notifications">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/10a-onboarding-notifications.png" alt="10a" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#16</span>
+            <span class="badge badge-prio p1">P1 · S</span>
+            <span class="badge badge-cat">Copy</span>
+            <span class="badge badge-status">✅ RESOLVED</span>
+          </div>
+          <h3 class="task-title">Текст алерта про падение</h3>
+          <div class="task-line"><span class="screen-name">10a-onboarding-notifications</span><span class="dot">·</span><span>Никита Подлипский</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Про падение: «отправим алерт вам, если упал ваш близкий, либо его показатели здоровья ухудшились».</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>✅ Уже выполнено. Заменить старый текст на новый double-meaning «упал».</p>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Двойной смысл «упал»: физическое + ухудшение здоровья. Текст хорош</li>
+            <li>Проверить 11a-fall-push-lock-screen (push должен совпадать)</li>
+            <li>В Settings → Уведомления — та же логика текстов</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #17 -->
+    <article class="task-card" data-status="open" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="12a-home-first-run-empty">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/12a-home-first-run-empty.png" alt="12a" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#17</span>
+            <span class="badge badge-prio p1">P1 · S</span>
+            <span class="badge badge-cat">Copy</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Заменить «baseline» → «личная норма»</h3>
+          <div class="task-line"><span class="screen-name">12a-home-first-run-empty</span><span class="dot">·</span><span>Дина Митюрева</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Не хорошо говорить «baseline» русскоязычным пользователям, надо заменять.<div class="reply"><b>Дина:</b> базовая линия, личная норма, адаптируем алгоритмы под вас, персонализируем рекомендации.</div><div class="reply"><b>Костя:</b> посоветуемся с ребятами.</div></div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Заменить «baseline» на «личная норма» везде в UI.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Выбрать единый термин: <b>«Личная норма»</b> (рекомендую)</li>
+            <li><code>grep -ri "baseline" docs_web/</code></li>
+            <li>Заменить везде (single string replace)</li>
+            <li>В onboarding — описать концепцию через «определим вашу личную норму за 5-7 дней»</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Англицизм нарушает наш ban в UI</li>
+            <li><b>«Личная норма»</b> — short, semantic, no jargon</li>
+            <li>Применить на 23a-baseline-ready, 20c-hrv-explainer-modal</li>
+            <li>Связано с задачами #26, #27</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #18 -->
+    <article class="task-card" data-status="open" data-priority="P1" data-category="UX-decision" data-owner="PM,Kirill" data-author="Alexandr Dymov" data-screen="15b-state-auto-pause">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/15b-state-auto-pause.png" alt="15b" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#18</span>
+            <span class="badge badge-prio p1">P1 · S</span>
+            <span class="badge badge-cat">UX-decision</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Auto-pause 30s → 15s</h3>
+          <div class="task-line"><span class="screen-name">15b-state-auto-pause</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">30 сек ту мач. Мои часы стопаются за 5-7 сек без движения. Предложил бы поставить секунд 15.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Уменьшить timeout с 30 сек до 15 сек.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>В config: <code>AUTO_PAUSE_SECONDS = 15</code></li>
+            <li>Обновить текст на 15b: «Пауза — нет движения 15 сек»</li>
+            <li>Опц: в Settings → Тренировка добавить настройку (5/10/15/30)</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Coros/Garmin — 5-7 сек. 30 сек = ощущение «тормозит»</li>
+            <li>15 сек = компромисс: не paused от светофора (8-10 сек), но не тормоз</li>
+            <li>Edge case: ходьба на маршруте — pause только если speed < 0.5 м/с</li>
+            <li><b>DS:</b> modal state = <code>bv-card</code> Hero + центральный <code>bv-metric-bento</code> countdown</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #19 -->
+    <article class="task-card" data-status="open" data-priority="—" data-category="Context-only" data-owner="PM" data-author="Alexandr Dymov" data-screen="16a-state-end-of-session">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/16a-state-end-of-session.png" alt="16a" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#19</span>
+            <span class="badge badge-cat">Context</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Coros end screen (референс)</h3>
+          <div class="task-line"><span class="screen-name">16a-state-end-of-session</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Часть скринов с результирующего экрана Coros.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Сохранить как референс для post-session summary, не actionable.</p>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Сохранить в <code>ui_assets/references/coros-session-end.png</code></li>
+            <li>Coros patterns: achievement-блок, графики HR/pace/elevation, map, share CTA</li>
+            <li>Наш ETALON должен идти дальше Coros в HRV-интерпретации (наша USP)</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #20 -->
+    <article class="task-card" data-status="open" data-priority="P1" data-category="Question" data-owner="PM,Designer" data-author="Alexandr Dymov" data-screen="16c-state-close-confirm">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/16c-state-close-confirm.png" alt="16c" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#20</span>
+            <span class="badge badge-prio p1">P1 · M</span>
+            <span class="badge badge-cat">Question</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Откуда мы попали в close-confirm? — flow docs</h3>
+          <div class="task-line"><span class="screen-name">16c-state-close-confirm</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">А как мы с предыдущего в этот экран попали?</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Документировать flow для close-confirm modal — откуда триггерится, куда ведёт.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Триггеры: «Завершить» на 03b/03c во время тренировки; swipe home/lock</li>
+            <li>Modal: «Завершить тренировку?» + 2 кнопки</li>
+            <li>«Завершить и сохранить» → 16a-end-of-session</li>
+            <li>«Продолжить» → возврат к 03a/03b/03c</li>
+            <li>Зафиксировать flow в <code>docs_web/prds/m4-training-flow.md</code></li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Дымов задаёт вопрос — flow непрозрачен. <b>UX-bug в навигации</b></li>
+            <li>Показать triggering action явно — на 03c при Stop сразу modal</li>
+            <li>Не делать delete confirm + close confirm отдельно — слить в один</li>
+            <li><b>DS:</b> modal = <code>bv-card</code> Hero + 2 кнопки</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #21 -->
+    <article class="task-card" data-status="open" data-priority="P3" data-category="UX-decision" data-owner="Designer" data-author="Alexandr Dymov" data-screen="18a-state-history-empty-month">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/18a-state-history-empty-month.png" alt="18a" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#21</span>
+            <span class="badge badge-prio p3">P3 · S</span>
+            <span class="badge badge-cat">UX-decision</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Пустые месяцы — disabled</h3>
+          <div class="task-line"><span class="screen-name">18a-state-history-empty-month</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Coros просто не подсвечивает для выбора месяцы, в которых тренировок не было.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>В календаре истории не показывать selectable-state для пустых месяцев.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Месяцы с тренировками = clickable, ink-primary</li>
+            <li>Месяцы без = greyed-out (<code>ink/faded</code>), not clickable</li>
+            <li>При попытке нажать — не реагировать (или tooltip)</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Дымов: empty state = silent state</li>
+            <li>Альтернатива: clickable + empty-state screen с CTA «Запланировать»</li>
+            <li>Для MVP — рекомендую greyed-out (proactive empty-state post-MVP)</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #22 -->
+    <article class="task-card" data-status="open" data-priority="P3" data-category="Context-only" data-owner="PM" data-author="Alexandr Dymov" data-screen="18b-state-history-future-month">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/18b-state-history-future-month.png" alt="18b" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#22</span>
+            <span class="badge badge-prio p3">P3 · S</span>
+            <span class="badge badge-cat">Context</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">Будущие месяцы — зависит от Tracks A</h3>
+          <div class="task-line"><span class="screen-name">18b-state-history-future-month</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Гипотетически это прикольная фича.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Решить — поддерживаем ли «будущие месяцы» (запланированные тренировки)?</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Если #02 (Auto-trainer) принимается — будущие месяцы имеют смысл</li>
+            <li>Если нет — оставить только past months</li>
+            <li>В MVP <b>не строить</b> future months</li>
+            <li>Пометить в roadmap «зависит от Tracks A»</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Side-effect задачи #02</li>
+            <li>В MVP — не показывать, dead-link confuses users</li>
+            <li><b>DS:</b> future state = <code>bv-card</code> Subtle + <code>bv-eyebrow</code> «ЗАПЛАНИРОВАНО»</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #23 -->
+    <article class="task-card" data-status="open" data-priority="—" data-category="Product-strategy" data-owner="PM,R&D" data-author="Alexandr Dymov" data-screen="20b-hrv-detail">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/20b-hrv-detail.png" alt="20b" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#23</span>
+            <span class="badge badge-cat">Product-strategy</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">HRV-interpretation как наша USP</h3>
+          <div class="task-line"><span class="screen-name">20b-hrv-detail</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">У Coros HRV очень не раскрыта. Показывают только ночную HRV, никак не интерпретируют. Последний скрин с Whoop.</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Зафиксировать HRV-interpretation как нашу USP против Coros/Garmin. Не задача — это product positioning.</p>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Whoop делает HRV-interpretation сильно лучше Coros — нам тоже нужно</li>
+            <li><b>Наш unique angle:</b> 24/7 monitoring (не только ночь), контекстная интерпретация, прогноз готовности</li>
+            <li>Зафиксировать в <code>knowledge-base/competitive-positioning.md</code></li>
+            <li>На 20b показать сильную интерпретацию — блок где мы должны выигрывать</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #24 -->
+    <article class="task-card" data-status="open" data-priority="P1" data-category="UX-decision" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="20b-hrv-detail">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/20b-hrv-detail.png" alt="20b" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#24</span>
+            <span class="badge badge-prio p1">P1 · L</span>
+            <span class="badge badge-cat">UX-decision</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">HRV-driven daily recommendation engine</h3>
+          <div class="task-line"><span class="screen-name">20b-hrv-detail</span><span class="dot">·</span><span>Дина Митюрева</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">«Интенсивная тренировка» или «recovery-фокус» — это же совсем противоположное.<div class="reply"><b>Дина:</b> Это заглушка сейчас, нужно проработать текстовки.</div><div class="reply"><b>Дина:</b> HRV выше нормы → «хорошо отдохнули, интенсивная тренировка». HRV ниже → «показатели ниже обычного, больше времени восстановлению».</div><div class="reply"><b>Костя:</b> отдельный трек. Пока заглушка.</div></div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Создать rule-based рекомендательную таблицу для HRV-driven советов — отдельный track в roadmap.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Матрица рекомендаций: HRV vs baseline × Recovery × Sleep → category</li>
+            <li>4 уровня: +10% Good Good → интенсивно; -10% Low Bad → отдых; etc.</li>
+            <li>Тексты в copy-системе (Дина пишет)</li>
+            <li>Tone: caring, supportive, не command</li>
+            <li>Сервер ежедневно отдаёт code → UI рендерит</li>
+            <li>Epic «HRV-driven daily recommendation engine»</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Не строить ML — rule-based на 4-6 категорий покрывает 90%</li>
+            <li>Caring tone — каждая рекомендация заканчивается на выбор («если хотите...»)</li>
+            <li>Edge cases: нет данных, первый день, болезнь</li>
+            <li><b>DS:</b> <code>bv-card</code> Hero + <code>bv-eyebrow</code> Brand «СОВЕТ ДНЯ» + CTA <code>bv-pill</code></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #25 -->
+    <article class="task-card" data-status="open" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="20c-hrv-explainer-modal">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/20c-hrv-explainer-modal.png" alt="20c" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#25</span>
+            <span class="badge badge-prio p1">P1 · S</span>
+            <span class="badge badge-cat">Copy</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">«Каждое утро после пробуждения» — неправда</h3>
+          <div class="task-line"><span class="screen-name">20c-hrv-explainer-modal</span><span class="dot">·</span><span>Дина Митюрева</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Не правда же, что каждое утро после пробуждения... но если бы было правдой, то это оптимально для долгосрочного мониторинга.<div class="reply"><b>Костя:</b> напиши, пожалуйста, корректный текст.</div></div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Исправить вводящую в заблуждение copy на 20c — обещает то, чего нет в продукте.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Текущая (неправильно): «Pulse делает замеры каждое утро после пробуждения»</li>
+            <li>Корректно: «Pulse собирает данные о HRV непрерывно. Утренние и ночные значения наиболее показательны»</li>
+            <li>Попросить Дину дать финальную версию</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Дина права: продукт делает 24/7 monitoring, не точечный morning</li>
+            <li>Упомянуть «непрерывно» как USP против point-in-time</li>
+            <li>Связано с #28 — обе про explainer ясности</li>
+            <li><b>DS:</b> explainer modal = <code>bv-card</code> Hero + <code>Body/Body</code> style</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #26 -->
+    <article class="task-card" data-status="open" data-priority="P1" data-category="UX-decision" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="20c-hrv-explainer-modal">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/20c-hrv-explainer-modal.png" alt="20c" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#26</span>
+            <span class="badge badge-prio p1">P1 · S</span>
+            <span class="badge badge-cat">Copy</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">30 дней → 5-7 дней для baseline</h3>
+          <div class="task-line"><span class="screen-name">20c-hrv-explainer-modal</span><span class="dot">·</span><span>Дина Митюрева</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">30 не нужно, достаточно 5-7 дней чтобы сформировать baseline.<div class="reply"><b>Костя:</b> окей.</div></div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Заменить «30 дней» на «5-7 дней» везде в onboarding и explainers.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Найти все упоминания «30 дней»: 10c, 23a, 20c</li>
+            <li>Заменить на «5-7 дней»</li>
+            <li>Согласовать с R&D что 5-7 корректно</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>5-7 дней — научно валидно для HRV-baseline (Whoop тоже так)</li>
+            <li>Связано с #17 («baseline» → «личная норма») — единый sweep</li>
+            <li>Edge case: нерегулярное ношение — «нужно ещё 2 дня данных»</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #27 -->
+    <article class="task-card" data-status="open" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="23a-baseline-ready">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/23a-baseline-ready.png" alt="23a" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#27</span>
+            <span class="badge badge-prio p1">P1 · S</span>
+            <span class="badge badge-cat">Copy</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">«36 часов на baseline» — противоречие</h3>
+          <div class="task-line"><span class="screen-name">23a-baseline-ready</span><span class="dot">·</span><span>Дина Митюрева</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">А тут 36 часов на baseline...</div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Привести в соответствие тексты — везде использовать одно число. 36 часов слишком оптимистично.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>«36 часов» → «5-7 дней» (согласовано в #26)</li>
+            <li>Если за 36 ч что-то частично готово — «Личная норма формируется. Полная картина — через 5-7 дней»</li>
+            <li>Прогресс как progress bar (0%-100%), не absolute timer</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Связано с #17 + #26 — единый sweep</li>
+            <li>Не давать конкретные часы — пользователь будет проверять и расстраиваться</li>
+            <li>Альтернатива: «День 3 из 7»</li>
+            <li><b>DS:</b> progress = новый <code>bv-progress-bar</code> или <code>bv-capsule</code> Tone=Norm</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #28 -->
+    <article class="task-card" data-status="open" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="23a-baseline-ready">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/23a-baseline-ready.png" alt="23a" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#28</span>
+            <span class="badge badge-prio p1">P1 · M</span>
+            <span class="badge badge-cat">Copy</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">«Замеры» vs «фон» — explainer-конфьюз</h3>
+          <div class="task-line"><span class="screen-name">23a-baseline-ready</span><span class="dot">·</span><span>Дина Митюрева</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Все ещё не понимаю... прибор как будто бы не делает замеры специально, а собирает данные в фоне ежеминутно.<div class="reply"><b>Дина:</b> Тогда почему речь про отдельные замеры?</div></div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Унифицировать concept — браслет делает continuous background monitoring, не «замеры».</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li><b>Запретить</b> слово «замер» (suggests discrete event)</li>
+            <li>Использовать: «Pulse собирает данные о HRV в фоне 24/7»</li>
+            <li>«Замер» оставить только для specific cases (контрольный snapshot)</li>
+            <li>Sweep по всем onboarding + explainer screens</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>Дина повторно поднимает confusion — copy не убеждает</li>
+            <li>Метафора: «Pulse работает как фитнес-трекер — данные собираются всегда пока на руке»</li>
+            <li>Связано с #25 — оба про explainer ясности, делать одной волной</li>
+            <li>Не использовать jargon (PPG-сенсор, continuous data stream)</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- #29 -->
+    <article class="task-card" data-status="open" data-priority="P2" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="23a-baseline-ready">
+      <div class="task-header">
+        <div class="task-thumb"><img src="screenshots/23a-baseline-ready.png" alt="23a" /></div>
+        <div class="task-meta">
+          <div class="task-id-row">
+            <span class="task-id">#29</span>
+            <span class="badge badge-prio p2">P2 · S</span>
+            <span class="badge badge-cat">Copy</span>
+            <span class="badge badge-status open">🔴 OPEN</span>
+          </div>
+          <h3 class="task-title">«Дельты показывают насколько отдохнули» — переписать</h3>
+          <div class="task-line"><span class="screen-name">23a-baseline-ready</span><span class="dot">·</span><span>Дина Митюрева</span></div>
+        </div>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="task-body">
+        <div class="task-section">
+          <h4>Текст комментария</h4>
+          <div class="comment-quote">Почему дельты показывают насколько отдохнули.<div class="reply"><b>Дина:</b> Я бы убрала второе предложение или переписала.</div></div>
+        </div>
+        <div class="task-section">
+          <h4>Что делать</h4>
+          <p>Переписать (или удалить) фразу про «дельты» на 23a — она не объясняет, она конфьюзит.</p>
+        </div>
+        <div class="task-section">
+          <h4>Как делать</h4>
+          <ol>
+            <li>Удалить «дельты показывают насколько отдохнули» — math jargon</li>
+            <li>Заменить на: «Чем выше HRV над вашей нормой — тем лучше отдых»</li>
+            <li>Или: «Зелёная зона = хороший отдых, красная = усталость»</li>
+            <li>Или вообще убрать — переместить explainer на 20c</li>
+          </ol>
+        </div>
+        <div class="task-section">
+          <h4>Рекомендации</h4>
+          <ul>
+            <li>«Дельта» — math jargon, не для wellness app</li>
+            <li>Заменить числа на визуальный feedback (цвет, иконка)</li>
+            <li>Связано с #25, #27, #28 — все про explainer copy</li>
+            <li><b>DS:</b> color zones = <code>semantic/norm/warn/high</code> + <code>bv-capsule</code> Tone-variants</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <div class="empty-state hidden" id="emptyState">
+    Нет задач по выбранным фильтрам. Сбрось фильтры или измени критерии.
+  </div>
+
+  <footer class="footer">
+    <p>Источник: <a href="https://www.figma.com/design/SWRHwjeZkJu5c4eEoKjxQd/Pulse" target="_blank">Figma file · Pulse</a> · обновлено 1 июля 2026 · 49 комментариев → 29 задач</p>
+    <p>Авторы: Alexandr Dymov · Дина Митюрева · Константин Соломонов · Никита Подлипский</p>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  const filters = { status: 'all', priority: 'all', category: 'all', owner: 'all', author: 'all' };
+  const chips = document.querySelectorAll('.chip');
+  const cards = document.querySelectorAll('.task-card');
+  const emptyState = document.getElementById('emptyState');
+
+  // Toggle expand on card click
+  cards.forEach(card => {
+    card.querySelector('.task-header').addEventListener('click', () => {
+      card.classList.toggle('expanded');
+    });
+  });
+
+  // Filter chips
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const filterType = chip.dataset.filter;
+      const value = chip.dataset.value;
+
+      // Deactivate sibling chips in same group
+      document.querySelectorAll(`[data-filter="${filterType}"]`).forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+
+      filters[filterType] = value;
+      applyFilters();
+    });
+  });
+
+  function applyFilters() {
+    let visibleCount = 0;
+    cards.forEach(card => {
+      const match = Object.keys(filters).every(filterType => {
+        const filterValue = filters[filterType];
+        if (filterValue === 'all') return true;
+        const cardValue = card.dataset[filterType] || '';
+        // Special handling for owner (comma-separated list)
+        if (filterType === 'owner') {
+          return cardValue.split(',').map(s => s.trim()).includes(filterValue);
+        }
+        return cardValue === filterValue;
+      });
+      if (match) {
+        card.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+    emptyState.classList.toggle('hidden', visibleCount > 0);
+  }
+})();
+</script>
+
+</body>
+</html>
