@@ -18,7 +18,7 @@
 
 4. **Найдено 4 внешних усиления сильнее запрошенных:** Anthropic `frontend-design` (официальный, must-have baseline), `interface-design` (финишный deslop-пасс), `oklch-skill` (точно под боль wine), `ui-craft` (детерминированные гейты — кандидат на ядро).
 
-5. **⚠️ Два канона под вопрос (мандат «canon revisable»):** (а) **wine в chrome** — research единогласно говорит вынести; (б) **Pulse Mono для чисел** — Bevel намеренно НЕ использует отдельный mono. Решение за PM (см. §7).
+5. **✅ Два канона — решено PM (01.07):** (а) **wine ВЫНЕСЕН из chrome** (согласовано) — отменяет прежний header/footer-canon; (б) **Pulse Mono ОСТАЁТСЯ — только для цифр**, всё остальное Golos Text (см. §7).
 
 ---
 
@@ -42,7 +42,7 @@
 | Инструмент | Verdict | Цена/доступ | Confidence | Примечание |
 |---|---|---|---|---|
 | **taste-skill** (Leonxlnx) | ✅ **БРАТЬ** — методологический каркас №1 | Free, MIT · `npx skills add Leonxlnx/taste-skill` | — | Импортировать SKILL.md-правила в `UI_assets`, НЕ ставить слепо. Override: разрешить 3+ радиуса (его one-radius догма противоречит нашему фиксу). |
-| **UX UI Pro Max** (nextlevelbuilder) | 🟡 Вторичный QA/a11y-слой, **не лекарство** | Free core · premium на паузе, цена скрыта | medium (скептик оспорил даже QA-роль) | Лечит accessibility/touch/perf — НЕ вкус/душу. Польза: charts-домен + tabular-figures + финальный a11y-чеклист. |
+| **UX UI Pro Max** (nextlevelbuilder) | ✅ **Установить open-source ядро** как вторичный QA/a11y-слой (не лекарство) | Free MIT, v2.10.0 (29.06.26) · ядро полностью открыто · `/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill` → `/plugin install ui-ux-pro-max@ui-ux-pro-max-skill` | medium | Ядро открыто (67 стилей, 161 палитра, 99 UX-guidelines, 25 charts, 161 reasoning-rules). Лечит accessibility/touch/charts — НЕ вкус/душу. Premium (бренд-ассеты) — отдельно, можно игнорировать. |
 | **Google Stitch** | 🟡 **Усиливает при условиях** | Free (Labs, ~400/день) · платно ожидается Q4 2026 | medium | Только композиция-болванка; код выбрасываем; обязателен taste-отбор + Figma-детокс. Без условий — производит generic. |
 | **Anthropic frontend-design** | ✅ **МАСТХЭВ baseline** | Free, official · 277k+ установок · `/plugin install frontend-design` | **high** | Банит generic-шрифты/градиенты на уровне постановки. Один недостаточен для плотных product-экранов. |
 | **interface-design** (Dammyjay93) | ✅ Финишный deslop-пасс | Free · 5.2k⭐ · `npx skills add Dammyjay93/interface-design` | medium | `design-deslop` — diff-scoped срез AI-tells. Гонять перед каждым показом PM. |
@@ -111,10 +111,10 @@
 
 ---
 
-## 7. ⚠️ Канон под вопрос (требует решения PM — мандат «canon revisable»)
+## 7. ✅ Канон — решения PM (01.07.2026, мандат «canon revisable»)
 
-1. **Wine в chrome → вынести.** Research единогласно (диагностика + D + E + redesign-skill): wine в активном nav-табе/header читается как «корпоративный шаблон», конфликтует с wellness-позиционированием и создаёт 4-ю hue-семью. Bevel держит chrome чёрным/нейтральным. **Это прямо противоречит memory `project_neiry_bevel_clone_header_footer_canon`** (wine-tint pill как brand-anchor). → **Рекомендация: wine только splash/onboarding/лого; chrome ахроматичен; цвет — в данных.** Решение за тобой.
-2. **Pulse Mono для чисел → пересмотреть (мягко).** Bevel намеренно НЕ использует отдельный mono — крупность+вес гротеска делают числа естественными, не «табличными» (D, confidence high). Наш канон Pulse Mono (memory `project_neiry_pulse_mono_font`) — легитимный дивергентный выбор, но это вклад в «системно-сгенерённый» вид. → **Не мандат, а точка для обсуждения.**
+1. **Wine ВЫНЕСЕН из chrome (СОГЛАСОВАНО).** Активный nav-таб / header-eyebrow / CTA → нейтрально-тёмные `--bv-ink`. Wine #831843 остаётся **только** как редкий brand-signal (splash / onboarding / лого). Chrome ахроматичен, цвет живёт в данных. **Отменяет** прежний `project_neiry_bevel_clone_header_footer_canon` (wine-tint pill как brand-anchor) — память обновлена.
+2. **Pulse Mono ОСТАЁТСЯ — ТОЛЬКО для цифр (решение PM).** Все числа (значения, время, проценты, ID) — Pulse Mono; **всё остальное Golos Text**, включая единицы измерения, метки строк, заголовки таблиц, body. Сознательная дивергенция от Bevel (он без mono) — наш фирменный приём. **Уточняет** `project_neiry_typography_system`: раньше mono покрывал табличные блоки целиком, теперь — строго цифры.
 
 ---
 

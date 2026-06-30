@@ -18,7 +18,7 @@
 | Финишный deslop | **interface-design** (Dammyjay93) | `npx skills add Dammyjay93/interface-design` | `design-deslop` — срез AI-tells перед каждым показом PM. |
 | Кандидат на ядро | **ui-craft** (educlopez) | испытать на 1 экране | детерминированные гейты (score/lint), durable brief/tokens. |
 | Наш арсенал | `redesign-existing-projects`, `impeccable`, `high-end-visual-design` | уже есть — **вызывать системно** | лучший фит под существующий код + AI-slop-test + variance. |
-| Вторичный QA | **UX UI Pro Max** | держать reasoning-таблицу как pre-flight | accessibility/touch/charts. НЕ лекарство от generic. |
+| Вторичный QA | **UX UI Pro Max** (MIT, v2.10.0) | установить ядро: `/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill` → `/plugin install ui-ux-pro-max@ui-ux-pro-max-skill` | accessibility/touch/charts/161 reasoning-rules. НЕ лекарство от generic. |
 
 **Принцип-фундамент (из методологии):** **Reference-grounding превыше prose.** Никогда «сделай премиально» — всегда скриншот реального референса (Bevel из `screenshots/references/`) → конкретные токены и правила.
 
@@ -102,7 +102,8 @@ Sleep/REM:      #4F6BFF → #9AA8FF      Trend-сигнал: #FF8A3D
 Радиусы:        pill 24-28 · карта 20-24 · CTA 32 · иконка-таблетка 16-18
 Eyebrow:        uppercase tracking +0.6px
 Dark Sleep:     фон #0E1320/#141A2D, карта #1B2236
-Шрифт:          единый grotesque, числа тем же шрифтом extra-bold (Bevel БЕЗ отдельного mono)
+Шрифт:          Bevel — единый grotesque, числа тем же шрифтом extra-bold (БЕЗ mono)
+НАШ ВЫБОР:       Golos Text везде + Pulse Mono ТОЛЬКО для цифр (наша дивергенция, см. §Канон)
 ```
 
 ## 6 потерь клона → фиксы (из Потока E, полностью в research/raw/E.json)
@@ -114,10 +115,10 @@ Dark Sleep:     фон #0E1320/#141A2D, карта #1B2236
 5. **Hero→6 близнецов** → ритм доминанта→insight-проза→сетка.
 6. **Нет сигнатуры/градиентов** → «Спросить Pulse» bar + градиенты + emoji-проза.
 
-## ⚠️ Канон под вопрос (решение PM — см. отчёт §7)
+## ✅ Канон — решения PM (01.07.2026)
 
-- **Wine в chrome** → research рекомендует вынести (противоречит memory `project_neiry_bevel_clone_header_footer_canon`). **Ждёт решения PM.**
-- **Pulse Mono для чисел** → Bevel намеренно без mono. Мягкая точка для обсуждения, не мандат.
+- **Wine ВЫНЕСЕН из chrome** (согласовано). Активный nav-таб, header-eyebrow, CTA → нейтрально-тёмные (`--bv-ink`). Wine #831843 остаётся **только** как редкий brand-signal (splash / onboarding / лого), не как ежедневный chrome. Отменяет прежний `project_neiry_bevel_clone_header_footer_canon` (wine-tint pill).
+- **Pulse Mono — ОСТАВЛЯЕМ, ТОЛЬКО ДЛЯ ЦИФР.** Все числа (значения метрик, время, проценты, ID) — Pulse Mono. **Всё остальное — Golos Text**, включая единицы измерения (ms/bpm/уд), метки строк, заголовки таблиц, body. Это сознательная дивергенция от Bevel (который без mono) — наш фирменный приём. Уточняет `project_neiry_typography_system` (раньше mono покрывал табличные блоки целиком — теперь строго цифры).
 
 ## Stitch-протокол (если используется на стадии 2)
 
