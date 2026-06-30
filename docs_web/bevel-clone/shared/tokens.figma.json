@@ -1,0 +1,122 @@
+{
+  "$meta": {
+    "name": "Neiry Pulse · Bevel-clone · tokens",
+    "version": "1.0.4",
+    "date": "2026-06-29",
+    "source": "tokens.css mirror",
+    "scope": "light-mode only (Dark Mode override on Sleep, separate layer)",
+    "patch": "v1.0.4 — label 14→12, headline 17→16 (Stage 5 visual review); v1.0.3 — +brand.wineHover/inkOnWine, +shadow.dot (components.css feedback); v1.0.2 — +radius.button/icon; v1.0.1 — ink.dim AA-fix, +toggleTrackOff, sectionH2 28→24",
+    "figma": "Tokens Studio plugin compatible — paired with tokens.json (CSS/React source)"
+  },
+  "global": {
+    "brand": {
+      "wine": { "value": "#831843", "type": "color" },
+      "wineTint": { "value": "#F7E3EC", "type": "color" },
+      "wineHover": { "value": "#6E0F37", "type": "color" },
+      "inkOnWine": { "value": "#FFFFFF", "type": "color" }
+    },
+    "surface": {
+      "bgScreen": { "value": "#F0F0F3", "type": "color" },
+      "bgCard": { "value": "#FFFFFF", "type": "color" },
+      "bgSubtle": { "value": "#E8E8EE", "type": "color" }
+    },
+    "ink": {
+      "primary": { "value": "#1B1B21", "type": "color" },
+      "mute": { "value": "#62626C", "type": "color" },
+      "dim": { "value": "#6C6C76", "type": "color" },
+      "faded": { "value": "#B5B5BD", "type": "color" },
+      "soft": { "value": "#9C9CA8", "type": "color" }
+    },
+    "semantic": {
+      "norm": {
+        "fill": { "value": "#1DA049", "type": "color" },
+        "ink": { "value": "#117A38", "type": "color" },
+        "bg": { "value": "#E5F7EE", "type": "color" }
+      },
+      "warn": {
+        "fill": { "value": "#F2752B", "type": "color" },
+        "ink": { "value": "#C2511A", "type": "color" },
+        "bg": { "value": "#FBE9DA", "type": "color" }
+      },
+      "high": {
+        "fill": { "value": "#E11D48", "type": "color" },
+        "ink": { "value": "#C20D2E", "type": "color" },
+        "bg": { "value": "#FBDDE3", "type": "color" }
+      }
+    },
+    "capsule": {
+      "track": { "value": "#EAEAEF", "type": "color" },
+      "trackNorm": { "value": "#D6F0E2", "type": "color" },
+      "trackWarn": { "value": "#F8DEC8", "type": "color" },
+      "trackHigh": { "value": "#F4C7D0", "type": "color" },
+      "fillNorm": { "value": "#1DA049", "type": "color" },
+      "fillWarn": { "value": "#F2752B", "type": "color" },
+      "fillHigh": { "value": "#E11D48", "type": "color" }
+    },
+    "avatar": {
+      "bg": { "value": "#D5E3F0", "type": "color" },
+      "ink": { "value": "#3A6FA0", "type": "color" }
+    },
+    "hairline": {
+      "primary": { "value": "#E5E5EA", "type": "color" },
+      "secondary": { "value": "#EEEEF2", "type": "color" }
+    },
+    "toggleTrackOff": { "value": "#D5D5DD", "type": "color" },
+    "shadow": {
+      "card": { "value": "0 1px 3px rgba(22,22,32,.03), 0 6px 18px rgba(22,22,32,.04)", "type": "boxShadow" },
+      "nav": { "value": "0 4px 16px rgba(22,22,32,.08)", "type": "boxShadow" },
+      "header": { "value": "0 1px 2px rgba(22,22,32,.04)", "type": "boxShadow" },
+      "dot": { "value": "0 1px 2px rgba(22,22,32,.18)", "type": "boxShadow" }
+    },
+    "radius": {
+      "card": { "value": "20", "type": "borderRadius" },
+      "button": { "value": "14", "type": "borderRadius" },
+      "icon": { "value": "10", "type": "borderRadius" },
+      "pill": { "value": "9999", "type": "borderRadius" },
+      "nav": { "value": "30", "type": "borderRadius" }
+    },
+    "spacing": {
+      "1": { "value": "4", "type": "spacing" },
+      "2": { "value": "8", "type": "spacing" },
+      "3": { "value": "12", "type": "spacing" },
+      "4": { "value": "16", "type": "spacing" },
+      "5": { "value": "20", "type": "spacing" },
+      "6": { "value": "24", "type": "spacing" },
+      "8": { "value": "32", "type": "spacing" },
+      "section": { "value": "28", "type": "spacing" }
+    },
+    "typography": {
+      "families": {
+        "sans": { "value": "'Golos Text', system-ui, -apple-system, sans-serif", "type": "fontFamilies" },
+        "mono": { "value": "'Pulse Mono', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace", "type": "fontFamilies" }
+      },
+      "sizes": {
+        "displayHero": { "value": "60", "type": "fontSizes" },
+        "sectionH2": { "value": "24", "type": "fontSizes" },
+        "metricBento": { "value": "28", "type": "fontSizes" },
+        "headline": { "value": "16", "type": "fontSizes" },
+        "label": { "value": "12", "type": "fontSizes" },
+        "body": { "value": "14", "type": "fontSizes" },
+        "caption": { "value": "12", "type": "fontSizes" },
+        "eyebrow": { "value": "11", "type": "fontSizes" },
+        "tabLabel": { "value": "10", "type": "fontSizes" },
+        "capsuleBounds": { "value": "11", "type": "fontSizes" }
+      },
+      "weights": {
+        "regular": { "value": "400", "type": "fontWeights" },
+        "medium": { "value": "500", "type": "fontWeights" },
+        "semibold": { "value": "600", "type": "fontWeights" },
+        "bold": { "value": "700", "type": "fontWeights" },
+        "extrabold": { "value": "800", "type": "fontWeights" }
+      },
+      "rhythm": {
+        "lhTight": { "value": "1", "type": "lineHeights" },
+        "lhDisplay": { "value": "1.1", "type": "lineHeights" },
+        "lhBody": { "value": "1.5", "type": "lineHeights" },
+        "lsTight": { "value": "-0.6px", "type": "letterSpacing" },
+        "lsEyebrow": { "value": "0.6px", "type": "letterSpacing" }
+      }
+    },
+    "iconStroke": { "value": "1.7", "type": "borderWidth" }
+  }
+}

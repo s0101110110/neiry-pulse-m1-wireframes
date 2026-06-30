@@ -161,3 +161,31 @@ Bump rules:
 История изменений — `git log` по файлам `shared/*`.
 
 Эталон-implementation для новых screens — `docs_web/bevel-clone/home/home-main-etalon.html`.
+
+---
+
+## Figma sync (Phase 7)
+
+Design tokens синхронизируются с Figma через плагин **Tokens Studio for Figma** (бывший Figma Tokens).
+
+**Источник:** `shared/tokens.figma.json` — зеркало `tokens.json` в Tokens Studio формате с явными `type` для каждого токена.
+
+### Workflow
+
+1. **Установка:** Figma → Plugins → Browse → "Tokens Studio for Figma" → Install
+2. **Импорт:** Plugin → Settings → JSON tab → paste содержимое `shared/tokens.figma.json` → Save
+3. **Применение:** Select layer → Tokens panel → клик по нужному токену (fill, radius, spacing, typography)
+4. **GitHub sync (опционально):** Settings → Sync → GitHub → подключить `s0101110110/neiry-pulse-m1-wireframes`, path `docs_web/bevel-clone/shared/tokens.figma.json`. После — pull/push tokens между Figma и репо.
+
+### Два JSON-файла — зачем
+
+| Файл | Назначение | Формат |
+|------|------------|--------|
+| `tokens.json` | CSS/React/Stitch import | Flat nested (compact) |
+| `tokens.figma.json` | Tokens Studio plugin | `{value, type}` обёртка |
+
+Обновляются вместе — при изменении токена правь оба либо один через push из Figma.
+
+### Авторитетный источник
+
+Если значения расходятся — **`tokens.css` приоритетнее** (runtime источник). JSON-зеркала переписываются под него.
