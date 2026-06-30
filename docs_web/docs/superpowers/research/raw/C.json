@@ -1,0 +1,88 @@
+{
+  "candidates": [
+    {
+      "tool": "Anthropic frontend-design (официальный skill, anthropics/skills)",
+      "gives": "Базовый анти-slop слой и эталон для всех остальных. Прямо БАНИТ конвергентный AI-look: шрифты Inter/Roboto/Arial/system, фиолетовые градиенты на белом, и даже Space Grotesk как новый дефолт. Заставляет ДО кода зафиксировать 4 решения (purpose / tone / constraints / differentiation) и выбрать один из ~11 экстремальных тонов (brutalist, editorial, luxury, art deco, maximalist chaos...). Лечит симптом #1 (типовые компоненты) и #4 (не рукотворный) на уровне постановки.",
+      "availability": "Free, open-source. 277k+ установок за 4 мес. Install: anthropics/skills репо или /plugin install frontend-design. ~30 строк SKILL.md.",
+      "worthTrying": "ОБЯЗАТЕЛЬНЫЙ baseline — ставить первым слоем под всё остальное. Но один он закрывает только эстетику лендингов; плотные product-экраны (дашборд Neiry, settings, таблицы) требует reference-grounding сверху. Для проекта — мастхэв, но недостаточен в одиночку."
+    },
+    {
+      "tool": "ui-craft (educlopez/ui-craft)",
+      "gives": "Самый полный инженерный пайплайн: Discovery → /brief → /tokens → build → /finalize → ship с durable-артефактами (.ui-craft/brief.md + токены), переживающими сессии. 22 slash-команды (/craft, /shape — ASCII-wireframe до кода, /heuristic — scored-критика Nielsen 10 + 6 design laws + persona-walkthrough, /finalize — 10-pass finish gate). Anti-slop детектор на 33 правила (бан bounce/glassmorphism/identical-card-grid/purple-cyan/emoji-icons), UICraftScore 0-100, MCP-гейты (check_anti_slop, tokens_lint, score_ui) для CI. Два read-only агента (design-reviewer, a11y-auditor) дают независимую параллельную проверку. Лечит все 4 симптома, особенно #2 (композиция: /shape) и #4 (рукотворность: finish-bar).",
+      "availability": "Free, open-source. Install: brew install educlopez/tap/ui-craft → ui-craft install; или /plugin install ui-craft; или npx skills add educlopez/ui-craft. Framework-agnostic.",
+      "worthTrying": "ДА — сильнее taste/UX-UI-Pro-Max, потому что добавляет детерминированные гейты (score, lint, acceptance-bar) и multi-agent критику, а не только prose-правила. Лучший выбор как ядро оркестрации для Neiry: durable brief/tokens напрямую решают проблему дрейфа бренда между сессиями."
+    },
+    {
+      "tool": "interface-design (Dammyjay93/interface-design)",
+      "gives": "Design engineering с памятью и enforcement. Главное оружие — команда /interface-design:design-deslop: быстрый diff-scoped проход, срезающий именно AI-tells: generic-токены, дефолтная типографика, робкие палитры, повторяющиеся идентичные карточки, отсутствующие interactive-states, грубые борды. Персистентная память в .interface-design/system.md (spacing scale, токены, depth-стратегия, паттерны) — перезагружается при возобновлении сессии, не даёт стилю дрейфовать. Directional personalities (precision/warmth/sophistication/boldness). Прямо адресует симптом #1 и #4 на уже-сгенерённом коде.",
+      "availability": "Free, open-source. Install: npx skills add Dammyjay93/interface-design (target claude-code/codex/all) или копия в ~/.claude/skills/.",
+      "worthTrying": "ДА — как финишный анти-slop пасс ПОВЕРХ любой генерации (комплементарен ui-craft, не конкурент). design-deslop — самый прямой инструмент против 'не рукотворный'. Для Neiry: гонять перед каждым показом PM."
+    },
+    {
+      "tool": "oklch-skill (aicolors / oklch-skill)",
+      "gives": "Учит агента думать о цвете в OKLCH (перцептивно-равномерное пространство) вместо HSL/RGB. Прямое лекарство от симптома #3 (поганый wine #831843): в HSL тёмные/средние тона мареново-винного мутнеют в грязно-серый, OKLCH держит chroma на mid-tones и subtle на краях, генерит brand-tinted нейтрали с 0-100% влиянием primary. Lightness-inversion с сохранением hue/chroma для dark-mode без 'грязно-фиолетового'. Делает винный акцент аккуратной шкалой, а не одним мутным пятном.",
+      "availability": "Free Agent Skill для Claude Code. Поддержка OKLCH во всех браузерах с 2023. Доп. инструменты: oklch.fyi, Prism/OKLCH Palette Generator (Figma).",
+      "worthTrying": "ДА — точечно под боль Neiry с wine #831843. Генерит из одного бренд-цвета честную перцептивную шкалу (50→900) + harmonious нейтрали, убирая 'муть'. Связать с правилом из MEMORY: wine только brand-anchor, контент — semantic colors."
+    },
+    {
+      "tool": "Claude Design (Anthropic Labs) + /design-sync (DesignSync tool)",
+      "gives": "Отдельный Labs-продукт на Opus 4.7: коллаб-канвас для дизайна/прототипов/слайдов, contextual tweak-слайдеры (spacing/color/layout), инлайн-аутпуты Voice/Video/3D/Shaders. Ключевое для оркестрации — bring-your-own design system + терминальная команда /design-sync: подтягивает активную дизайн-систему Claude Design в контекст Claude Code ПЕРЕД генерацией UI, чинит 'слепоту' и отсутствие design-memory, плюс июньский фикс token-burn. Round-trip code↔design. Лечит #2 и #4 за счёт единого источника правды по бренду.",
+      "availability": "Anthropic Labs продукт (не бесплатный skill — отдельный доступ/лимиты). /design-sync доступна как terminal-команда (в этой среде есть deferred tool DesignSync). Обновление июнь 2026: design-system imports + token-burn fix.",
+      "worthTrying": "Стоит протестировать как 'мост' бренда: один раз импортировать дизайн-систему Neiry (Golos Text + Pulse Mono, wine-canon header/footer), затем /design-sync перед каждой UI-сессией → консистентность без дрейфа. Минус — токены/доступ; для ежедневного деслопа дешевле связка ui-craft + interface-design."
+    },
+    {
+      "tool": "taste-skill (Leonxlnx/taste-skill) и его синтез design-taste (h3nryprod01)",
+      "gives": "Motion-first анти-slop с тремя числовыми dials (1-10): DESIGN_VARIANCE (центрированно-предсказуемо → асимметрично-модерн — прямо лечит #2 композицию), MOTION_INTENSITY (hover → scroll/parallax/magnetic), VISUAL_DENSITY (воздух → плотный дашборд). Читает бриф, инферит design language, 'читает комнату' вместо дефолтного аутпута. design-taste (h3nryprod01) — готовый МЕРДЖ трёх скиллов: emilkowalski/skill (motion) + pbakaus/impeccable (OKLCH color + 8-state component model) + leonxlnx/taste-skill (brief-reading + review matrix) в один activation-point с pre-flight review-матрицей.",
+      "availability": "Free, open-source. Install: npx skills add Leonxlnx/taste-skill или npx skills add h3nryprod01/design-taste. Кросс-агент (Claude Code, Cursor, Codex, v0, Lovable).",
+      "worthTrying": "ДА, но как тюнер-слой, не как ядро. У PM уже есть emil-design-eng и impeccable по отдельности — design-taste их объединяет и дедуплицирует (меньше overlap, единый pre-flight). VARIANCE/DENSITY dials — точный рычаг под разные экраны Neiry (лендинг = high variance, settings/таблицы = low variance + high density)."
+    }
+  ],
+  "methodology": [
+    "Reference-grounding превыше prose: НЕ описывать словами ('сделай премиально'), а скриншотить 2-3 реальных референса (Linear, Vercel, Hume Band — уже в knowledge-base) и конвертировать их в КОНКРЕТНЫЕ токены и правила. Параграф оставляет модели свободу свалиться в дефолт; картинка + токен — нет. Это #1 фикс против всех 4 симптомов.",
+    "Слоёный стек 'дешёвое первым' (по superdesign): (1) frontend-design skill бесплатно банит generic-шрифты/градиенты → (2) durable DESIGN.md/brief.md+tokens в репо (ui-craft/interface-design память) → (3) визуальный референс как taste-anchor → (4) бесплатный screenshot-loop. Каждый слой ловит то, что пропустил предыдущий.",
+    "Brief→tokens→shape→craft→converge→ship как обязательный конвейер. Ключ — /shape (ASCII-wireframe ДО кода) ломает дефолтную центрированную композицию (симптом #2) ещё до того, как модель напишет первый div.",
+    "Durable-артефакты против дрейфа бренда: brief.md + tokens.* + system.md живут в репо и перезагружаются каждую сессию. Без них винный акцент и типографика Neiry дрейфуют между генерациями. Связать с уже существующим tokens.figma.json в проекте.",
+    "Двухфазный анти-slop: генерация ОДНИМ скиллом (frontend-design/ui-craft), затем отдельный deslop-пасс ДРУГИМ инструментом (interface-design design-deslop) — diff-scoped срез generic-токенов/идентичных карточек/missing-states. Генератор и ревьюер не должны быть одним проходом.",
+    "Цвет только в OKLCH: бренд-цвет (wine #831843) → перцептивная шкала 50-900 через oklch-skill, а не ручной HSL (который мутит mid-tones в грязь = симптом #3). Brand-tinted нейтрали 0-100% influence вместо плоского серого.",
+    "Multi-perspective критика вместо single-pass (CritiqueCrew + ui-craft /heuristic): прогон design-reviewer + a11y-auditor + persona-walkthrough (first-timer / power-user / low-bandwidth / screen-reader / one-thumb) ПАРАЛЛЕЛЬНО read-only агентами. Не искать консенсус — фиксировать НАПРЯЖЕНИЯ между функцией и отличительностью.",
+    "Scored gates вместо вкусовых ощущений: UICraftScore 0-100 / Nielsen 10 + 6 design-laws / impact-tags (blocks-conversion, reduces-trust). Превращает 'кажется generic' в измеримый порог, который можно поставить acceptance-bar'ом — стыкуется с PM-правилом 'verification before done'.",
+    "Tunable dials под тип экрана: VARIANCE/MOTION/DENSITY (taste-skill) и craft/motion/density knobs (ui-craft) — высокий variance для лендинга, низкий variance + высокая density для settings/таблиц. Один пресет на всё = template-look (симптом #4).",
+    "Living 'keep/reject' библиотека: вести лог принятых и отклонённых решений С ПРИЧИНАМИ, скармливать инструментам как историю вкуса. Вкус живёт в curation и в правилах 'что НИКОГДА не должно случиться', а не в одной генерации. Для Neiry — расширять lessons-learned.md дизайн-решениями.",
+    "Screenshot-compare-refine loop как бесплатная привычка: render → screenshot → вернуть картинку с КОНКРЕТНЫМ фидбеком ('borders слишком harsh, density мало', а не 'улучши') → итерация. Лечит 'технически верный CSS, который выглядит не так'.",
+    "Hybrid hand-off: AI генерит скелет (экономит время, не мышление), человек/PM добавляет 'душу' — финальная типографика, spacing-отношения, micro-interactions, edge/empty/error/loading states (которые AI стабильно пропускает = главный tell 'не рукотворный')."
+  ],
+  "sources": [
+    "https://github.com/educlopez/ui-craft",
+    "https://github.com/Dammyjay93/interface-design",
+    "https://github.com/Leonxlnx/taste-skill",
+    "https://github.com/Leonxlnx/taste-skill/blob/main/skills/taste-skill/SKILL.md",
+    "https://github.com/h3nryprod01/design-taste",
+    "https://www.tasteskill.dev/",
+    "https://www.tasteskill.dev/docs",
+    "https://www.anthropic.com/news/claude-design-anthropic-labs",
+    "https://www.piax.org/skills/anthropics-skills/frontend-design",
+    "https://github.com/anthropics/skills/commit/2235be7c60b551f5de82ade908fd3816455afcda",
+    "https://officialskills.sh/anthropics/skills/frontend-design",
+    "https://thomas-wiegold.com/blog/claude-code-frontend-design-plugin/",
+    "https://medium.com/@ahmed.soliman/why-anthropics-frontend-design-skill-just-works-a-prompt-engineering-breakdown-72a1386df114",
+    "https://medium.com/design-bootcamp/the-most-installed-design-document-of-2026-is-30-lines-long-6b9a89834bd8",
+    "https://superdesign.dev/blog/claude-code-ui-design",
+    "https://superdesign.dev/blog/claude-code-design-prompts",
+    "https://aicolors.app/blog/oklch-skill-ai-color-system/",
+    "https://oklch.fyi/",
+    "https://arxiv.org/pdf/2602.01796",
+    "https://ui.shadcn.com/docs/registry/mcp",
+    "https://www.shadcn.io/mcp/claude-code",
+    "https://tokenmix.ai/blog/shadcn-mcp-frontend-component-integration-guide-2026",
+    "https://chatforest.com/builders-log/claude-design-june-2026-design-system-imports-code-sync-token-fix-builder-guide/",
+    "https://venturebeat.com/technology/anthropic-ships-major-claude-design-overhaul-with-design-system-imports-code-round-trips-and-a-fix-for-its-token-burning-problem",
+    "https://www.mindstudio.ai/blog/claude-design-token-management-guide",
+    "https://www.nareshbhatia.dev/articles/hand-crafted-vs-ai-assisted-front-ends",
+    "https://think.design/blog/when-generated-ui-actually-works-a-designers-guide/",
+    "https://ixdf.org/literature/article/micro-interactions-ux",
+    "https://dev.to/goose_oss/how-i-taught-my-agent-my-design-taste-3njj",
+    "https://completeaitraining.com/news/creativity-at-the-speed-of-taste-designers-orchestrate-ai/",
+    "https://pasqualepillitteri.it/en/news/576/claude-code-skills-design-uiux-guide",
+    "https://snyk.io/articles/top-claude-skills-ui-ux-engineers/"
+  ]
+}

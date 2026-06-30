@@ -1,0 +1,36 @@
+{
+  "typography": "Один гротеск-санс на весь интерфейс (читается как SF Pro / близкий системный grotesque, не моноширинный). Чёткая 4-ступенчатая шкала весов и размеров. (1) Hero-числа метрик — extra-bold, очень крупные: «80.3 ms», «92.7», «44%», «6h 58m» идут ~40-56px bold, единица измерения («ms»,«bpm»,«rpm») рядом тем же шрифтом но light-gray и мельче (~50% размера) — ключевой приём: число чёрное жирное, юнит серый тонкий. (2) Заголовки экранов центрированы ~17px semibold («Resting HRV», «Stress», «Recovery»), под ними дата серым regular. (3) Секц-заголовки слева ~22-24px bold («Stress & Energy», «Health Monitor», «Sleep Stages», «Trends», «Timeline») — ОДНОСТРОЧНЫЕ, без переносов, без uppercase. (4) Eyebrow/контекст-капс — единственное место uppercase с трекингом: «TODAY'S STRESS» под датой (~12px, letter-spacing ~+0.5-0.8px, серый). Подписи под кольцами («Strain/Recovery/Sleep») ~16px medium тёмно-серые. Семантические статусы («Normal»,«Low»,«Below normal») — medium, цвет = семантика (зелёный/синий). Числа НЕ выделены отдельным mono-шрифтом — крупность и вес делают работу, поэтому цифры выглядят естественно, а не «табличными».",
+  "gridComposition": "Вертикальный скролл-ритм с явной иерархией плотности, НЕ равномерная сетка. Паттерн Home: (1) дата-пикер крупно слева → (2) ряд статус-пилюль (Active + погода) → (3) доминантный блок triple-ring (Strain/Recovery/Sleep) в одной общей карте с тонкими вертикальными разделителями → (4) prose insight-карта с emoji+абзацем текста («🔋 Slow and steady energy…») — это смысловая ПАУЗА после плотного блока → (5) секция Stress&Energy: широкая карта с метриками + радиальный циферблат → (6) горизонтальный battery-bar энергии во всю ширину → (7) Health Monitor: bento 2-колоночная сетка карточек, но каждая несёт РАЗНЫЙ примитив (вертикальный range-слайдер). Боковые поля ~16-20px. Вертикальные gap между секциями крупные (~28-36px), внутри секции мельче (~12px). Featured-блок (кольца) визуально доминирует по площади над всем остальным — нет «6 близнецов». Ритм: крупное доминантное → текстовая пауза → плотная сетка. На detail-экранах: hero-число слева вверху + «Normal range» справа той же линией → ряд горизонтальных таб-чипов → крупный график → ниже карта Trends-таблицы.",
+  "color": "Chrome полностью АХРОМАТИЧЕН: фон очень светлый прохладно-серый (~#F2F2F5/#F0F0F4), карты белые (#FFFFFF), текст near-black (#0A0A0A/#111). Активные/CTA-состояния ЧЁРНЫЕ, не брендовые: активный таб «Home» — чёрная иконка на светлой пилюле, активный таб-чип «Resting HRV» — чёрная заливка с белым текстом, кнопка «Update» — чёрная. НИ ОДНОГО брендового хроматического акцента в навигации. Весь цвет СЕМАНТИЧЕСКИЙ и живёт ТОЛЬКО в данных: тёплая шкала стресса/strain — оранжевый→жёлтый (~#F5A623/#FFB020 → #FFC400), коралл/красный для high/инъюри (~#FF6B5C/#FF5A4D), зелёный = норма/recovery, насыщенный лайм для high recovery (~#7ED321/#8BC34A→#5FB100 градиент в дуге), бирюзово-зелёный для low-stress (~#34C0A0/#3DBfA0), синий/фиолетовый для сна и REM (~#4F6BFF/#5A6CFF индиго → #9AA8FF лавандовый light). Stress-график — rainbow-градиент green→yellow→red по оси значения. Сигнал-стрелки трендов в оранжевых кружках (#FF8A3D). Принцип: 1 тёплая + 1 холодная семантическая шкала + sleep-индиго; бордового/wine НЕТ нигде.",
+  "details": "Рукотворность строится на 5 приёмах, которых нет в «токены-буквально» клоне. (1) БОГАТЫЙ data-viz словарь — 5+ разных примитивов: neumorphic ring-gauge с мягкой выпуклой тенью и градиентной дугой (Recovery-экран: кольцо буквально «выдавлено» из фона, есть и внутренняя и внешняя тень + capped градиентная дуга lime); радиальный stress-циферблат из цветных рисок (tick-marks) по дуге; rainbow line-chart с заливкой; area-sparkline с зелёной normal-range полосой за линией; horizontal stacked severity-bars (High/Med/Low) с заливкой-треком в осветлённом тоне семантики; вертикальные range-слайдеры в Health-bento с glow-точкой на текущем значении. (2) ГРАДИЕНТЫ в дугах колец и в иконках — не плоско. (3) ФИРМЕННАЯ СИГНАТУРА: persistent AI-«призрак» (фиолетово-голубой глянцевый blob с двумя глазами) + строка «Ask Bevel anything» закреплены внизу на КАЖДОМ экране; тот же blob всплывает контекстными мини-пилюлями над контентом («HRV is dipping», «Solid night's work», «Slow and steady energy») — это «голос продукта». (4) ОБЪЁМНЫЕ ГРАДИЕНТНЫЕ статус-иконки в скруглённых-квадратных «таблетках»: Active=зелёный градиент+бегун, Sick=жёлто-оранжевый+кровать, Injured=коралл-розовый градиент+пластырь, On A Break=сине-фиолетовый+пальма — каждая с мягкой цветной тенью под собой (glow). (5) ВАРЬИРУЕМЫЕ РАДИУСЫ и тени без обводок: карты держатся на мягкой диффузной тени (~0 8px 24px rgba(0,0,0,.05-.08)) БЕЗ видимого 1px-бордера → «дорогая» воздушность; статус-пилюли почти full-round (~24-28px), карты ~20-24px, кнопка Update ~32px (почти стадион), иконки-таблетки ~16-18px со скруглением мягче чем у круга. Emoji используются как акцент-иконки в insight-картах. Dark-режим Sleep — НЕ инверс: слоистый navy (#0E1320/#141A2D фон, карты ~#1B2236) с цветными REM=лаванда / Core=индиго / Deep=тёмно-синий / Awake=оранж дугами и многослойной глубиной гипнограммы.",
+  "extractedTokens": [
+    "Фон app: ~#F0F0F4 / #F2F2F5 (прохладно-серый)",
+    "Карта: #FFFFFF",
+    "Текст основной: ~#0A0A0A / #111111",
+    "Текст вторичный/юниты: ~#9AA0A6 серый",
+    "Активное/CTA: #000000 чёрный (НЕ wine)",
+    "Strain/тёплый: #FFB020→#FFC400 (orange→yellow)",
+    "High/injury коралл: ~#FF6B5C / #FF5A4D",
+    "Recovery/norm зелёный: #7ED321→#5FB100 (lime градиент в дуге)",
+    "Low-stress бирюза: ~#34C0A0",
+    "Sleep/REM индиго→лаванда: ~#4F6BFF → #9AA8FF",
+    "Trend-сигнал оранж кружок: ~#FF8A3D",
+    "Тень карты: ~0 8px 24px rgba(0,0,0,0.06), БЕЗ 1px border",
+    "Радиусы: пилюля ~24-28px, карта ~20-24px, CTA ~32px, иконка-таблетка ~16-18px (минимум 3 контекстных радиуса)",
+    "Eyebrow uppercase tracking ~+0.6px",
+    "Dark Sleep фон: ~#0E1320 / #141A2D, карта ~#1B2236",
+    "Шрифт: единый grotesque-sans (SF Pro-подобный), числа тем же шрифтом extra-bold, БЕЗ отдельного mono"
+  ],
+  "sources": [
+    "Локальные скрины: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/references/bevel-home screen primary.png",
+    "/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/references/bevel-home-real.png",
+    "/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/references/bevel-HRV screen.png",
+    "/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/references/bevel-Stress screen.png",
+    "/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/references/bevel-sleep screen stages.png",
+    "/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/references/bevel-activity status.png",
+    "/Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/UI_assets/screenshots/references/bevel-circles screen.png",
+    "WebSearch: ScreensDesign Bevel teardown — https://screensdesign.com/showcase/bevel-health-performance",
+    "Neura Health review — https://neura.health/insight/bevel-health-app-in-depth-review",
+    "App Store — https://apps.apple.com/us/app/bevel-all-in-one-health-app/id6456176249"
+  ]
+}

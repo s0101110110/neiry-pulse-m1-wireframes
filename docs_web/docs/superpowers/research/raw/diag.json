@@ -1,0 +1,63 @@
+{
+  "failureModes": [
+    {
+      "criticism": "типовые компоненты",
+      "ourCode": "home/home-main-etalon.html L525-732 — HRV hero + 6 bento cards используют один и тот же примитив (.bv-card + вертикальная .bv-capsule). shared/components.css L37-48 — единственный surface-компонент .bv-card с тремя padding-модификаторами; единственный data-viz primitive — .bv-capsule (L161-203).",
+      "bevelComparison": "bevel-home-real.png / bevel-home screen primary.png: три кольцевых gauge (Strain/Recovery/Sleep), радиальный stress-циферблат с градиентными рисками, горизонтальный battery-bar энергии 84%; bevel-Stress screen.png — rainbow line-chart + три stacked severity-bars (High/Med/Low); bevel-HRV screen.png — area sparkline с normal-range полосой + Trends-таблица с мини-трендами. У Bevel 5+ разных viz-примитивов, у нас один (вертикальная капсула × 7).",
+      "severity": 3,
+      "evidence": [
+        "Наш единственный индикатор — вертикальная капсула-термометр, отрендеренная 7 раз подряд (hero 120px + 6× mini 92px), L546-731. Глаз не за что зацепить — все ячейки изоморфны.",
+        "У Bevel НИ ОДНОГО вертикального thermometer-капсула — он использует ring-gauges, радиальные дайлы, area-charts и horizontal bars. Мы изобрели примитив, которого в эталоне нет, и размножили его.",
+        "tokens.css объявляет 5 радиусов и semantic-палитру, но в home отрендерены ровно 2 формы: rounded-rect card (r-card 20px) и pill-capsule (r-pill). Нет колец, нет дуг, нет графиков — компонентный словарь беднее эталона в разы."
+      ]
+    },
+    {
+      "criticism": "нарушена композиция",
+      "ourCode": "home/home-main-etalon.html L555-734 — section-head «Монитор показателей» затем bento 2×3 одинаковых ячеек (.bento L297-301, grid 1fr 1fr, gap 12px). Над ним один HRV hero. Вертикальный ритм: hero → заголовок → 6 близнецов.",
+      "bevelComparison": "bevel-home screen primary.png: ярко выраженная F-композиция с убыванием веса — крупный date-picker, status-pill ряд, затем доминантный triple-ring блок, затем prose insight-card («Slow and steady energy» с emoji + текст), затем секции Stress&Energy / Health Monitor. Разные размеры и плотности блоков создают иерархию. У нас — равномерная сетка одинаковых плиток без доминанты и без дыхания.",
+      "severity": 2,
+      "evidence": [
+        "Bento 2×3 — шесть ячеек одинакового веса (min-height 122px, одинаковый padding 14px, одинаковая капсула справа). Нет фокусной точки, нет крупного/мелкого контраста внутри сетки — это «таблица», а не композиция.",
+        "Отсутствует insight/prose-блок, который у Bevel несёт композиционную паузу между viz-плотными зонами (bevel-home screen primary.png — карточка «Slow and steady energy»). Наш экран идёт hero → сразу плотная сетка, без ритмической смены плотности.",
+        "Section-header сломан вручную через <br/> в две строки (L557 «Монитор<br/>показателей») — это не композиционное решение, а костыль; objections-таблица L866-871 сама признаёт «выглядит как недо-вёрстка». У Bevel заголовки секций однострочные, ВЕРХНИЙ регистр eyebrow («STRESS & ENERGY»)."
+      ]
+    },
+    {
+      "criticism": "поганый wine #831843",
+      "ourCode": "tokens.css L16 --bv-wine #831843; применён в index.html L34/36/82/98/103 (eyebrow, h1 em, badge, footer-links) и в home-main-etalon.html L739-743 nav active «Дом» + header brand-eyebrow L452. components.css Wine Policy L11-12 / L141-144 — nav-active wine, L316 toggle ON wine, L78-86 app-bar--back wine-tint.",
+      "bevelComparison": "Bevel НЕ использует ни одного брендового хроматического акцента в chrome: активный таб «Home» — чёрный (bevel-home screen primary.png), CTA «Update» — чёрный (bevel-activity status.png), активный таб-чип «Resting HRV» — чёрный (bevel-HRV screen.png). Весь цвет у Bevel — СЕМАНТИЧЕСКИЙ (green=norm, orange/red=stress, blue/purple=sleep) и живёт в данных, а не в навигации. Мы красим chrome в тёмно-бордовый, которого в палитре эталона нет вообще.",
+      "severity": 2,
+      "evidence": [
+        "#831843 — это тёмно-бордовый (luminance ≈20%), он визуально конфликтует с прохладно-серым bg #F0F0F3 и со ВСЕЙ семантической палитрой (green #1DA049 / orange #F2752B / red #E11D48): на экране оказывается 4-я несогласованная hue-семья. Bevel держит ровно одну тёплую (stress) + одну холодную (sleep) шкалу.",
+        "Wine посажен в активный nav-таб (home-main-etalon.html L739-743) — самый частый элемент chrome. Bevel держит активное состояние нейтрально-чёрным; бордовый в навигации читается как «корпоративный шаблон», а не как wellness-продукт. Это прямо противоречит mental-health/wellness позиционированию (memory project_neiry_mental_health_vector).",
+        "Wine #831843 на белом chip даёт mute-восприятие (это не яркий бренд-акцент, а приглушённый maroon) — на bevel-activity status.png цветные иконки статусов (зелёная/жёлтая/коралловая/синяя градиентные) гораздо живее. Наш единственный акцент и тусклый, и не там, где у эталона живёт цвет."
+      ]
+    },
+    {
+      "criticism": "не рукотворный",
+      "ourCode": "home-main-etalon.html — единый radius 20px на всех 7 cards (tokens.css L70 «ОДНО значение»), единый hairline 1px #E5E5EA (tokens L59), единый shadow-card (tokens L64), единый icon-stroke 1.7 на всех SVG (tokens L117). objections-таблица L816-872 показывает, что почти все художественные советы skill'ов отклонены в пользу «канона».",
+      "bevelComparison": "Bevel насыщен рукотворными деталями: AI-ghost blob + «Ask Bevel anything» bar на каждом экране, градиентные иконки активности (bevel-activity status.png — зелёный/жёлтый/коралл/сине-фиолетовый градиенты с тенью), цветные ring-gauges с плавными дугами, rainbow-gradient stress line (bevel-Stress screen.png), area-fill под HRV-графиком, emoji в insight-карточках («🔋 Slow and steady energy»). Каждый экран имеет уникальную «изюминку». У нас — система токенов, отрендеренная буквально: всё кратно 4px, всё одинаковое.",
+      "severity": 3,
+      "evidence": [
+        "Тотальная униформность: один radius (20px), один border (1px), один shadow, один stroke (1.7) на абсолютно всех элементах. Это выглядит как авто-генерация из токен-таблицы (tokens.css), а не как продукт, нарисованный руками — нет ни одной нарочитой асимметрии, акцентной детали или «фирменного» жеста.",
+        "Полностью отсутствует фирменный AI-элемент Bevel (ghost blob + «Ask Bevel anything»), который присутствует на 4 из 6 эталонных скринов и является главным «рукотворным» сигнатур-элементом продукта. Мы скопировали раскладку, но выкинули душу.",
+        "Иконки — стоковый line-set stroke 1.7 (home L568, L598, L627 и т.д., lucide-подобные), плоские монохром. У Bevel иконки активности — объёмные градиентные капсулы с тенью и собственным цветом (bevel-activity status.png). Наш bento-icon — серый контур #6C6C76, неотличимый от любого Tailwind-шаблона.",
+        "Объекшн-таблица (home-main-etalon.html L816-871) фиксирует, что советы impeccable/minimalist/high-end-visual по добавлению характера системно отклонены «в пользу канона DS» — то есть нерукотворность здесь не баг, а закреплённое решение, что усугубляет severity."
+      ]
+    }
+  ],
+  "antiGenericChecklist": [
+    "РАДИУСЫ: запретить единый radius на всё. Bevel варьирует — крупные ring-блоки, прямоугольные insight-карточки, пилюли-статусы. Ввести минимум 3 контекстных радиуса вместо tokens.css L70 «ОДНО значение 20px».",
+    "DATA-VIZ СЛОВАРЬ: добавить ≥3 не-капсульных примитива (ring/arc gauge, area sparkline с normal-range полосой, horizontal stacked severity-bar) — как на bevel-home/Stress/HRV. Запретить рендерить один индикатор >2 раз подряд на экране.",
+    "ГРАНИЦЫ vs ТЕНИ: убрать видимый 1px hairline #E5E5EA с карточек на светлом фоне (tokens L59). Bevel-карточки держатся на мягкой диффузной тени, без обводки — это даёт «дорогую» воздушность, а не табличную сетку.",
+    "WINE ВНЕ CHROME: вынести #831843 из активного nav-таба и header (home L739-743, L452). Активное состояние и CTA — нейтрально-тёмные, как у Bevel («Home» чёрный, «Update» чёрный). Wine только как редкий brand-signal, не как каждодневный chrome.",
+    "ЦВЕТ ЖИВЁТ В ДАННЫХ: перенести всю хроматику в метрики/графики (green/orange/red/blue/purple — насыщенные), как Bevel. Chrome держать ахроматичным. Максимум 1 тёплая + 1 холодная семантическая шкала, без 4-й бордовой hue.",
+    "ИЕРАРХИЯ ПЛОТНОСТИ: ввести ритм «крупный доминантный блок → prose/insight-пауза → плотная сетка», а не hero→сразу 6 близнецов. Добавить insight-карточку с человеческим текстом (как «Slow and steady energy»).",
+    "ФИРМЕННЫЙ ЭЛЕМЕНТ: добавить продуктовую сигнатуру-аналог Bevel ghost+«Ask Bevel anything» (свой persistent AI/assistant или эквивалентный «голос продукта»), иначе клон бездушный.",
+    "ИКОНКИ С ХАРАКТЕРОМ: заменить плоский монохром line-set (stroke 1.7) на объёмные/градиентные акцент-иконки хотя бы для статусов и активности (bevel-activity status.png). Запретить дефолтный lucide-look для брендовых зон.",
+    "ТРЕКИНГ ТИПОГРАФИКИ: заголовки секций — однострочные, без ручного <br/> (убрать home L557). Ввести uppercase eyebrow-секции («МОНИТОР ПОКАЗАТЕЛЕЙ» tracking +0.6px) вместо двухстрочного 28px-костыля.",
+    "АСИММЕТРИЯ/АКЦЕНТ: внутри bento разрешить разновес ячеек (одна крупная featured + мелкие), запретить grid из 6 идентичных min-height:122px плиток (home L297-301). Хотя бы один блок должен ломать сетку.",
+    "ГРАДИЕНТЫ И ГЛУБИНА: легализовать мягкие градиенты в gauge-дугах и device/status иконках (Bevel использует на кольцах и иконках). Сейчас 0 градиентов — плоско и шаблонно.",
+    "DARK-MODE ХАРАКТЕР: для Sleep-раздела не делать механический инверс токенов, а взять многослойный navy с цветными REM/Core/Deep акцентами как bevel-sleep screen stages.png (слоистая глубина, не просто dark background)."
+  ]
+}
