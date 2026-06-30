@@ -14,11 +14,12 @@
     --border: #E5E5EA;
     --ink: #1B1B21;
     --ink-mute: #62626C;
-    --ink-dim: #9C9CA8;
+    --ink-dim: #6C6C76;   /* AA-fix (was #9C9CA8 ≈2.7:1 → ≥4.5:1, align DS ink-dim) */
     --wine: #831843;
     --wine-tint: rgba(131, 24, 67, 0.08);
     --accepted: #117A38;
     --accepted-tint: rgba(17, 122, 56, 0.10);
+    --neutral-tint: rgba(98, 98, 108, 0.10);
     --sans: 'Golos Text', system-ui, sans-serif;
     --mono: 'JetBrains Mono', ui-monospace, monospace;
   }
@@ -31,18 +32,19 @@
   /* Hero */
   .hero { padding-bottom: 32px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
   .hero-brand { font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase; color: var(--wine); }
-  .hero h1 { font-size: 44px; font-weight: 700; letter-spacing: -1.2px; line-height: 1.1; margin-top: 12px; }
+  .hero h1 { font-size: 44px; font-weight: 700; letter-spacing: -1.2px; line-height: 1.1; margin-top: 12px; text-wrap: balance; }
   .hero h1 em { font-style: normal; color: var(--wine); }
-  .hero p { color: var(--ink-mute); font-size: 16px; line-height: 1.6; max-width: 680px; margin-top: 16px; }
+  .hero p { color: var(--ink-mute); font-size: 16px; line-height: 1.6; max-width: 720px; margin-top: 16px; text-wrap: pretty; }
   .hero p code { font-family: var(--mono); font-size: 13px; background: var(--card); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); }
   .hero-meta { display: flex; gap: 24px; margin-top: 24px; flex-wrap: wrap; font-family: var(--mono); font-size: 11px; color: var(--ink-dim); }
   .hero-meta span strong { color: var(--ink); display: block; margin-top: 2px; font-weight: 500; font-size: 13px; font-family: var(--sans); }
 
   /* Section */
-  .section { margin-bottom: 48px; }
-  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
-  .section-head h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.6px; }
-  .section-head .count { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); letter-spacing: 0.4px; }
+  .section { margin-bottom: 48px; scroll-margin-top: 24px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 20px; gap: 16px; }
+  .section-head h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.6px; text-wrap: balance; }
+  .section-head .count { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); letter-spacing: 0.4px; flex-shrink: 0; }
+  .section-sub { font-size: 13px; color: var(--ink-mute); margin: -8px 0 20px; line-height: 1.5; max-width: 640px; }
 
   /* Cards grid */
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
@@ -53,12 +55,13 @@
     padding: 24px;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     box-shadow: 0 1px 3px rgba(22, 22, 32, 0.03), 0 6px 18px rgba(22, 22, 32, 0.04);
     display: flex; flex-direction: column; gap: 14px;
     position: relative;
   }
-  .card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(22, 22, 32, 0.06), 0 10px 32px rgba(22, 22, 32, 0.08); }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(22, 22, 32, 0.06), 0 10px 32px rgba(22, 22, 32, 0.08); border-color: #D9D9E0; }
+  .card:focus-visible { outline: 2px solid var(--wine); outline-offset: 2px; }
 
   .card-header { display: flex; align-items: center; gap: 12px; }
   .card-icon {
@@ -74,26 +77,37 @@
     font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase;
     padding: 3px 8px; border-radius: 999px;
     background: var(--accepted-tint); color: var(--accepted);
-    flex-shrink: 0;
+    flex-shrink: 0; white-space: nowrap;
   }
+  .card-badge.etalon { background: var(--wine-tint); color: var(--wine); }
+  .card-badge.code { background: var(--neutral-tint); color: var(--ink-mute); text-transform: none; letter-spacing: 0.2px; }
   .card-desc { font-size: 13px; line-height: 1.5; color: var(--ink-mute); }
   .card-meta { display: flex; gap: 12px; font-family: var(--mono); font-size: 10px; color: var(--ink-dim); margin-top: auto; padding-top: 4px; flex-wrap: wrap; }
 
-  /* Empty state for upcoming sections */
+  /* Roadmap state */
   .empty-state {
     background: var(--card);
     border: 1px dashed var(--border);
     border-radius: 16px;
-    padding: 32px;
-    text-align: center;
-    color: var(--ink-dim);
+    padding: 24px 28px;
+    color: var(--ink-mute);
     font-size: 14px;
+    line-height: 1.6;
   }
+  .empty-state strong { color: var(--ink); font-weight: 600; }
+  .empty-state .next { display: inline-block; font-family: var(--mono); font-size: 11px; color: var(--wine); background: var(--wine-tint); padding: 2px 8px; border-radius: 999px; margin-right: 6px; }
 
   /* Footer */
   .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; font-family: var(--mono); font-size: 11px; color: var(--ink-dim); }
+  .footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
   .footer a { color: var(--wine); text-decoration: none; }
   .footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 40px 20px 0; }
+    .hero h1 { font-size: 34px; }
+    .grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -102,53 +116,131 @@
 
   <header class="hero">
     <div class="hero-brand">Neiry Pulse · Mobile · Bevel-clone</div>
-    <h1>Gallery — все <em>принятые редизайн-экраны</em></h1>
-    <p>Палитра cool-gray <code>#F0F0F3</code> + cards <code>#FFFFFF</code>. Шрифты — Golos Text + Pulse Mono (JetBrains Mono). Wine <code style="color: var(--wine);">#831843</code> в header/footer как brand-anchor, в content только semantic colors (green / orange / red / grey).</p>
+    <h1>Дизайн-система <em>+ принятые редизайн-экраны</em></h1>
+    <p>Source-of-truth дизайн-системы живёт в <code>_shared/</code>: tokens, components, cheatsheets. Палитра cool-gray <code>#F0F0F3</code> + cards <code>#FFFFFF</code>, шрифты Golos Text + Pulse Mono. Wine <code style="color: var(--wine);">#831843</code> — brand-anchor (header pill + bottom-nav active + 8 wine-зон), в content только semantic colors (green / orange / red / grey).</p>
     <div class="hero-meta">
-      <span>Принято<strong>6 экранов</strong></span>
-      <span>Дата сборки<strong>28 июня 2026</strong></span>
-      <span>Версия<strong>Bevel-clone v3</strong></span>
-      <span>Источник истины<strong>docs_web/bevel-clone/</strong></span>
+      <span>Принято<strong>11 артефактов</strong></span>
+      <span>Дата сборки<strong>29 июня 2026</strong></span>
+      <span>Версия токенов<strong>v1.0.4</strong></span>
+      <span>Источник истины<strong>bevel-clone/_shared/</strong></span>
     </div>
   </header>
 
-  <section class="section">
+  <!-- ============ DESIGN SYSTEM (_shared/) ============ -->
+  <section class="section" id="ds">
+    <div class="section-head">
+      <h2>Design System · <code style="font-family: var(--mono); font-size: 18px; color: var(--ink-mute);">_shared/</code></h2>
+      <span class="count">7 артефактов</span>
+    </div>
+    <p class="section-sub">Single source of truth. Все экраны линкуют <code style="font-family: var(--mono);">tokens.css</code> + <code style="font-family: var(--mono);">components.css</code>; cheatsheets рендерятся реальными классами. Точка входа для Кирилла / Никиты / newcomer.</p>
+    <div class="grid">
+
+      <a class="card" href="_shared/tokens.css" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+          <div class="card-title">Tokens</div>
+          <span class="card-badge code">73 vars · v1.0.4</span>
+        </div>
+        <div class="card-desc">CSS-переменные source-of-truth: палитра, semantic, capsule, тени, радиусы, spacing (4px-сетка), типографика. Все <code style="font-family: var(--mono);">--bv-*</code> префиксированы.</div>
+        <div class="card-meta"><span>_shared/tokens.css</span><span>+ tokens.json mirror</span></div>
+      </a>
+
+      <a class="card" href="_shared/components.css" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+          <div class="card-title">Components</div>
+          <span class="card-badge code">14 atomic · v1.0.0</span>
+        </div>
+        <div class="card-desc">Атомарные классы первой волны: card, row, capsule, chip, toggle, button, app-bar, nav, eyebrow, icon-square. BEM + var(--bv-*), 0 hardcoded hex.</div>
+        <div class="card-meta"><span>_shared/components.css</span></div>
+      </a>
+
+      <a class="card" href="_shared/colors.html" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+          <div class="card-title">Colors cheatsheet</div>
+          <span class="card-badge code">live</span>
+        </div>
+        <div class="card-desc">Живая палитра всех токенов-цветов + WCAG AA-матрица контраста (text × bg). Где какой ink/semantic применять.</div>
+        <div class="card-meta"><span>_shared/colors.html</span></div>
+      </a>
+
+      <a class="card" href="_shared/typography.html" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div>
+          <div class="card-title">Typography</div>
+          <span class="card-badge code">live</span>
+        </div>
+        <div class="card-desc">10 ступеней type-scale (display-hero → tab-label) с токеном, sample, метриками + mixed composition, показывающая иерархию рядом.</div>
+        <div class="card-meta"><span>_shared/typography.html</span><span>+ rows-compare</span></div>
+      </a>
+
+      <a class="card" href="_shared/states.html" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="card-title">States</div>
+          <span class="card-badge code">live</span>
+        </div>
+        <div class="card-desc">5 status-состояний (Норма / Ниже / Выше / Внимание / Нет данных) + capsule-формула позиции + combo-матрица метрика × коридор → state для дева.</div>
+        <div class="card-meta"><span>_shared/states.html</span></div>
+      </a>
+
+      <a class="card" href="_shared/components-gallery.html" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></div>
+          <div class="card-title">Components gallery</div>
+          <span class="card-badge code">live · 14</span>
+        </div>
+        <div class="card-desc">Живой каталог 14 компонентов с code-сниппетами, группами A–E и легендой 8 wine-зон. Каждый пример рендерится реальным классом.</div>
+        <div class="card-meta"><span>_shared/components-gallery.html</span></div>
+      </a>
+
+      <a class="card" href="_shared/README.md" target="_blank">
+        <div class="card-header">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+          <div class="card-title">README</div>
+          <span class="card-badge code">onboarding</span>
+        </div>
+        <div class="card-desc">Индекс <code style="font-family: var(--mono);">_shared/</code> + usage-инструкция: как подключать токены/компоненты, файловая карта, правила. Точка входа для newcomer.</div>
+        <div class="card-meta"><span>_shared/README.md</span></div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============ HOME ============ -->
+  <section class="section" id="home">
     <div class="section-head">
       <h2>Home</h2>
       <span class="count">2 экрана</span>
     </div>
     <div class="grid">
 
-      <a class="card" href="../DESIGN-bevel-clone.html" target="_blank">
+      <a class="card" href="home/home-main-etalon.html" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg></div>
-          <div class="card-title">Home (v2 baseline)</div>
-          <span class="card-badge">Accepted</span>
+          <div class="card-title">Home — Main</div>
+          <span class="card-badge etalon">Etalon</span>
         </div>
-        <div class="card-desc">Bevel-clone v2 — Home + HRV detail + Settings main в одном файле. Эталон, с которого начался переход на cool-gray палитру.</div>
-        <div class="card-meta">
-          <span>Принято 23.06</span>
-          <span>DESIGN-bevel-clone.html</span>
-        </div>
+        <div class="card-desc">Канонический reference-экран, из которого извлечены tokens.css и components.css. Header pill + hero + bento + bottom-nav 5-tab (Дом / Тренировка / История / Здоровье / Ещё). Все правки сверяются с ним.</div>
+        <div class="card-meta"><span>Эталон DS</span><span>home/home-main-etalon.html</span></div>
       </a>
 
       <a class="card" href="home/home-health-monitor.html" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></div>
-          <div class="card-title">Home — Health Monitor</div>
+          <div class="card-title">Home — Health Monitor bento</div>
           <span class="card-badge">Accepted</span>
         </div>
-        <div class="card-desc">Bento 2×3 секции «Монитор показателей» с 6 cards: HRV / RHR / NSI / Сон / SpO₂ / Темп. Все 5 состояний (Норма / Ниже / Выше / Внимание / Нет данных) + capsule logic.</div>
-        <div class="card-meta">
-          <span>Принято 27.06</span>
-          <span>home/home-health-monitor.html</span>
-        </div>
+        <div class="card-desc">Bento 2×3 «Монитор показателей» с 6 cards: HRV / RHR / NSI / Сон / SpO₂ / Темп. Все 5 состояний + capsule logic. Active tab «Дом» — wine без chip-bg.</div>
+        <div class="card-meta"><span>Принято 27.06</span><span>home/home-health-monitor.html</span></div>
       </a>
 
     </div>
   </section>
 
-  <section class="section">
+  <!-- ============ HRV ============ -->
+  <section class="section" id="hrv">
     <div class="section-head">
       <h2>HRV</h2>
       <span class="count">1 экран</span>
@@ -162,16 +254,14 @@
           <span class="card-badge">Accepted</span>
         </div>
         <div class="card-desc">Hero metric 52 ms, deltas (vs week / vs baseline), 30-day chart с monotone smoothing, 3 stat cards и insight card. Часть DESIGN-bevel-clone.html v2.</div>
-        <div class="card-meta">
-          <span>Принято 23.06</span>
-          <span>DESIGN-bevel-clone.html · HRV section</span>
-        </div>
+        <div class="card-meta"><span>Принято 23.06</span><span>DESIGN-bevel-clone.html · HRV section</span></div>
       </a>
 
     </div>
   </section>
 
-  <section class="section">
+  <!-- ============ SETTINGS ============ -->
+  <section class="section" id="settings">
     <div class="section-head">
       <h2>Settings</h2>
       <span class="count">4 экрана + gallery</span>
@@ -184,81 +274,71 @@
           <div class="card-title">Settings main</div>
           <span class="card-badge">Accepted</span>
         </div>
-        <div class="card-desc">Основной экран Настроек — профиль КЛ + VIGOR-XYZ123 устройство + grouped soft cards с thin-icons. Часть DESIGN-bevel-clone.html v2.</div>
-        <div class="card-meta">
-          <span>Принято 23.06</span>
-          <span>DESIGN-bevel-clone.html · Settings section</span>
-        </div>
+        <div class="card-desc">Основной экран Настроек — профиль + VIGOR-XYZ123 устройство + grouped soft cards с thin-icons. Часть DESIGN-bevel-clone.html v2.</div>
+        <div class="card-meta"><span>Принято 23.06</span><span>DESIGN-bevel-clone.html · Settings section</span></div>
       </a>
 
       <a class="card" href="settings/settings-bt-pairing.html" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11-5.5 5.5V1l5.5 5.5-11 11"/></svg></div>
-          <div class="card-title">Settings → BT pairing</div>
-          <span class="card-badge">Accepted</span>
+          <div class="card-title">Settings → Браслет (BT)</div>
+          <span class="card-badge code">sub-screen</span>
         </div>
-        <div class="card-desc">Sub-screen «Браслет Neiry» — VIGOR-XYZ123 (батарея 87%) + действия (переподключить / sync / FW v2.4) + параметры + опасная зона (отвязать).</div>
-        <div class="card-meta">
-          <span>Принято 28.06</span>
-          <span>settings/settings-bt-pairing.html</span>
-        </div>
+        <div class="card-desc">Sub-screen «Браслет Neiry» — VIGOR-XYZ123 (87%) + действия + параметры + опасная зона. <strong style="color: var(--ink); font-weight: 600;">Без bottom-nav</strong> — навигация только back-arrow (sub-screen hide pattern).</div>
+        <div class="card-meta"><span>Принято 28.06</span><span>settings/settings-bt-pairing.html</span></div>
       </a>
 
       <a class="card" href="settings/settings-notifications.html" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
           <div class="card-title">Settings → Уведомления</div>
-          <span class="card-badge">Accepted</span>
+          <span class="card-badge code">sub-screen</span>
         </div>
-        <div class="card-desc">5 секций (Разрешения / Браслет / Здоровье / Тренировки / Время тишины) с 11 toggles в правильных ON/OFF состояниях + DND расписание 22:00–07:00.</div>
-        <div class="card-meta">
-          <span>Принято 28.06</span>
-          <span>settings/settings-notifications.html</span>
-        </div>
+        <div class="card-desc">5 секций (Разрешения / Браслет / Здоровье / Тренировки / Тишина) с toggles + DND-расписание. Info-card heading 14px, row-labels 12px. <strong style="color: var(--ink); font-weight: 600;">Без bottom-nav</strong>.</div>
+        <div class="card-meta"><span>Принято 28.06</span><span>settings/settings-notifications.html</span></div>
       </a>
 
       <a class="card" href="settings/settings-privacy.html" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
           <div class="card-title">Settings → Конфиденциальность</div>
-          <span class="card-badge">Accepted</span>
+          <span class="card-badge code">sub-screen</span>
         </div>
-        <div class="card-desc">5 секций (Данные / Обмен / Аналитика / Согласия / Опасная зона) с green-checks для активных согласий + «Удалить аккаунт» в конце.</div>
-        <div class="card-meta">
-          <span>Принято 28.06</span>
-          <span>settings/settings-privacy.html</span>
-        </div>
+        <div class="card-desc">5 секций (Данные / Обмен / Аналитика / Согласия / Опасная зона) + green-checks. «Удалить аккаунт» без иконки (согласован с «Отозвать все»). <strong style="color: var(--ink); font-weight: 600;">Без bottom-nav</strong>.</div>
+        <div class="card-meta"><span>Принято 28.06</span><span>settings/settings-privacy.html</span></div>
       </a>
 
       <a class="card" href="settings/settings-sub-screens-gallery.html" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></div>
-          <div class="card-title">Settings → 3 sub-screens side-by-side</div>
-          <span class="card-badge">Accepted</span>
+          <div class="card-title">Settings → 3 sub-screens</div>
+          <span class="card-badge code">compare view</span>
         </div>
-        <div class="card-desc">Compare view для быстрого ревью: BT pairing + Notifications + Privacy в одной row. Полезно для проверки visual consistency и презентации.</div>
-        <div class="card-meta">
-          <span>Принято 28.06</span>
-          <span>settings/settings-sub-screens-gallery.html</span>
-        </div>
+        <div class="card-desc">Compare view для ревью: BT pairing + Notifications + Privacy в одной row. Проверка visual consistency и презентация.</div>
+        <div class="card-meta"><span>Принято 28.06</span><span>settings/settings-sub-screens-gallery.html</span></div>
       </a>
 
     </div>
   </section>
 
-  <section class="section">
+  <!-- ============ ROADMAP ============ -->
+  <section class="section" id="roadmap">
     <div class="section-head">
-      <h2>В работе / на очереди</h2>
-      <span class="count">не начато</span>
+      <h2>Roadmap</h2>
+      <span class="count">Mid scope готов</span>
     </div>
     <div class="empty-state">
-      Sleep · Training Active · Onboarding · HRV explainer modal · Modal pack · Legal compliance pack (9 экранов) — следующие итерации
+      <p><span class="next">Next · Phase 7</span><strong>Figma sync</strong> — перенос tokens.json + компонентов в Figma Variables / library для дизайн-передачи.</p>
+      <p style="margin-top: 12px;"><strong>Wave 2 backlog:</strong> Sleep раздел (+ Dark Mode override) · Training Active · Onboarding · HRV explainer modal · Modal pack · Legal compliance pack · aria-hidden на декоративных SVG.</p>
     </div>
   </section>
 
   <footer class="footer">
-    <span>Neiry Pulse · Bevel-clone v3 · gallery · 28.06.2026</span>
-    <a href="https://github.com/s0101110110/neiry-pulse-m1-wireframes" target="_blank">GitHub repo</a>
+    <span>Neiry Pulse · Bevel-clone · DS v1.0.4 · 29.06.2026</span>
+    <span class="links">
+      <a href="../superpowers/specs/2026-06-29-bevel-clone-design-system-design.md" target="_blank">DS spec</a>
+      <a href="https://github.com/s0101110110/neiry-pulse-m1-wireframes" target="_blank">GitHub repo</a>
+    </span>
   </footer>
 
 </div>
