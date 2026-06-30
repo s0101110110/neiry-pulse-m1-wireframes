@@ -31,7 +31,7 @@
 |---|---|---|
 | 1 | Audience | Все 4 (UX-agent + Кирилл + Stitch + PM) |
 | 2 | Pace | Mid в M3 sprint (1 месяц) |
-| 3 | Approach | Hybrid — `bevel-clone/_shared/` живой DS + `DESIGN.md` зеркало для AI |
+| 3 | Approach | Hybrid — `bevel-clone/shared/` живой DS + `DESIGN.md` зеркало для AI |
 | 4 | Auto code gen | Не в Mid. Ручной sync tokens.css ↔ tokens.json. Auto-gen Wave 2 |
 | 5 | Versioning | Semver в header comment файлов. CHANGELOG.md когда будет breaking change |
 | 6 | Figma sync | Phase 7 — последняя фаза скоупа |
@@ -45,7 +45,7 @@
 ### Folder structure
 
 ```
-docs_web/bevel-clone/_shared/         ← новая папка-source для DS (single location)
+docs_web/bevel-clone/shared/         ← новая папка-source для DS (single location)
 ├── tokens.css                        ← CSS-переменные (runtime source-of-truth)
 ├── tokens.json                       ← same в JSON (для Stitch / Tailwind / Кирилл React)
 ├── components.css                    ← атомарные стили (.bv-card, .bv-capsule, …)
@@ -171,9 +171,9 @@ tokens.css ──► components.css ──► все cheatsheets + screen refact
 
 | # | Stage | Содержание | Время | Parallel | Где делегировать |
 |---|---|---|---|---|---|
-| **1** | Tokens extraction | Извлечь CSS-vars из `home-main-etalon.html` в `_shared/tokens.css`. Документировать каждый token. | 1 день | НЕТ | Второе окно UI_assets (formal skills) |
+| **1** | Tokens extraction | Извлечь CSS-vars из `home-main-etalon.html` в `shared/tokens.css`. Документировать каждый token. | 1 день | НЕТ | Второе окно UI_assets (formal skills) |
 | **2** | Tokens mirror (×3) | (a) `tokens.json` — JSON mirror. (b) `DESIGN.md` — обновить под cool-gray v3 + Pulse Mono + новые tokens. (c) `colors.html` — палитра + AA матрица. | 1 день | ДА (3 agents) | (a)+(c) тут (мех.), (b) во втором окне |
-| **3** | Components extraction | Извлечь все `.bv-*` стили в `_shared/components.css`. Атомарные + модификаторы. | 1 день | НЕТ | Второе окно (formal `impeccable polish/harden`) |
+| **3** | Components extraction | Извлечь все `.bv-*` стили в `shared/components.css`. Атомарные + модификаторы. | 1 день | НЕТ | Второе окно (formal `impeccable polish/harden`) |
 | **4** | Live demonstrations (×3) | (a) `components-gallery.html` — финализировать. (b) `states.html` — 5 status cheatsheet. (c) `typography.html` — type-scale demo. | 1.5 дня | ДА (3 agents) | Все три во втором окне (formal `typeset/colorize`) |
 | **5** | Screen refactor (×3) | Перевести existing screens на shared CSS: (a) `home-main-etalon`. (b) `home-health-monitor`. (c) `settings/{bt-pairing,notifications,privacy}`. Visual regression check. | 1.5 дня | ДА (3 agents) | Тут (механ. refactor, parallel subagents) |
 | **6** | Documentation + validation | (a) `README.md` — index + usage. (b) Final visual regression. (c) Push to GitPages. | 0.5-1 день | НЕТ | Тут |
@@ -242,7 +242,7 @@ tokens.css ──► components.css ──► все cheatsheets + screen refact
 - ❌ Auto-generated Tailwind config
 - ❌ Dark mode (Sleep section post-MVP)
 - ❌ Animation library (motion specs остаются inline на screens)
-- ❌ Documentation site (README.md в `_shared/` достаточно)
+- ❌ Documentation site (README.md в `shared/` достаточно)
 - ❌ Wave 2 компоненты (`bv-chart`, `bv-modal-sheet`, `bv-input`, `bv-banner`, `bv-tabs`)
 
 ---

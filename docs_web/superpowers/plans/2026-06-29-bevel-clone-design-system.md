@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Вынести design tokens и atomic components из ETALON-экрана `home-main-etalon.html` в shared `_shared/` layer, отрефакторить existing screens чтобы они потребляли shared CSS, и собрать 4 live cheatsheets + README.
+**Goal:** Вынести design tokens и atomic components из ETALON-экрана `home-main-etalon.html` в shared `shared/` layer, отрефакторить existing screens чтобы они потребляли shared CSS, и собрать 4 live cheatsheets + README.
 
-**Architecture:** Hybrid — живая DS в `docs_web/bevel-clone/_shared/` (`tokens.css` + `components.css` + 4 live HTML cheatsheets) + `DESIGN.md` как machine-readable mirror для Stitch. Screens подключают shared CSS через `<link>`. Никаких inline styles per-screen для shared компонентов.
+**Architecture:** Hybrid — живая DS в `docs_web/bevel-clone/shared/` (`tokens.css` + `components.css` + 4 live HTML cheatsheets) + `DESIGN.md` как machine-readable mirror для Stitch. Screens подключают shared CSS через `<link>`. Никаких inline styles per-screen для shared компонентов.
 
 **Tech Stack:** HTML5, CSS3 (CSS Custom Properties), JSON, Markdown. Шрифты Golos Text + Pulse Mono (local woff2). Никаких build-tools / npm в Mid scope.
 
@@ -17,7 +17,7 @@
 ### Создаётся
 
 ```
-docs_web/bevel-clone/_shared/
+docs_web/bevel-clone/shared/
 ├── tokens.css              # CSS-переменные (single runtime source)
 ├── tokens.json             # JSON mirror (для Stitch / Кирилл React)
 ├── components.css          # 14 атомарных .bv-* классов + модификаторы
@@ -49,7 +49,7 @@ docs_web/bevel-clone/index.html                              # обновить 
 - `docs_web/font-pairs-comparison.html`
 - `docs_web/wireframes/m2/ui-kit.html`
 - `docs_web/fonts/pulse-mono/` (уже скопированы)
-- `docs_web/bevel-clone/_shared/components-preview-DRAFT.html` (брайнсторм-артефакт)
+- `docs_web/bevel-clone/shared/components-preview-DRAFT.html` (брайнсторм-артефакт)
 
 ---
 
@@ -75,9 +75,9 @@ docs_web/bevel-clone/index.html                              # обновить 
 
 ---
 
-# Stage 1 · Tokens extraction → `_shared/tokens.css`
+# Stage 1 · Tokens extraction → `shared/tokens.css`
 
-**Цель:** Извлечь все CSS-vars из `home-main-etalon.html` в single source `_shared/tokens.css` с категоризацией и semver-header.
+**Цель:** Извлечь все CSS-vars из `home-main-etalon.html` в single source `shared/tokens.css` с категоризацией и semver-header.
 
 **Делегировать:** Второе окно UI_assets (formal skills: `impeccable polish/harden`).
 
@@ -96,7 +96,7 @@ docs_web/bevel-clone/index.html                              # обновить 
 Скопировать в чат UI_assets-сессии:
 
 ```
-Файл-цель: создать /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/tokens.css
+Файл-цель: создать /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/tokens.css
 
 Source: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/home/home-main-etalon.html (секция TOKENS, :root { ... } блок)
 
@@ -211,8 +211,8 @@ Source: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/ho
 6. Versioning header в начале.
 
 Skills формально (применять последовательно):
-- Skill impeccable args:"polish docs_web/bevel-clone/_shared/tokens.css" — финальная вылизка комментариев и порядка
-- Skill impeccable args:"harden docs_web/bevel-clone/_shared/tokens.css" — проверка на edge cases (missing tokens, malformed values)
+- Skill impeccable args:"polish docs_web/bevel-clone/shared/tokens.css" — финальная вылизка комментариев и порядка
+- Skill impeccable args:"harden docs_web/bevel-clone/shared/tokens.css" — проверка на edge cases (missing tokens, malformed values)
 
 Возражения skill'ов — собрать в HTML-комментарии в конце файла (там где можно положить comment block без поломки CSS).
 
@@ -231,7 +231,7 @@ Self-review:
 
 ### Task 1.3: PM checkpoint — review tokens.css
 
-- [ ] **Step 1:** Открыть `_shared/tokens.css` в редакторе
+- [ ] **Step 1:** Открыть `shared/tokens.css` в редакторе
 - [ ] **Step 2:** Verify по чек-листу:
   - 15 категорий присутствуют
   - Все значения заполнены (нет TODO)
@@ -244,7 +244,7 @@ Self-review:
 Run:
 ```bash
 cd /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY
-git add docs_web/bevel-clone/_shared/tokens.css
+git add docs_web/bevel-clone/shared/tokens.css
 git commit -m "DS Stage 1: tokens.css extracted from home-main-etalon"
 ```
 Expected: 1 file changed.
@@ -265,15 +265,15 @@ Expected: 1 file changed.
 **Делегировать:** Subagent тут (general-purpose).
 
 **Files:**
-- Read: `docs_web/bevel-clone/_shared/tokens.css`
-- Create: `docs_web/bevel-clone/_shared/tokens.json`
+- Read: `docs_web/bevel-clone/shared/tokens.css`
+- Create: `docs_web/bevel-clone/shared/tokens.json`
 
 - [ ] **Step 1:** Dispatch subagent через Agent tool с prompt:
 
 ```
-Прочитай /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/tokens.css.
+Прочитай /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/tokens.css.
 
-Создай /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/tokens.json со структурой:
+Создай /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/tokens.json со структурой:
 
 {
   "$meta": {
@@ -319,7 +319,7 @@ Self-verify: каждая переменная из tokens.css должна им
 ```
 
 - [ ] **Step 2:** Ждать DONE report.
-- [ ] **Step 3:** Verify file existence: `ls docs_web/bevel-clone/_shared/tokens.json`.
+- [ ] **Step 3:** Verify file existence: `ls docs_web/bevel-clone/shared/tokens.json`.
 
 ### Task 2B: DESIGN.md update (UX-агент во втором окне)
 
@@ -327,13 +327,13 @@ Self-verify: каждая переменная из tokens.css должна им
 
 **Files:**
 - Modify: `docs_web/DESIGN.md`
-- Read: `docs_web/bevel-clone/_shared/tokens.css`
+- Read: `docs_web/bevel-clone/shared/tokens.css`
 
 - [ ] **Step 1:** Скопировать в чат UX-агента второго окна:
 
 ```
 Файл-цель: обновить /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/DESIGN.md
-Source: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/tokens.css
+Source: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/tokens.css
 
 Задача:
 1. Прочитать tokens.css (только что созданный)
@@ -366,15 +366,15 @@ Self-review:
 **Делегировать:** Subagent тут.
 
 **Files:**
-- Create: `docs_web/bevel-clone/_shared/colors.html`
-- Read: `docs_web/bevel-clone/_shared/tokens.css`
+- Create: `docs_web/bevel-clone/shared/colors.html`
+- Read: `docs_web/bevel-clone/shared/tokens.css`
 
 - [ ] **Step 1:** Dispatch subagent через Agent tool с prompt:
 
 ```
-Создай /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/colors.html — live палитра + AA-контраст матрица.
+Создай /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/colors.html — live палитра + AA-контраст матрица.
 
-Source: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/tokens.css
+Source: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/tokens.css
 
 Структура страницы:
 1. Hero: "Bevel-clone colors — палитра + AA"
@@ -391,9 +391,9 @@ Source: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_s
 
 Подключить tokens.css через <link rel="stylesheet" href="tokens.css"> чтобы values из переменных. Тексты + heading в Golos Text + Pulse Mono для hex кодов.
 
-Light bg #F0F0F3, light cards #FFFFFF, шрифты из docs_web/fonts/pulse-mono/ через @font-face (тот же блок что в home-main-etalon.html — путь будет ../../fonts/pulse-mono/ ... wait, относительно _shared/ это будет ../../fonts/pulse-mono/).
+Light bg #F0F0F3, light cards #FFFFFF, шрифты из docs_web/fonts/pulse-mono/ через @font-face (тот же блок что в home-main-etalon.html — путь будет ../../fonts/pulse-mono/ ... wait, относительно shared/ это будет ../../fonts/pulse-mono/).
 
-Actually корректный path от _shared/colors.html к fonts: `../../fonts/pulse-mono/`. Verify the relative path работает.
+Actually корректный path от shared/colors.html к fonts: `../../fonts/pulse-mono/`. Verify the relative path работает.
 
 Self-review:
 - [ ] Все цвета из tokens.css представлены как swatches
@@ -411,7 +411,7 @@ Self-review:
 Run:
 ```bash
 cd /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY
-git add docs_web/bevel-clone/_shared/tokens.json docs_web/bevel-clone/_shared/colors.html docs_web/DESIGN.md
+git add docs_web/bevel-clone/shared/tokens.json docs_web/bevel-clone/shared/colors.html docs_web/DESIGN.md
 git commit -m "DS Stage 2: tokens.json mirror + DESIGN.md sync + colors.html cheatsheet"
 ```
 
@@ -420,7 +420,7 @@ git commit -m "DS Stage 2: tokens.json mirror + DESIGN.md sync + colors.html che
 
 ---
 
-# Stage 3 · Components extraction → `_shared/components.css`
+# Stage 3 · Components extraction → `shared/components.css`
 
 **Цель:** Извлечь 14 атомарных компонентов (с модификаторами) в `components.css`.
 
@@ -431,10 +431,10 @@ git commit -m "DS Stage 2: tokens.json mirror + DESIGN.md sync + colors.html che
 Скопировать в чат UI_assets-сессии:
 
 ```
-Файл-цель: создать /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/components.css
+Файл-цель: создать /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/components.css
 
 Sources:
-- /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/tokens.css (используем переменные)
+- /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/tokens.css (используем переменные)
 - /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/home/home-main-etalon.html (source styles)
 - /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/home/home-health-monitor.html (для bento detail)
 - /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/settings/settings-bt-pairing.html (для bv-row + bv-icon-square + bv-toggle)
@@ -503,9 +503,9 @@ Sources:
 .bv-icon { stroke-width: var(--bv-icon-stroke); stroke-linecap: round; stroke-linejoin: round; fill: none; }
 
 Skills формально (последовательно):
-1. Skill impeccable args:"polish docs_web/bevel-clone/_shared/components.css"
-2. Skill impeccable args:"harden docs_web/bevel-clone/_shared/components.css"
-3. Skill impeccable args:"colorize docs_web/bevel-clone/_shared/components.css" — проверка что все color references через --bv-* tokens
+1. Skill impeccable args:"polish docs_web/bevel-clone/shared/components.css"
+2. Skill impeccable args:"harden docs_web/bevel-clone/shared/components.css"
+3. Skill impeccable args:"colorize docs_web/bevel-clone/shared/components.css" — проверка что все color references через --bv-* tokens
 
 Self-review:
 - [ ] Все 14 атомарных + ~14 модификаторов покрыты
@@ -525,7 +525,7 @@ Self-review:
 
 ### Task 3.2: PM checkpoint — review components.css
 
-- [ ] **Step 1:** Открыть `_shared/components.css`
+- [ ] **Step 1:** Открыть `shared/components.css`
 - [ ] **Step 2:** Verify checklist:
   - 14 атомарных классов присутствуют
   - Все модификаторы (--hero, --bento, --mini, --full, etc.) есть
@@ -538,7 +538,7 @@ Self-review:
 
 Run:
 ```bash
-git add docs_web/bevel-clone/_shared/components.css
+git add docs_web/bevel-clone/shared/components.css
 git commit -m "DS Stage 3: components.css extracted (14 bv-* atomic)"
 ```
 
@@ -558,15 +558,15 @@ git commit -m "DS Stage 3: components.css extracted (14 bv-* atomic)"
 ### Task 4A: components-gallery.html (финализировать из DRAFT)
 
 **Files:**
-- Modify: `docs_web/bevel-clone/_shared/components-preview-DRAFT.html` → `components-gallery.html` (переименовать + улучшить)
-- Read: `docs_web/bevel-clone/_shared/tokens.css`, `components.css`
+- Modify: `docs_web/bevel-clone/shared/components-preview-DRAFT.html` → `components-gallery.html` (переименовать + улучшить)
+- Read: `docs_web/bevel-clone/shared/tokens.css`, `components.css`
 
 - [ ] **Step 1:** Brief в чат UX-агента:
 
 ```
-Файл-цель: создать /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/components-gallery.html — финализировать из DRAFT-версии.
+Файл-цель: создать /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/components-gallery.html — финализировать из DRAFT-версии.
 
-Source DRAFT: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/components-preview-DRAFT.html (уже создан, PM accepted его как scope-preview).
+Source DRAFT: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/components-preview-DRAFT.html (уже создан, PM accepted его как scope-preview).
 
 Задача:
 1. Прочитать DRAFT и tokens.css + components.css
@@ -579,8 +579,8 @@ Source DRAFT: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-cl
 3. Сохранить иерархию групп A-E (Surface / Chrome / Health Monitor / Settings / Controls)
 
 Skills формально (последовательно):
-1. Skill impeccable args:"typeset docs_web/bevel-clone/_shared/components-gallery.html"
-2. Skill impeccable args:"polish docs_web/bevel-clone/_shared/components-gallery.html"
+1. Skill impeccable args:"typeset docs_web/bevel-clone/shared/components-gallery.html"
+2. Skill impeccable args:"polish docs_web/bevel-clone/shared/components-gallery.html"
 
 Self-review:
 - [ ] Каждый компонент использует .bv-* классы (не inline styles)
@@ -598,11 +598,11 @@ Self-review:
 - [ ] **Step 1:** Brief в чат UX-агента:
 
 ```
-Файл-цель: создать /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/states.html — 5 status states cheatsheet.
+Файл-цель: создать /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/states.html — 5 status states cheatsheet.
 
 Sources:
-- /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/tokens.css
-- /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/components.css
+- /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/tokens.css
+- /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/components.css
 - /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/home/home-health-monitor.html (reference для states examples)
 
 Задача:
@@ -626,8 +626,8 @@ Sources:
 Подключить tokens.css + components.css через <link>.
 
 Skills формально:
-1. Skill impeccable args:"colorize docs_web/bevel-clone/_shared/states.html" — strategic color в monochromatic
-2. Skill impeccable args:"harden docs_web/bevel-clone/_shared/states.html" — edge cases (No-data, boundary values)
+1. Skill impeccable args:"colorize docs_web/bevel-clone/shared/states.html" — strategic color в monochromatic
+2. Skill impeccable args:"harden docs_web/bevel-clone/shared/states.html" — edge cases (No-data, boundary values)
 
 Self-review:
 - [ ] 5 states покрыты с примерами
@@ -644,9 +644,9 @@ Self-review:
 - [ ] **Step 1:** Brief в чат UX-агента:
 
 ```
-Файл-цель: создать /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/typography.html — live type-scale demo.
+Файл-цель: создать /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/typography.html — live type-scale demo.
 
-Source: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_shared/tokens.css
+Source: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/shared/tokens.css
 
 Задача:
 Создать live type-scale страницу, демонстрирующую все --bv-fs-* размеры:
@@ -674,8 +674,8 @@ Source: /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/_s
 Pulse Mono подключить через @font-face (относительный path ../../fonts/pulse-mono/...).
 
 Skills формально:
-1. Skill impeccable args:"typeset docs_web/bevel-clone/_shared/typography.html"
-2. Skill impeccable args:"polish docs_web/bevel-clone/_shared/typography.html"
+1. Skill impeccable args:"typeset docs_web/bevel-clone/shared/typography.html"
+2. Skill impeccable args:"polish docs_web/bevel-clone/shared/typography.html"
 
 Self-review:
 - [ ] Все 10 ступеней type-scale покрыты
@@ -697,9 +697,9 @@ Self-review:
 
 Run:
 ```bash
-git add docs_web/bevel-clone/_shared/components-gallery.html \
-        docs_web/bevel-clone/_shared/states.html \
-        docs_web/bevel-clone/_shared/typography.html
+git add docs_web/bevel-clone/shared/components-gallery.html \
+        docs_web/bevel-clone/shared/states.html \
+        docs_web/bevel-clone/shared/typography.html
 git commit -m "DS Stage 4: 3 live cheatsheets (components-gallery + states + typography)"
 ```
 
@@ -724,10 +724,10 @@ git commit -m "DS Stage 4: 3 live cheatsheets (components-gallery + states + typ
 Задача: рефакторить /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/home/home-main-etalon.html чтобы использовал shared CSS вместо собственных стилей.
 
 Что делаем:
-1. Прочитать tokens.css + components.css из _shared/ — увидеть какие переменные/классы доступны
+1. Прочитать tokens.css + components.css из shared/ — увидеть какие переменные/классы доступны
 2. В home-main-etalon.html:
-   - Заменить inline :root { --... } блок (~lines 42-95) на <link rel="stylesheet" href="../_shared/tokens.css">
-   - Заменить inline component CSS блоки (cards, capsules, badges, nav) на <link rel="stylesheet" href="../_shared/components.css">
+   - Заменить inline :root { --... } блок (~lines 42-95) на <link rel="stylesheet" href="../shared/tokens.css">
+   - Заменить inline component CSS блоки (cards, capsules, badges, nav) на <link rel="stylesheet" href="../shared/components.css">
    - В HTML body: заменить custom class names на .bv-* классы (например div.card-hero → div.bv-card.bv-card--hero)
    - Сохранить семантику разметки (структура секций не меняется)
 3. Удалить весь inline CSS, который теперь покрыт shared — должно остаться только:
@@ -762,7 +762,7 @@ Self-review:
 Задача: рефакторить /Users/solomono/Desktop/NOW/ПРОЕКТЫ/NEIRY/docs_web/bevel-clone/home/home-health-monitor.html на shared CSS.
 
 Аналогично Task 5A:
-1. Прочитать _shared/tokens.css + components.css
+1. Прочитать shared/tokens.css + components.css
 2. Заменить inline tokens + component styles на <link> к shared
 3. HTML body использует .bv-* classes
 4. Visual regression check: before/after screenshots /tmp/health-monitor-before-refactor.png / -after-
@@ -783,7 +783,7 @@ Self-review:
 - settings-privacy.html
 
 Для каждого:
-1. Прочитать _shared/tokens.css + components.css
+1. Прочитать shared/tokens.css + components.css
 2. Заменить inline tokens + component styles на <link>
 3. HTML body на .bv-* classes (особенно: bv-row, bv-icon-square--*, bv-toggle, bv-app-bar--back)
 4. Visual regression для каждого: before/after screenshots /tmp/settings-{name}-before/-after-.png
@@ -819,15 +819,15 @@ git commit -m "DS Stage 5: refactor 5 screens onto shared CSS (visual regression
 
 # Stage 6 · Documentation + validation
 
-### Task 6.1: README.md в _shared/
+### Task 6.1: README.md в shared/
 
 **Files:**
-- Create: `docs_web/bevel-clone/_shared/README.md`
+- Create: `docs_web/bevel-clone/shared/README.md`
 
 - [ ] **Step 1:** Создать README.md с содержанием:
 
 ```markdown
-# Bevel-clone Design System · _shared
+# Bevel-clone Design System · shared
 
 **Version:** 1.0.0
 **Date:** 2026-06-29
@@ -851,8 +851,8 @@ git commit -m "DS Stage 5: refactor 5 screens onto shared CSS (visual regression
 
 В новом HTML файле подключи:
 \`\`\`html
-<link rel="stylesheet" href="../_shared/tokens.css">
-<link rel="stylesheet" href="../_shared/components.css">
+<link rel="stylesheet" href="../shared/tokens.css">
+<link rel="stylesheet" href="../shared/components.css">
 \`\`\`
 
 Дальше используй `.bv-*` классы — не пиши custom стили для cards/capsules/buttons/etc.
@@ -926,7 +926,7 @@ Wave 2 компоненты (когда появятся новые screens):
 **Files:**
 - Modify: `docs_web/bevel-clone/index.html`
 
-- [ ] **Step 1:** Добавить в gallery новые карточки для `_shared/` cheatsheets:
+- [ ] **Step 1:** Добавить в gallery новые карточки для `shared/` cheatsheets:
   - colors.html
   - typography.html
   - states.html
@@ -939,7 +939,7 @@ Wave 2 компоненты (когда появятся новые screens):
 
 Run:
 ```bash
-git add docs_web/bevel-clone/_shared/README.md docs_web/bevel-clone/index.html
+git add docs_web/bevel-clone/shared/README.md docs_web/bevel-clone/index.html
 git commit -m "DS Stage 6: README.md + updated gallery + final validation"
 git push origin main
 ```
@@ -969,19 +969,19 @@ git push origin main
 
 ### Task 7.2: Import tokens.json в Tokens Studio
 
-- [ ] **Step 1:** В Tokens Studio plugin → Settings → JSON tab → paste содержимое `docs_web/bevel-clone/_shared/tokens.json`
+- [ ] **Step 1:** В Tokens Studio plugin → Settings → JSON tab → paste содержимое `docs_web/bevel-clone/shared/tokens.json`
 - [ ] **Step 2:** Plugin покажет parsed structure — verify все категории корректны
 - [ ] **Step 3:** Apply tokens к selected layers в test-file → verify рендерятся правильные values
 
 ### Task 7.3: Configure GitHub sync (optional)
 
 - [ ] **Step 1:** В Tokens Studio → Settings → Sync → GitHub → подключить s0101110110/neiry-pulse-m1-wireframes
-- [ ] **Step 2:** Указать path `docs_web/bevel-clone/_shared/tokens.json`
+- [ ] **Step 2:** Указать path `docs_web/bevel-clone/shared/tokens.json`
 - [ ] **Step 3:** Test pull — изменения из репо автоматически подхватываются в Figma
 
 ### Task 7.4: Документировать workflow
 
-- [ ] **Step 1:** Дописать в `_shared/README.md` секцию "Figma sync (Phase 7)":
+- [ ] **Step 1:** Дописать в `shared/README.md` секцию "Figma sync (Phase 7)":
   - Plugin: Tokens Studio
   - Sync source: `tokens.json` в репо
   - Workflow: PM/дизайнер правит в Figma → push → tokens.json обновляется → screens автоматически отражают
@@ -997,7 +997,7 @@ git push origin main
 ## Success criteria (overall)
 
 После Stage 6:
-- [ ] `_shared/` папка содержит 8 файлов (tokens.css + tokens.json + components.css + 4 cheatsheets + README)
+- [ ] `shared/` папка содержит 8 файлов (tokens.css + tokens.json + components.css + 4 cheatsheets + README)
 - [ ] 5 existing screens рефакторены на shared CSS
 - [ ] Visual regression PASS — все screens рендерятся идентично pre-refactor
 - [ ] AA contrast PASS — все pairs в colors.html матрице

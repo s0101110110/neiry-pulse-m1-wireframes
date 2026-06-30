@@ -1,4 +1,4 @@
-# Bevel-clone Design System · `_shared/`
+# Bevel-clone Design System · `shared/`
 
 **Version:** 1.0.4 (29.06.2026)
 **Scope:** Mid (M3 sprint) — mobile-only, light-mode primary
@@ -28,8 +28,8 @@
 
 В HTML файле подключи:
 ```html
-<link rel="stylesheet" href="../_shared/tokens.css">
-<link rel="stylesheet" href="../_shared/components.css">
+<link rel="stylesheet" href="../shared/tokens.css">
+<link rel="stylesheet" href="../shared/components.css">
 ```
 
 Дальше используй `.bv-*` классы — не пиши custom CSS для cards/capsules/buttons/etc. Все размеры/цвета/тени уже учтены.
@@ -81,7 +81,7 @@ const cardStyle = {
 4. **Semantic colors only в content** — green/orange/red/grey для status.
 5. **4px grid строго** — все spacing/sizing кратны 2 или 4.
 6. **Sub-screen nav-hide** — на settings/detail screens bottom nav-pill скрывается, остаётся только back-arrow.
-7. **Visual regression check** — изменение в `_shared/` обязано тестироваться на минимум одном screen перед commit.
+7. **Visual regression check** — изменение в `shared/` обязано тестироваться на минимум одном screen перед commit.
 
 ---
 
@@ -158,6 +158,6 @@ Bump rules:
 
 Источник истины для архитектурных вопросов — `docs_web/superpowers/specs/2026-06-29-bevel-clone-design-system-design.md`.
 
-История изменений — `git log` по файлам `_shared/*`.
+История изменений — `git log` по файлам `shared/*`.
 
 Эталон-implementation для новых screens — `docs_web/bevel-clone/home/home-main-etalon.html`.

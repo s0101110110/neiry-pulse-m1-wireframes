@@ -22,9 +22,3 @@ exclude:
   - backend/
   - mobile/
   - UI_assets/screenshots/
-
-# Jekyll по умолчанию игнорирует папки с `_` префиксом — добавляем
-# bevel-clone/_shared/ обратно, иначе DS source-of-truth не сериализуется на GitPages.
-include:
-  - docs_web/bevel-clone/_shared
-  - "docs_web/bevel-clone/_shared/*"

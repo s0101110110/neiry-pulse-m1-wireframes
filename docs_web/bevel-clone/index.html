@@ -117,92 +117,92 @@
   <header class="hero">
     <div class="hero-brand">Neiry Pulse · Mobile · Bevel-clone</div>
     <h1>Дизайн-система <em>+ принятые редизайн-экраны</em></h1>
-    <p>Source-of-truth дизайн-системы живёт в <code>_shared/</code>: tokens, components, cheatsheets. Палитра cool-gray <code>#F0F0F3</code> + cards <code>#FFFFFF</code>, шрифты Golos Text + Pulse Mono. Wine <code style="color: var(--wine);">#831843</code> — brand-anchor (header pill + bottom-nav active + 8 wine-зон), в content только semantic colors (green / orange / red / grey).</p>
+    <p>Source-of-truth дизайн-системы живёт в <code>shared/</code>: tokens, components, cheatsheets. Палитра cool-gray <code>#F0F0F3</code> + cards <code>#FFFFFF</code>, шрифты Golos Text + Pulse Mono. Wine <code style="color: var(--wine);">#831843</code> — brand-anchor (header pill + bottom-nav active + 8 wine-зон), в content только semantic colors (green / orange / red / grey).</p>
     <div class="hero-meta">
       <span>Принято<strong>11 артефактов</strong></span>
       <span>Дата сборки<strong>29 июня 2026</strong></span>
       <span>Версия токенов<strong>v1.0.4</strong></span>
-      <span>Источник истины<strong>bevel-clone/_shared/</strong></span>
+      <span>Источник истины<strong>bevel-clone/shared/</strong></span>
     </div>
   </header>
 
-  <!-- ============ DESIGN SYSTEM (_shared/) ============ -->
+  <!-- ============ DESIGN SYSTEM (shared/) ============ -->
   <section class="section" id="ds">
     <div class="section-head">
-      <h2>Design System · <code style="font-family: var(--mono); font-size: 18px; color: var(--ink-mute);">_shared/</code></h2>
+      <h2>Design System · <code style="font-family: var(--mono); font-size: 18px; color: var(--ink-mute);">shared/</code></h2>
       <span class="count">7 артефактов</span>
     </div>
     <p class="section-sub">Single source of truth. Все экраны линкуют <code style="font-family: var(--mono);">tokens.css</code> + <code style="font-family: var(--mono);">components.css</code>; cheatsheets рендерятся реальными классами. Точка входа для Кирилла / Никиты / newcomer.</p>
     <div class="grid">
 
-      <a class="card" href="_shared/tokens.css" target="_blank">
+      <a class="card" href="shared/tokens.css" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
           <div class="card-title">Tokens</div>
           <span class="card-badge code">73 vars · v1.0.4</span>
         </div>
         <div class="card-desc">CSS-переменные source-of-truth: палитра, semantic, capsule, тени, радиусы, spacing (4px-сетка), типографика. Все <code style="font-family: var(--mono);">--bv-*</code> префиксированы.</div>
-        <div class="card-meta"><span>_shared/tokens.css</span><span>+ tokens.json mirror</span></div>
+        <div class="card-meta"><span>shared/tokens.css</span><span>+ tokens.json mirror</span></div>
       </a>
 
-      <a class="card" href="_shared/components.css" target="_blank">
+      <a class="card" href="shared/components.css" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
           <div class="card-title">Components</div>
           <span class="card-badge code">14 atomic · v1.0.0</span>
         </div>
         <div class="card-desc">Атомарные классы первой волны: card, row, capsule, chip, toggle, button, app-bar, nav, eyebrow, icon-square. BEM + var(--bv-*), 0 hardcoded hex.</div>
-        <div class="card-meta"><span>_shared/components.css</span></div>
+        <div class="card-meta"><span>shared/components.css</span></div>
       </a>
 
-      <a class="card" href="_shared/colors.html" target="_blank">
+      <a class="card" href="shared/colors.html" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
           <div class="card-title">Colors cheatsheet</div>
           <span class="card-badge code">live</span>
         </div>
         <div class="card-desc">Живая палитра всех токенов-цветов + WCAG AA-матрица контраста (text × bg). Где какой ink/semantic применять.</div>
-        <div class="card-meta"><span>_shared/colors.html</span></div>
+        <div class="card-meta"><span>shared/colors.html</span></div>
       </a>
 
-      <a class="card" href="_shared/typography.html" target="_blank">
+      <a class="card" href="shared/typography.html" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div>
           <div class="card-title">Typography</div>
           <span class="card-badge code">live</span>
         </div>
         <div class="card-desc">10 ступеней type-scale (display-hero → tab-label) с токеном, sample, метриками + mixed composition, показывающая иерархию рядом.</div>
-        <div class="card-meta"><span>_shared/typography.html</span><span>+ rows-compare</span></div>
+        <div class="card-meta"><span>shared/typography.html</span><span>+ rows-compare</span></div>
       </a>
 
-      <a class="card" href="_shared/states.html" target="_blank">
+      <a class="card" href="shared/states.html" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
           <div class="card-title">States</div>
           <span class="card-badge code">live</span>
         </div>
         <div class="card-desc">5 status-состояний (Норма / Ниже / Выше / Внимание / Нет данных) + capsule-формула позиции + combo-матрица метрика × коридор → state для дева.</div>
-        <div class="card-meta"><span>_shared/states.html</span></div>
+        <div class="card-meta"><span>shared/states.html</span></div>
       </a>
 
-      <a class="card" href="_shared/components-gallery.html" target="_blank">
+      <a class="card" href="shared/components-gallery.html" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></div>
           <div class="card-title">Components gallery</div>
           <span class="card-badge code">live · 14</span>
         </div>
         <div class="card-desc">Живой каталог 14 компонентов с code-сниппетами, группами A–E и легендой 8 wine-зон. Каждый пример рендерится реальным классом.</div>
-        <div class="card-meta"><span>_shared/components-gallery.html</span></div>
+        <div class="card-meta"><span>shared/components-gallery.html</span></div>
       </a>
 
-      <a class="card" href="_shared/README.md" target="_blank">
+      <a class="card" href="shared/README.md" target="_blank">
         <div class="card-header">
           <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
           <div class="card-title">README</div>
           <span class="card-badge code">onboarding</span>
         </div>
-        <div class="card-desc">Индекс <code style="font-family: var(--mono);">_shared/</code> + usage-инструкция: как подключать токены/компоненты, файловая карта, правила. Точка входа для newcomer.</div>
-        <div class="card-meta"><span>_shared/README.md</span></div>
+        <div class="card-desc">Индекс <code style="font-family: var(--mono);">shared/</code> + usage-инструкция: как подключать токены/компоненты, файловая карта, правила. Точка входа для newcomer.</div>
+        <div class="card-meta"><span>shared/README.md</span></div>
       </a>
 
     </div>
