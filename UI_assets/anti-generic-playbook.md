@@ -120,14 +120,17 @@ Dark Sleep:     фон #0E1320/#141A2D, карта #1B2236
 - **Wine ВЫНЕСЕН из chrome** (согласовано). Активный nav-таб, header-eyebrow, CTA → нейтрально-тёмные (`--bv-ink`). Wine #831843 остаётся **только** как редкий brand-signal (splash / onboarding / лого), не как ежедневный chrome. Отменяет прежний `project_neiry_bevel_clone_header_footer_canon` (wine-tint pill).
 - **Pulse Mono — ОСТАВЛЯЕМ, ТОЛЬКО ДЛЯ ЦИФР.** Все числа (значения метрик, время, проценты, ID) — Pulse Mono. **Всё остальное — Golos Text**, включая единицы измерения (ms/bpm/уд), метки строк, заголовки таблиц, body. Это сознательная дивергенция от Bevel (который без mono) — наш фирменный приём. Уточняет `project_neiry_typography_system` (раньше mono покрывал табличные блоки целиком — теперь строго цифры).
 
-## Stitch-протокол (если используется на стадии 2)
+## Stitch-протокол (если используется на стадии 2) · полный setup: `docs_web/docs/superpowers/research/2026-07-01-stitch-mcp-setup-guide.md`
 
-1. UX-агент → Stitch-промпт с **явными якорями** (cool-grey #F0F0F3, semantic в контенте, wine только brand-anchor, Golos Text + Pulse Mono).
-2. Генерация 4-6 вариантов (Experimental/Gemini-Pro, можно подложить транспарентный реф).
+**Главный рычаг против generic — `DESIGN.md`** (открытый формат, читают Stitch и Claude Code). Без него Stitch/Figma дрейфуют в Material/iOS-дефолты. Канонический пакет — **`@_davideast/stitch-mcp`** (НЕ `@google/stitch-mcp`).
+
+0. **DESIGN.md-first:** собрать брендовый `DESIGN.md` (cool-grey #F0F0F3, semantic colors, wine только brand-signal, Golos Text + Pulse Mono ТОЛЬКО цифры, радиусы 26/20/14, тени без бордеров), положить в корень/`docs/`, закоммитить.
+1. **Figma MCP** → прочитать живой контекст (`extract_design_context` / variables / Code Connect).
+2. **Stitch MCP** → `generate_screen_from_text`, промптом: «read DESIGN.md, treat as HARD constraint» + 4 правила промпта (altitude / adjectives / UI-keywords / одно изменение за итерацию). Генерить 4-6 вариантов.
 3. **TASTE-отбор** по 4 симптомам → оставить 1-2. Stitch-вариант = болванка, не финал.
-4. Мост: ZIP-экспорт → плагин **html.to.design** (НЕ нативный Paste-to-Figma — отваливается на Gemini-Pro).
-5. **Figma-детокс через MCP:** `get_design_context` → `use_figma` пересобрать на наших bv-компонентах → `search_design_system`/`get_variable_defs` сверить токены → убрать wine из контента.
-6. **Код Stitch выбрасываем** — берём только композицию. Код рождается из вычищенного Figma.
+4. **Figma MCP (write)** → вернуть фреймы с Auto Layout → пересобрать на наших bv-компонентах → сверить токены.
+5. **Код Stitch выбрасываем** — берём композицию. Код рождается из вычищенного Figma (Code Connect → React).
+6. **Loop for drift:** пере-прочитать DESIGN.md + Figma vars, diff против кода, поправить дрейфнувшие токены.
 
 ## Роли
 
