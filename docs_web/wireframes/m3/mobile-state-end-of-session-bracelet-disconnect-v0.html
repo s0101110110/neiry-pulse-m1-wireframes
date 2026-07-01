@@ -1044,16 +1044,18 @@
     }
 
 
-    /* End-of-session · zones-итог card */
+    /* End-of-session · zones-detail card */
     .end-zones-card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 12px 14px 14px;
-      margin: 0 20px;
+      margin: 12px 20px 0;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
+      position: relative;
+      z-index: 2;
     }
     .end-zones-head {
       display: flex;
@@ -1064,17 +1066,240 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 600;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--muted-foreground);
     }
-    .end-zones-strip {
-      background: transparent;
-      padding: 0;
-      border-top: none;
+    .zones-rows { display: flex; flex-direction: column; gap: 8px; }
+    .zone-row {
+      display: grid;
+      grid-template-columns: 78px 44px 32px 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+    .zone-row .zr-name {
+      font-family: 'Golos Text', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--foreground);
+      letter-spacing: -0.005em;
+    }
+    .zone-row.active .zr-name { font-weight: 600; color: var(--primary); }
+    .zone-row .zr-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted-foreground-strong);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+    }
+    .zone-row .zr-pct {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .zone-row .zr-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: #ece7db;
+      overflow: hidden;
+      position: relative;
+    }
+    .zone-row .zr-bar::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      background: #b8ac93;
+      border-radius: 3px;
+    }
+    .zone-row.active .zr-bar::before { background: var(--primary); }
+    .zone-row[data-w="15"] .zr-bar::before { width: 15%; }
+    .zone-row[data-w="30"] .zr-bar::before { width: 30%; }
+    .zone-row[data-w="52"] .zr-bar::before { width: 52%; }
+    .zone-row[data-w="3"] .zr-bar::before { width: 3%; }
+
+    /* Effect · Recovery card */
+    .end-effect-card {
+      margin: 12px 20px 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px 14px;
       display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      z-index: 2;
+    }
+    .end-effect-head {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .end-effect-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .end-effect-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .end-effect-chip {
+      background: #f6f2e7;
+      border: 1px solid #e8e0c9;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
       gap: 4px;
     }
+    .end-effect-chip .ec-lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .end-effect-chip .ec-val {
+      font-family: 'Golos Text', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--foreground);
+      letter-spacing: -0.005em;
+    }
+
+    /* Pace-by-km card */
+    .end-pace-card {
+      margin: 12px 20px 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 14px 12px;
+      position: relative;
+      z-index: 2;
+    }
+    .end-pace-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+    .end-pace-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .end-pace-best {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted-foreground-strong);
+      font-variant-numeric: tabular-nums;
+    }
+    .end-pace-best .star { color: var(--primary); margin-right: 3px; }
+    .end-pace-svg { width: 100%; height: 72px; display: block; }
+    .end-pace-bar-track { fill: #ece7db; }
+    .end-pace-bar { fill: var(--primary); opacity: 0.7; }
+    .end-pace-bar.best { fill: var(--primary); opacity: 1; }
+    .end-pace-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      font-weight: 500;
+      fill: var(--muted-foreground);
+      font-variant-numeric: tabular-nums;
+      text-anchor: middle;
+    }
+    .end-pace-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      fill: var(--foreground);
+      font-variant-numeric: tabular-nums;
+      text-anchor: middle;
+    }
+    .end-pace-value.best { fill: var(--primary); }
+
+    /* Splits (круги) card */
+    .end-splits-card {
+      margin: 12px 20px 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px 8px;
+      position: relative;
+      z-index: 2;
+    }
+    .end-splits-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+    .end-splits-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .end-splits-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      letter-spacing: 0.04em;
+    }
+    .splits-table {
+      display: grid;
+      grid-template-columns: 22px 1fr 52px 42px;
+      gap: 0 8px;
+    }
+    .splits-th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      padding: 4px 0 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .splits-th.right { text-align: right; }
+    .splits-td {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+      padding: 6px 0;
+      border-bottom: 1px solid #f0ebdd;
+    }
+    .splits-td.right { text-align: right; }
+    .splits-td.best { color: var(--primary); font-weight: 600; }
+    .splits-td.tail { color: var(--muted-foreground); }
+    .splits-row-6 { border-bottom: none; }
+    .splits-star { color: var(--primary); font-size: 10px; margin-left: 2px; }
+
+    /* Hide old zones-strip helpers (no longer used here) */
+    .end-zones-strip { display: none; }
+
+    /* Extended end-of-session phone — auto height for long summary + splits */
+    .device-frame.end-summary-frame {
+      height: auto;
+      min-height: 844px;
+    }
+    .device-frame.end-summary-frame .end-body { overflow: visible; padding-bottom: 24px; }
   </style>
 </head>
 <body>
@@ -1092,7 +1317,7 @@
       <div class="frame-with-caption">
         <div class="frame-caption"><strong>ЭКРАН 19</strong> · END-OF-SESSION · SUMMARY</div>
 
-        <section class="device-frame" aria-label="Тренировка завершена — итоги">
+        <section class="device-frame end-summary-frame" aria-label="Тренировка завершена — итоги">
           <div class="device-notch" aria-hidden="true"></div>
 
           <!-- Status bar -->
@@ -1168,17 +1393,54 @@
               </div>
             </div>
 
-            <!-- Zones · итог (post-session summary) -->
+            <!-- Эффект тренировки · Восстановление -->
+            <div class="end-effect-card">
+              <div class="end-effect-head">
+                <span class="end-effect-title">Эффект тренировки</span>
+              </div>
+              <div class="end-effect-grid">
+                <div class="end-effect-chip">
+                  <span class="ec-lbl">Тип</span>
+                  <span class="ec-val">Аэробная</span>
+                </div>
+                <div class="end-effect-chip">
+                  <span class="ec-lbl">Восстановление</span>
+                  <span class="ec-val">6–8 ч</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Zones · подробно (rows) -->
             <div class="end-zones-card">
               <div class="end-zones-head">
-                <span class="end-zones-title">Зоны · итог</span>
+                <span class="end-zones-title">Зоны · подробно</span>
                 <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
               </div>
-              <div class="zones-strip end-zones-strip">
-                <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
-                <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
-                <div class="zone-cell active"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
-                <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
+              <div class="zones-rows">
+                <div class="zone-row" data-w="15">
+                  <span class="zr-name">Лёгкая</span>
+                  <span class="zr-time">4:12</span>
+                  <span class="zr-pct">15%</span>
+                  <span class="zr-bar" aria-hidden="true"></span>
+                </div>
+                <div class="zone-row" data-w="30">
+                  <span class="zr-name">Умеренная</span>
+                  <span class="zr-time">8:24</span>
+                  <span class="zr-pct">30%</span>
+                  <span class="zr-bar" aria-hidden="true"></span>
+                </div>
+                <div class="zone-row active" data-w="52">
+                  <span class="zr-name">Высокая</span>
+                  <span class="zr-time">14:34</span>
+                  <span class="zr-pct">52%</span>
+                  <span class="zr-bar" aria-hidden="true"></span>
+                </div>
+                <div class="zone-row" data-w="3">
+                  <span class="zr-name">Пиковая</span>
+                  <span class="zr-time">0:54</span>
+                  <span class="zr-pct">3%</span>
+                  <span class="zr-bar" aria-hidden="true"></span>
+                </div>
               </div>
             </div>
 
@@ -1204,6 +1466,92 @@
                 <text class="end-spark-yaxis" x="2" y="11">168</text>
                 <text class="end-spark-yaxis" x="2" y="42">140</text>
               </svg>
+            </div>
+
+            <!-- Темп по км (bar-chart с best-km) -->
+            <div class="end-pace-card" aria-label="Темп по километрам">
+              <div class="end-pace-head">
+                <span class="end-pace-title">Темп по км</span>
+                <span class="end-pace-best"><span class="star">★</span>Лучший 5:08</span>
+              </div>
+              <!-- 6 столбцов: 5 km + tail 0.20; ширина bar 30, зазор 12; height 72 -->
+              <svg class="end-pace-svg" viewBox="0 0 300 72" preserveAspectRatio="none" aria-hidden="true">
+                <!-- baseline -->
+                <line x1="0" y1="48" x2="300" y2="48" stroke="#e8e4d8" stroke-width="0.6"/>
+                <!-- bars: y=48 baseline; таллер = медленнее (5:45 = 40h; 5:08 = 22h) -->
+                <!-- km1 5:20 → h=32 -->
+                <rect class="end-pace-bar" x="12" y="16" width="30" height="32" rx="3"/>
+                <!-- km2 5:15 → h=28 -->
+                <rect class="end-pace-bar" x="60" y="20" width="30" height="28" rx="3"/>
+                <!-- km3 5:08 BEST → h=22 -->
+                <rect class="end-pace-bar best" x="108" y="26" width="30" height="22" rx="3"/>
+                <!-- km4 5:35 → h=38 -->
+                <rect class="end-pace-bar" x="156" y="10" width="30" height="38" rx="3"/>
+                <!-- km5 5:45 → h=42 -->
+                <rect class="end-pace-bar" x="204" y="6" width="30" height="42" rx="3"/>
+                <!-- 0.20 tail 5:05 pace → h=20 (half-width bar) -->
+                <rect class="end-pace-bar" x="256" y="28" width="20" height="20" rx="3" opacity="0.5"/>
+
+                <!-- values on top -->
+                <text class="end-pace-value" x="27" y="12">5:20</text>
+                <text class="end-pace-value" x="75" y="16">5:15</text>
+                <text class="end-pace-value best" x="123" y="22">5:08</text>
+                <text class="end-pace-value" x="171" y="6">5:35</text>
+                <text class="end-pace-value" x="219" y="6">5:45</text>
+                <text class="end-pace-value" x="266" y="24">1:01</text>
+
+                <!-- km labels below -->
+                <text class="end-pace-label" x="27" y="65">1</text>
+                <text class="end-pace-label" x="75" y="65">2</text>
+                <text class="end-pace-label" x="123" y="65">3</text>
+                <text class="end-pace-label" x="171" y="65">4</text>
+                <text class="end-pace-label" x="219" y="65">5</text>
+                <text class="end-pace-label" x="266" y="65">.20</text>
+              </svg>
+            </div>
+
+            <!-- Круги · splits таблица -->
+            <div class="end-splits-card" aria-label="Круги по километрам">
+              <div class="end-splits-head">
+                <span class="end-splits-title">Круги</span>
+                <span class="end-splits-count">6 отрезков</span>
+              </div>
+              <div class="splits-table" role="table">
+                <span class="splits-th" role="columnheader">#</span>
+                <span class="splits-th" role="columnheader">Дист</span>
+                <span class="splits-th right" role="columnheader">Темп</span>
+                <span class="splits-th right" role="columnheader">Пульс</span>
+
+                <span class="splits-td" role="cell">1</span>
+                <span class="splits-td" role="cell">1 км</span>
+                <span class="splits-td right" role="cell">5:20</span>
+                <span class="splits-td right" role="cell">138</span>
+
+                <span class="splits-td" role="cell">2</span>
+                <span class="splits-td" role="cell">1 км</span>
+                <span class="splits-td right" role="cell">5:15</span>
+                <span class="splits-td right" role="cell">142</span>
+
+                <span class="splits-td best" role="cell">3<span class="splits-star">★</span></span>
+                <span class="splits-td best" role="cell">1 км</span>
+                <span class="splits-td right best" role="cell">5:08</span>
+                <span class="splits-td right best" role="cell">148</span>
+
+                <span class="splits-td" role="cell">4</span>
+                <span class="splits-td" role="cell">1 км</span>
+                <span class="splits-td right" role="cell">5:35</span>
+                <span class="splits-td right" role="cell">151</span>
+
+                <span class="splits-td" role="cell">5</span>
+                <span class="splits-td" role="cell">1 км</span>
+                <span class="splits-td right" role="cell">5:45</span>
+                <span class="splits-td right" role="cell">144</span>
+
+                <span class="splits-td tail splits-row-6" role="cell">6</span>
+                <span class="splits-td tail splits-row-6" role="cell">0.20 км</span>
+                <span class="splits-td right tail splits-row-6" role="cell">5:05</span>
+                <span class="splits-td right tail splits-row-6" role="cell">140</span>
+              </div>
             </div>
 
             <!-- Actions -->
@@ -1376,7 +1724,7 @@
       <div class="frame-with-caption">
         <div class="frame-caption"><strong>ЭКРАН 21</strong> · END-OF-SESSION · CLOSE CONFIRM</div>
 
-        <section class="device-frame" aria-label="Подтверждение закрытия без сохранения">
+        <section class="device-frame end-summary-frame" aria-label="Подтверждение закрытия без сохранения">
           <div class="device-notch" aria-hidden="true"></div>
 
           <!-- Status bar -->
@@ -1440,17 +1788,54 @@
               </div>
             </div>
 
-            <!-- Zones · итог (post-session summary) -->
+            <!-- Эффект тренировки · Восстановление -->
+            <div class="end-effect-card">
+              <div class="end-effect-head">
+                <span class="end-effect-title">Эффект тренировки</span>
+              </div>
+              <div class="end-effect-grid">
+                <div class="end-effect-chip">
+                  <span class="ec-lbl">Тип</span>
+                  <span class="ec-val">Аэробная</span>
+                </div>
+                <div class="end-effect-chip">
+                  <span class="ec-lbl">Восстановление</span>
+                  <span class="ec-val">6–8 ч</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Zones · подробно (rows) -->
             <div class="end-zones-card">
               <div class="end-zones-head">
-                <span class="end-zones-title">Зоны · итог</span>
+                <span class="end-zones-title">Зоны · подробно</span>
                 <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
               </div>
-              <div class="zones-strip end-zones-strip">
-                <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
-                <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
-                <div class="zone-cell active"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
-                <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
+              <div class="zones-rows">
+                <div class="zone-row" data-w="15">
+                  <span class="zr-name">Лёгкая</span>
+                  <span class="zr-time">4:12</span>
+                  <span class="zr-pct">15%</span>
+                  <span class="zr-bar" aria-hidden="true"></span>
+                </div>
+                <div class="zone-row" data-w="30">
+                  <span class="zr-name">Умеренная</span>
+                  <span class="zr-time">8:24</span>
+                  <span class="zr-pct">30%</span>
+                  <span class="zr-bar" aria-hidden="true"></span>
+                </div>
+                <div class="zone-row active" data-w="52">
+                  <span class="zr-name">Высокая</span>
+                  <span class="zr-time">14:34</span>
+                  <span class="zr-pct">52%</span>
+                  <span class="zr-bar" aria-hidden="true"></span>
+                </div>
+                <div class="zone-row" data-w="3">
+                  <span class="zr-name">Пиковая</span>
+                  <span class="zr-time">0:54</span>
+                  <span class="zr-pct">3%</span>
+                  <span class="zr-bar" aria-hidden="true"></span>
+                </div>
               </div>
             </div>
 
@@ -1471,6 +1856,73 @@
                 <text class="end-spark-yaxis" x="2" y="11">168</text>
                 <text class="end-spark-yaxis" x="2" y="42">140</text>
               </svg>
+            </div>
+
+            <!-- Темп по км -->
+            <div class="end-pace-card" aria-label="Темп по километрам">
+              <div class="end-pace-head">
+                <span class="end-pace-title">Темп по км</span>
+                <span class="end-pace-best"><span class="star">★</span>Лучший 5:08</span>
+              </div>
+              <svg class="end-pace-svg" viewBox="0 0 300 72" preserveAspectRatio="none" aria-hidden="true">
+                <line x1="0" y1="48" x2="300" y2="48" stroke="#e8e4d8" stroke-width="0.6"/>
+                <rect class="end-pace-bar" x="12" y="16" width="30" height="32" rx="3"/>
+                <rect class="end-pace-bar" x="60" y="20" width="30" height="28" rx="3"/>
+                <rect class="end-pace-bar best" x="108" y="26" width="30" height="22" rx="3"/>
+                <rect class="end-pace-bar" x="156" y="10" width="30" height="38" rx="3"/>
+                <rect class="end-pace-bar" x="204" y="6" width="30" height="42" rx="3"/>
+                <rect class="end-pace-bar" x="256" y="28" width="20" height="20" rx="3" opacity="0.5"/>
+                <text class="end-pace-value" x="27" y="12">5:20</text>
+                <text class="end-pace-value" x="75" y="16">5:15</text>
+                <text class="end-pace-value best" x="123" y="22">5:08</text>
+                <text class="end-pace-value" x="171" y="6">5:35</text>
+                <text class="end-pace-value" x="219" y="6">5:45</text>
+                <text class="end-pace-value" x="266" y="24">1:01</text>
+                <text class="end-pace-label" x="27" y="65">1</text>
+                <text class="end-pace-label" x="75" y="65">2</text>
+                <text class="end-pace-label" x="123" y="65">3</text>
+                <text class="end-pace-label" x="171" y="65">4</text>
+                <text class="end-pace-label" x="219" y="65">5</text>
+                <text class="end-pace-label" x="266" y="65">.20</text>
+              </svg>
+            </div>
+
+            <!-- Круги · splits -->
+            <div class="end-splits-card" aria-label="Круги по километрам">
+              <div class="end-splits-head">
+                <span class="end-splits-title">Круги</span>
+                <span class="end-splits-count">6 отрезков</span>
+              </div>
+              <div class="splits-table" role="table">
+                <span class="splits-th" role="columnheader">#</span>
+                <span class="splits-th" role="columnheader">Дист</span>
+                <span class="splits-th right" role="columnheader">Темп</span>
+                <span class="splits-th right" role="columnheader">Пульс</span>
+                <span class="splits-td" role="cell">1</span>
+                <span class="splits-td" role="cell">1 км</span>
+                <span class="splits-td right" role="cell">5:20</span>
+                <span class="splits-td right" role="cell">138</span>
+                <span class="splits-td" role="cell">2</span>
+                <span class="splits-td" role="cell">1 км</span>
+                <span class="splits-td right" role="cell">5:15</span>
+                <span class="splits-td right" role="cell">142</span>
+                <span class="splits-td best" role="cell">3<span class="splits-star">★</span></span>
+                <span class="splits-td best" role="cell">1 км</span>
+                <span class="splits-td right best" role="cell">5:08</span>
+                <span class="splits-td right best" role="cell">148</span>
+                <span class="splits-td" role="cell">4</span>
+                <span class="splits-td" role="cell">1 км</span>
+                <span class="splits-td right" role="cell">5:35</span>
+                <span class="splits-td right" role="cell">151</span>
+                <span class="splits-td" role="cell">5</span>
+                <span class="splits-td" role="cell">1 км</span>
+                <span class="splits-td right" role="cell">5:45</span>
+                <span class="splits-td right" role="cell">144</span>
+                <span class="splits-td tail splits-row-6" role="cell">6</span>
+                <span class="splits-td tail splits-row-6" role="cell">0.20 км</span>
+                <span class="splits-td right tail splits-row-6" role="cell">5:05</span>
+                <span class="splits-td right tail splits-row-6" role="cell">140</span>
+              </div>
             </div>
 
             <!-- Actions -->

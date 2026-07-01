@@ -13,7 +13,7 @@ os.makedirs(DEST, exist_ok=True)
 # CSS injection — transparent bg + remove outer drop-shadow on device-frame (keep bezel rings)
 HIDE_CHROME_CSS = """
 <style>
-  html, body { background: transparent !important; padding: 0 !important; margin: 0 !important; width: 460px !important; height: 920px !important; overflow: hidden !important; }
+  html, body { background: transparent !important; padding: 0 !important; margin: 0 !important; width: 460px !important; min-height: 920px !important; overflow: hidden !important; }
   body > * { display: none !important; }
   body > main, body > div, body > article, body > section { display: block !important; }
   .page-title, .doc-title, .frame-caption, .page-header, .page-sub,
@@ -30,7 +30,7 @@ HIDE_CHROME_CSS = """
     padding: 0 !important;
     margin: 0 !important;
     width: 460px !important;
-    height: 920px !important;
+    min-height: 920px !important;
     background: transparent !important;
     overflow: visible !important;
     gap: 0 !important;
@@ -207,16 +207,18 @@ for idx, out_name in sd_frames:
     shoot_transparent(f"{OUT_DIR}/sd-{idx}.html", f"{DEST}/{out_name}.png")
 print("Settings Detail (4 frames): done")
 
-# End-of-session + Bracelet-disconnect — 3 frames: 16a end-of-session, 16b bracelet-disconnect, 16c close-confirm
+# End-of-session + Bracelet-disconnect — 3 frames
+# 16a end-of-session + 16c close-confirm — TALL viewport (extended summary + splits)
+# 16b bracelet-disconnect — стандартный viewport
 src = f"{SRC_DIR}/mobile-state-end-of-session-bracelet-disconnect-v0.html"
 eob_frames = [
-    (0, "16a-state-end-of-session"),
-    (1, "16b-state-bracelet-disconnect-training"),
-    (2, "16c-state-close-confirm"),
+    (0, "16a-state-end-of-session", 1900),
+    (1, "16b-state-bracelet-disconnect-training", 920),
+    (2, "16c-state-close-confirm", 1900),
 ]
-for idx, out_name in eob_frames:
+for idx, out_name, tall_h in eob_frames:
     slice_clean(src, idx, 3, "frame-with-caption", f"{OUT_DIR}/eob-{idx}.html")
-    shoot_transparent(f"{OUT_DIR}/eob-{idx}.html", f"{DEST}/{out_name}.png")
+    shoot_transparent(f"{OUT_DIR}/eob-{idx}.html", f"{DEST}/{out_name}.png", h=tall_h)
 print("End-of-session + Bracelet (3 frames): done")
 
 # Verify
