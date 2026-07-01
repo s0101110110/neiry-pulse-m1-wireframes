@@ -1043,6 +1043,38 @@
       border-radius: 5px;
     }
 
+
+    /* End-of-session · zones-итог card */
+    .end-zones-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px 14px;
+      margin: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .end-zones-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .end-zones-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .end-zones-strip {
+      background: transparent;
+      padding: 0;
+      border-top: none;
+      display: flex;
+      gap: 4px;
+    }
   </style>
 </head>
 <body>
@@ -1124,7 +1156,7 @@
                 <span class="l">Средний пульс</span>
                 <div class="row">
                   <span class="v">142</span>
-                  <span class="u">bpm</span>
+                  <span class="u">уд/мин</span>
                 </div>
               </div>
               <div class="end-stat-card" role="listitem">
@@ -1136,11 +1168,25 @@
               </div>
             </div>
 
+            <!-- Zones · итог (post-session summary) -->
+            <div class="end-zones-card">
+              <div class="end-zones-head">
+                <span class="end-zones-title">Зоны · итог</span>
+                <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
+              </div>
+              <div class="zones-strip end-zones-strip">
+                <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
+                <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
+                <div class="zone-cell active"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
+                <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
+              </div>
+            </div>
+
             <!-- Mini sparkline -->
             <div class="end-spark-card" aria-label="Пульс за тренировку">
               <div class="end-spark-head">
                 <span class="end-spark-title">Пульс · 28 мин</span>
-                <span class="end-spark-range">120 – 168 bpm</span>
+                <span class="end-spark-range">120 – 168 уд/мин</span>
               </div>
               <svg class="end-spark-svg" viewBox="0 0 300 64" preserveAspectRatio="none" aria-hidden="true">
                 <!-- y axis tick lines -->
@@ -1382,7 +1428,7 @@
                 <span class="l">Средний пульс</span>
                 <div class="row">
                   <span class="v">142</span>
-                  <span class="u">bpm</span>
+                  <span class="u">уд/мин</span>
                 </div>
               </div>
               <div class="end-stat-card" role="listitem">
@@ -1394,11 +1440,25 @@
               </div>
             </div>
 
+            <!-- Zones · итог (post-session summary) -->
+            <div class="end-zones-card">
+              <div class="end-zones-head">
+                <span class="end-zones-title">Зоны · итог</span>
+                <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
+              </div>
+              <div class="zones-strip end-zones-strip">
+                <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
+                <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
+                <div class="zone-cell active"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
+                <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
+              </div>
+            </div>
+
             <!-- Mini sparkline -->
             <div class="end-spark-card" aria-label="Пульс за тренировку">
               <div class="end-spark-head">
                 <span class="end-spark-title">Пульс · 28 мин</span>
-                <span class="end-spark-range">120 – 168 bpm</span>
+                <span class="end-spark-range">120 – 168 уд/мин</span>
               </div>
               <svg class="end-spark-svg" viewBox="0 0 300 64" preserveAspectRatio="none" aria-hidden="true">
                 <line x1="0" y1="14" x2="300" y2="14" stroke="#e8e4d8" stroke-width="0.6" stroke-dasharray="2 4"/>
