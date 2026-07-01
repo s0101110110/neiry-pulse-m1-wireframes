@@ -207,6 +207,18 @@ for idx, out_name in sd_frames:
     shoot_transparent(f"{OUT_DIR}/sd-{idx}.html", f"{DEST}/{out_name}.png")
 print("Settings Detail (4 frames): done")
 
+# End-of-session + Bracelet-disconnect — 3 frames: 16a end-of-session, 16b bracelet-disconnect, 16c close-confirm
+src = f"{SRC_DIR}/mobile-state-end-of-session-bracelet-disconnect-v0.html"
+eob_frames = [
+    (0, "16a-state-end-of-session"),
+    (1, "16b-state-bracelet-disconnect-training"),
+    (2, "16c-state-close-confirm"),
+]
+for idx, out_name in eob_frames:
+    slice_clean(src, idx, 3, "frame-with-caption", f"{OUT_DIR}/eob-{idx}.html")
+    shoot_transparent(f"{OUT_DIR}/eob-{idx}.html", f"{DEST}/{out_name}.png")
+print("End-of-session + Bracelet (3 frames): done")
+
 # Verify
 for f in sorted(os.listdir(DEST)):
     if not f.endswith('.png'):
