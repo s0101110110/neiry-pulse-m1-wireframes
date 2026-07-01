@@ -356,9 +356,9 @@
   <!-- STATS -->
   <section class="stats-grid">
     <div class="stat-card"><div class="eyebrow">Всего</div><div class="value">29</div></div>
-    <div class="stat-card warn"><div class="eyebrow">🔴 Open</div><div class="value">11</div></div>
-    <div class="stat-card norm"><div class="eyebrow">✅ Done</div><div class="value">18</div></div>
-    <div class="stat-card high"><div class="eyebrow">P1 critical</div><div class="value">3</div></div>
+    <div class="stat-card warn"><div class="eyebrow">🔴 Open</div><div class="value">10</div></div>
+    <div class="stat-card norm"><div class="eyebrow">✅ Done</div><div class="value">19</div></div>
+    <div class="stat-card high"><div class="eyebrow">P1 critical</div><div class="value">2</div></div>
     <div class="stat-card wine"><div class="eyebrow">Авторов</div><div class="value">4</div></div>
     <div class="stat-card"><div class="eyebrow">Экранов</div><div class="value">21</div></div>
   </section>
@@ -368,8 +368,8 @@
     <div class="filter-group">
       <span class="filter-label">Статус</span>
       <button class="chip active" data-filter="status" data-value="all">Все <span class="count" data-count-status-all>29</span></button>
-      <button class="chip" data-filter="status" data-value="open">🔴 Open <span class="count">11</span></button>
-      <button class="chip" data-filter="status" data-value="resolved">✅ Done <span class="count">18</span></button>
+      <button class="chip" data-filter="status" data-value="open">🔴 Open <span class="count">10</span></button>
+      <button class="chip" data-filter="status" data-value="resolved">✅ Done <span class="count">19</span></button>
     </div>
     <div class="filter-group">
       <span class="filter-label">Приоритет</span>
@@ -1024,7 +1024,7 @@
     </article>
 
     <!-- #15 -->
-    <article class="task-card" data-status="open" data-priority="P1" data-category="UX-decision" data-owner="PM,Kirill" data-author="Константин Соломонов" data-screen="09a-onboarding-bracelet-scan">
+    <article class="task-card resolved" data-status="resolved" data-priority="P1" data-category="UX-decision" data-owner="PM,Kirill" data-author="Константин Соломонов" data-screen="09a-onboarding-bracelet-scan">
       <div class="task-header">
         <div class="task-thumb"><img src="screenshots/09a-onboarding-bracelet-scan.png" alt="09a" /></div>
         <div class="task-meta">
@@ -1032,7 +1032,7 @@
             <span class="task-id">#15</span>
             <span class="badge badge-prio p1">P1 · M</span>
             <span class="badge badge-cat">UX-decision</span>
-            <span class="badge badge-status open">🔴 OPEN</span>
+            <span class="badge badge-status">✅ DONE (02.07)</span>
           </div>
           <h3 class="task-title">Кнопка «Продолжить без браслета»</h3>
           <div class="task-line"><span class="screen-name">09a-onboarding-bracelet-scan</span><span class="dot">·</span><span>Константин Соломонов</span></div>
@@ -1065,6 +1065,17 @@
             <li>Альтернативное название: «Попробовать без браслета»</li>
             <li><b>DS:</b> primary CTA = wine button; secondary = ghost link с underline</li>
           </ul>
+        </div>
+        <div class="task-section">
+          <h4>Резолюция · Done (02.07) · 2 phase</h4>
+          <p><b>Phase 1</b> · <code>09a-onboarding-bracelet-scan</code> (node 1:4): добавлен secondary CTA «У меня пока нет браслета» + caption «Демо-режим без подключения» под <code>scan-footer</code>. Unified DS с 08b — <code>.demo-entry</code> + <code>.btn-demo</code>.</p>
+          <p><b>Phase 2 · Demo-mode UX polish:</b></p>
+          <ul>
+            <li><b>01-home</b> (node 1:11) — top-banner «Демо-режим · данные тестовые · Подключить →»</li>
+            <li><b>20b-hrv-detail</b> (node 17:7) — тот же top-banner</li>
+            <li><b>06-settings</b> (node 1:19) — top-banner + device-card заменена на demo state («Браслет не подключён · Нажмите, чтобы подключить»)</li>
+          </ul>
+          <p>App Store review path: reviewer → 09a → «У меня пока нет браслета» → demo mode → все экраны показывают banner + CTA «Подключить».</p>
         </div>
       </div>
     </article>

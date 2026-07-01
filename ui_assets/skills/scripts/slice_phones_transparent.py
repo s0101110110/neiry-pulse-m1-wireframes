@@ -221,6 +221,17 @@ for idx, out_name, tall_h in eob_frames:
     shoot_transparent(f"{OUT_DIR}/eob-{idx}.html", f"{DEST}/{out_name}.png", h=tall_h)
 print("End-of-session + Bracelet (3 frames): done")
 
+# Onboarding-02 · Bracelet Scan & Pair — 2 frames: 09a bracelet-scan, 09b bracelet-pairing
+src = f"{SRC_DIR}/mobile-onboarding-02-bracelet-scan-pair-v0.html"
+onb2_frames = [
+    (0, "09a-onboarding-bracelet-scan"),
+    (1, "09b-onboarding-bracelet-pairing"),
+]
+for idx, out_name in onb2_frames:
+    slice_clean(src, idx, 2, "frame-with-caption", f"{OUT_DIR}/onb2-{idx}.html")
+    shoot_transparent(f"{OUT_DIR}/onb2-{idx}.html", f"{DEST}/{out_name}.png")
+print("Onboarding-02 · Bracelet Scan + Pair (2 frames): done")
+
 # Onboarding-03 · Notifications & Calibrating — 3 frames: 10a permission, 10b calibrating, 10c baseline modal
 src = f"{SRC_DIR}/mobile-onboarding-03-notifications-calibrating-v0.html"
 onb3_frames = [
