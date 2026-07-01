@@ -221,6 +221,41 @@ for idx, out_name, tall_h in eob_frames:
     shoot_transparent(f"{OUT_DIR}/eob-{idx}.html", f"{DEST}/{out_name}.png", h=tall_h)
 print("End-of-session + Bracelet (3 frames): done")
 
+# Onboarding-03 · Notifications & Calibrating — 3 frames: 10a permission, 10b calibrating, 10c baseline modal
+src = f"{SRC_DIR}/mobile-onboarding-03-notifications-calibrating-v0.html"
+onb3_frames = [
+    (0, "10a-onboarding-notifications"),
+    (1, "10b-onboarding-calibrating"),
+    (2, "10c-onboarding-baseline-modal"),
+]
+for idx, out_name in onb3_frames:
+    slice_clean(src, idx, 3, "frame-with-caption", f"{OUT_DIR}/onb3-{idx}.html")
+    shoot_transparent(f"{OUT_DIR}/onb3-{idx}.html", f"{DEST}/{out_name}.png")
+print("Onboarding-03 · Notifications + Calibrating (3 frames): done")
+
+# Baseline-ready · First HRV — 2 frames: 23a baseline ready, 23b first HRV reveal
+src = f"{SRC_DIR}/mobile-baseline-ready-first-hrv-v0.html"
+br_frames = [
+    (0, "23a-baseline-ready"),
+    (1, "23b-first-hrv-reveal"),
+]
+for idx, out_name in br_frames:
+    slice_clean(src, idx, 2, "frame-with-caption", f"{OUT_DIR}/br-{idx}.html")
+    shoot_transparent(f"{OUT_DIR}/br-{idx}.html", f"{DEST}/{out_name}.png")
+print("Baseline-ready · First HRV (2 frames): done")
+
+# Profile · HRV detail — 3 frames: 20a profile edit, 20b HRV detail view, 20c HRV explainer modal
+src = f"{SRC_DIR}/mobile-profile-hrv-detail-v0.html"
+hrv_frames = [
+    (0, "20a-profile-edit"),
+    (1, "20b-hrv-detail"),
+    (2, "20c-hrv-explainer-modal"),
+]
+for idx, out_name in hrv_frames:
+    slice_clean(src, idx, 3, "frame-with-caption", f"{OUT_DIR}/hrv-{idx}.html")
+    shoot_transparent(f"{OUT_DIR}/hrv-{idx}.html", f"{DEST}/{out_name}.png")
+print("Profile · HRV Detail (3 frames): done")
+
 # Verify
 for f in sorted(os.listdir(DEST)):
     if not f.endswith('.png'):

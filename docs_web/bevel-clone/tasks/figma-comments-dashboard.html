@@ -356,9 +356,9 @@
   <!-- STATS -->
   <section class="stats-grid">
     <div class="stat-card"><div class="eyebrow">Всего</div><div class="value">29</div></div>
-    <div class="stat-card warn"><div class="eyebrow">🔴 Open</div><div class="value">17</div></div>
-    <div class="stat-card norm"><div class="eyebrow">✅ Done</div><div class="value">12</div></div>
-    <div class="stat-card high"><div class="eyebrow">P1 critical</div><div class="value">8</div></div>
+    <div class="stat-card warn"><div class="eyebrow">🔴 Open</div><div class="value">11</div></div>
+    <div class="stat-card norm"><div class="eyebrow">✅ Done</div><div class="value">18</div></div>
+    <div class="stat-card high"><div class="eyebrow">P1 critical</div><div class="value">3</div></div>
     <div class="stat-card wine"><div class="eyebrow">Авторов</div><div class="value">4</div></div>
     <div class="stat-card"><div class="eyebrow">Экранов</div><div class="value">21</div></div>
   </section>
@@ -368,8 +368,8 @@
     <div class="filter-group">
       <span class="filter-label">Статус</span>
       <button class="chip active" data-filter="status" data-value="all">Все <span class="count" data-count-status-all>29</span></button>
-      <button class="chip" data-filter="status" data-value="open">🔴 Open <span class="count">17</span></button>
-      <button class="chip" data-filter="status" data-value="resolved">✅ Done <span class="count">12</span></button>
+      <button class="chip" data-filter="status" data-value="open">🔴 Open <span class="count">11</span></button>
+      <button class="chip" data-filter="status" data-value="resolved">✅ Done <span class="count">18</span></button>
     </div>
     <div class="filter-group">
       <span class="filter-label">Приоритет</span>
@@ -1106,7 +1106,7 @@
     </article>
 
     <!-- #17 -->
-    <article class="task-card" data-status="open" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="12a-home-first-run-empty">
+    <article class="task-card resolved" data-status="resolved" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="12a-home-first-run-empty">
       <div class="task-header">
         <div class="task-thumb"><img src="screenshots/12a-home-first-run-empty.png" alt="12a" /></div>
         <div class="task-meta">
@@ -1114,7 +1114,7 @@
             <span class="task-id">#17</span>
             <span class="badge badge-prio p1">P1 · S</span>
             <span class="badge badge-cat">Copy</span>
-            <span class="badge badge-status open">🔴 OPEN</span>
+            <span class="badge badge-status">✅ DONE (02.07)</span>
           </div>
           <h3 class="task-title">Заменить «baseline» → «личная норма»</h3>
           <div class="task-line"><span class="screen-name">12a-home-first-run-empty</span><span class="dot">·</span><span>Дина Митюрева</span></div>
@@ -1147,6 +1147,10 @@
             <li>Применить на 23a-baseline-ready, 20c-hrv-explainer-modal</li>
             <li>Связано с задачами #26, #27</li>
           </ul>
+        </div>
+        <div class="task-section">
+          <h4>Резолюция · Done (02.07)</h4>
+          <p>Grep <code>baseline</code> в UI-text = 0 совпадений — «личная норма» уже используется везде: <code>onboarding-03</code> («Что такое личная норма?»), <code>hrv-detail</code> («личная норма 47 ms»), <code>baseline-ready</code> («Ваша личная норма готова»). CSS-классы (<code>.baseline-*</code>) — код, не UI-text, оставлены.</p>
         </div>
       </div>
     </article>
@@ -1440,7 +1444,7 @@
     </article>
 
     <!-- #25 -->
-    <article class="task-card" data-status="open" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="20c-hrv-explainer-modal">
+    <article class="task-card resolved" data-status="resolved" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="20c-hrv-explainer-modal">
       <div class="task-header">
         <div class="task-thumb"><img src="screenshots/20c-hrv-explainer-modal.png" alt="20c" /></div>
         <div class="task-meta">
@@ -1448,7 +1452,7 @@
             <span class="task-id">#25</span>
             <span class="badge badge-prio p1">P1 · S</span>
             <span class="badge badge-cat">Copy</span>
-            <span class="badge badge-status open">🔴 OPEN</span>
+            <span class="badge badge-status">✅ DONE (02.07)</span>
           </div>
           <h3 class="task-title">«Каждое утро после пробуждения» — неправда</h3>
           <div class="task-line"><span class="screen-name">20c-hrv-explainer-modal</span><span class="dot">·</span><span>Дина Митюрева</span></div>
@@ -1481,11 +1485,15 @@
             <li><b>DS:</b> explainer modal = <code>bv-card</code> Hero + <code>Body/Body</code> style</li>
           </ul>
         </div>
+        <div class="task-section">
+          <h4>Резолюция · Done (02.07)</h4>
+          <p><code>profile-hrv-detail-v0.html:1460</code>: «Браслет измеряет HRV каждое утро после пробуждения и сравнивает с вашим личная норма (среднее за 30 дней).» → «Pulse круглосуточно собирает данные об HRV в фоновом режиме. Утренние и ночные значения точнее отражают вашу личную норму.» Node 17:8 обновлён.</p>
+        </div>
       </div>
     </article>
 
     <!-- #26 -->
-    <article class="task-card" data-status="open" data-priority="P1" data-category="UX-decision" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="20c-hrv-explainer-modal">
+    <article class="task-card resolved" data-status="resolved" data-priority="P1" data-category="UX-decision" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="20c-hrv-explainer-modal">
       <div class="task-header">
         <div class="task-thumb"><img src="screenshots/20c-hrv-explainer-modal.png" alt="20c" /></div>
         <div class="task-meta">
@@ -1493,7 +1501,7 @@
             <span class="task-id">#26</span>
             <span class="badge badge-prio p1">P1 · S</span>
             <span class="badge badge-cat">Copy</span>
-            <span class="badge badge-status open">🔴 OPEN</span>
+            <span class="badge badge-status">✅ DONE (02.07)</span>
           </div>
           <h3 class="task-title">30 дней → 5-7 дней для baseline</h3>
           <div class="task-line"><span class="screen-name">20c-hrv-explainer-modal</span><span class="dot">·</span><span>Дина Митюрева</span></div>
@@ -1525,11 +1533,15 @@
             <li>Edge case: нерегулярное ношение — «нужно ещё 2 дня данных»</li>
           </ul>
         </div>
+        <div class="task-section">
+          <h4>Резолюция · Done (02.07)</h4>
+          <p>Sweep «30 дней» → «5–7 дней» в baseline-контексте: <code>onboarding-03</code> bullet «Автоматически обновляется каждые 5–7 дней», <code>hrv-detail</code> explainer (в #25). НЕ трогали: legal 30-day grace, history календарь, HRV chart period selector. Nodes 1:7, 1:8, 17:8 обновлены.</p>
+        </div>
       </div>
     </article>
 
     <!-- #27 -->
-    <article class="task-card" data-status="open" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="23a-baseline-ready">
+    <article class="task-card resolved" data-status="resolved" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="23a-baseline-ready">
       <div class="task-header">
         <div class="task-thumb"><img src="screenshots/23a-baseline-ready.png" alt="23a" /></div>
         <div class="task-meta">
@@ -1537,7 +1549,7 @@
             <span class="task-id">#27</span>
             <span class="badge badge-prio p1">P1 · S</span>
             <span class="badge badge-cat">Copy</span>
-            <span class="badge badge-status open">🔴 OPEN</span>
+            <span class="badge badge-status">✅ DONE (02.07)</span>
           </div>
           <h3 class="task-title">«36 часов на baseline» — противоречие</h3>
           <div class="task-line"><span class="screen-name">23a-baseline-ready</span><span class="dot">·</span><span>Дина Митюрева</span></div>
@@ -1570,11 +1582,15 @@
             <li><b>DS:</b> progress = новый <code>bv-progress-bar</code> или <code>bv-capsule</code> Tone=Norm</li>
           </ul>
         </div>
+        <div class="task-section">
+          <h4>Резолюция · Done (02.07)</h4>
+          <p>Full canonical sweep. Заменили «36 часов» / «24–48 часов» → «5–7 дней» в <code>baseline-ready:880</code>, <code>onboarding-05:800</code>, <code>onboarding-03:890/1074/1219</code>. Плюс fixes narrative-inconsistencies: stat-card «48 ч» → «7 д», eyebrow «День 2» → «День 7», progress «из 48ч» → «из 7 д», settings-detail «собрана за 24–48 часов» → «за 5–7 дней». Также объединено с #29 — переписан hero-body: «...виден баланс относительно нормы — зелёная зона — хороший отдых, красная — усталость». Node 39:13 обновлён.</p>
+        </div>
       </div>
     </article>
 
     <!-- #28 -->
-    <article class="task-card" data-status="open" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="23a-baseline-ready">
+    <article class="task-card resolved" data-status="resolved" data-priority="P1" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="23a-baseline-ready">
       <div class="task-header">
         <div class="task-thumb"><img src="screenshots/23a-baseline-ready.png" alt="23a" /></div>
         <div class="task-meta">
@@ -1582,7 +1598,7 @@
             <span class="task-id">#28</span>
             <span class="badge badge-prio p1">P1 · M</span>
             <span class="badge badge-cat">Copy</span>
-            <span class="badge badge-status open">🔴 OPEN</span>
+            <span class="badge badge-status">✅ DONE (02.07)</span>
           </div>
           <h3 class="task-title">«Замеры» vs «фон» — explainer-конфьюз</h3>
           <div class="task-line"><span class="screen-name">23a-baseline-ready</span><span class="dot">·</span><span>Дина Митюрева</span></div>
@@ -1616,11 +1632,15 @@
             <li>Не использовать jargon (PPG-сенсор, continuous data stream)</li>
           </ul>
         </div>
+        <div class="task-section">
+          <h4>Резолюция · Done (02.07)</h4>
+          <p>После аудита «замер» — оставлены только specific cases (первый замер = reveal event, последний замер = data-point label, история замеров = list-view). Explainer-copy для continuous monitoring переписан в #25 (20c): «Pulse круглосуточно собирает данные об HRV в фоновом режиме». Slовo «замер» для sensor-events сохранено — семантически корректно как discrete snapshot. Sweep-требование #28 закрыто через связку #25.</p>
+        </div>
       </div>
     </article>
 
     <!-- #29 -->
-    <article class="task-card" data-status="open" data-priority="P2" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="23a-baseline-ready">
+    <article class="task-card resolved" data-status="resolved" data-priority="P2" data-category="Copy/Wording" data-owner="PM,Copy" data-author="Дина Митюрева" data-screen="23a-baseline-ready">
       <div class="task-header">
         <div class="task-thumb"><img src="screenshots/23a-baseline-ready.png" alt="23a" /></div>
         <div class="task-meta">
@@ -1628,7 +1648,7 @@
             <span class="task-id">#29</span>
             <span class="badge badge-prio p2">P2 · S</span>
             <span class="badge badge-cat">Copy</span>
-            <span class="badge badge-status open">🔴 OPEN</span>
+            <span class="badge badge-status">✅ DONE (02.07)</span>
           </div>
           <h3 class="task-title">«Дельты показывают насколько отдохнули» — переписать</h3>
           <div class="task-line"><span class="screen-name">23a-baseline-ready</span><span class="dot">·</span><span>Дина Митюрева</span></div>
@@ -1661,6 +1681,10 @@
             <li>Связано с #25, #27, #28 — все про explainer copy</li>
             <li><b>DS:</b> color zones = <code>semantic/norm/warn/high</code> + <code>bv-capsule</code> Tone-variants</li>
           </ul>
+        </div>
+        <div class="task-section">
+          <h4>Резолюция · Done (02.07)</h4>
+          <p>Sweep «дельта» → «отклонение / изменение / баланс относительно нормы»: <code>baseline-ready:880</code> «зелёная зона — хороший отдых, красная — усталость» (объединено с #27); <code>onboarding-03</code> baseline modal «отклонения от нормы — «+15% к среднему»»; <code>health-sharing</code> «HRV (изменения день / неделя)». Math jargon удалён из user-facing copy.</p>
         </div>
       </div>
     </article>
