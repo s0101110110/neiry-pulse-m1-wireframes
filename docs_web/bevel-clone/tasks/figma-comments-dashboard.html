@@ -356,9 +356,9 @@
   <!-- STATS -->
   <section class="stats-grid">
     <div class="stat-card"><div class="eyebrow">Всего</div><div class="value">29</div></div>
-    <div class="stat-card warn"><div class="eyebrow">🔴 Open</div><div class="value">18</div></div>
-    <div class="stat-card norm"><div class="eyebrow">✅ Done</div><div class="value">11</div></div>
-    <div class="stat-card high"><div class="eyebrow">P1 critical</div><div class="value">9</div></div>
+    <div class="stat-card warn"><div class="eyebrow">🔴 Open</div><div class="value">17</div></div>
+    <div class="stat-card norm"><div class="eyebrow">✅ Done</div><div class="value">12</div></div>
+    <div class="stat-card high"><div class="eyebrow">P1 critical</div><div class="value">8</div></div>
     <div class="stat-card wine"><div class="eyebrow">Авторов</div><div class="value">4</div></div>
     <div class="stat-card"><div class="eyebrow">Экранов</div><div class="value">21</div></div>
   </section>
@@ -368,8 +368,8 @@
     <div class="filter-group">
       <span class="filter-label">Статус</span>
       <button class="chip active" data-filter="status" data-value="all">Все <span class="count" data-count-status-all>29</span></button>
-      <button class="chip" data-filter="status" data-value="open">🔴 Open <span class="count">18</span></button>
-      <button class="chip" data-filter="status" data-value="resolved">✅ Done <span class="count">11</span></button>
+      <button class="chip" data-filter="status" data-value="open">🔴 Open <span class="count">17</span></button>
+      <button class="chip" data-filter="status" data-value="resolved">✅ Done <span class="count">12</span></button>
     </div>
     <div class="filter-group">
       <span class="filter-label">Приоритет</span>
@@ -1232,7 +1232,7 @@
     </article>
 
     <!-- #20 -->
-    <article class="task-card" data-status="open" data-priority="P1" data-category="Question" data-owner="PM,Designer" data-author="Alexandr Dymov" data-screen="16c-state-close-confirm">
+    <article class="task-card resolved" data-status="resolved" data-priority="P1" data-category="Question" data-owner="PM,Designer" data-author="Alexandr Dymov" data-screen="16c-state-close-confirm">
       <div class="task-header">
         <div class="task-thumb"><img src="screenshots/16c-state-close-confirm.png" alt="16c" /></div>
         <div class="task-meta">
@@ -1240,7 +1240,7 @@
             <span class="task-id">#20</span>
             <span class="badge badge-prio p1">P1 · M</span>
             <span class="badge badge-cat">Question</span>
-            <span class="badge badge-status open">🔴 OPEN</span>
+            <span class="badge badge-status">✅ WON'T FIX</span>
           </div>
           <h3 class="task-title">Откуда мы попали в close-confirm? — flow docs</h3>
           <div class="task-line"><span class="screen-name">16c-state-close-confirm</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
@@ -1253,26 +1253,14 @@
           <div class="comment-quote">А как мы с предыдущего в этот экран попали?</div>
         </div>
         <div class="task-section">
-          <h4>Что делать</h4>
-          <p>Документировать flow для close-confirm modal — откуда триггерится, куда ведёт.</p>
+          <h4>Резолюция · Won't fix (2026-07-01)</h4>
+          <p>Flow работает: <code>×</code> top-right на 16a end-of-session триггерит эту modal. Это стандартный iOS/Android паттерн (× = «выйти без сохранения»). Дымов задал вопрос из статичного Figma-review, где нет triggering action — в живом app пользователь связывает клик с результатом естественно. UI не меняем.</p>
         </div>
         <div class="task-section">
-          <h4>Как делать</h4>
-          <ol>
-            <li>Триггеры: «Завершить» на 03b/03c во время тренировки; swipe home/lock</li>
-            <li>Modal: «Завершить тренировку?» + 2 кнопки</li>
-            <li>«Завершить и сохранить» → 16a-end-of-session</li>
-            <li>«Продолжить» → возврат к 03a/03b/03c</li>
-            <li>Зафиксировать flow в <code>docs_web/prds/m4-training-flow.md</code></li>
-          </ol>
-        </div>
-        <div class="task-section">
-          <h4>Рекомендации</h4>
+          <h4>Триггер (для справки)</h4>
           <ul>
-            <li>Дымов задаёт вопрос — flow непрозрачен. <b>UX-bug в навигации</b></li>
-            <li>Показать triggering action явно — на 03c при Stop сразу modal</li>
-            <li>Не делать delete confirm + close confirm отдельно — слить в один</li>
-            <li><b>DS:</b> modal = <code>bv-card</code> Hero + 2 кнопки</li>
+            <li>16a end-of-session → клик по <code>×</code> в углу (aria-label «Закрыть без сохранения») → 16c modal</li>
+            <li>16c: «Удалить тренировку» (destructive) / «Отмена» (возврат к 16a)</li>
           </ul>
         </div>
       </div>
