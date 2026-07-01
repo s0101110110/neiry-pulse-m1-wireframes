@@ -375,6 +375,101 @@
       100% { transform: scale(1.25); opacity: 0; }
     }
 
+    /* Pulse Hero — большой BPM display (Whoop-inspired, adapted to Pulse-DS) */
+    .pulse-hero {
+      position: relative;
+      background: var(--primary-soft);
+      border-radius: 20px;
+      padding: 24px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      overflow: hidden;
+    }
+    .pulse-hero::before {
+      /* Decorative radial glow */
+      content: '';
+      position: absolute;
+      top: -30%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(131, 24, 67, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .pulse-hero .heart-icon {
+      color: var(--primary);
+      z-index: 1;
+      animation: heart-beat 1.4s ease-in-out infinite;
+    }
+    @keyframes heart-beat {
+      0%, 100% { transform: scale(1); }
+      20% { transform: scale(1.15); }
+      40% { transform: scale(1); }
+      60% { transform: scale(1.08); }
+      80% { transform: scale(1); }
+    }
+    .pulse-hero .bpm-num {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-weight: 700;
+      font-size: 72px;
+      letter-spacing: -0.04em;
+      color: var(--foreground);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      z-index: 1;
+    }
+    .pulse-hero .bpm-unit {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      z-index: 1;
+    }
+    .pulse-hero .bracelet-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 9999px;
+      margin-top: 8px;
+      z-index: 1;
+    }
+    .pulse-hero .bracelet-meta .mono {
+      font-size: 11px;
+      color: var(--foreground);
+      font-weight: 500;
+    }
+
+    /* Searching state — pulse-hero placeholder */
+    .pulse-hero.searching .bpm-num {
+      color: var(--muted-foreground);
+      font-size: 56px;
+    }
+    .pulse-hero.searching .heart-icon {
+      color: var(--muted-foreground);
+      opacity: 0.4;
+    }
+    .pulse-hero.searching .dots {
+      display: inline-block;
+    }
+    .pulse-hero.searching .dots span {
+      display: inline-block;
+      opacity: 0;
+      animation: dots-blink 1.4s infinite;
+    }
+    .pulse-hero.searching .dots span:nth-child(1) { animation-delay: 0s; }
+    .pulse-hero.searching .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .pulse-hero.searching .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dots-blink {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
     /* Goal Modal — bottom sheet */
     .sheet-backdrop {
       position: absolute;
@@ -701,45 +796,36 @@
               Задать цель тренировки
             </button>
 
-            <div style="background:var(--card); border:1px solid var(--border); border-radius:16px; padding: 4px 16px; margin-top:4px;">
-              <div style="padding: 10px 0 6px; display:flex; align-items:center; justify-content:space-between;">
-                <span class="eyebrow">Ловим сигнал…</span>
-                <span class="mono" style="font-size:10px; color:var(--warning); font-weight:600; letter-spacing:0.08em;">ОЖИДАНИЕ</span>
+            <!-- Pulse Hero — searching placeholder -->
+            <div class="pulse-hero searching">
+              <svg class="heart-icon" width="26" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 21s-7-4.5-9.5-9C1 8.5 3 4 7 4c2 0 4 1.5 5 3 1-1.5 3-3 5-3 4 0 6 4.5 4.5 8-2.5 4.5-9.5 9-9.5 9z"/>
+              </svg>
+              <div class="bpm-num"><span class="dots"><span>·</span><span>·</span><span>·</span></span></div>
+              <div class="bpm-unit">Ловим пульс</div>
+              <div class="bracelet-meta">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--foreground)" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="4" width="10" height="6" rx="1.5"/><rect x="2.5" y="5.5" width="6.5" height="3" rx="0.5" fill="var(--warning)"/></svg>
+                <span class="mono" style="color:var(--muted-foreground);">Браслет подключён · ищем сигнал…</span>
               </div>
+            </div>
 
-              <!-- GPS row -->
-              <div class="status-row">
-                <div class="status-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17.5s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/><circle cx="10" cy="7.5" r="2.2"/></svg>
+            <!-- Compact status pills — GPS + HRV baseline (waiting) -->
+            <div style="display:flex; gap:8px;">
+              <div style="flex:1; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 12px; display:flex; align-items:center; gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="var(--foreground)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17.5s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/><circle cx="10" cy="7.5" r="2.2"/></svg>
+                <div style="flex:1;">
+                  <div class="mono" style="font-size:10px; color:var(--muted-foreground); letter-spacing:0.08em; text-transform:uppercase;">GPS</div>
+                  <div style="font-family:'Golos Text'; font-weight:600; font-size:13px; color:var(--muted-foreground);">Ищем…</div>
                 </div>
-                <div style="flex:1; min-width:0;">
-                  <div style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.2;">GPS</div>
-                  <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">ищем спутники…</div>
-                </div>
-                <span class="status-dot wait" aria-label="Ожидание"></span>
+                <span class="status-dot wait"></span>
               </div>
-
-              <!-- Браслет row — животик анимация -->
-              <div class="status-row">
-                <div class="status-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="10" height="13" rx="3"/><path d="M7 2.5h6M7 17.5h6"/><circle cx="10" cy="10" r="1.6"/></svg>
+              <div style="flex:1; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 12px; display:flex; align-items:center; gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="var(--foreground)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 11h4l2-5 3 9 2-4h5"/></svg>
+                <div style="flex:1;">
+                  <div class="mono" style="font-size:10px; color:var(--muted-foreground); letter-spacing:0.08em; text-transform:uppercase;">HRV</div>
+                  <div style="font-family:'Golos Text'; font-weight:600; font-size:13px; color:var(--muted-foreground);">Загрузка</div>
                 </div>
-                <div style="flex:1; min-width:0;">
-                  <div style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.2;">Браслет</div>
-                  <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">ловим пульс…</div>
-                </div>
-                <span class="status-dot wait" aria-label="Ожидание"></span>
-              </div>
-
-              <div class="status-row" style="padding-bottom:14px;">
-                <div class="status-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 11h4l2-5 3 9 2-4h5"/></svg>
-                </div>
-                <div style="flex:1; min-width:0;">
-                  <div style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.2;">Личная норма HR</div>
-                  <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">загружаем базу…</div>
-                </div>
-                <span class="status-dot wait" aria-label="Ожидание"></span>
+                <span class="status-dot wait"></span>
               </div>
             </div>
 
@@ -805,43 +891,36 @@
               Задать цель тренировки
             </button>
 
-            <div style="background:var(--card); border:1px solid var(--border); border-radius:16px; padding: 4px 16px; margin-top:4px;">
-              <div style="padding: 10px 0 6px; display:flex; align-items:center; justify-content:space-between;">
-                <span class="eyebrow">Готовность</span>
-                <span class="mono" style="font-size:10px; color:var(--success); font-weight:600; letter-spacing:0.08em;">ГОТОВО</span>
+            <!-- Pulse Hero — большой live BPM display -->
+            <div class="pulse-hero">
+              <svg class="heart-icon" width="26" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 21s-7-4.5-9.5-9C1 8.5 3 4 7 4c2 0 4 1.5 5 3 1-1.5 3-3 5-3 4 0 6 4.5 4.5 8-2.5 4.5-9.5 9-9.5 9z"/>
+              </svg>
+              <div class="bpm-num">72</div>
+              <div class="bpm-unit">уд · мин</div>
+              <div class="bracelet-meta">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--foreground)" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="4" width="10" height="6" rx="1.5"/><rect x="2.5" y="5.5" width="6.5" height="3" rx="0.5" fill="var(--success)"/><rect x="11.5" y="5.5" width="1.5" height="3" rx="0.5" fill="var(--foreground)"/></svg>
+                <span class="mono">Браслет 84% · ~5 ч</span>
               </div>
+            </div>
 
-              <div class="status-row">
-                <div class="status-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17.5s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/><circle cx="10" cy="7.5" r="2.2"/></svg>
+            <!-- Compact status pills — GPS + HRV baseline -->
+            <div style="display:flex; gap:8px;">
+              <div style="flex:1; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 12px; display:flex; align-items:center; gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="var(--foreground)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17.5s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/><circle cx="10" cy="7.5" r="2.2"/></svg>
+                <div style="flex:1;">
+                  <div class="mono" style="font-size:10px; color:var(--muted-foreground); letter-spacing:0.08em; text-transform:uppercase;">GPS</div>
+                  <div style="font-family:'Golos Text'; font-weight:600; font-size:13px;">Захвачен</div>
                 </div>
-                <div style="flex:1; min-width:0;">
-                  <div style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.2;">GPS</div>
-                  <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">захвачен · точность 5м</div>
-                </div>
-                <span class="status-dot ok" aria-label="Готово"></span>
+                <span class="status-dot ok"></span>
               </div>
-
-              <div class="status-row">
-                <div class="status-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="10" height="13" rx="3"/><path d="M7 2.5h6M7 17.5h6"/><circle cx="10" cy="10" r="1.6"/></svg>
+              <div style="flex:1; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 12px; display:flex; align-items:center; gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="var(--foreground)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 11h4l2-5 3 9 2-4h5"/></svg>
+                <div style="flex:1;">
+                  <div class="mono" style="font-size:10px; color:var(--muted-foreground); letter-spacing:0.08em; text-transform:uppercase;">HRV</div>
+                  <div style="font-family:'Golos Text'; font-weight:600; font-size:13px;">47 ms</div>
                 </div>
-                <div style="flex:1; min-width:0;">
-                  <div style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.2;">Браслет</div>
-                  <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">подключён · HR 68</div>
-                </div>
-                <span class="status-dot ok" aria-label="Готово"></span>
-              </div>
-
-              <div class="status-row" style="padding-bottom:14px;">
-                <div class="status-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 11h4l2-5 3 9 2-4h5"/></svg>
-                </div>
-                <div style="flex:1; min-width:0;">
-                  <div style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.2;">Личная норма HR</div>
-                  <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">47 ms · сегодня</div>
-                </div>
-                <span class="status-dot ok" aria-label="Готово"></span>
+                <span class="status-dot ok"></span>
               </div>
             </div>
 
