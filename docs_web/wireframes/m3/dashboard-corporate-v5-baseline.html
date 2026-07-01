@@ -609,7 +609,7 @@ function renderSafety(){
   h+=`<div class="tc">
     <div class="th">
       <div class="tht">Операторы на смене</div>
-      <div class="th-meta"><span class="dot dot-r"></span><span><span style="color:hsl(var(--destructive));font-weight:600">${alertCount}</span> с алертом</span></div>
+      <div class="th-meta"><span class="dot dot-r"></span><span><span style="color:hsl(var(--destructive));font-weight:600">${alertCount}</span> с сообщением</span></div>
     </div>`;
   h+=EF.sort((a,b)=>b.fatigue-a.fatigue).map(e=>{
     const zn=z(e.shift);
@@ -617,7 +617,7 @@ function renderSafety(){
     return`<div class="er ${isAlert?'alert':''}" onclick="openSafetyProfile(${e.id})">
       <div class="ea">${e.i}</div>
       <div class="ei">
-        <div class="en">${e.n}${isAlert?' <span class="row-tag warn">Алерт</span>':''}</div>
+        <div class="en">${e.n}${isAlert?' <span class="row-tag warn">Сообщение</span>':''}</div>
         <div class="erl">${e.r} · Сон: ${e.sl} ч</div>
       </div>
       <div class="em">
@@ -806,7 +806,7 @@ function openSafetyProfile(id){
   <div class="p-head">
     <div class="p-ava">${e.i}</div>
     <div>
-      <div class="p-name">${e.n}${isAlert?' <span class="row-tag warn">Алерт</span>':''}</div>
+      <div class="p-name">${e.n}${isAlert?' <span class="row-tag warn">Сообщение</span>':''}</div>
       <div class="p-role">${e.r} · Сон прошлой ночью: ${e.sl} ч</div>
     </div>
   </div>`;

@@ -50,9 +50,11 @@
 | `216:6` | 02d-state-training-start-battery-low 1 | mobile-state-training-start-corner-cases-v0.html | CASE 2 · BATTERY LOW | — |
 | `216:7` | 02d-state-training-start-bt-disconnect 1 | mobile-state-training-start-corner-cases-v0.html | CASE 3 · BT DISCONNECT · SETUP | — |
 | `216:8` | 02d-state-training-start-gps-not-found 1 | mobile-state-training-start-corner-cases-v0.html | CASE 4 · GPS NOT FOUND · INDOOR | — |
-| `1:14` | 03a-training-active-page1-zones 1 | mobile-training-active-v0.html | PAGE 1 · Зоны / Пульс | — |
-| `1:15` | 03b-training-active-page2-details 1 | mobile-training-active-v0.html | PAGE 2 · Детали сессии | — |
-| `1:16` | 03c-training-active-page3-map 1 | mobile-training-active-v0.html | PAGE 3 · GPS Карта | — |
+| `1:14` | 03a-training-active-page1-zones 1 | mobile-training-active-v0.html | PAGE 1 · Зоны Персонализированные (updated 01.07 · pulse-hero + method) | — |
+| `247:2` | 03a-training-active-page1-zones-vtemp 1 | mobile-training-active-v0.html | PAGE 1 · Зоны Предварительные (new · temp mode) | — |
+| `1:15` | 03b-training-active-page2-details 1 | mobile-training-active-v0.html | PAGE 2 · Детали (updated 01.07 · 10s avg + best-km highlight + HR по км) | — |
+| `1:16` | 03c-training-active-page3-map 1 | mobile-training-active-v0.html | PAGE 3 · GPS Карта (FAB added 01.07) | — |
+| `247:3` | 03d-training-active-zones-explainer 1 | mobile-training-active-v0.html | Explainer modal · Как рассчитываются зоны (new) | — |
 | `1:17` | 04-history 1 | mobile-history-v0.html | single-frame | mobile-history-mvp-store.html |
 | `1:18` | 05-session-detail 1 | mobile-session-detail-v0.html | single-frame | — |
 | `1:19` | 06-settings 1 | mobile-settings-v0.html | single-frame | mobile-settings-mvp-store.html |

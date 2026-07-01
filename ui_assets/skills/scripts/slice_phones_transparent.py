@@ -128,13 +128,19 @@ for idx, out_name in tsc_frames:
     shoot_transparent(f"{OUT_DIR}/tsc-{idx}.html", f"{DEST}/{out_name}.png")
 print("Training Start · Corner cases (4 frames): done")
 
-# Training Active
+# Training Active — 5 frames: PAGE 1 main, PAGE 1 vTemp, PAGE 2, PAGE 3, Explainer modal
 src = f"{SRC_DIR}/mobile-training-active-v0.html"
-for i, name in enumerate(['page1-zones', 'page2-details', 'page3-map']):
-    slice_clean(src, i, 3, "frame-with-caption", f"{OUT_DIR}/ta-{i}.html")
-    letter = 'abc'[i]
-    shoot_transparent(f"{OUT_DIR}/ta-{i}.html", f"{DEST}/03{letter}-training-active-{name}.png")
-print("Training Active: done")
+ta_frames = [
+    (0, "03a-training-active-page1-zones"),
+    (1, "03a-training-active-page1-zones-vtemp"),
+    (2, "03b-training-active-page2-details"),
+    (3, "03c-training-active-page3-map"),
+    (4, "03d-training-active-zones-explainer"),
+]
+for idx, out_name in ta_frames:
+    slice_clean(src, idx, 5, "frame-with-caption", f"{OUT_DIR}/ta-{idx}.html")
+    shoot_transparent(f"{OUT_DIR}/ta-{idx}.html", f"{DEST}/{out_name}.png")
+print("Training Active (5 frames): done")
 
 # Health Sharing
 src = f"{SRC_DIR}/mobile-health-sharing-v0.html"
@@ -187,6 +193,19 @@ for idx, out_name in tacc:
     slice_clean(src, idx, 3, "frame-with-caption", f"{OUT_DIR}/tacc-{idx}.html")
     shoot_transparent(f"{OUT_DIR}/tacc-{idx}.html", f"{DEST}/{out_name}.png")
 print("Training Active · Corner cases (3 frames): done")
+
+# Settings Detail — 4 frames: 21a BT pairing, 21b Notifications, 21c Privacy, 21d Калибровка
+src = f"{SRC_DIR}/mobile-settings-detail-v0.html"
+sd_frames = [
+    (0, "21a-settings-bt-pairing"),
+    (1, "21b-settings-notifications"),
+    (2, "21c-settings-privacy"),
+    (3, "21d-settings-calibration"),
+]
+for idx, out_name in sd_frames:
+    slice_clean(src, idx, 4, "frame-with-caption", f"{OUT_DIR}/sd-{idx}.html")
+    shoot_transparent(f"{OUT_DIR}/sd-{idx}.html", f"{DEST}/{out_name}.png")
+print("Settings Detail (4 frames): done")
 
 # Verify
 for f in sorted(os.listdir(DEST)):

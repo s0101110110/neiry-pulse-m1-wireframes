@@ -252,14 +252,47 @@
       overflow: hidden;
     }
 
+    /* Zones-mode header (over zones-strip) — показывает какой режим расчёта */
+    .zones-mode-label {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px 0;
+      background: #fafaf9;
+      border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--muted-foreground);
+    }
+    .zones-mode-label.warn {
+      color: var(--warning-strong, #b45309);
+    }
+    .zones-mode-label .info-btn {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--muted-foreground);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+
     /* Zones strip — sticky at bottom */
     .zones-strip {
       flex-shrink: 0;
       display: flex;
       gap: 4px;
-      padding: 14px 16px 18px;
+      padding: 8px 16px 18px;
       background: #fafaf9;
-      border-top: 1px solid var(--border);
+    }
+    .zone-cell .z-lbl.long {
+      font-size: 8px;
+      letter-spacing: 0.04em;
     }
     .zone-cell {
       flex: 1;
@@ -733,6 +766,100 @@
       font-weight: 600;
     }
 
+    /* Explainer modal — bottom sheet over dimmed page */
+    .sheet-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 10, 9, 0.5);
+      z-index: 30;
+    }
+    .sheet {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      background: var(--card);
+      border-top-left-radius: 28px;
+      border-top-right-radius: 28px;
+      padding: 8px 20px 24px;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 78%;
+      box-shadow: 0 -8px 24px rgba(12, 10, 9, 0.08);
+      overflow-y: auto;
+    }
+    .sheet-handle {
+      width: 40px; height: 4px;
+      background: var(--border-strong);
+      border-radius: 2px;
+      margin: 4px auto 12px;
+    }
+    .sheet-title {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+    }
+    .sheet-close {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      background: transparent;
+      border: none;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted-foreground);
+      cursor: pointer;
+    }
+    .zone-row {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .zone-row:last-child { border-bottom: none; }
+    .zone-row .zone-emoji {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .zone-row .zone-info {
+      flex: 1;
+    }
+    .zone-row .zone-name {
+      font-family: 'Golos Text';
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--foreground);
+    }
+    .zone-row .zone-desc {
+      font-family: 'Golos Text';
+      font-size: 12px;
+      color: var(--muted-foreground);
+      line-height: 1.4;
+      margin-top: 2px;
+    }
+    .sheet-method {
+      background: var(--primary-soft);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-family: 'Golos Text';
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--foreground);
+      margin-top: 4px;
+    }
+    .sheet-disclaimer {
+      font-family: 'Golos Text';
+      font-size: 10px;
+      color: var(--muted-foreground);
+      line-height: 1.4;
+      margin-top: 4px;
+      padding: 6px 0;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .pulse-dot, .p1-hr-num { animation: none; }
       .btn-stop:active { transform: none; }
@@ -798,7 +925,7 @@
                   <span class="p1-hr-num">156</span>
                   <span class="p1-hr-unit">bpm</span>
                 </div>
-                <span class="p1-zone-chip">Zone 3 · Tempo</span>
+                <span class="p1-zone-chip">Высокая · 136–172 bpm</span>
               </div>
               <div class="p1-meta">
                 <div class="p1-meta-cell">
@@ -817,18 +944,100 @@
             </div>
           </div>
 
-          <!-- Zones strip (sticky bottom) -->
+          <!-- Zones mode label (Персонализированные) -->
+          <div class="zones-mode-label">
+            <span>ЗОНЫ · ПЕРСОНАЛИЗИРОВАННЫЕ</span>
+            <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
+          </div>
+
+          <!-- Zones strip (4 zones — без Very Light per methods) -->
           <div class="zones-strip">
-            <div class="zone-cell"><span class="z-lbl">Z1</span><span class="z-pct">3%</span></div>
-            <div class="zone-cell"><span class="z-lbl">Z2</span><span class="z-pct">28%</span></div>
-            <div class="zone-cell active" aria-label="Зона 3 активная — 52 процента времени"><span class="z-lbl">Z3</span><span class="z-pct">52%</span></div>
-            <div class="zone-cell"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
-            <div class="zone-cell"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
+            <div class="zone-cell active" aria-label="Высокая зона активная — 52 процента"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
           </div>
 
           <!-- Stop FAB — thumb-zone (Nike Run pattern) -->
           <span class="btn-stop-fab-hint">Удерживай для остановки</span>
           <button class="btn-stop-fab" aria-label="Остановить тренировку — удерживай для подтверждения">
+            <span class="stop-inner" aria-hidden="true"></span>
+          </button>
+        </section>
+      </div>
+
+
+      <!-- =========================================== -->
+      <!-- PAGE 1 vTemp — Зоны в Предварительном режиме-->
+      <!-- =========================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>PAGE 1 · vTemp</strong> · Зоны · Предварительные (первые 7 дней)</div>
+
+        <section class="device-frame" aria-label="Активная тренировка — предварительные зоны">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <div class="app-bar-active">
+            <div class="left">
+              <span class="pulse-dot" aria-hidden="true"></span>
+              <span class="session-label">Бег</span>
+              <span class="session-timer">00:12:43</span>
+            </div>
+            <button class="icon-btn" aria-label="Свернуть" style="width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; color:var(--muted-foreground); cursor:pointer;">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14L14 4M14 14L4 4"/></svg>
+            </button>
+          </div>
+
+          <div class="pagination">
+            <div class="dots" role="tablist" aria-label="Свайп между страницами">
+              <span class="dot active" role="tab" aria-selected="true" aria-label="Страница 1 — Зоны"></span>
+              <span class="dot" role="tab" aria-selected="false" aria-label="Страница 2 — Детали"></span>
+              <span class="dot" role="tab" aria-selected="false" aria-label="Страница 3 — Карта"></span>
+            </div>
+            <div class="page-label"><span>1 / 3</span><span class="sep">·</span><span>Зоны</span></div>
+          </div>
+
+          <div class="page-content">
+            <div class="p1-body">
+              <div class="p1-hero">
+                <span class="eyebrow">Пульс</span>
+                <div style="display:flex; align-items:baseline;">
+                  <span class="p1-hr-num">156</span>
+                  <span class="p1-hr-unit">bpm</span>
+                </div>
+                <span class="p1-zone-chip">Высокая · 143–177 bpm</span>
+              </div>
+              <div class="p1-meta">
+                <div class="p1-meta-cell"><span class="v">2.34</span><span class="l">км</span></div>
+                <div class="p1-meta-cell"><span class="v">5:24</span><span class="l">мин/км</span></div>
+                <div class="p1-meta-cell"><span class="v">186</span><span class="l">ккал</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zones mode label — Предварительные (temp mode) -->
+          <div class="zones-mode-label warn">
+            <span>ⓘ ЗОНЫ · ПРЕДВАРИТЕЛЬНЫЕ · 4 ДНЯ ДО ПЕРСОНАЛИЗАЦИИ</span>
+            <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
+          </div>
+
+          <div class="zones-strip">
+            <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">18%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">32%</span></div>
+            <div class="zone-cell active"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">48%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">2%</span></div>
+          </div>
+
+          <span class="btn-stop-fab-hint">Удерживай для остановки</span>
+          <button class="btn-stop-fab" aria-label="Остановить тренировку">
             <span class="stop-inner" aria-hidden="true"></span>
           </button>
         </section>
@@ -928,15 +1137,19 @@
                 </svg>
                 <div class="p3-spark-axis">
                   <div class="p3-spark-axis-cell">
-                    <span class="l">Текущий</span>
-                    <span class="v" style="color:var(--primary);">5:24</span>
+                    <span class="l">Текущий км</span>
+                    <span class="v" style="color:var(--primary); display:flex; align-items:baseline; gap:4px;">
+                      5:24
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="var(--success)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8V2M2 5l3-3 3 3"/></svg>
+                    </span>
+                    <span class="mono" style="font-size:9px; color:var(--muted-foreground); letter-spacing:0.06em; margin-top:2px;">10 сек avg</span>
                   </div>
                   <div class="p3-spark-axis-cell">
-                    <span class="l">Средний</span>
+                    <span class="l">Средний км</span>
                     <span class="v">5:38</span>
                   </div>
                   <div class="p3-spark-axis-cell">
-                    <span class="l">Лучший</span>
+                    <span class="l">Лучший км</span>
                     <span class="v">5:12</span>
                   </div>
                 </div>
@@ -951,12 +1164,15 @@
                 <div class="p3-split-row">
                   <span class="km">КМ 1</span>
                   <span class="time">5:38</span>
-                  <span class="delta" style="color:var(--muted-foreground);">личная норма</span>
+                  <span class="delta" style="color:var(--muted-foreground);">HR 142 · разминка</span>
                 </div>
-                <div class="p3-split-row">
-                  <span class="km">КМ 2</span>
-                  <span class="time">5:18</span>
-                  <span class="delta faster">−0:20 быстрее</span>
+                <div class="p3-split-row" style="background: var(--primary-soft); border-radius: 8px; padding: 6px 8px; margin: 2px -8px;">
+                  <span class="km" style="color:var(--primary);">КМ 2</span>
+                  <span class="time" style="color:var(--primary);">5:18</span>
+                  <span class="delta" style="display:flex; align-items:center; gap:6px; color:var(--primary); font-weight:600;">
+                    <span style="font-family:'JetBrains Mono'; font-size:11px;">HR 156</span>
+                    <span style="background:var(--primary); color:#fff; padding:2px 8px; border-radius:9999px; font-family:'Golos Text'; font-size:10px; font-weight:600; letter-spacing:0.02em;">⭐ Лучший км</span>
+                  </span>
                 </div>
                 <div class="p3-split-row" style="opacity:0.45;">
                   <span class="km">КМ 3</span>
@@ -969,12 +1185,15 @@
           </div>
 
           <!-- Zones strip (consistency) -->
+          <div class="zones-mode-label">
+            <span>ЗОНЫ · ПЕРСОНАЛИЗИРОВАННЫЕ</span>
+            <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
+          </div>
           <div class="zones-strip">
-            <div class="zone-cell"><span class="z-lbl">Z1</span><span class="z-pct">3%</span></div>
-            <div class="zone-cell"><span class="z-lbl">Z2</span><span class="z-pct">28%</span></div>
-            <div class="zone-cell active"><span class="z-lbl">Z3</span><span class="z-pct">52%</span></div>
-            <div class="zone-cell"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
-            <div class="zone-cell"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
+            <div class="zone-cell active" aria-label="Высокая зона активная"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
           </div>
 
           <!-- Stop FAB — thumb-zone (Nike Run pattern) -->
@@ -1077,12 +1296,15 @@
           </div>
 
           <!-- Zones strip (consistency) -->
+          <div class="zones-mode-label">
+            <span>ЗОНЫ · ПЕРСОНАЛИЗИРОВАННЫЕ</span>
+            <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
+          </div>
           <div class="zones-strip">
-            <div class="zone-cell"><span class="z-lbl">Z1</span><span class="z-pct">3%</span></div>
-            <div class="zone-cell"><span class="z-lbl">Z2</span><span class="z-pct">28%</span></div>
-            <div class="zone-cell active"><span class="z-lbl">Z3</span><span class="z-pct">52%</span></div>
-            <div class="zone-cell"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
-            <div class="zone-cell"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
+            <div class="zone-cell active" aria-label="Высокая зона активная"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
           </div>
 
           <!-- Stop FAB — thumb-zone (Nike Run pattern) -->
@@ -1090,6 +1312,88 @@
           <button class="btn-stop-fab" aria-label="Остановить тренировку — удерживай для подтверждения">
             <span class="stop-inner" aria-hidden="true"></span>
           </button>
+        </section>
+      </div>
+
+
+      <!-- =========================================== -->
+      <!-- EXPLAINER MODAL — Как рассчитываются зоны   -->
+      <!-- =========================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>MODAL</strong> · Как рассчитываются пульсовые зоны</div>
+
+        <section class="device-frame" aria-label="Модалка объяснения пульсовых зон">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <!-- Blurred background PAGE 1 preview -->
+          <div style="position:absolute; inset:0; top:44px; background:#fafaf9; opacity:0.35; filter:blur(3px);"></div>
+
+          <div class="sheet-backdrop"></div>
+
+          <div class="sheet">
+            <div class="sheet-handle" aria-hidden="true"></div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; padding-bottom:8px;">
+              <div class="sheet-title">Как считаются зоны</div>
+              <button class="sheet-close" aria-label="Закрыть">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+              </button>
+            </div>
+
+            <!-- Метод -->
+            <div class="sheet-method">
+              Сначала оцениваем ваш <b>максимальный пульс</b> по возрасту (формула Gellish). Через 7 дней ношения переходим на персонализацию — считаем от вашего <b>индивидуального резерва ЧСС</b> (HRR = максимальный − покой). Это точнее.
+            </div>
+
+            <!-- 4 zones -->
+            <div style="margin-top:8px;">
+              <div class="zone-row">
+                <div class="zone-emoji">🚶</div>
+                <div class="zone-info">
+                  <div class="zone-name">Лёгкая</div>
+                  <div class="zone-desc">Разминка, спокойная ходьба, восстановление. Дыхание почти свободное.</div>
+                </div>
+              </div>
+              <div class="zone-row">
+                <div class="zone-emoji" style="background:var(--success-soft, #f0f7e1);">🏃</div>
+                <div class="zone-info">
+                  <div class="zone-name">Умеренная <span style="font-size:11px; color:var(--success); font-weight:600; margin-left:4px;">целевая wellness-зона</span></div>
+                  <div class="zone-desc">Быстрая ходьба, лёгкий бег, аэробная нагрузка. Можно говорить, но с усилием.</div>
+                </div>
+              </div>
+              <div class="zone-row">
+                <div class="zone-emoji" style="background:#fdf3e1;">🔥</div>
+                <div class="zone-info">
+                  <div class="zone-name">Высокая</div>
+                  <div class="zone-desc">Интенсивный бег, интервалы, подъёмы. Говорить сложно, дыхание учащается.</div>
+                </div>
+              </div>
+              <div class="zone-row">
+                <div class="zone-emoji" style="background:#fef2f2;">⚡</div>
+                <div class="zone-info">
+                  <div class="zone-name">Пиковая</div>
+                  <div class="zone-desc">Короткие максимальные усилия. Не стоит делать основной целью без подготовки.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sheet-disclaimer">
+              Зоны — ориентировочные диапазоны нагрузки. Они не заменяют клиническую диагностику VO₂max или лактатных порогов.
+            </div>
+
+            <button class="btn-hero" style="margin-top:8px; height:52px; font-size:17px; width:100%; border-radius:14px; background:var(--primary); color:#fff; border:none; font-family:'Golos Text'; font-weight:700;">
+              Понятно
+            </button>
+          </div>
         </section>
       </div>
 
