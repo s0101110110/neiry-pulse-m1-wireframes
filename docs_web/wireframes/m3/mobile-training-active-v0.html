@@ -158,13 +158,53 @@
       outline-offset: 2px;
     }
 
-    /* Stop FAB — thumb-zone bottom-center (Nike Run pattern) */
+    /* Training bottom bar — sticky bottom с AVG · STOP · MAX */
+    .training-bottom-bar {
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px 20px;
+      background: #fafaf9;
+      border-top: 1px solid var(--border);
+    }
+    .hr-summary-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .hr-summary-cell .lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .hr-summary-cell .val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--foreground);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .hr-summary-cell.max .val { color: var(--destructive); }
+    .hr-summary-cell .unit {
+      font-family: 'Golos Text', sans-serif;
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      letter-spacing: 0.04em;
+    }
+
+    /* Stop FAB — теперь inline в bottom-bar */
     .btn-stop-fab {
-      position: absolute;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 72px; height: 72px;
+      position: relative;
+      width: 68px; height: 68px;
       border-radius: 50%;
       background: var(--primary);
       color: #fff;
@@ -176,33 +216,14 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 30;
-      transition: transform 140ms ease-out, box-shadow 140ms ease;
+      transition: transform 140ms ease-out;
     }
-    .btn-stop-fab:hover { transform: translateX(-50%) scale(1.04); }
-    .btn-stop-fab:active { transform: translateX(-50%) scale(0.94); }
+    .btn-stop-fab:hover { transform: scale(1.04); }
+    .btn-stop-fab:active { transform: scale(0.94); }
     .btn-stop-fab .stop-inner {
-      width: 26px; height: 26px;
+      width: 24px; height: 24px;
       background: #fff;
-      border-radius: 6px;
-    }
-    .btn-stop-fab-hint {
-      position: absolute;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted-foreground);
-      background: rgba(255, 255, 255, 0.92);
-      padding: 3px 10px;
-      border-radius: 8px;
-      backdrop-filter: blur(4px);
-      z-index: 30;
-      white-space: nowrap;
+      border-radius: 5px;
     }
 
     /* Pagination dots */
@@ -917,6 +938,20 @@
           </div>
 
           <!-- Page 1 content -->
+          <div class="zones-mode-label">
+            <span>ЗОНЫ · ПЕРСОНАЛИЗИРОВАННЫЕ</span>
+            <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
+          </div>
+
+          <!-- Zones strip (4 zones — без Very Light per methods) -->
+          <div class="zones-strip">
+            <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
+            <div class="zone-cell active" aria-label="Высокая зона активная — 52 процента"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
+          </div>
+
+          <!-- Zones mode label (Персонализированные) -->
           <div class="page-content">
             <div class="p1-body">
               <div class="p1-hero">
@@ -942,20 +977,6 @@
                 </div>
               </div>
             </div>
-          </div>
-
-          <!-- Zones mode label (Персонализированные) -->
-          <div class="zones-mode-label">
-            <span>ЗОНЫ · ПЕРСОНАЛИЗИРОВАННЫЕ</span>
-            <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
-          </div>
-
-          <!-- Zones strip (4 zones — без Very Light per methods) -->
-          <div class="zones-strip">
-            <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
-            <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
-            <div class="zone-cell active" aria-label="Высокая зона активная — 52 процента"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
-            <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
           </div>
 
           <!-- Stop FAB — thumb-zone (Nike Run pattern) -->
@@ -1036,10 +1057,22 @@
             <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">2%</span></div>
           </div>
 
-          <span class="btn-stop-fab-hint">Удерживай для остановки</span>
-          <button class="btn-stop-fab" aria-label="Остановить тренировку">
-            <span class="stop-inner" aria-hidden="true"></span>
-          </button>
+          <!-- Bottom bar: AVG · STOP · MAX (Nike Run pattern · thumb-zone) -->
+          <div class="training-bottom-bar">
+            <div class="hr-summary-cell">
+              <span class="lbl">AVG HR</span>
+              <span class="val">148</span>
+              <span class="unit">bpm</span>
+            </div>
+            <button class="btn-stop-fab" aria-label="Остановить тренировку — удерживай для подтверждения">
+              <span class="stop-inner" aria-hidden="true"></span>
+            </button>
+            <div class="hr-summary-cell max">
+              <span class="lbl">MAX HR</span>
+              <span class="val">172</span>
+              <span class="unit">bpm</span>
+            </div>
+          </div>
         </section>
       </div>
 
@@ -1083,6 +1116,18 @@
             <div class="page-label"><span>2 / 3</span><span class="sep">·</span><span>Детали</span></div>
           </div>
 
+          <div class="zones-mode-label">
+            <span>ЗОНЫ · ПЕРСОНАЛИЗИРОВАННЫЕ</span>
+            <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
+          </div>
+          <div class="zones-strip">
+            <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
+            <div class="zone-cell active" aria-label="Высокая зона активная"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
+          </div>
+
+          <!-- Zones strip (consistency) -->
           <div class="page-content">
             <div class="p3-body">
 
@@ -1121,7 +1166,6 @@
               <div class="p3-card">
                 <div style="display:flex; align-items:center; justify-content:space-between;">
                   <span class="eyebrow">Темп по минутам</span>
-                  <span class="mono" style="font-size:10px; color:var(--success); letter-spacing:0.06em; font-weight:600;">тренд ↑</span>
                 </div>
                 <svg class="p3-spark" viewBox="0 0 300 56" preserveAspectRatio="none">
                   <!-- Area under curve -->
@@ -1184,18 +1228,6 @@
             </div>
           </div>
 
-          <!-- Zones strip (consistency) -->
-          <div class="zones-mode-label">
-            <span>ЗОНЫ · ПЕРСОНАЛИЗИРОВАННЫЕ</span>
-            <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
-          </div>
-          <div class="zones-strip">
-            <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
-            <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
-            <div class="zone-cell active" aria-label="Высокая зона активная"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
-            <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
-          </div>
-
           <!-- Stop FAB — thumb-zone (Nike Run pattern) -->
           <span class="btn-stop-fab-hint">Удерживай для остановки</span>
           <button class="btn-stop-fab" aria-label="Остановить тренировку — удерживай для подтверждения">
@@ -1244,6 +1276,18 @@
             <div class="page-label"><span>3 / 3</span><span class="sep">·</span><span>Карта</span></div>
           </div>
 
+          <div class="zones-mode-label">
+            <span>ЗОНЫ · ПЕРСОНАЛИЗИРОВАННЫЕ</span>
+            <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
+          </div>
+          <div class="zones-strip">
+            <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
+            <div class="zone-cell active" aria-label="Высокая зона активная"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
+            <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
+          </div>
+
+          <!-- Zones strip (consistency) -->
           <div class="page-content">
             <div class="p2-map" role="img" aria-label="Карта маршрута бега, пройдено 2,34 км">
 
@@ -1293,18 +1337,6 @@
                 <span class="l">bpm</span>
               </div>
             </div>
-          </div>
-
-          <!-- Zones strip (consistency) -->
-          <div class="zones-mode-label">
-            <span>ЗОНЫ · ПЕРСОНАЛИЗИРОВАННЫЕ</span>
-            <button class="info-btn" aria-label="Как рассчитываются зоны">ⓘ</button>
-          </div>
-          <div class="zones-strip">
-            <div class="zone-cell"><span class="z-lbl long">ЛЁГКАЯ</span><span class="z-pct">15%</span></div>
-            <div class="zone-cell"><span class="z-lbl long">УМЕРЕН.</span><span class="z-pct">30%</span></div>
-            <div class="zone-cell active" aria-label="Высокая зона активная"><span class="z-lbl long">ВЫСОКАЯ</span><span class="z-pct">52%</span></div>
-            <div class="zone-cell"><span class="z-lbl long">ПИКОВАЯ</span><span class="z-pct">3%</span></div>
           </div>
 
           <!-- Stop FAB — thumb-zone (Nike Run pattern) -->
