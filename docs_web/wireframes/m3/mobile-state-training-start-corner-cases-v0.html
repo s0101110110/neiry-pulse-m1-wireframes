@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulse · Mobile Training Start · Corner cases (Pulse timeout · Battery low · BT disconnect · GPS not found) · v0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --background: #f7f5ef;
+      --foreground: #0c0a09;
+      --card: #ffffff;
+      --card-warm: #faf8f3;
+      --muted: #f1ede4;
+      --muted-foreground: #78716c;
+      --border: #e8e4d8;
+      --border-strong: #d4cfc0;
+      --primary: #831843;
+      --primary-foreground: #ffffff;
+      --primary-soft: #fdf2f8;
+      --success: #65a30d;
+      --success-soft: #f0f7e1;
+      --warning: #d97706;
+      --warning-soft: #fdf3e1;
+      --warning-border: #f5d9a8;
+      --destructive: #b91c1c;
+      --destructive-soft: #fef2f2;
+      --destructive-border: #f8caca;
+    }
+
+    html, body {
+      background: var(--background);
+      color: var(--foreground);
+      font-family: 'Golos Text', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      margin: 0;
+    }
+
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+    /* Device frame */
+    .device-frame {
+      width: 390px; height: 844px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 10px #1a1814,
+        0 0 0 11px #2a2620,
+        0 24px 60px -12px rgba(12, 10, 9, 0.25),
+        0 8px 24px -8px rgba(12, 10, 9, 0.12);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .device-notch {
+      position: absolute; top: 8px; left: 50%;
+      transform: translateX(-50%);
+      width: 110px; height: 28px;
+      background: #1a1814;
+      border-radius: 16px;
+      z-index: 20;
+    }
+    .status-bar {
+      flex-shrink: 0;
+      height: 44px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      background: var(--card);
+    }
+    .app-bar {
+      flex-shrink: 0;
+      height: 48px;
+      padding: 0 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--card);
+    }
+    .app-bar-title {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+    }
+    .step-body {
+      flex: 1; min-height: 0; overflow-y: auto;
+      background: var(--background);
+      display: flex; flex-direction: column;
+      padding: 16px 20px 24px 20px;
+      gap: 12px;
+    }
+    .step-body::-webkit-scrollbar { display: none; }
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .icon-btn {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: none;
+    }
+    .icon-btn:hover { background: var(--muted); }
+
+    .confirm-card {
+      background: var(--card-warm);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .activity-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--foreground);
+    }
+    .activity-icon.selected {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    /* Alert card — used for problem states */
+    .alert-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .alert-card.warn {
+      background: var(--warning-soft);
+      border-color: var(--warning-border);
+    }
+    .alert-card.error {
+      background: var(--destructive-soft);
+      border-color: var(--destructive-border);
+    }
+    .alert-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .alert-icon.warn { background: var(--warning); color: white; }
+    .alert-icon.error { background: var(--destructive); color: white; }
+
+    .alert-title {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+    }
+    .alert-desc {
+      font-family: 'Golos Text', sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--muted-foreground);
+    }
+
+    /* Buttons */
+    .btn-hero {
+      height: 56px; width: 100%;
+      border-radius: 14px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700; font-size: 17px;
+      letter-spacing: 0.02em;
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; border: none; cursor: pointer;
+    }
+    .btn-hero:hover { background: #6b1238; }
+    .btn-hero.secondary {
+      background: var(--card);
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+    }
+    .btn-hero.disabled {
+      background: var(--border-strong);
+      color: var(--muted-foreground);
+      pointer-events: none;
+    }
+    .btn-secondary {
+      height: 44px; width: 100%;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600; font-size: 14px;
+      cursor: pointer;
+    }
+    .btn-ghost {
+      height: 44px; width: 100%;
+      background: transparent;
+      color: var(--muted-foreground);
+      border: none;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 500; font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* Battery visual */
+    .battery-vis {
+      width: 100px; height: 44px;
+      border: 3px solid var(--foreground);
+      border-radius: 8px;
+      position: relative;
+      display: flex; align-items: center;
+      padding: 3px;
+    }
+    .battery-vis::after {
+      content: '';
+      position: absolute;
+      right: -8px; top: 12px;
+      width: 5px; height: 16px;
+      background: var(--foreground);
+      border-radius: 0 2px 2px 0;
+    }
+    .battery-vis .fill {
+      width: 12%;
+      height: 100%;
+      background: var(--destructive);
+      border-radius: 3px;
+    }
+
+    /* Page chrome */
+    .page-chrome {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px 16px;
+      gap: 24px;
+    }
+    .page-title {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+    .frames-row {
+      display: flex;
+      gap: 56px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .frame-with-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .frame-caption {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+    .frame-caption strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <main class="page-chrome">
+    <div class="page-title">Pulse · Mobile Training Start · Corner cases · v0 · 4 frames · 390×844</div>
+
+    <div class="frames-row">
+
+      <!-- ============================================== -->
+      <!-- CASE 1 · PULSE ACQUISITION TIMEOUT             -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>CASE 1</strong> · PULSE TIMEOUT · 10+ SEC</div>
+        <section class="device-frame" aria-label="Не удаётся поймать пульс с браслета">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <div class="app-bar">
+            <button class="icon-btn"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#0c0a09" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l-6 6 6 6"/></svg></button>
+            <span class="app-bar-title">Подготовка</span>
+            <span class="w-9 h-9"></span>
+          </div>
+
+          <div class="step-body">
+            <div class="confirm-card">
+              <div class="activity-icon selected">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M5 21l3-5 3 1 1-4 3 3-1 5"/><path d="M8 12l3-3 3 3"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-family:'Golos Text'; font-weight:600; font-size:18px; line-height:1.1;">Бег</div>
+                <div class="eyebrow" style="margin-top:2px;">Активность</div>
+              </div>
+            </div>
+
+            <!-- Warning alert -->
+            <div class="alert-card warn">
+              <div style="display:flex; gap:12px; align-items:flex-start;">
+                <div class="alert-icon warn">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 9v4M12 17h.01"/>
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  </svg>
+                </div>
+                <div style="flex:1;">
+                  <div class="alert-title">Не удаётся поймать пульс</div>
+                  <div class="alert-desc" style="margin-top:4px;">
+                    Браслет не передаёт сигнал уже 15 секунд. Проверь, надет ли он и подключён по Bluetooth.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
+                <button class="btn-hero secondary" style="height:44px; font-size:15px;">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a7 7 0 1 1 2 5"/><path d="M2 15v-5h5"/></svg>
+                  Повторить поиск
+                </button>
+                <button class="btn-ghost">
+                  Продолжить без браслета →
+                </button>
+              </div>
+            </div>
+
+            <div style="flex:1;"></div>
+
+            <button class="btn-hero disabled" aria-disabled="true">
+              Начать тренировку
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CASE 2 · BATTERY LOW ON BRACELET               -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>CASE 2</strong> · BATTERY LOW · 12%</div>
+        <section class="device-frame" aria-label="Заряд браслета критически низкий">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <div class="app-bar">
+            <button class="icon-btn"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#0c0a09" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l-6 6 6 6"/></svg></button>
+            <span class="app-bar-title">Подготовка</span>
+            <span class="w-9 h-9"></span>
+          </div>
+
+          <div class="step-body">
+            <div class="confirm-card">
+              <div class="activity-icon selected">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M5 21l3-5 3 1 1-4 3 3-1 5"/><path d="M8 12l3-3 3 3"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-family:'Golos Text'; font-weight:600; font-size:18px; line-height:1.1;">Бег</div>
+                <div class="eyebrow" style="margin-top:2px;">Активность</div>
+              </div>
+            </div>
+
+            <div class="alert-card warn">
+              <div style="display:flex; gap:12px; align-items:center;">
+                <div class="battery-vis">
+                  <div class="fill"></div>
+                </div>
+                <div style="flex:1;">
+                  <div class="alert-title" style="color:var(--warning-strong, #b45309);">Заряд браслета 12%</div>
+                  <div class="alert-desc" style="margin-top:2px;">
+                    Хватит на 40–50 минут тренировки
+                  </div>
+                </div>
+              </div>
+
+              <div class="alert-desc" style="padding:12px; background: rgba(255,255,255,0.6); border-radius: 10px; font-size:13px;">
+                <b style="color:var(--foreground);">Рекомендуем зарядить</b> перед долгой тренировкой. Для короткой (до 40 мин) — можно начать.
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <button class="btn-hero" style="height:48px; font-size:16px;">
+                  Всё равно начать
+                </button>
+                <button class="btn-ghost">
+                  Отменить и зарядить
+                </button>
+              </div>
+            </div>
+
+            <div style="flex:1;"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CASE 3 · BT DISCONNECT DURING SETUP            -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>CASE 3</strong> · BT DISCONNECT · SETUP</div>
+        <section class="device-frame" aria-label="Браслет отключился во время подготовки">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <div class="app-bar">
+            <button class="icon-btn"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#0c0a09" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l-6 6 6 6"/></svg></button>
+            <span class="app-bar-title">Подготовка</span>
+            <span class="w-9 h-9"></span>
+          </div>
+
+          <div class="step-body">
+            <div class="confirm-card">
+              <div class="activity-icon selected">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M5 21l3-5 3 1 1-4 3 3-1 5"/><path d="M8 12l3-3 3 3"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-family:'Golos Text'; font-weight:600; font-size:18px; line-height:1.1;">Бег</div>
+                <div class="eyebrow" style="margin-top:2px;">Активность</div>
+              </div>
+            </div>
+
+            <div class="alert-card error">
+              <div style="display:flex; gap:12px; align-items:flex-start;">
+                <div class="alert-icon error">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6.5 6.5l11 11"/><path d="M6.5 17.5l11-11"/>
+                    <rect x="7" y="4" width="10" height="16" rx="2"/>
+                  </svg>
+                </div>
+                <div style="flex:1;">
+                  <div class="alert-title">Браслет отключился</div>
+                  <div class="alert-desc" style="margin-top:4px;">
+                    Bluetooth-соединение прервано. Проверь браслет на руке и убедись что он в зоне 10 метров.
+                  </div>
+                </div>
+              </div>
+
+              <div style="background:rgba(255,255,255,0.7); border-radius:10px; padding:12px; display:flex; gap:10px; align-items:center;">
+                <div style="width:8px; height:8px; border-radius:50%; background:var(--warning); animation: bt-pulse 1.4s ease-in-out infinite;"></div>
+                <span class="mono" style="font-size:12px; color:var(--foreground);">Переподключаем…</span>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <button class="btn-hero" style="height:48px; font-size:16px;">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a7 7 0 1 1 2 5"/><path d="M2 15v-5h5"/></svg>
+                  Подключить заново
+                </button>
+                <button class="btn-ghost">
+                  Продолжить без браслета →
+                </button>
+              </div>
+            </div>
+
+            <style>@keyframes bt-pulse{0%,100%{opacity:1}50%{opacity:0.3}}</style>
+
+            <div style="flex:1;"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CASE 4 · GPS NOT FOUND (INDOOR)                -->
+      <!-- ============================================== -->
+      <div class="frame-with-caption">
+        <div class="frame-caption"><strong>CASE 4</strong> · GPS NOT FOUND · INDOOR</div>
+        <section class="device-frame" aria-label="GPS не найден — надо на улицу">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="status-bar" aria-hidden="true">
+            <span class="num">9:41</span>
+            <div class="flex items-center gap-1.5">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4.5C5 1 11 1 15 4.5M3.5 7C6 5 10 5 12.5 7M6 9.5C7 8.7 9 8.7 10 9.5"/></svg>
+              <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="1.2" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="0.8" fill="currentColor" opacity="0.4"/></svg>
+            </div>
+          </div>
+
+          <div class="app-bar">
+            <button class="icon-btn"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#0c0a09" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l-6 6 6 6"/></svg></button>
+            <span class="app-bar-title">Подготовка</span>
+            <span class="w-9 h-9"></span>
+          </div>
+
+          <div class="step-body">
+            <div class="confirm-card">
+              <div class="activity-icon selected">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M5 21l3-5 3 1 1-4 3 3-1 5"/><path d="M8 12l3-3 3 3"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-family:'Golos Text'; font-weight:600; font-size:18px; line-height:1.1;">Бег</div>
+                <div class="eyebrow" style="margin-top:2px;">Активность</div>
+              </div>
+            </div>
+
+            <div class="alert-card warn">
+              <div style="display:flex; gap:12px; align-items:flex-start;">
+                <div class="alert-icon warn">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 18.5s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/>
+                    <circle cx="12" cy="8.5" r="2.4"/>
+                  </svg>
+                </div>
+                <div style="flex:1;">
+                  <div class="alert-title">GPS не найден</div>
+                  <div class="alert-desc" style="margin-top:4px;">
+                    Похоже, ты в помещении или под навесом. Для точного трека нужно открытое небо.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Options -->
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="padding:12px 14px; background:rgba(255,255,255,0.7); border-radius:10px; display:flex; gap:10px; align-items:center;">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--foreground)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v3M9 13v3M2 9h3M13 9h3M4 4l2 2M12 12l2 2M4 14l2-2M12 6l2-2"/></svg>
+                  <span style="font-family:'Golos Text'; font-size:13px;">Выйди на улицу — попробуем снова</span>
+                </div>
+                <div style="padding:12px 14px; background:rgba(255,255,255,0.7); border-radius:10px; display:flex; gap:10px; align-items:center;">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--foreground)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="12" height="12" rx="2"/><path d="M7 3v12M3 7h12"/></svg>
+                  <span style="font-family:'Golos Text'; font-size:13px;">Или запиши без карты — пульс и время</span>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <button class="btn-hero" style="height:48px; font-size:16px;">
+                  Начать без GPS
+                </button>
+                <button class="btn-ghost">
+                  Отменить старт
+                </button>
+              </div>
+            </div>
+
+            <div style="flex:1;"></div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

@@ -42,7 +42,14 @@
 |---|---|---|---|---|
 | `1:11` | 01-home 1 | mobile-home-f1-v0.html | single-frame | — |
 | `1:12` | 02a-training-start-step1 1 | mobile-training-start-v0.html | STEP 1 · Выбор типа активности | — |
-| `1:13` | 02b-training-start-step2 1 | mobile-training-start-v0.html | STEP 2 · Preview + СТАРТ | — |
+| `1:13` | 02b-training-start-step2 1 | mobile-training-start-v0.html | STEP 2 · SEARCHING · Ловим сигнал (updated 01.07) | — |
+| `216:2` | 02b-training-start-step2-ready 1 | mobile-training-start-v0.html | STEP 2 · READY · Пульс найден, СТАРТ | — |
+| `216:3` | 02c-training-start-goal-time 1 | mobile-training-start-v0.html | STEP 2 · GOAL · TIME · Ввод времени | — |
+| `216:4` | 02c-training-start-goal-distance 1 | mobile-training-start-v0.html | STEP 2 · GOAL · DISTANCE · Ввод дистанции | — |
+| `216:5` | 02d-state-training-start-pulse-timeout 1 | mobile-state-training-start-corner-cases-v0.html | CASE 1 · PULSE TIMEOUT | — |
+| `216:6` | 02d-state-training-start-battery-low 1 | mobile-state-training-start-corner-cases-v0.html | CASE 2 · BATTERY LOW | — |
+| `216:7` | 02d-state-training-start-bt-disconnect 1 | mobile-state-training-start-corner-cases-v0.html | CASE 3 · BT DISCONNECT · SETUP | — |
+| `216:8` | 02d-state-training-start-gps-not-found 1 | mobile-state-training-start-corner-cases-v0.html | CASE 4 · GPS NOT FOUND · INDOOR | — |
 | `1:14` | 03a-training-active-page1-zones 1 | mobile-training-active-v0.html | PAGE 1 · Зоны / Пульс | — |
 | `1:15` | 03b-training-active-page2-details 1 | mobile-training-active-v0.html | PAGE 2 · Детали сессии | — |
 | `1:16` | 03c-training-active-page3-map 1 | mobile-training-active-v0.html | PAGE 3 · GPS Карта | — |

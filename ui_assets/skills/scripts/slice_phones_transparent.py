@@ -101,13 +101,32 @@ def shoot_transparent(html_path, png_path, w=460, h=920):
            f"file://{html_path}"]
     subprocess.run(cmd, capture_output=True, timeout=30)
 
-# Training Start
+# Training Start — 5 frames: step1, step2-searching, step2-ready, goal-time, goal-distance
 src = f"{SRC_DIR}/mobile-training-start-v0.html"
-slice_clean(src, 0, 2, "frame-with-caption", f"{OUT_DIR}/ts-1.html")
-shoot_transparent(f"{OUT_DIR}/ts-1.html", f"{DEST}/02a-training-start-step1.png")
-slice_clean(src, 1, 2, "frame-with-caption", f"{OUT_DIR}/ts-2.html")
-shoot_transparent(f"{OUT_DIR}/ts-2.html", f"{DEST}/02b-training-start-step2.png")
-print("Training Start: done")
+ts_frames = [
+    (0, "02a-training-start-step1"),
+    (1, "02b-training-start-step2-searching"),
+    (2, "02b-training-start-step2"),  # ready — replaces old 02b PNG (existing name)
+    (3, "02c-training-start-goal-time"),
+    (4, "02c-training-start-goal-distance"),
+]
+for idx, out_name in ts_frames:
+    slice_clean(src, idx, 5, "frame-with-caption", f"{OUT_DIR}/ts-{idx}.html")
+    shoot_transparent(f"{OUT_DIR}/ts-{idx}.html", f"{DEST}/{out_name}.png")
+print("Training Start (5 frames): done")
+
+# Training Start · Corner cases — 4 frames: pulse timeout, battery low, BT disconnect, GPS not found
+src = f"{SRC_DIR}/mobile-state-training-start-corner-cases-v0.html"
+tsc_frames = [
+    (0, "02d-state-training-start-pulse-timeout"),
+    (1, "02d-state-training-start-battery-low"),
+    (2, "02d-state-training-start-bt-disconnect"),
+    (3, "02d-state-training-start-gps-not-found"),
+]
+for idx, out_name in tsc_frames:
+    slice_clean(src, idx, 4, "frame-with-caption", f"{OUT_DIR}/tsc-{idx}.html")
+    shoot_transparent(f"{OUT_DIR}/tsc-{idx}.html", f"{DEST}/{out_name}.png")
+print("Training Start · Corner cases (4 frames): done")
 
 # Training Active
 src = f"{SRC_DIR}/mobile-training-active-v0.html"
