@@ -168,6 +168,26 @@ slice_clean(src, 1, 2, "frame-with-caption", f"{OUT_DIR}/es-2.html")
 shoot_transparent(f"{OUT_DIR}/es-2.html", f"{DEST}/12b-hs-main-empty.png")
 print("Empty States: done")
 
+# Permission Denied — 2 frames: 14a Camera + 14b Location (training-start pulse-hero variant)
+src = f"{SRC_DIR}/mobile-state-permission-denied-v0.html"
+slice_clean(src, 0, 2, "frame-with-caption", f"{OUT_DIR}/pd-1.html")
+shoot_transparent(f"{OUT_DIR}/pd-1.html", f"{DEST}/14a-state-camera-denied.png")
+slice_clean(src, 1, 2, "frame-with-caption", f"{OUT_DIR}/pd-2.html")
+shoot_transparent(f"{OUT_DIR}/pd-2.html", f"{DEST}/14b-state-location-denied.png")
+print("Permission Denied: done")
+
+# Training Active · Corner cases — 3 frames: 15a stop-confirm, 15b auto-pause, 15c gps-lost
+src = f"{SRC_DIR}/mobile-state-training-active-corner-cases-v0.html"
+tacc = [
+    (0, "15a-state-stop-confirm"),
+    (1, "15b-state-auto-pause"),
+    (2, "15c-state-gps-lost"),
+]
+for idx, out_name in tacc:
+    slice_clean(src, idx, 3, "frame-with-caption", f"{OUT_DIR}/tacc-{idx}.html")
+    shoot_transparent(f"{OUT_DIR}/tacc-{idx}.html", f"{DEST}/{out_name}.png")
+print("Training Active · Corner cases (3 frames): done")
+
 # Verify
 for f in sorted(os.listdir(DEST)):
     if not f.endswith('.png'):

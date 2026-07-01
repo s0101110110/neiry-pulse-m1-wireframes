@@ -158,6 +158,53 @@
       outline-offset: 2px;
     }
 
+    /* Stop FAB — thumb-zone bottom-center (Nike Run pattern) */
+    .btn-stop-fab {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      border: 3px solid rgba(255, 255, 255, 0.95);
+      box-shadow:
+        0 10px 24px rgba(131, 24, 67, 0.35),
+        0 4px 8px rgba(0, 0, 0, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 30;
+      transition: transform 140ms ease-out, box-shadow 140ms ease;
+    }
+    .btn-stop-fab:hover { transform: translateX(-50%) scale(1.04); }
+    .btn-stop-fab:active { transform: translateX(-50%) scale(0.94); }
+    .btn-stop-fab .stop-inner {
+      width: 26px; height: 26px;
+      background: #fff;
+      border-radius: 6px;
+    }
+    .btn-stop-fab-hint {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      background: rgba(255, 255, 255, 0.92);
+      padding: 3px 10px;
+      border-radius: 8px;
+      backdrop-filter: blur(4px);
+      z-index: 30;
+      white-space: nowrap;
+    }
+
     /* Pagination dots */
     .pagination {
       flex-shrink: 0;
@@ -727,7 +774,9 @@
               <span class="session-label">Бег</span>
               <span class="session-timer" aria-label="Длительность 12 минут 43 секунды">00:12:43</span>
             </div>
-            <button class="btn-stop" aria-label="Остановить тренировку">СТОП</button>
+            <button class="icon-btn" aria-label="Свернуть — тренировка продолжится в фоне" style="width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; color:var(--muted-foreground); cursor:pointer;">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14L14 4M14 14L4 4"/></svg>
+            </button>
           </div>
 
           <!-- Pagination dots + label -->
@@ -776,6 +825,12 @@
             <div class="zone-cell"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
             <div class="zone-cell"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
           </div>
+
+          <!-- Stop FAB — thumb-zone (Nike Run pattern) -->
+          <span class="btn-stop-fab-hint">Удерживай для остановки</span>
+          <button class="btn-stop-fab" aria-label="Остановить тренировку — удерживай для подтверждения">
+            <span class="stop-inner" aria-hidden="true"></span>
+          </button>
         </section>
       </div>
 
@@ -805,7 +860,9 @@
               <span class="session-label">Бег</span>
               <span class="session-timer">00:12:43</span>
             </div>
-            <button class="btn-stop" aria-label="Остановить тренировку">СТОП</button>
+            <button class="icon-btn" aria-label="Свернуть — тренировка продолжится в фоне" style="width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; color:var(--muted-foreground); cursor:pointer;">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14L14 4M14 14L4 4"/></svg>
+            </button>
           </div>
 
           <div class="pagination">
@@ -919,6 +976,12 @@
             <div class="zone-cell"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
             <div class="zone-cell"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
           </div>
+
+          <!-- Stop FAB — thumb-zone (Nike Run pattern) -->
+          <span class="btn-stop-fab-hint">Удерживай для остановки</span>
+          <button class="btn-stop-fab" aria-label="Остановить тренировку — удерживай для подтверждения">
+            <span class="stop-inner" aria-hidden="true"></span>
+          </button>
         </section>
       </div>
 
@@ -948,7 +1011,9 @@
               <span class="session-label">Бег</span>
               <span class="session-timer">00:12:43</span>
             </div>
-            <button class="btn-stop" aria-label="Остановить тренировку">СТОП</button>
+            <button class="icon-btn" aria-label="Свернуть — тренировка продолжится в фоне" style="width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; color:var(--muted-foreground); cursor:pointer;">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14L14 4M14 14L4 4"/></svg>
+            </button>
           </div>
 
           <div class="pagination">
@@ -1019,6 +1084,12 @@
             <div class="zone-cell"><span class="z-lbl">Z4</span><span class="z-pct">14%</span></div>
             <div class="zone-cell"><span class="z-lbl">Z5</span><span class="z-pct">3%</span></div>
           </div>
+
+          <!-- Stop FAB — thumb-zone (Nike Run pattern) -->
+          <span class="btn-stop-fab-hint">Удерживай для остановки</span>
+          <button class="btn-stop-fab" aria-label="Остановить тренировку — удерживай для подтверждения">
+            <span class="stop-inner" aria-hidden="true"></span>
+          </button>
         </section>
       </div>
 

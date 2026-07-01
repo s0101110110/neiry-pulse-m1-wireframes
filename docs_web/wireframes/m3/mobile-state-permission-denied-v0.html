@@ -609,8 +609,95 @@
       margin-right: 8px;
     }
 
+    /* Pulse Hero — большой live BPM display (matches 02b-ready) */
+    .pulse-hero {
+      position: relative;
+      background: var(--primary-soft);
+      border-radius: 20px;
+      padding: 20px 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      overflow: hidden;
+    }
+    .pulse-hero::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(131, 24, 67, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .pulse-hero .heart-icon {
+      color: var(--primary);
+      z-index: 1;
+      animation: heart-beat 1.4s ease-in-out infinite;
+    }
+    @keyframes heart-beat {
+      0%, 100% { transform: scale(1); }
+      20% { transform: scale(1.15); }
+      40% { transform: scale(1); }
+      60% { transform: scale(1.08); }
+      80% { transform: scale(1); }
+    }
+    .pulse-hero .bpm-num {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-weight: 700;
+      font-size: 64px;
+      letter-spacing: -0.04em;
+      color: var(--foreground);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      z-index: 1;
+    }
+    .pulse-hero .bpm-unit {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      z-index: 1;
+    }
+    .pulse-hero .bracelet-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 9999px;
+      margin-top: 6px;
+      z-index: 1;
+    }
+    .pulse-hero .bracelet-meta .mono {
+      font-size: 11px;
+      color: var(--foreground);
+      font-weight: 500;
+    }
+
+    .btn-outline-wine {
+      width: 100%;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--primary);
+      border: 1px dashed var(--primary);
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .btn:active, .btn-hero:active, .btn-primary-full:active { transform: none; }
+      .heart-icon { animation: none; }
     }
   </style>
 </head>
@@ -796,91 +883,79 @@
               </div>
             </article>
 
-            <!-- 1. Selected activity confirmation card (Бег) -->
-            <div class="confirm-card">
-              <div class="activity-icon" style="background:var(--primary); color:var(--primary-foreground);" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="13" cy="4" r="2"/>
-                  <path d="M5 21l3-5 3 1 1-4 3 3-1 5"/>
-                  <path d="M8 12l3-3 3 3"/>
-                </svg>
+            <!-- Content wrapper — matches training-start step-body layout -->
+            <div style="padding: 16px 20px 24px 20px; display:flex; flex-direction:column; gap:12px; flex:1;">
+
+              <!-- 1. Selected activity confirmation card (Бег) -->
+              <div class="confirm-card">
+                <div class="activity-icon" style="background:var(--primary); color:var(--primary-foreground); width:40px; height:40px; border-radius:10px;" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="13" cy="4" r="2"/>
+                    <path d="M5 21l3-5 3 1 1-4 3 3-1 5"/>
+                    <path d="M8 12l3-3 3 3"/>
+                  </svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-family:'Golos Text'; font-weight:600; font-size:18px; line-height:1.1; letter-spacing:-0.01em;">Бег</div>
+                  <div class="eyebrow" style="margin-top:2px;">Активность</div>
+                </div>
+                <button class="icon-btn" aria-label="Изменить тип активности" style="color:var(--muted-foreground);">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3l4 4-9 9H2v-4l9-9z"/></svg>
+                </button>
               </div>
-              <div style="flex:1;">
-                <div style="font-family:'Golos Text'; font-weight:600; font-size:18px; line-height:1.1; letter-spacing:-0.01em;">Бег</div>
-                <div class="eyebrow" style="margin-top:2px;">Активность</div>
-              </div>
-              <button class="icon-btn" aria-label="Изменить тип активности" style="color:var(--muted-foreground);">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3l4 4-9 9H2v-4l9-9z"/></svg>
+
+              <!-- 2. Задать цель (для консистентности с 02b Ready) -->
+              <button class="btn-outline-wine" aria-label="Задать цель тренировки">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2v10M2 7h10"/></svg>
+                Задать цель тренировки
               </button>
-            </div>
 
-            <!-- 2. Readiness block — GPS row показывает denied state -->
-            <div class="readiness-card">
-              <div style="padding: 10px 0 6px; display:flex; align-items:center; justify-content:space-between;">
-                <span class="eyebrow">Готовность</span>
-                <span class="mono" style="font-size:10px; color:var(--warning-strong); font-weight:600; letter-spacing:0.08em;">БЕЗ GPS</span>
+              <!-- 3. Pulse Hero — Браслет работает даже без GPS -->
+              <div class="pulse-hero">
+                <svg class="heart-icon" width="24" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 21s-7-4.5-9.5-9C1 8.5 3 4 7 4c2 0 4 1.5 5 3 1-1.5 3-3 5-3 4 0 6 4.5 4.5 8-2.5 4.5-9.5 9-9.5 9z"/>
+                </svg>
+                <div class="bpm-num">72</div>
+                <div class="bpm-unit">уд · мин</div>
+                <div class="bracelet-meta">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--foreground)" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="4" width="10" height="6" rx="1.5"/><rect x="2.5" y="5.5" width="6.5" height="3" rx="0.5" fill="var(--success)"/><rect x="11.5" y="5.5" width="1.5" height="3" rx="0.5" fill="var(--foreground)"/></svg>
+                  <span class="mono">Браслет 84% · ~5 ч</span>
+                </div>
               </div>
 
-              <!-- GPS row (denied state) -->
-              <div class="status-row">
-                <div class="status-icon is-warning" aria-hidden="true">
-                  <!-- Location-pin-off (small) -->
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M10 17.5s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/>
-                    <circle cx="10" cy="7.5" r="2.2"/>
+              <!-- 4. Compact status pills — GPS (denied · warn) + HRV (ok) -->
+              <div style="display:flex; gap:8px;">
+                <div style="flex:1; background:var(--warning-soft); border:1px solid var(--warning-border); border-radius:12px; padding:10px 12px; display:flex; align-items:center; gap:8px;">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="var(--warning-strong)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 17.5s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/><circle cx="10" cy="7.5" r="2.2"/>
                     <line x1="3" y1="17" x2="17" y2="3" stroke="currentColor" stroke-width="1.8"/>
                   </svg>
+                  <div style="flex:1;">
+                    <div class="mono" style="font-size:10px; color:var(--warning-strong); letter-spacing:0.08em; text-transform:uppercase;">GPS</div>
+                    <div style="font-family:'Golos Text'; font-weight:600; font-size:13px; color:var(--warning-strong);">Без GPS</div>
+                  </div>
+                  <span class="status-dot warn"></span>
                 </div>
-                <div style="flex:1; min-width:0;">
-                  <div style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.2;">GPS</div>
-                  <div class="mono" style="font-size:11px; color:var(--warning-strong); margin-top:2px;">доступ отключён · indoor режим</div>
+                <div style="flex:1; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 12px; display:flex; align-items:center; gap:8px;">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="var(--foreground)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 11h4l2-5 3 9 2-4h5"/></svg>
+                  <div style="flex:1;">
+                    <div class="mono" style="font-size:10px; color:var(--muted-foreground); letter-spacing:0.08em; text-transform:uppercase;">HRV</div>
+                    <div style="font-family:'Golos Text'; font-weight:600; font-size:13px;">47 ms</div>
+                  </div>
+                  <span class="status-dot ok"></span>
                 </div>
-                <span class="status-dot warn" aria-label="Отключено"></span>
               </div>
 
-              <!-- Браслет row (OK) -->
-              <div class="status-row">
-                <div class="status-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="5" y="3.5" width="10" height="13" rx="3"/>
-                    <path d="M7 2.5h6M7 17.5h6"/>
-                    <circle cx="10" cy="10" r="1.6"/>
-                  </svg>
-                </div>
-                <div style="flex:1; min-width:0;">
-                  <div style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.2;">Браслет</div>
-                  <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">подключён · HR 68</div>
-                </div>
-                <span class="status-dot ok" aria-label="Готово"></span>
-              </div>
+              <div style="flex:1; min-height:8px;"></div>
 
-              <!-- Личная норма HR row -->
-              <div class="status-row" style="padding-bottom:14px;">
-                <div class="status-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 11h4l2-5 3 9 2-4h5"/>
-                  </svg>
-                </div>
-                <div style="flex:1; min-width:0;">
-                  <div style="font-family:'Golos Text'; font-weight:500; font-size:14px; line-height:1.2;">Личная норма HR</div>
-                  <div class="mono" style="font-size:11px; color:var(--muted-foreground); margin-top:2px;">47 ms · сегодня</div>
-                </div>
-                <span class="status-dot ok" aria-label="Готово"></span>
-              </div>
-            </div>
-
-            <!-- Spacer pushes CTA to bottom -->
-            <div style="flex:1; min-height:8px;"></div>
-
-            <!-- 3. Hero START button (active, even without GPS) -->
-            <div style="padding: 16px 20px 20px 20px;">
+              <!-- 5. Hero START button (active, even without GPS) -->
               <button class="btn-hero" aria-label="Начать тренировку без GPS">
                 Начать тренировку
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M6 5l10 6-10 6V5z" fill="currentColor"/>
                 </svg>
               </button>
-              <p style="font-size:12px; line-height:1.45; color:var(--muted-foreground); text-align:center; margin-top:10px;">
+              <p style="font-size:12px; line-height:1.45; color:var(--muted-foreground); text-align:center; margin-top:2px;">
                 HR, длительность и калории запишутся. Маршрут — нет.
               </p>
             </div>
