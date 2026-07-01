@@ -195,6 +195,36 @@ Designer работает в Figma как обычно — изменяет main
 
 ---
 
+## 4a. Pipeline правок из Figma-комментариев
+
+**Когда:** коллеги оставили комментарии в Pulse-file (или другом review-file), нужно применить правки к source и синхронизировать.
+
+**Формат ввода PM → AI:**
+- Figma URL с `node-id` (или короткое имя экрана типа `02a-training-start-step1`)
+- Требование текстом ИЛИ прикреплённый screenshot с указаниями
+
+**6-step pipeline:**
+
+1. **Determine target** — по `docs_web/wireframes/m3/FIGMA-MAPPING.md` определяем HTML файл + frame
+2. **HTML edit** — вносим правку в `docs_web/wireframes/m3/*-v0.html` (и в `-mvp-store.html` если существует)
+3. **Preview** — headless Chrome screenshot → PM approve
+4. **PNG reslice** — `python3 UI_assets/skills/scripts/slice_phones_transparent.py` → обновляет `ui_assets/screenshots/sliced-flow-v2-1-transparent-2026-06-14/*.png`
+5. **Figma upload** — `mcp__figma__upload_assets` с `nodeId`, POST PNG → image fill в Pulse-file rectangle заменяется
+6. **Dashboard update** — в `docs_web/bevel-clone/tasks/figma-comments-dashboard.html`:
+   - `data-status="open"` → `data-status="resolved"`
+   - Добавить class `resolved` к article
+   - Badge `🔴 OPEN` → `✅ DONE (DD.MM)`
+   - Обновить статистику: Open −1, Done +1, соответствующий priority −1
+   - Обновить чипы filters с counts
+7. **ANALYZED.md sync** — в `knowledge-base/figma-comments-2026-07-01-pulse-wireframes-ANALYZED.md`: Статус → `✅ DONE (DD.MM.YYYY, commit XYZ)`
+8. **Commit + push** — единый commit со всеми изменениями (`Задача #N · <краткое описание>`)
+
+**Итог:** правка синхронизирована в **6 местах** — HTML source, PNG, Figma review-gallery, Dashboard, ANALYZED.md, git history.
+
+**Время цикла:** 3-5 минут per задача (для Copy/Wording — Type A). Bigger правки (Type B/C) — 10-30 минут.
+
+---
+
 ## 5. Варианты развития (Tracks)
 
 PM может развивать в любую сторону самостоятельно до момента когда упрётся в технологию или фантазию.
