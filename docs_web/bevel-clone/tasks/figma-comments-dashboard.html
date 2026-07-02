@@ -356,8 +356,8 @@
   <!-- STATS -->
   <section class="stats-grid">
     <div class="stat-card"><div class="eyebrow">Всего</div><div class="value">29</div></div>
-    <div class="stat-card warn"><div class="eyebrow">🔴 Open</div><div class="value">10</div></div>
-    <div class="stat-card norm"><div class="eyebrow">✅ Done</div><div class="value">19</div></div>
+    <div class="stat-card warn"><div class="eyebrow">🔴 Open</div><div class="value">6</div></div>
+    <div class="stat-card norm"><div class="eyebrow">✅ Done</div><div class="value">23</div></div>
     <div class="stat-card high"><div class="eyebrow">P1 critical</div><div class="value">2</div></div>
     <div class="stat-card wine"><div class="eyebrow">Авторов</div><div class="value">4</div></div>
     <div class="stat-card"><div class="eyebrow">Экранов</div><div class="value">21</div></div>
@@ -368,8 +368,8 @@
     <div class="filter-group">
       <span class="filter-label">Статус</span>
       <button class="chip active" data-filter="status" data-value="all">Все <span class="count" data-count-status-all>29</span></button>
-      <button class="chip" data-filter="status" data-value="open">🔴 Open <span class="count">10</span></button>
-      <button class="chip" data-filter="status" data-value="resolved">✅ Done <span class="count">19</span></button>
+      <button class="chip" data-filter="status" data-value="open">🔴 Open <span class="count">6</span></button>
+      <button class="chip" data-filter="status" data-value="resolved">✅ Done <span class="count">23</span></button>
     </div>
     <div class="filter-group">
       <span class="filter-label">Приоритет</span>
@@ -494,7 +494,7 @@
     </article>
 
     <!-- #03 -->
-    <article class="task-card" data-status="open" data-priority="P2" data-category="UI-fix" data-owner="Designer,PM" data-author="Alexandr Dymov" data-screen="01-home">
+    <article class="task-card resolved" data-status="resolved" data-priority="P2" data-category="UI-fix" data-owner="Designer,PM" data-author="Alexandr Dymov" data-screen="01-home">
       <div class="task-header">
         <div class="task-thumb"><img src="screenshots/01-home.png" alt="01-home" /></div>
         <div class="task-meta">
@@ -502,7 +502,7 @@
             <span class="task-id">#03</span>
             <span class="badge badge-prio p2">P2 · S</span>
             <span class="badge badge-cat">UI-fix</span>
-            <span class="badge badge-status open">🔴 OPEN</span>
+            <span class="badge badge-status">✅ DONE (02.07)</span>
           </div>
           <h3 class="task-title">Sleep card — убрать проценты, оставить time-values</h3>
           <div class="task-line"><span class="screen-name">01-home</span><span class="dot">·</span><span>Alexandr Dymov</span><span class="dot">·</span><span>16.06</span></div>
@@ -536,6 +536,10 @@
             <li>Время засыпания/пробуждения — самый интуитивный show</li>
             <li><b>DS:</b> <code>bv-card</code> Base + <code>bv-eyebrow</code> + <code>bv-section-heading</code> + 4× <code>bv-row-label</code></li>
           </ul>
+        </div>
+        <div class="task-section">
+          <h4>Резолюция · Done (02.07)</h4>
+          <p><b>01-home sleep card полностью переработана</b> (node 1:11). Layout: eyebrow «Сон» + verdict badge «Хорошо отдохнули» (mono green, uppercase) + main «7ч 42м» + 4-value grid: Засыпание 23:40 / Пробуждение 06:50 / Глубокий 1ч 50м / Лёгкий 5ч 52м. Убраны 22%/15%/63% и «85% качества». Grid 2×2 с divider над блоком. Row 2 (Q3: A) — всегда показывается. Verdict — client-side rule (Q2: A: &lt;7ч = «Маловато»).</p>
         </div>
       </div>
     </article>
@@ -907,7 +911,7 @@
     </article>
 
     <!-- #12 -->
-    <article class="task-card" data-status="open" data-priority="P2" data-category="UX-decision" data-owner="PM,Designer" data-author="Alexandr Dymov" data-screen="04-history">
+    <article class="task-card resolved" data-status="resolved" data-priority="P2" data-category="UX-decision" data-owner="PM,Designer" data-author="Alexandr Dymov" data-screen="04-history">
       <div class="task-header">
         <div class="task-thumb"><img src="screenshots/04-history.png" alt="04-history" /></div>
         <div class="task-meta">
@@ -915,7 +919,7 @@
             <span class="task-id">#12</span>
             <span class="badge badge-prio p2">P2 · M</span>
             <span class="badge badge-cat">UX-decision</span>
-            <span class="badge badge-status open">🔴 OPEN</span>
+            <span class="badge badge-status">✅ DONE (02.07)</span>
           </div>
           <h3 class="task-title">History: переключиться с календаря на список</h3>
           <div class="task-line"><span class="screen-name">04-history</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
@@ -948,6 +952,11 @@
             <li>Casual users: список интуитивнее</li>
             <li><b>DS:</b> <code>bv-card</code> Base + <code>bv-row-divider</code> между</li>
           </ul>
+        </div>
+        <div class="task-section">
+          <h4>Резолюция · Done (02.07)</h4>
+          <p><b>04-history полностью rebuild</b> (node 1:17). Default view = <b>chronological list</b>. Header: title «История» + segmented toggle <b>Список / Календарь</b> (Список active). Feed: group headers по датам (Сегодня / Вторник, 9 июня / …) в mono uppercase, 6 session-cards compact-row layout (Q1: A per PM). Каждая карточка: icon (running glyph) + type/time слева, distance/HR справа, chevron. Календарь-вариант остаётся opt-in — mockup хранится в <code>mobile-state-history-edge-cases-v0.html</code> (18a/18b/18c). Toggle → localStorage <code>pulse.historyView</code> (Kirill).</p>
+          <p><b>05-session-detail unified</b> (node 1:18): zones 5-zone → 4-zone (Лёгкая/Умеренная/Высокая/Пиковая), stats HR AVG → «Средний пульс», Темп AVG → «Средний темп», «Распределение по зонам» → «Зоны · подробно». Session-detail — target для tap на карточку в новом list.</p>
         </div>
       </div>
     </article>
@@ -1282,7 +1291,7 @@
     </article>
 
     <!-- #21 -->
-    <article class="task-card" data-status="open" data-priority="P3" data-category="UX-decision" data-owner="Designer" data-author="Alexandr Dymov" data-screen="18a-state-history-empty-month">
+    <article class="task-card resolved" data-status="resolved" data-priority="P3" data-category="UX-decision" data-owner="Designer" data-author="Alexandr Dymov" data-screen="18a-state-history-empty-month">
       <div class="task-header">
         <div class="task-thumb"><img src="screenshots/18a-state-history-empty-month.png" alt="18a" /></div>
         <div class="task-meta">
@@ -1290,7 +1299,7 @@
             <span class="task-id">#21</span>
             <span class="badge badge-prio p3">P3 · S</span>
             <span class="badge badge-cat">UX-decision</span>
-            <span class="badge badge-status open">🔴 OPEN</span>
+            <span class="badge badge-status">✅ DONE (02.07)</span>
           </div>
           <h3 class="task-title">Пустые месяцы — disabled</h3>
           <div class="task-line"><span class="screen-name">18a-state-history-empty-month</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
@@ -1322,11 +1331,15 @@
             <li>Для MVP — рекомендую greyed-out (proactive empty-state post-MVP)</li>
           </ul>
         </div>
+        <div class="task-section">
+          <h4>Резолюция · Done (02.07)</h4>
+          <p><b>Календарь становится opt-in variant</b> после #12 rebuild — default view теперь список. Календарь-вариант в <code>mobile-state-history-edge-cases-v0.html</code> уже правильно рендерит empty state: <code>.cal-day.empty</code> = not clickable (silent), <code>.cal-day.i1..i5</code> с training-dots = selectable. Whole-month empty (18a) — full-screen empty-state с CTA «Начать тренировку». HTML-comment добавлен в 18a для Kirill'а с behavior spec.</p>
+        </div>
       </div>
     </article>
 
     <!-- #22 -->
-    <article class="task-card" data-status="open" data-priority="P3" data-category="Context-only" data-owner="PM" data-author="Alexandr Dymov" data-screen="18b-state-history-future-month">
+    <article class="task-card resolved" data-status="resolved" data-priority="P3" data-category="Context-only" data-owner="PM" data-author="Alexandr Dymov" data-screen="18b-state-history-future-month">
       <div class="task-header">
         <div class="task-thumb"><img src="screenshots/18b-state-history-future-month.png" alt="18b" /></div>
         <div class="task-meta">
@@ -1334,7 +1347,7 @@
             <span class="task-id">#22</span>
             <span class="badge badge-prio p3">P3 · S</span>
             <span class="badge badge-cat">Context</span>
-            <span class="badge badge-status open">🔴 OPEN</span>
+            <span class="badge badge-status">✅ DONE (02.07)</span>
           </div>
           <h3 class="task-title">Будущие месяцы — зависит от Tracks A</h3>
           <div class="task-line"><span class="screen-name">18b-state-history-future-month</span><span class="dot">·</span><span>Alexandr Dymov</span></div>
@@ -1366,6 +1379,10 @@
             <li>В MVP — не показывать, dead-link confuses users</li>
             <li><b>DS:</b> future state = <code>bv-card</code> Subtle + <code>bv-eyebrow</code> «ЗАПЛАНИРОВАНО»</li>
           </ul>
+        </div>
+        <div class="task-section">
+          <h4>Резолюция · Done (02.07)</h4>
+          <p><b>Решение:</b> future months скрыты в MVP. Chevron <code>&gt;</code> на last available month = <code>disabled</code> (aria-disabled — уже реализовано в 18b как reference). Screen 18b сохранён в mockup как post-#02 (Auto-trainer / Tracks A) reference. HTML-comment добавлен в 18b с пометкой «активируется вместе с #02 epic». В roadmap — «зависит от Tracks A».</p>
         </div>
       </div>
     </article>

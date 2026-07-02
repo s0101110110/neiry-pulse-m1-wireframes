@@ -368,7 +368,7 @@
     }
     .zone-row {
       display: grid;
-      grid-template-columns: 28px 1fr 56px 64px;
+      grid-template-columns: 1fr 1fr 64px;
       gap: 10px;
       align-items: center;
       padding: 8px 0;
@@ -376,18 +376,14 @@
     .zone-row + .zone-row {
       border-top: 1px solid var(--border);
     }
-    .zone-lbl {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: var(--muted-foreground);
-    }
-    .zone-row.active .zone-lbl { color: var(--primary); }
     .zone-name {
       font-family: 'Golos Text', sans-serif;
       font-weight: 500;
       font-size: 13px;
+    }
+    .zone-row.active .zone-name {
+      font-weight: 600;
+      color: var(--primary);
     }
     .zone-bar-wrap {
       display: flex;
@@ -681,12 +677,12 @@
           <div class="stats-row">
             <div class="stat-cell">
               <span class="v wine">156</span>
-              <span class="l">HR avg</span>
+              <span class="l">Средний пульс</span>
             </div>
             <div class="stat-sep" aria-hidden="true"></div>
             <div class="stat-cell">
               <span class="v">5:24</span>
-              <span class="l">темп avg</span>
+              <span class="l">Средний темп</span>
             </div>
             <div class="stat-sep" aria-hidden="true"></div>
             <div class="stat-cell">
@@ -730,47 +726,45 @@
           </div>
         </article>
 
-        <!-- Zones distribution -->
-        <article class="card" aria-label="Распределение по зонам">
-          <h3 class="section-title">Распределение по зонам</h3>
+        <!-- Zones distribution — unified 4-zone system (Лёгкая/Умеренная/Высокая/Пиковая),
+             consistent с training-active (03a) + end-of-session (16a) -->
+        <article class="card" aria-label="Зоны подробно">
+          <h3 class="section-title">Зоны · подробно</h3>
 
           <div class="zone-row">
-            <span class="zone-lbl">Z1</span>
-            <span class="zone-name">Восстановит.</span>
-            <div class="zone-bar-wrap">
-              <div class="zone-bar">
-                <svg viewBox="0 0 100 4" preserveAspectRatio="none">
-                  <line x1="0" y1="2" x2="100" y2="2" stroke="#f5f2eb" stroke-width="4"/>
-                  <line x1="0" y1="2" x2="3" y2="2" stroke="#831843" stroke-width="4" stroke-linecap="butt"/>
-                </svg>
-              </div>
-            </div>
-            <div>
-              <div class="zone-pct">3%</div>
-              <div class="zone-time">0:51</div>
-            </div>
-          </div>
-
-          <div class="zone-row">
-            <span class="zone-lbl">Z2</span>
             <span class="zone-name">Лёгкая</span>
             <div class="zone-bar-wrap">
               <div class="zone-bar">
                 <svg viewBox="0 0 100 4" preserveAspectRatio="none">
                   <line x1="0" y1="2" x2="100" y2="2" stroke="#f5f2eb" stroke-width="4"/>
-                  <line x1="0" y1="2" x2="28" y2="2" stroke="#831843" stroke-width="4" stroke-linecap="butt"/>
+                  <line x1="0" y1="2" x2="15" y2="2" stroke="#831843" stroke-width="4" stroke-linecap="butt"/>
                 </svg>
               </div>
             </div>
             <div>
-              <div class="zone-pct">28%</div>
-              <div class="zone-time">7:51</div>
+              <div class="zone-pct">15%</div>
+              <div class="zone-time">4:12</div>
             </div>
           </div>
 
-          <div class="zone-row active" aria-label="Главная зона Z3 — 52%">
-            <span class="zone-lbl">Z3</span>
-            <span class="zone-name">Темпо</span>
+          <div class="zone-row">
+            <span class="zone-name">Умеренная</span>
+            <div class="zone-bar-wrap">
+              <div class="zone-bar">
+                <svg viewBox="0 0 100 4" preserveAspectRatio="none">
+                  <line x1="0" y1="2" x2="100" y2="2" stroke="#f5f2eb" stroke-width="4"/>
+                  <line x1="0" y1="2" x2="30" y2="2" stroke="#831843" stroke-width="4" stroke-linecap="butt"/>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="zone-pct">30%</div>
+              <div class="zone-time">8:24</div>
+            </div>
+          </div>
+
+          <div class="zone-row active" aria-label="Главная зона Высокая — 52%">
+            <span class="zone-name">Высокая</span>
             <div class="zone-bar-wrap">
               <div class="zone-bar">
                 <svg viewBox="0 0 100 4" preserveAspectRatio="none">
@@ -786,25 +780,7 @@
           </div>
 
           <div class="zone-row">
-            <span class="zone-lbl">Z4</span>
-            <span class="zone-name">Порог</span>
-            <div class="zone-bar-wrap">
-              <div class="zone-bar">
-                <svg viewBox="0 0 100 4" preserveAspectRatio="none">
-                  <line x1="0" y1="2" x2="100" y2="2" stroke="#f5f2eb" stroke-width="4"/>
-                  <line x1="0" y1="2" x2="14" y2="2" stroke="#831843" stroke-width="4" stroke-linecap="butt"/>
-                </svg>
-              </div>
-            </div>
-            <div>
-              <div class="zone-pct">14%</div>
-              <div class="zone-time">3:55</div>
-            </div>
-          </div>
-
-          <div class="zone-row">
-            <span class="zone-lbl">Z5</span>
-            <span class="zone-name">Максимум</span>
+            <span class="zone-name">Пиковая</span>
             <div class="zone-bar-wrap">
               <div class="zone-bar">
                 <svg viewBox="0 0 100 4" preserveAspectRatio="none">
@@ -815,7 +791,7 @@
             </div>
             <div>
               <div class="zone-pct">3%</div>
-              <div class="zone-time">0:53</div>
+              <div class="zone-time">0:54</div>
             </div>
           </div>
         </article>

@@ -515,6 +515,12 @@
 
       <!-- =========================================================== -->
       <!-- PHONE 1 — HISTORY · EMPTY MONTH (Май 2026)                  -->
+      <!-- #21 · Empty months в календарь-варианте (opt-in).           -->
+      <!-- Пустые дни без training-dot = not clickable (silent state). -->
+      <!-- Если весь месяц пустой — full-screen empty-state с CTA      -->
+      <!-- «Начать тренировку». Дни selectable только на day-cells     -->
+      <!-- с реальными записями (class .cal-day.i1..i5).              -->
+      <!-- =========================================================== -->
       <!-- =========================================================== -->
       <div class="frame-with-caption">
         <div class="frame-caption">
@@ -678,6 +684,10 @@
 
       <!-- =========================================================== -->
       <!-- PHONE 2 — HISTORY · FUTURE MONTH (Июль 2026)                -->
+      <!-- #22 · Future months скрыты в MVP (post-#02 Auto-trainer).   -->
+      <!-- Screen сохранён как reference — активируется вместе с       -->
+      <!-- «Автоматический план тренировок» epic. Chevron `>` на       -->
+      <!-- last available month = disabled (aria-disabled).            -->
       <!-- =========================================================== -->
       <div class="frame-with-caption">
         <div class="frame-caption">
