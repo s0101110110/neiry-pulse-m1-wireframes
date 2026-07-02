@@ -150,20 +150,20 @@ for i, name in enumerate(['main', 'generate-qr', 'scan-qr', 'success', 'detail']
     shoot_transparent(f"{OUT_DIR}/hs-{i}.html", f"{DEST}/07{letter}-hs-{name}.png")
 print("Health Sharing: done")
 
-# Singles
+# Singles — 3-tuple (filename, out, height); height=920 стандарт, tall для home v2
 SINGLES = [
-    ("mobile-home-f1-v0.html", "01-home.png"),
-    ("mobile-history-v0.html", "04-history.png"),
-    ("mobile-session-detail-v0.html", "05-session-detail.png"),
-    ("mobile-settings-v0.html", "06-settings.png"),
+    ("mobile-home-f1-v0.html", "01-home.png", 1600),
+    ("mobile-history-v0.html", "04-history.png", 920),
+    ("mobile-session-detail-v0.html", "05-session-detail.png", 920),
+    ("mobile-settings-v0.html", "06-settings.png", 920),
 ]
-for filename, out_name in SINGLES:
+for filename, out_name, tall_h in SINGLES:
     src = f"{SRC_DIR}/{filename}"
     html = open(src, encoding='utf-8').read()
     html = html.replace("</head>", HIDE_CHROME_CSS)
     tmp = f"{OUT_DIR}/{filename}"
     open(tmp, 'w', encoding='utf-8').write(html)
-    shoot_transparent(tmp, f"{DEST}/{out_name}")
+    shoot_transparent(tmp, f"{DEST}/{out_name}", h=tall_h)
 print("Singles: done")
 
 # Empty States (A5) — 2 phone frames in one HTML (.frame-with-caption)
